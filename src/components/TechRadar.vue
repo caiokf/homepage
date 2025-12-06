@@ -143,7 +143,6 @@ const selectedQuadrant = ref<QuadrantOrder | null>(null)
 
 const radarSize = computed(() => graphConfig.radarSize)
 const quadrantSize = computed(() => graphConfig.quadrantSize)
-const gap = computed(() => graphConfig.quadrantsGap)
 
 // SVG dimensions change based on selection
 const svgWidth = computed(() => selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value)
@@ -153,22 +152,24 @@ const viewBox = computed(() => {
   if (!selectedQuadrant.value) {
     return `0 0 ${radarSize.value} ${radarSize.value}`
   }
-  // When zoomed, show just the selected quadrant
+  // When zoomed, show just the selected quadrant (half the radar in each dimension)
   const offset = getZoomedViewBoxOffset(selectedQuadrant.value)
-  return `${offset.x} ${offset.y} ${quadrantSize.value} ${quadrantSize.value}`
+  const zoomSize = radarSize.value / 2
+  return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`
 })
 
 function getZoomedViewBoxOffset(order: QuadrantOrder): { x: number; y: number } {
-  const halfGap = gap.value / 2
+  const center = radarSize.value / 2
+  // Offset to show just the selected quadrant (quarter of the radar)
   switch (order) {
-    case 'first':
-      return { x: quadrantSize.value + halfGap, y: 0 }
-    case 'second':
+    case 'first': // top-right
+      return { x: center, y: 0 }
+    case 'second': // top-left
       return { x: 0, y: 0 }
-    case 'third':
-      return { x: 0, y: quadrantSize.value + halfGap }
-    case 'fourth':
-      return { x: quadrantSize.value + halfGap, y: quadrantSize.value + halfGap }
+    case 'third': // bottom-left
+      return { x: 0, y: center }
+    case 'fourth': // bottom-right
+      return { x: center, y: center }
     default:
       return { x: 0, y: 0 }
   }
@@ -207,22 +208,11 @@ function getPositionedBlips(quadrantIndex: number): PositionedBlip[] {
   return positionedBlipsCache.value[quadrantIndex] || []
 }
 
-function getQuadrantTransform(order: QuadrantOrder): string {
-  const halfSize = quadrantSize.value
-  const halfGap = gap.value / 2
-
-  switch (order) {
-    case 'first':
-      return `translate(${halfSize + halfGap}, ${halfSize})`
-    case 'second':
-      return `translate(${halfSize}, ${halfSize})`
-    case 'third':
-      return `translate(${halfSize}, ${halfSize + halfGap})`
-    case 'fourth':
-      return `translate(${halfSize + halfGap}, ${halfSize + halfGap})`
-    default:
-      return ''
-  }
+function getQuadrantTransform(_order: QuadrantOrder): string {
+  // All quadrants share the same center - the center of the radar
+  const centerX = radarSize.value / 2
+  const centerY = radarSize.value / 2
+  return `translate(${centerX}, ${centerY})`
 }
 
 function getQuadrantStyle(order: QuadrantOrder): CSSProperties {
@@ -237,8 +227,11 @@ function getQuadrantStyle(order: QuadrantOrder): CSSProperties {
 
 function getRingPaths(quadrantConfig: (typeof quadrantConfigs.value)[number]): string[] {
   const paths: string[] = []
-  const startAngle = (quadrantConfig.startAngle * Math.PI) / 180
-  const endAngle = startAngle - Math.PI / 2
+  // Convert to radians and adjust for D3's coordinate system
+  // D3 arc: 0 = 12 o'clock, positive = clockwise
+  // We need to offset by -π/2 to align with standard math coordinates
+  const startAngle = ((quadrantConfig.startAngle - 90) * Math.PI) / 180
+  const endAngle = startAngle + Math.PI / 2 // 90 degree arc clockwise
 
   for (let i = 0; i < ringRadii.value.length - 1; i++) {
     const arc = d3
@@ -258,15 +251,16 @@ function getRingLabels(
   quadrantConfig: (typeof quadrantConfigs.value)[number]
 ): Array<{ x: number; y: number; name: string }> {
   const labels: Array<{ x: number; y: number; name: string }> = []
-  const startAngle = quadrantConfig.startAngle
+  // Position labels at 45 degrees into the quadrant (middle of the arc)
+  // Adjust for D3/SVG coordinate system
+  const midAngle = ((quadrantConfig.startAngle - 90 + 45) * Math.PI) / 180
 
   for (let i = 0; i < RING_NAMES.length; i++) {
     const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2
-    const angle = ((startAngle - 45) * Math.PI) / 180
 
     labels.push({
-      x: radius * Math.cos(angle),
-      y: radius * Math.sin(angle),
+      x: radius * Math.sin(midAngle), // sin for x in D3's rotated system
+      y: -radius * Math.cos(midAngle), // -cos for y (SVG y-axis is inverted)
       name: RING_NAMES[i],
     })
   }

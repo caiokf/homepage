@@ -59,9 +59,6 @@ export class Quadrant {
     const positioned: PositionedBlip[] = []
     const allCoordinates: BlipCoordinate[] = []
 
-    // Determine quadrant adjustment factors based on start angle
-    const { adjustX, adjustY } = this.getQuadrantAdjustments(startAngle)
-
     // Create seeded random for reproducibility
     const seed = Math.PI * quadrantSize * quadrantSize * ringRadii.length * 200
     const random = new SeededRandom(seed)
@@ -80,8 +77,6 @@ export class Quadrant {
           minRadius,
           maxRadius,
           startAngle,
-          adjustX,
-          adjustY,
           center,
           allCoordinates,
           random
@@ -120,33 +115,11 @@ export class Quadrant {
     return groups
   }
 
-  private getQuadrantAdjustments(startAngle: number): {
-    adjustX: number
-    adjustY: number
-  } {
-    // Quadrant adjustments based on start angle
-    // first (0): +x, -y | second (-90): -x, -y | third (90): -x, +y | fourth (-180): +x, +y
-    switch (startAngle) {
-      case 0:
-        return { adjustX: 1, adjustY: -1 }
-      case -90:
-        return { adjustX: -1, adjustY: -1 }
-      case 90:
-        return { adjustX: -1, adjustY: 1 }
-      case -180:
-        return { adjustX: 1, adjustY: 1 }
-      default:
-        return { adjustX: 1, adjustY: -1 }
-    }
-  }
-
   private findBlipPosition(
     blip: Blip,
     minRadius: number,
     maxRadius: number,
-    _startAngle: number,
-    adjustX: number,
-    adjustY: number,
+    startAngle: number,
     center: { x: number; y: number },
     allCoordinates: BlipCoordinate[],
     random: SeededRandom
@@ -159,8 +132,7 @@ export class Quadrant {
         blip.width,
         minRadius,
         maxRadius,
-        adjustX,
-        adjustY,
+        startAngle,
         center,
         random
       )
@@ -177,8 +149,7 @@ export class Quadrant {
     blipWidth: number,
     minRadius: number,
     maxRadius: number,
-    adjustX: number,
-    adjustY: number,
+    startAngleDegrees: number,
     center: { x: number; y: number },
     random: SeededRandom
   ): { x: number; y: number } {
@@ -193,12 +164,15 @@ export class Quadrant {
     angleDelta = Math.min(angleDelta, 45)
 
     // Random angle within quadrant (90 degree span)
-    const angleDegrees = random.int(Math.ceil(angleDelta), 90 - Math.floor(angleDelta))
-    const angle = (angleDegrees * Math.PI) / 180
+    // Offset by the quadrant's start angle, adjusted for D3/SVG coordinate system
+    const angleOffset = random.int(Math.ceil(angleDelta), 90 - Math.floor(angleDelta))
+    const angle = ((startAngleDegrees - 90 + angleOffset) * Math.PI) / 180
 
-    // Convert polar to Cartesian with quadrant adjustments
-    const x = center.x + radius * Math.cos(angle) * adjustX
-    const y = center.y + radius * Math.sin(angle) * adjustY
+    // Convert polar to Cartesian using D3/SVG coordinate system
+    // In D3 arc: 0 = top, positive = clockwise
+    // sin for x, -cos for y (SVG y-axis is inverted)
+    const x = center.x + radius * Math.sin(angle)
+    const y = center.y - radius * Math.cos(angle)
 
     return { x, y }
   }
