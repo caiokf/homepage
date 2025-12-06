@@ -19,7 +19,7 @@
     >
       <!-- Layer 1: Ring arcs -->
       <g
-        v-for="(quadrantConfig, index) in quadrantConfigs"
+        v-for="quadrantConfig in quadrantConfigs"
         :key="`rings-${quadrantConfig.order}`"
         :class="[
           'quadrant-group',
@@ -198,11 +198,17 @@ import * as d3 from "d3";
 import type { Radar } from "../models/radar";
 import { Ring } from "../models/ring";
 import type { PositionedBlip, QuadrantGeometry } from "../data/types";
+import { graphConfig, type QuadrantOrder } from "../config/radar-config";
 import {
-  graphConfig,
-  RING_NAMES,
-  type QuadrantOrder,
-} from "../config/radar-config";
+  getZoomedViewBoxOffset,
+  getQuadrantLabelX as calcQuadrantLabelX,
+  getQuadrantLabelY as calcQuadrantLabelY,
+  getSeparatorLines as calcSeparatorLines,
+  getRingLabelsOnSeparators as calcRingLabelsOnSeparators,
+  getOuterCirclePath,
+  getMovedInPath,
+  getMovedOutPath,
+} from "./radar-geometry";
 
 const props = defineProps<{
   radar: Radar;
@@ -236,30 +242,13 @@ const viewBox = computed(() => {
     return `0 0 ${radarSize.value} ${radarSize.value}`;
   }
   // When zoomed, show just the selected quadrant (half the radar in each dimension)
-  const offset = getZoomedViewBoxOffset(selectedQuadrant.value);
+  const offset = getZoomedViewBoxOffset(
+    selectedQuadrant.value,
+    radarSize.value
+  );
   const zoomSize = radarSize.value / 2;
   return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`;
 });
-
-function getZoomedViewBoxOffset(order: QuadrantOrder): {
-  x: number;
-  y: number;
-} {
-  const center = radarSize.value / 2;
-  // Offset to show just the selected quadrant (quarter of the radar)
-  switch (order) {
-    case "first": // top-right
-      return { x: center, y: 0 };
-    case "second": // top-left
-      return { x: 0, y: 0 };
-    case "third": // bottom-left
-      return { x: 0, y: center };
-    case "fourth": // bottom-right
-      return { x: center, y: center };
-    default:
-      return { x: 0, y: 0 };
-  }
-}
 
 // Compute ring radii
 const ringRadii = computed(() => Ring.calculateRadii(quadrantSize.value));
@@ -337,117 +326,21 @@ function getRingPaths(
 
 function getQuadrantLabelX(order: QuadrantOrder): number {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  const offset = 30;
-
-  switch (order) {
-    case "first": // top-left quadrant
-      return -outerRadius + offset;
-    case "second": // bottom-left quadrant
-      return -outerRadius + offset;
-    case "third": // top-right quadrant
-      return outerRadius - offset - 150;
-    case "fourth": // bottom-right quadrant
-      return outerRadius - offset - 150;
-    default:
-      return 0;
-  }
+  return calcQuadrantLabelX(order, outerRadius);
 }
 
 function getQuadrantLabelY(order: QuadrantOrder): number {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  const offset = 30;
-
-  switch (order) {
-    case "first": // top-left quadrant
-      return -outerRadius + offset;
-    case "second": // bottom-left quadrant
-      return outerRadius - 2 * offset;
-    case "third": // top-right quadrant
-      return -outerRadius + offset;
-    case "fourth": // bottom-right quadrant
-      return outerRadius - 2 * offset;
-    default:
-      return 0;
-  }
+  return calcQuadrantLabelY(order, outerRadius);
 }
 
-function getSeparatorLines(): Array<{
-  angle: number;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}> {
-  // Separator lines at the boundaries between quadrants
-  // Boundaries are at 0°, 90°, -90°, and 180°
-  const boundaryAngles = [0, 90, -90, 180];
+function getSeparatorLines() {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-
-  return boundaryAngles.map((angle) => {
-    // Convert to D3's coordinate system (offset by -90° and convert to radians)
-    const angleInRadians = ((angle - 90) * Math.PI) / 180;
-
-    return {
-      angle,
-      x1: 0,
-      y1: 0,
-      x2: outerRadius * Math.sin(angleInRadians),
-      y2: -outerRadius * Math.cos(angleInRadians),
-    };
-  });
+  return calcSeparatorLines(outerRadius);
 }
 
-function getRingLabelsOnSeparators(): Array<{
-  x: number;
-  y: number;
-  name: string;
-}> {
-  const labels: Array<{ x: number; y: number; name: string }> = [];
-  // Place labels on both horizontal separator lines (left and right)
-  const angles = [0, 180]; // 0° = left, 180° = right
-
-  for (const angle of angles) {
-    const angleInRadians = ((angle - 90) * Math.PI) / 180;
-
-    for (let i = 0; i < RING_NAMES.length; i++) {
-      // Calculate midpoint radius for each ring
-      const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2;
-
-      labels.push({
-        x: radius * Math.sin(angleInRadians),
-        y: -radius * Math.cos(angleInRadians),
-        name: RING_NAMES[i],
-      });
-    }
-  }
-
-  return labels;
-}
-
-// SVG paths for blip indicators (moved-in and moved-out)
-// These paths are designed for a 36x36 viewBox with circle at cx=18, cy=18, r=12
-function getMovedInPath(order: QuadrantOrder): string {
-  const paths: Record<QuadrantOrder, string> = {
-    first: 'M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z',
-    second: 'M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z',
-    third: 'M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z',
-    fourth: 'M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z',
-  };
-  return paths[order];
-}
-
-function getMovedOutPath(order: QuadrantOrder): string {
-  const paths: Record<QuadrantOrder, string> = {
-    first: 'M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z',
-    second: 'M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z',
-    third: 'M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z',
-    fourth: 'M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z',
-  };
-  return paths[order];
-}
-
-function getOuterCirclePath(): string {
-  return 'M18 36C8.07 36 0 27.93 0 18S8.07 0 18 0c9.92 0 18 8.07 18 18S27.93 36 18 36zM18 3.14C9.81 3.14 3.14 9.81 3.14 18S9.81 32.86 18 32.86S32.86 26.19 32.86 18S26.19 3.14 18 3.14z';
+function getRingLabelsOnSeparators() {
+  return calcRingLabelsOnSeparators(ringRadii.value);
 }
 
 // Quadrant selection
@@ -558,16 +451,16 @@ onUnmounted(() => {
 
 /* Ring arc colors */
 .ring-arc-0 {
-  fill: #bababa;
+  fill: var(--ring-0);
 }
 .ring-arc-1 {
-  fill: #cacaca;
+  fill: var(--ring-1);
 }
 .ring-arc-2 {
-  fill: #dadada;
+  fill: var(--ring-2);
 }
 .ring-arc-3 {
-  fill: #eeeeee;
+  fill: var(--ring-3);
 }
 
 /* Invisible clickable ring arcs in layer 3 */
@@ -578,16 +471,16 @@ onUnmounted(() => {
 
 /* Quadrant blip colors */
 .blip-circle.first {
-  fill: #1f8290;
+  fill: var(--quadrant-first);
 }
 .blip-circle.second {
-  fill: #a06908;
+  fill: var(--quadrant-second);
 }
 .blip-circle.third {
-  fill: #517b5c;
+  fill: var(--quadrant-third);
 }
 .blip-circle.fourth {
-  fill: #9b293c;
+  fill: var(--quadrant-fourth);
 }
 
 /* Blip indicators (new, moved in, moved out) */
@@ -596,16 +489,16 @@ onUnmounted(() => {
   stroke-width: 2;
 }
 .blip-indicator.first {
-  fill: #1f8290;
+  fill: var(--quadrant-first);
 }
 .blip-indicator.second {
-  fill: #a06908;
+  fill: var(--quadrant-second);
 }
 .blip-indicator.third {
-  fill: #517b5c;
+  fill: var(--quadrant-third);
 }
 .blip-indicator.fourth {
-  fill: #9b293c;
+  fill: var(--quadrant-fourth);
 }
 
 /* Blip text */
@@ -671,37 +564,20 @@ onUnmounted(() => {
 }
 
 .quadrant-name-text.first {
-  color: #1f8290;
+  color: var(--quadrant-first);
   text-align: left;
 }
 .quadrant-name-text.second {
-  color: #a06908;
+  color: var(--quadrant-second);
   text-align: left;
 }
 .quadrant-name-text.third {
-  color: #517b5c;
+  color: var(--quadrant-third);
   text-align: right;
 }
 .quadrant-name-text.fourth {
-  color: #9b293c;
+  color: var(--quadrant-fourth);
   text-align: right;
-}
-
-.quadrant-caret {
-  font-size: 24px;
-  font-weight: 600;
-}
-.quadrant-caret.first {
-  fill: #1f8290;
-}
-.quadrant-caret.second {
-  fill: #a06908;
-}
-.quadrant-caret.third {
-  fill: #517b5c;
-}
-.quadrant-caret.fourth {
-  fill: #9b293c;
 }
 
 /* Tooltip */

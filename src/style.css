@@ -1,6 +1,18 @@
 :root {
   --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Quadrant colors */
+  --quadrant-first: #1f8290;
+  --quadrant-second: #a06908;
+  --quadrant-third: #517b5c;
+  --quadrant-fourth: #9b293c;
+
+  /* Ring colors */
+  --ring-0: #bababa;
+  --ring-1: #cacaca;
+  --ring-2: #dadada;
+  --ring-3: #eeeeee;
 }
 
 * {

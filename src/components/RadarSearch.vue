@@ -158,6 +158,7 @@ function selectResult(result: SearchResult) {
   border: 2px solid #e0e0e0;
   border-radius: 8px;
   font-size: 14px;
+  font-family: var(--font-mono);
   outline: none;
   transition: border-color 0.2s ease;
 }
@@ -168,6 +169,7 @@ function selectResult(result: SearchResult) {
 
 .search-input::placeholder {
   color: #999;
+  font-family: var(--font-sans);
 }
 
 .search-icon {
@@ -212,12 +214,14 @@ function selectResult(result: SearchResult) {
 .result-name {
   display: block;
   font-weight: 500;
+  font-family: var(--font-mono);
   margin-bottom: 2px;
 }
 
 .result-meta {
   font-size: 12px;
   color: #666;
+  font-family: var(--font-mono);
 }
 
 .no-results {
@@ -232,6 +236,7 @@ function selectResult(result: SearchResult) {
   border-radius: 8px;
   color: #666;
   font-size: 14px;
+  font-family: var(--font-sans);
   z-index: 100;
 }
 </style>

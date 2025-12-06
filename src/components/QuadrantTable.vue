@@ -72,16 +72,16 @@ function handleBlipClick(blip: PositionedBlip) {
 }
 
 .quadrant-table.first .quadrant-title {
-  background: #1f8290;
+  background: var(--quadrant-first);
 }
 .quadrant-table.second .quadrant-title {
-  background: #a06908;
+  background: var(--quadrant-second);
 }
 .quadrant-table.third .quadrant-title {
-  background: #517b5c;
+  background: var(--quadrant-third);
 }
 .quadrant-table.fourth .quadrant-title {
-  background: #9b293c;
+  background: var(--quadrant-fourth);
 }
 
 .ring-section {
