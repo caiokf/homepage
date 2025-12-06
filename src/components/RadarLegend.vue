@@ -1,48 +1,31 @@
 <template>
   <div class="radar-legend">
     <div class="legend-item">
-      <svg width="28" height="28" viewBox="0 0 28 28">
-        <circle cx="14" cy="14" r="8" fill="#666" />
-        <circle cx="14" cy="14" r="12" fill="none" stroke="#666" stroke-width="2" />
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="12" fill="#666" />
+        <path
+          d="M18 36C8.07 36 0 27.93 0 18S8.07 0 18 0c9.92 0 18 8.07 18 18S27.93 36 18 36zM18 3.14C9.81 3.14 3.14 9.81 3.14 18S9.81 32.86 18 32.86S32.86 26.19 32.86 18S26.19 3.14 18 3.14z"
+          fill="#666"
+        />
       </svg>
       <span>New this edition</span>
     </div>
 
     <div class="legend-item">
-      <svg width="28" height="28" viewBox="0 0 28 28">
-        <circle cx="14" cy="14" r="8" fill="#666" />
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="12" fill="#666" />
         <path
-          d="M7 14 L21 14 M17 10 L21 14 L17 18"
-          fill="none"
-          stroke="#666"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          transform="translate(-3, 0)"
+          d="M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z"
+          fill="#666"
+          transform="rotate(-45 18 18)"
         />
       </svg>
-      <span>Moved in</span>
+      <span>Moved in / out</span>
     </div>
 
     <div class="legend-item">
-      <svg width="28" height="28" viewBox="0 0 28 28">
-        <circle cx="14" cy="14" r="8" fill="#666" />
-        <path
-          d="M21 14 L7 14 M11 10 L7 14 L11 18"
-          fill="none"
-          stroke="#666"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          transform="translate(3, 0)"
-        />
-      </svg>
-      <span>Moved out</span>
-    </div>
-
-    <div class="legend-item">
-      <svg width="28" height="28" viewBox="0 0 28 28">
-        <circle cx="14" cy="14" r="8" fill="#666" />
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="12" fill="#666" />
       </svg>
       <span>No change</span>
     </div>
