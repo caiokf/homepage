@@ -111,34 +111,50 @@
           :class="[
             'blip',
             quadrantConfig.order,
-            {
-              'blip-new': blip.isNew,
-              'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id,
-            },
+            { 'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id },
           ]"
-          :transform="`translate(${blip.x}, ${blip.y})`"
+          :transform="`translate(${blip.x - 18}, ${blip.y - 18})`"
           @mouseenter="handleBlipHover(blip)"
           @mouseleave="handleBlipLeave()"
           @click.stop="handleBlipClick(blip)"
         >
-          <!-- Circle for blip -->
+          <!-- Main circle (36x36 coordinate space, circle at cx=18, cy=18, r=12) -->
           <circle
-            :r="blip.width / 2"
+            cx="18"
+            cy="18"
+            r="12"
             :class="['blip-circle', quadrantConfig.order]"
           />
-          <!-- Outer ring for new blips -->
-          <circle
+
+          <!-- Indicator based on status -->
+          <path
             v-if="blip.isNew"
-            :r="blip.width / 2 + 4"
-            class="blip-new-indicator"
-            fill="none"
-            stroke-width="2"
+            :d="getOuterCirclePath()"
+            :class="['blip-indicator', quadrantConfig.order]"
+            opacity="1"
           />
+          <path
+            v-else-if="blip.status === 'moved in'"
+            :d="getMovedInPath(quadrantConfig.order)"
+            :class="['blip-indicator', quadrantConfig.order]"
+            opacity="1"
+          />
+          <path
+            v-else-if="blip.status === 'moved out'"
+            :d="getMovedOutPath(quadrantConfig.order)"
+            :class="['blip-indicator', quadrantConfig.order]"
+            opacity="1"
+          />
+
           <!-- Blip number -->
           <text
+            x="18"
+            y="23"
             class="blip-text"
             text-anchor="middle"
-            dominant-baseline="central"
+            font-size="12px"
+            font-weight="bold"
+            fill="white"
           >
             {{ blip.blipText }}
           </text>
@@ -407,6 +423,32 @@ function getRingLabelsOnSeparators(): Array<{
   return labels;
 }
 
+// SVG paths for blip indicators (moved-in and moved-out)
+// These paths are designed for a 36x36 viewBox with circle at cx=18, cy=18, r=12
+function getMovedInPath(order: QuadrantOrder): string {
+  const paths: Record<QuadrantOrder, string> = {
+    first: 'M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z',
+    second: 'M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z',
+    third: 'M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z',
+    fourth: 'M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z',
+  };
+  return paths[order];
+}
+
+function getMovedOutPath(order: QuadrantOrder): string {
+  const paths: Record<QuadrantOrder, string> = {
+    first: 'M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z',
+    second: 'M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z',
+    third: 'M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z',
+    fourth: 'M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z',
+  };
+  return paths[order];
+}
+
+function getOuterCirclePath(): string {
+  return 'M18 36C8.07 36 0 27.93 0 18S8.07 0 18 0c9.92 0 18 8.07 18 18S27.93 36 18 36zM18 3.14C9.81 3.14 3.14 9.81 3.14 18S9.81 32.86 18 32.86S32.86 26.19 32.86 18S26.19 3.14 18 3.14z';
+}
+
 // Quadrant selection
 function selectQuadrant(order: QuadrantOrder) {
   if (selectedQuadrant.value) return; // Already zoomed, don't re-zoom
@@ -547,29 +589,28 @@ onUnmounted(() => {
   fill: #9b293c;
 }
 
-/* New blip indicator */
-.blip-new-indicator {
-  stroke: currentColor;
+/* Blip indicators (new, moved in, moved out) */
+.blip-indicator {
+  fill: none;
+  stroke-width: 2;
 }
-.first .blip-new-indicator {
-  stroke: #1f8290;
+.blip-indicator.first {
+  fill: #1f8290;
 }
-.second .blip-new-indicator {
-  stroke: #a06908;
+.blip-indicator.second {
+  fill: #a06908;
 }
-.third .blip-new-indicator {
-  stroke: #517b5c;
+.blip-indicator.third {
+  fill: #517b5c;
 }
-.fourth .blip-new-indicator {
-  stroke: #9b293c;
+.blip-indicator.fourth {
+  fill: #9b293c;
 }
 
 /* Blip text */
 .blip-text {
-  fill: white;
-  font-size: 9px;
-  font-style: italic;
   pointer-events: none;
+  font-style: normal;
 }
 
 /* Blip hover effects */
