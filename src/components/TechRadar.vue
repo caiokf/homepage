@@ -63,6 +63,16 @@
           :y2="separator.y2"
           class="separator-line"
         />
+        <!-- Ring labels on horizontal separator -->
+        <text
+          v-for="(label, index) in getRingLabelsOnSeparators()"
+          :key="`ring-label-${index}`"
+          :x="label.x"
+          :y="label.y"
+          class="ring-label-separator"
+        >
+          {{ label.name }}
+        </text>
       </g>
 
       <!-- Layer 3: Ring labels, blips, and quadrant names -->
@@ -93,17 +103,6 @@
             class="ring-arc-invisible"
           />
         </g>
-
-        <!-- Ring names -->
-        <text
-          v-for="(ringLabel, ringIndex) in getRingLabels(quadrantConfig)"
-          :key="`ring-label-${ringIndex}`"
-          :x="ringLabel.x"
-          :y="ringLabel.y"
-          class="ring-name"
-        >
-          {{ ringLabel.name }}
-        </text>
 
         <!-- Blips -->
         <g
@@ -319,27 +318,6 @@ function getRingPaths(
   return paths;
 }
 
-function getRingLabels(
-  quadrantConfig: (typeof quadrantConfigs.value)[number]
-): Array<{ x: number; y: number; name: string }> {
-  const labels: Array<{ x: number; y: number; name: string }> = [];
-  // Position labels at 45 degrees into the quadrant (middle of the arc)
-  // Adjust for D3/SVG coordinate system
-  const midAngle = ((quadrantConfig.startAngle - 90 + 45) * Math.PI) / 180;
-
-  for (let i = 0; i < RING_NAMES.length; i++) {
-    const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2;
-
-    labels.push({
-      x: radius * Math.sin(midAngle), // sin for x in D3's rotated system
-      y: -radius * Math.cos(midAngle), // -cos for y (SVG y-axis is inverted)
-      name: RING_NAMES[i],
-    });
-  }
-
-  return labels;
-}
-
 function getQuadrantLabelX(order: QuadrantOrder): number {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
   const offset = 30;
@@ -400,6 +378,33 @@ function getSeparatorLines(): Array<{
       y2: -outerRadius * Math.cos(angleInRadians),
     };
   });
+}
+
+function getRingLabelsOnSeparators(): Array<{
+  x: number;
+  y: number;
+  name: string;
+}> {
+  const labels: Array<{ x: number; y: number; name: string }> = [];
+  // Place labels on both horizontal separator lines (left and right)
+  const angles = [0, 180]; // 0° = left, 180° = right
+
+  for (const angle of angles) {
+    const angleInRadians = ((angle - 90) * Math.PI) / 180;
+
+    for (let i = 0; i < RING_NAMES.length; i++) {
+      // Calculate midpoint radius for each ring
+      const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2;
+
+      labels.push({
+        x: radius * Math.sin(angleInRadians),
+        y: -radius * Math.cos(angleInRadians),
+        name: RING_NAMES[i],
+      });
+    }
+  }
+
+  return labels;
 }
 
 // Quadrant selection
@@ -589,6 +594,21 @@ onUnmounted(() => {
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
+}
+
+/* Ring labels on separator lines */
+.ring-label-separator {
+  fill: #333;
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: white;
+  stroke-width: 4px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Quadrant names */
