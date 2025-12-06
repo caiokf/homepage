@@ -79,6 +79,7 @@ defineExpose({
 
 .blip-number {
   font-weight: 600;
+  font-family: var(--font-mono);
   color: #666;
   min-width: 24px;
 }
@@ -86,6 +87,7 @@ defineExpose({
 .blip-name {
   flex: 1;
   font-weight: 500;
+  font-family: var(--font-mono);
 }
 
 .blip-badge {
@@ -133,5 +135,6 @@ defineExpose({
   color: #666;
   font-size: 13px;
   line-height: 1.5;
+  font-family: var(--font-sans);
 }
 </style>

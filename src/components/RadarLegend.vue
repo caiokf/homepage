@@ -56,6 +56,7 @@
 .legend-item span {
   font-size: 13px;
   color: #555;
+  font-family: var(--font-mono);
 }
 
 @media (max-width: 600px) {

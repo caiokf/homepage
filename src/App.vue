@@ -143,12 +143,14 @@ header h1 {
   margin: 0 0 0.5rem;
   font-size: 2.5rem;
   font-weight: 600;
+  font-family: var(--font-mono);
 }
 
 header .subtitle {
   margin: 0;
   font-size: 1.1rem;
   opacity: 0.9;
+  font-family: var(--font-sans);
 }
 
 .main-content {

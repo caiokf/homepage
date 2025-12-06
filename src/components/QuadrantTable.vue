@@ -67,6 +67,7 @@ function handleBlipClick(blip: PositionedBlip) {
   padding: 16px 20px;
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-mono);
   color: white;
 }
 
@@ -96,6 +97,7 @@ function handleBlipClick(blip: PositionedBlip) {
   padding: 12px 20px;
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-mono);
   color: #333;
   background: #f5f5f5;
   text-transform: uppercase;
@@ -113,5 +115,6 @@ function handleBlipClick(blip: PositionedBlip) {
   color: #999;
   font-style: italic;
   font-size: 13px;
+  font-family: var(--font-sans);
 }
 </style>

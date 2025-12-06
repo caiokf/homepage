@@ -149,10 +149,11 @@
           <!-- Blip number -->
           <text
             x="18"
-            y="23"
+            y="19"
             class="blip-text"
             text-anchor="middle"
-            font-size="12px"
+            dominant-baseline="central"
+            font-size="10px"
             font-weight="bold"
             fill="white"
           >
@@ -611,6 +612,7 @@ onUnmounted(() => {
 .blip-text {
   pointer-events: none;
   font-style: normal;
+  font-family: var(--font-mono);
 }
 
 /* Blip hover effects */
@@ -642,6 +644,7 @@ onUnmounted(() => {
   fill: #333;
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-mono);
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
@@ -660,6 +663,7 @@ onUnmounted(() => {
 .quadrant-name-text {
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-mono);
   max-width: 150px;
   word-wrap: break-word;
   overflow-wrap: break-word;
