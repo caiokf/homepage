@@ -5,6 +5,14 @@
       <p class="subtitle">Technology choices for our engineering teams</p>
     </header>
 
+    <!-- Quadrant navigation tabs -->
+    <RadarHeader
+      v-if="radar"
+      :radar="radar"
+      :selected-quadrant="selectedQuadrant"
+      @select="handleQuadrantSelected"
+    />
+
     <div v-if="radar" class="main-content">
       <!-- Search bar -->
       <div class="search-container">
@@ -12,18 +20,38 @@
       </div>
 
       <!-- Main radar and table container -->
-      <main class="radar-layout" :class="{ 'has-selection': selectedQuadrant }">
-        <div class="radar-wrapper">
+      <main class="radar-layout" :class="layoutClasses">
+        <!-- Table on LEFT (for first/second quadrants - radar moves right) -->
+        <div
+          v-if="selectedQuadrant && selectedQuadrantConfig && isRadarOnRight"
+          class="table-wrapper table-left"
+        >
+          <QuadrantTable
+            :quadrant-name="selectedQuadrantConfig.quadrant?.name || ''"
+            :quadrant-order="selectedQuadrant"
+            :blips="selectedQuadrantBlips"
+            :highlighted-blip-id="hoveredBlipId"
+            @blip-hover="handleTableBlipHover"
+            @blip-click="handleBlipSelected"
+          />
+        </div>
+
+        <div class="radar-wrapper" :style="radarWrapperStyle">
           <TechRadar
             ref="techRadarRef"
             :radar="radar"
+            :selected-quadrant="selectedQuadrant"
             @quadrant-selected="handleQuadrantSelected"
             @blip-selected="handleBlipSelected"
             @blip-hovered="handleBlipHovered"
           />
         </div>
 
-        <div v-if="selectedQuadrant && selectedQuadrantConfig" class="table-wrapper">
+        <!-- Table on RIGHT (for third/fourth quadrants - radar moves left) -->
+        <div
+          v-if="selectedQuadrant && selectedQuadrantConfig && !isRadarOnRight"
+          class="table-wrapper table-right"
+        >
           <QuadrantTable
             :quadrant-name="selectedQuadrantConfig.quadrant?.name || ''"
             :quadrant-order="selectedQuadrant"
@@ -52,6 +80,7 @@ import TechRadar from './components/TechRadar.vue'
 import QuadrantTable from './components/QuadrantTable.vue'
 import RadarLegend from './components/RadarLegend.vue'
 import RadarSearch from './components/RadarSearch.vue'
+import RadarHeader from './components/RadarHeader.vue'
 import { createRadarFromData } from './data/radar-factory'
 import { sampleRadarData } from './data/sample-data'
 import { Radar } from './models/radar'
@@ -93,6 +122,34 @@ const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
   }
 
   return selectedQuadrantConfig.value.quadrant.calculateBlipPositions(geometry)
+})
+
+// Determine if radar should move to the right (first/second quadrants selected)
+// First/Second quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
+// Third/Fourth quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
+const isRadarOnRight = computed(() => {
+  return selectedQuadrant.value === 'first' || selectedQuadrant.value === 'second'
+})
+
+// Layout classes for the radar-layout container
+const layoutClasses = computed(() => ({
+  'has-selection': !!selectedQuadrant.value,
+  'table-on-left': isRadarOnRight.value,
+  'table-on-right': selectedQuadrant.value && !isRadarOnRight.value,
+}))
+
+// Radar wrapper style - changes width when quadrant is selected
+const radarWrapperStyle = computed(() => {
+  if (!selectedQuadrant.value) {
+    return {
+      width: '1024px',
+    }
+  }
+
+  // Shrink to 0.6 of original width (614px)
+  return {
+    width: '614px',
+  }
 })
 
 function handleQuadrantSelected(order: QuadrantOrder | null) {
@@ -167,13 +224,12 @@ header .subtitle {
 
 .radar-layout {
   display: flex;
-  gap: 2rem;
+  gap: 0;
   justify-content: center;
   align-items: flex-start;
-}
-
-.radar-layout.has-selection {
-  flex-wrap: wrap;
+  /* Container stays at original radar size (1024px + padding) */
+  width: 1056px; /* 1024 + 2*16px padding */
+  margin: 0 auto;
 }
 
 .radar-wrapper {
@@ -181,13 +237,52 @@ header .subtitle {
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: width 1s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .table-wrapper {
-  flex: 0 0 400px;
-  max-width: 400px;
+  /* Table is 0.4 of 1024px = 410px */
+  width: 410px;
+  flex-shrink: 0;
   max-height: 80vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  animation: slideIn 1s ease;
+}
+
+.table-wrapper.table-left {
+  order: -1;
+  animation-name: slideInFromLeft;
+}
+
+.table-wrapper.table-right {
+  order: 1;
+  animation-name: slideInFromRight;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .loading {

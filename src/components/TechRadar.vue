@@ -1,14 +1,5 @@
 <template>
   <div class="tech-radar" :class="{ 'quadrant-selected': selectedQuadrant }">
-    <!-- Back button when quadrant is selected -->
-    <button
-      v-if="selectedQuadrant"
-      class="back-button"
-      @click="deselectQuadrant"
-    >
-      &larr; Back to full radar
-    </button>
-
     <svg
       ref="svgRef"
       :width="svgWidth"
@@ -212,6 +203,7 @@ import {
 
 const props = defineProps<{
   radar: Radar;
+  selectedQuadrant: QuadrantOrder | null;
 }>();
 
 const emit = defineEmits<{
@@ -224,26 +216,21 @@ const svgRef = ref<SVGSVGElement | null>(null);
 const tooltipRef = ref<HTMLDivElement | null>(null);
 const hoveredBlip = ref<PositionedBlip | null>(null);
 const mousePosition = ref({ x: 0, y: 0 });
-const selectedQuadrant = ref<QuadrantOrder | null>(null);
 
 const radarSize = computed(() => graphConfig.radarSize);
 const quadrantSize = computed(() => graphConfig.quadrantSize);
 
-// SVG dimensions change based on selection
-const svgWidth = computed(() =>
-  selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value
-);
-const svgHeight = computed(() =>
-  selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value
-);
+// SVG dimensions - responsive, fills container
+const svgWidth = '100%';
+const svgHeight = '100%';
 
 const viewBox = computed(() => {
-  if (!selectedQuadrant.value) {
+  if (!props.selectedQuadrant) {
     return `0 0 ${radarSize.value} ${radarSize.value}`;
   }
   // When zoomed, show just the selected quadrant (half the radar in each dimension)
   const offset = getZoomedViewBoxOffset(
-    selectedQuadrant.value,
+    props.selectedQuadrant,
     radarSize.value
   );
   const zoomSize = radarSize.value / 2;
@@ -291,10 +278,10 @@ function getQuadrantTransform(_order: QuadrantOrder): string {
 }
 
 function getQuadrantStyle(order: QuadrantOrder): CSSProperties {
-  if (!selectedQuadrant.value) {
+  if (!props.selectedQuadrant) {
     return {};
   }
-  if (selectedQuadrant.value === order) {
+  if (props.selectedQuadrant === order) {
     return {};
   }
   return { opacity: 0, pointerEvents: "none" };
@@ -345,14 +332,8 @@ function getRingLabelsOnSeparators() {
 
 // Quadrant selection
 function selectQuadrant(order: QuadrantOrder) {
-  if (selectedQuadrant.value) return; // Already zoomed, don't re-zoom
-  selectedQuadrant.value = order;
+  if (props.selectedQuadrant) return; // Already zoomed, don't re-zoom
   emit("quadrant-selected", order);
-}
-
-function deselectQuadrant() {
-  selectedQuadrant.value = null;
-  emit("quadrant-selected", null);
 }
 
 // Tooltip positioning
@@ -396,32 +377,14 @@ onUnmounted(() => {
 <style scoped>
 .tech-radar {
   position: relative;
-  display: inline-block;
+  width: 100%;
+  aspect-ratio: 1;
 }
 
 .radar-svg {
   display: block;
-  transition: width 0.5s ease, height 0.5s ease;
-}
-
-/* Back button */
-.back-button {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 8px 16px;
-  background: #163c4d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  z-index: 10;
-  transition: background 0.2s ease;
-}
-
-.back-button:hover {
-  background: #1f5266;
+  width: 100%;
+  height: 100%;
 }
 
 /* Quadrant group transitions */
