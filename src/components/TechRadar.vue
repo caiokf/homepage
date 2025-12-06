@@ -25,7 +25,8 @@
           'quadrant-group',
           quadrantConfig.order,
           {
-            'quadrant-hidden': selectedQuadrant && selectedQuadrant !== quadrantConfig.order,
+            'quadrant-hidden':
+              selectedQuadrant && selectedQuadrant !== quadrantConfig.order,
             'quadrant-zoomed': selectedQuadrant === quadrantConfig.order,
           },
         ]"
@@ -72,13 +73,27 @@
           'quadrant-group',
           quadrantConfig.order,
           {
-            'quadrant-hidden': selectedQuadrant && selectedQuadrant !== quadrantConfig.order,
+            'quadrant-hidden':
+              selectedQuadrant && selectedQuadrant !== quadrantConfig.order,
             'quadrant-zoomed': selectedQuadrant === quadrantConfig.order,
           },
         ]"
         :transform="getQuadrantTransform(quadrantConfig.order)"
         :style="getQuadrantStyle(quadrantConfig.order)"
       >
+        <!-- Clickable background (invisible, for interaction) -->
+        <g
+          class="quadrant-background"
+          @click="selectQuadrant(quadrantConfig.order)"
+        >
+          <path
+            v-for="(ringPath, ringIndex) in getRingPaths(quadrantConfig)"
+            :key="`ring-invisible-${ringIndex}`"
+            :d="ringPath"
+            class="ring-arc-invisible"
+          />
+        </g>
+
         <!-- Ring names -->
         <text
           v-for="(ringLabel, ringIndex) in getRingLabels(quadrantConfig)"
@@ -97,7 +112,10 @@
           :class="[
             'blip',
             quadrantConfig.order,
-            { 'blip-new': blip.isNew, 'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id },
+            {
+              'blip-new': blip.isNew,
+              'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id,
+            },
           ]"
           :transform="`translate(${blip.x}, ${blip.y})`"
           @mouseenter="handleBlipHover(blip)"
@@ -118,19 +136,31 @@
             stroke-width="2"
           />
           <!-- Blip number -->
-          <text class="blip-text" text-anchor="middle" dominant-baseline="central">
+          <text
+            class="blip-text"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
             {{ blip.blipText }}
           </text>
         </g>
 
-        <!-- Quadrant name -->
-        <text
-          :x="getQuadrantNamePosition(quadrantConfig.order).x"
-          :y="getQuadrantNamePosition(quadrantConfig.order).y"
-          :class="['quadrant-name', quadrantConfig.order]"
-        >
-          {{ quadrantConfig.quadrant?.name }}
-        </text>
+        <!-- Quadrant name with caret -->
+        <g :class="['quadrant-name-group', quadrantConfig.order]">
+          <foreignObject
+            :x="getQuadrantLabelX(quadrantConfig.order)"
+            :y="getQuadrantLabelY(quadrantConfig.order)"
+            width="150"
+            height="40"
+          >
+            <div
+              xmlns="http://www.w3.org/1999/xhtml"
+              :class="['quadrant-name-text', quadrantConfig.order]"
+            >
+              {{ quadrantConfig.quadrant?.name }}
+            </div>
+          </foreignObject>
+        </g>
       </g>
     </svg>
 
@@ -147,81 +177,88 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type CSSProperties } from 'vue'
-import * as d3 from 'd3'
-import type { Radar } from '../models/radar'
-import { Ring } from '../models/ring'
-import type { PositionedBlip, QuadrantGeometry } from '../data/types'
+import { ref, computed, onMounted, onUnmounted, type CSSProperties } from "vue";
+import * as d3 from "d3";
+import type { Radar } from "../models/radar";
+import { Ring } from "../models/ring";
+import type { PositionedBlip, QuadrantGeometry } from "../data/types";
 import {
   graphConfig,
   RING_NAMES,
   type QuadrantOrder,
-} from '../config/radar-config'
+} from "../config/radar-config";
 
 const props = defineProps<{
-  radar: Radar
-}>()
+  radar: Radar;
+}>();
 
 const emit = defineEmits<{
-  (e: 'quadrant-selected', order: QuadrantOrder | null): void
-  (e: 'blip-selected', blip: PositionedBlip): void
-  (e: 'blip-hovered', blip: PositionedBlip | null): void
-}>()
+  (e: "quadrant-selected", order: QuadrantOrder | null): void;
+  (e: "blip-selected", blip: PositionedBlip): void;
+  (e: "blip-hovered", blip: PositionedBlip | null): void;
+}>();
 
-const svgRef = ref<SVGSVGElement | null>(null)
-const tooltipRef = ref<HTMLDivElement | null>(null)
-const hoveredBlip = ref<PositionedBlip | null>(null)
-const mousePosition = ref({ x: 0, y: 0 })
-const selectedQuadrant = ref<QuadrantOrder | null>(null)
+const svgRef = ref<SVGSVGElement | null>(null);
+const tooltipRef = ref<HTMLDivElement | null>(null);
+const hoveredBlip = ref<PositionedBlip | null>(null);
+const mousePosition = ref({ x: 0, y: 0 });
+const selectedQuadrant = ref<QuadrantOrder | null>(null);
 
-const radarSize = computed(() => graphConfig.radarSize)
-const quadrantSize = computed(() => graphConfig.quadrantSize)
+const radarSize = computed(() => graphConfig.radarSize);
+const quadrantSize = computed(() => graphConfig.quadrantSize);
 
 // SVG dimensions change based on selection
-const svgWidth = computed(() => selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value)
-const svgHeight = computed(() => selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value)
+const svgWidth = computed(() =>
+  selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value
+);
+const svgHeight = computed(() =>
+  selectedQuadrant.value ? quadrantSize.value * 2 : radarSize.value
+);
 
 const viewBox = computed(() => {
   if (!selectedQuadrant.value) {
-    return `0 0 ${radarSize.value} ${radarSize.value}`
+    return `0 0 ${radarSize.value} ${radarSize.value}`;
   }
   // When zoomed, show just the selected quadrant (half the radar in each dimension)
-  const offset = getZoomedViewBoxOffset(selectedQuadrant.value)
-  const zoomSize = radarSize.value / 2
-  return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`
-})
+  const offset = getZoomedViewBoxOffset(selectedQuadrant.value);
+  const zoomSize = radarSize.value / 2;
+  return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`;
+});
 
-function getZoomedViewBoxOffset(order: QuadrantOrder): { x: number; y: number } {
-  const center = radarSize.value / 2
+function getZoomedViewBoxOffset(order: QuadrantOrder): {
+  x: number;
+  y: number;
+} {
+  const center = radarSize.value / 2;
   // Offset to show just the selected quadrant (quarter of the radar)
   switch (order) {
-    case 'first': // top-right
-      return { x: center, y: 0 }
-    case 'second': // top-left
-      return { x: 0, y: 0 }
-    case 'third': // bottom-left
-      return { x: 0, y: center }
-    case 'fourth': // bottom-right
-      return { x: center, y: center }
+    case "first": // top-right
+      return { x: center, y: 0 };
+    case "second": // top-left
+      return { x: 0, y: 0 };
+    case "third": // bottom-left
+      return { x: 0, y: center };
+    case "fourth": // bottom-right
+      return { x: center, y: center };
     default:
-      return { x: 0, y: 0 }
+      return { x: 0, y: 0 };
   }
 }
 
 // Compute ring radii
-const ringRadii = computed(() => Ring.calculateRadii(quadrantSize.value))
+const ringRadii = computed(() => Ring.calculateRadii(quadrantSize.value));
 
 // Quadrant configurations with their geometries
-const quadrantConfigs = computed(() => props.radar.quadrants)
+const quadrantConfigs = computed(() => props.radar.quadrants);
 
 // Cache positioned blips per quadrant
 const positionedBlipsCache = computed(() => {
-  const cache: PositionedBlip[][] = []
+  const cache: PositionedBlip[][] = [];
 
   for (const config of quadrantConfigs.value) {
     if (!config.quadrant) {
-      cache.push([])
-      continue
+      cache.push([]);
+      continue;
     }
 
     const geometry: QuadrantGeometry = {
@@ -229,42 +266,44 @@ const positionedBlipsCache = computed(() => {
       quadrantSize: quadrantSize.value,
       ringRadii: ringRadii.value,
       center: { x: 0, y: 0 },
-    }
+    };
 
-    cache.push(config.quadrant.calculateBlipPositions(geometry))
+    cache.push(config.quadrant.calculateBlipPositions(geometry));
   }
 
-  return cache
-})
+  return cache;
+});
 
 function getPositionedBlips(quadrantIndex: number): PositionedBlip[] {
-  return positionedBlipsCache.value[quadrantIndex] || []
+  return positionedBlipsCache.value[quadrantIndex] || [];
 }
 
 function getQuadrantTransform(_order: QuadrantOrder): string {
   // All quadrants share the same center - the center of the radar
-  const centerX = radarSize.value / 2
-  const centerY = radarSize.value / 2
-  return `translate(${centerX}, ${centerY})`
+  const centerX = radarSize.value / 2;
+  const centerY = radarSize.value / 2;
+  return `translate(${centerX}, ${centerY})`;
 }
 
 function getQuadrantStyle(order: QuadrantOrder): CSSProperties {
   if (!selectedQuadrant.value) {
-    return {}
+    return {};
   }
   if (selectedQuadrant.value === order) {
-    return {}
+    return {};
   }
-  return { opacity: 0, pointerEvents: 'none' }
+  return { opacity: 0, pointerEvents: "none" };
 }
 
-function getRingPaths(quadrantConfig: (typeof quadrantConfigs.value)[number]): string[] {
-  const paths: string[] = []
+function getRingPaths(
+  quadrantConfig: (typeof quadrantConfigs.value)[number]
+): string[] {
+  const paths: string[] = [];
   // Convert to radians and adjust for D3's coordinate system
   // D3 arc: 0 = 12 o'clock, positive = clockwise
   // We need to offset by -π/2 to align with standard math coordinates
-  const startAngle = ((quadrantConfig.startAngle - 90) * Math.PI) / 180
-  const endAngle = startAngle + Math.PI / 2 // 90 degree arc clockwise
+  const startAngle = ((quadrantConfig.startAngle - 90) * Math.PI) / 180;
+  const endAngle = startAngle + Math.PI / 2; // 90 degree arc clockwise
 
   for (let i = 0; i < ringRadii.value.length - 1; i++) {
     const arc = d3
@@ -272,61 +311,86 @@ function getRingPaths(quadrantConfig: (typeof quadrantConfigs.value)[number]): s
       .innerRadius(ringRadii.value[i])
       .outerRadius(ringRadii.value[i + 1])
       .startAngle(startAngle)
-      .endAngle(endAngle)
+      .endAngle(endAngle);
 
-    paths.push(arc({} as any) || '')
+    paths.push(arc({} as any) || "");
   }
 
-  return paths
+  return paths;
 }
 
 function getRingLabels(
   quadrantConfig: (typeof quadrantConfigs.value)[number]
 ): Array<{ x: number; y: number; name: string }> {
-  const labels: Array<{ x: number; y: number; name: string }> = []
+  const labels: Array<{ x: number; y: number; name: string }> = [];
   // Position labels at 45 degrees into the quadrant (middle of the arc)
   // Adjust for D3/SVG coordinate system
-  const midAngle = ((quadrantConfig.startAngle - 90 + 45) * Math.PI) / 180
+  const midAngle = ((quadrantConfig.startAngle - 90 + 45) * Math.PI) / 180;
 
   for (let i = 0; i < RING_NAMES.length; i++) {
-    const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2
+    const radius = (ringRadii.value[i] + ringRadii.value[i + 1]) / 2;
 
     labels.push({
       x: radius * Math.sin(midAngle), // sin for x in D3's rotated system
       y: -radius * Math.cos(midAngle), // -cos for y (SVG y-axis is inverted)
       name: RING_NAMES[i],
-    })
+    });
   }
 
-  return labels
+  return labels;
 }
 
-function getQuadrantNamePosition(order: QuadrantOrder): { x: number; y: number } {
-  const offset = quadrantSize.value * 0.85
+function getQuadrantLabelX(order: QuadrantOrder): number {
+  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
+  const offset = 30;
 
   switch (order) {
-    case 'first':
-      return { x: offset * 0.7, y: -offset * 0.85 }
-    case 'second':
-      return { x: -offset * 0.7, y: -offset * 0.85 }
-    case 'third':
-      return { x: -offset * 0.7, y: offset * 0.95 }
-    case 'fourth':
-      return { x: offset * 0.7, y: offset * 0.95 }
+    case "first": // top-left quadrant
+      return -outerRadius + offset;
+    case "second": // bottom-left quadrant
+      return -outerRadius + offset;
+    case "third": // top-right quadrant
+      return outerRadius - offset - 150;
+    case "fourth": // bottom-right quadrant
+      return outerRadius - offset - 150;
     default:
-      return { x: 0, y: 0 }
+      return 0;
   }
 }
 
-function getSeparatorLines(): Array<{ angle: number; x1: number; y1: number; x2: number; y2: number }> {
+function getQuadrantLabelY(order: QuadrantOrder): number {
+  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
+  const offset = 30;
+
+  switch (order) {
+    case "first": // top-left quadrant
+      return -outerRadius + offset;
+    case "second": // bottom-left quadrant
+      return outerRadius - 2 * offset;
+    case "third": // top-right quadrant
+      return -outerRadius + offset;
+    case "fourth": // bottom-right quadrant
+      return outerRadius - 2 * offset;
+    default:
+      return 0;
+  }
+}
+
+function getSeparatorLines(): Array<{
+  angle: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}> {
   // Separator lines at the boundaries between quadrants
   // Boundaries are at 0°, 90°, -90°, and 180°
-  const boundaryAngles = [0, 90, -90, 180]
-  const outerRadius = ringRadii.value[ringRadii.value.length - 1]
+  const boundaryAngles = [0, 90, -90, 180];
+  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
 
-  return boundaryAngles.map(angle => {
+  return boundaryAngles.map((angle) => {
     // Convert to D3's coordinate system (offset by -90° and convert to radians)
-    const angleInRadians = ((angle - 90) * Math.PI) / 180
+    const angleInRadians = ((angle - 90) * Math.PI) / 180;
 
     return {
       angle,
@@ -334,58 +398,58 @@ function getSeparatorLines(): Array<{ angle: number; x1: number; y1: number; x2:
       y1: 0,
       x2: outerRadius * Math.sin(angleInRadians),
       y2: -outerRadius * Math.cos(angleInRadians),
-    }
-  })
+    };
+  });
 }
 
 // Quadrant selection
 function selectQuadrant(order: QuadrantOrder) {
-  if (selectedQuadrant.value) return // Already zoomed, don't re-zoom
-  selectedQuadrant.value = order
-  emit('quadrant-selected', order)
+  if (selectedQuadrant.value) return; // Already zoomed, don't re-zoom
+  selectedQuadrant.value = order;
+  emit("quadrant-selected", order);
 }
 
 function deselectQuadrant() {
-  selectedQuadrant.value = null
-  emit('quadrant-selected', null)
+  selectedQuadrant.value = null;
+  emit("quadrant-selected", null);
 }
 
 // Tooltip positioning
 const tooltipStyle = computed<CSSProperties>(() => {
-  if (!hoveredBlip.value) return { display: 'none' }
+  if (!hoveredBlip.value) return { display: "none" };
 
   return {
     left: `${mousePosition.value.x + 15}px`,
     top: `${mousePosition.value.y - 10}px`,
-  }
-})
+  };
+});
 
 function handleBlipHover(blip: PositionedBlip) {
-  hoveredBlip.value = blip
-  emit('blip-hovered', blip)
+  hoveredBlip.value = blip;
+  emit("blip-hovered", blip);
 }
 
 function handleBlipLeave() {
-  hoveredBlip.value = null
-  emit('blip-hovered', null)
+  hoveredBlip.value = null;
+  emit("blip-hovered", null);
 }
 
 function handleBlipClick(blip: PositionedBlip) {
-  emit('blip-selected', blip)
+  emit("blip-selected", blip);
 }
 
 // Track mouse position for tooltip
 function handleMouseMove(e: MouseEvent) {
-  mousePosition.value = { x: e.clientX, y: e.clientY }
+  mousePosition.value = { x: e.clientX, y: e.clientY };
 }
 
 onMounted(() => {
-  document.addEventListener('mousemove', handleMouseMove)
-})
+  document.addEventListener("mousemove", handleMouseMove);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('mousemove', handleMouseMove)
-})
+  document.removeEventListener("mousemove", handleMouseMove);
+});
 </script>
 
 <style scoped>
@@ -458,6 +522,12 @@ onUnmounted(() => {
   fill: #eeeeee;
 }
 
+/* Invisible clickable ring arcs in layer 3 */
+.ring-arc-invisible {
+  fill: transparent;
+  pointer-events: all;
+}
+
 /* Quadrant blip colors */
 .blip-circle.first {
   fill: #1f8290;
@@ -522,22 +592,50 @@ onUnmounted(() => {
 }
 
 /* Quadrant names */
-.quadrant-name {
-  font-size: 18px;
-  font-weight: 600;
-  text-anchor: middle;
+.quadrant-name-group {
   pointer-events: none;
 }
-.quadrant-name.first {
+
+.quadrant-name-text {
+  font-size: 18px;
+  font-weight: 600;
+  max-width: 150px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+}
+
+.quadrant-name-text.first {
+  color: #1f8290;
+  text-align: left;
+}
+.quadrant-name-text.second {
+  color: #a06908;
+  text-align: left;
+}
+.quadrant-name-text.third {
+  color: #517b5c;
+  text-align: right;
+}
+.quadrant-name-text.fourth {
+  color: #9b293c;
+  text-align: right;
+}
+
+.quadrant-caret {
+  font-size: 24px;
+  font-weight: 600;
+}
+.quadrant-caret.first {
   fill: #1f8290;
 }
-.quadrant-name.second {
+.quadrant-caret.second {
   fill: #a06908;
 }
-.quadrant-name.third {
+.quadrant-caret.third {
   fill: #517b5c;
 }
-.quadrant-name.fourth {
+.quadrant-caret.fourth {
   fill: #9b293c;
 }
 
