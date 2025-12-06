@@ -160,7 +160,13 @@ export class Quadrant {
     )
 
     // Calculate angle delta to prevent boundary overlap
+    // Account for 32px separator lines (need extra clearance)
+    const separatorBuffer = 35 // pixels buffer from separator line
+    const separatorAngleDelta = (Math.asin(separatorBuffer / radius) * 180) / Math.PI
+
     let angleDelta = (Math.asin(blipWidth / 2 / radius) * 180) / (Math.PI - 1.25)
+    // Use the larger of the two deltas to ensure adequate spacing
+    angleDelta = Math.max(angleDelta, separatorAngleDelta)
     angleDelta = Math.min(angleDelta, 45)
 
     // Random angle within quadrant (90 degree span)

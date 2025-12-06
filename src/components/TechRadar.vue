@@ -17,10 +17,10 @@
       class="radar-svg"
       :class="{ 'is-zoomed': selectedQuadrant }"
     >
-      <!-- Quadrant groups -->
+      <!-- Layer 1: Ring arcs -->
       <g
         v-for="(quadrantConfig, index) in quadrantConfigs"
-        :key="quadrantConfig.order"
+        :key="`rings-${quadrantConfig.order}`"
         :class="[
           'quadrant-group',
           quadrantConfig.order,
@@ -45,7 +45,40 @@
             :class="['ring-arc', `ring-arc-${ringIndex}`]"
           />
         </g>
+      </g>
 
+      <!-- Layer 2: Separator lines (drawn on top of rings, under blips) -->
+      <g
+        v-if="!selectedQuadrant"
+        :transform="getQuadrantTransform('first')"
+        class="quadrant-separators"
+      >
+        <line
+          v-for="separator in getSeparatorLines()"
+          :key="`separator-${separator.angle}`"
+          :x1="separator.x1"
+          :y1="separator.y1"
+          :x2="separator.x2"
+          :y2="separator.y2"
+          class="separator-line"
+        />
+      </g>
+
+      <!-- Layer 3: Ring labels, blips, and quadrant names -->
+      <g
+        v-for="(quadrantConfig, index) in quadrantConfigs"
+        :key="`content-${quadrantConfig.order}`"
+        :class="[
+          'quadrant-group',
+          quadrantConfig.order,
+          {
+            'quadrant-hidden': selectedQuadrant && selectedQuadrant !== quadrantConfig.order,
+            'quadrant-zoomed': selectedQuadrant === quadrantConfig.order,
+          },
+        ]"
+        :transform="getQuadrantTransform(quadrantConfig.order)"
+        :style="getQuadrantStyle(quadrantConfig.order)"
+      >
         <!-- Ring names -->
         <text
           v-for="(ringLabel, ringIndex) in getRingLabels(quadrantConfig)"
@@ -285,6 +318,26 @@ function getQuadrantNamePosition(order: QuadrantOrder): { x: number; y: number }
   }
 }
 
+function getSeparatorLines(): Array<{ angle: number; x1: number; y1: number; x2: number; y2: number }> {
+  // Separator lines at the boundaries between quadrants
+  // Boundaries are at 0°, 90°, -90°, and 180°
+  const boundaryAngles = [0, 90, -90, 180]
+  const outerRadius = ringRadii.value[ringRadii.value.length - 1]
+
+  return boundaryAngles.map(angle => {
+    // Convert to D3's coordinate system (offset by -90° and convert to radians)
+    const angleInRadians = ((angle - 90) * Math.PI) / 180
+
+    return {
+      angle,
+      x1: 0,
+      y1: 0,
+      x2: outerRadius * Math.sin(angleInRadians),
+      y2: -outerRadius * Math.cos(angleInRadians),
+    }
+  })
+}
+
 // Quadrant selection
 function selectQuadrant(order: QuadrantOrder) {
   if (selectedQuadrant.value) return // Already zoomed, don't re-zoom
@@ -382,6 +435,13 @@ onUnmounted(() => {
 
 .quadrant-selected .quadrant-background {
   cursor: default;
+}
+
+/* Separator lines between quadrants */
+.separator-line {
+  stroke: white;
+  stroke-width: 32;
+  pointer-events: none;
 }
 
 /* Ring arc colors */
