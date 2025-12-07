@@ -13,7 +13,7 @@
 
         <div class="avatar-wrapper">
           <img
-            src="https://via.placeholder.com/160"
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=caio"
             alt="Caio Kinzel Filho"
             class="avatar"
           />
