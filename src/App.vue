@@ -33,7 +33,7 @@
           v-if="selectedQuadrant && selectedQuadrantObj && isRadarOnRight"
           class="table-wrapper table-left"
         >
-          <QuadrantTable
+          <BlipListByQuadrant
             :quadrant-name="selectedQuadrantObj.name"
             :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
@@ -59,7 +59,7 @@
           v-if="selectedQuadrant && selectedQuadrantObj && !isRadarOnRight"
           class="table-wrapper table-right"
         >
-          <QuadrantTable
+          <BlipListByQuadrant
             :quadrant-name="selectedQuadrantObj.name"
             :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import { shallowRef, ref, computed, onMounted } from "vue";
 import TechRadar from "./components/TechRadar.vue";
-import QuadrantTable from "./components/QuadrantTable.vue";
+import BlipListByQuadrant from "./components/BlipListByQuadrant.vue";
 import RadarLegend from "./components/RadarLegend.vue";
 import RadarSearch from "./components/RadarSearch.vue";
 import RadarHeader from "./components/RadarHeader.vue";

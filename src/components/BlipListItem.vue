@@ -1,9 +1,6 @@
 <template>
   <li
-    :class="[
-      'blip-list-item',
-      { expanded: isExpanded, highlighted: isHighlighted },
-    ]"
+    :class="['blip-item', { expanded: isExpanded, highlighted: isHighlighted }]"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
   >
@@ -39,8 +36,8 @@ defineProps<{
 }>();
 
 defineEmits<{
-  (e: "hover", blip: PositionedBlip | null): void;
-  (e: "click", blip: PositionedBlip): void;
+  hover: [blip: PositionedBlip | null];
+  click: [blip: PositionedBlip];
 }>();
 
 const isExpanded = ref(false);
@@ -49,7 +46,6 @@ function toggleExpand() {
   isExpanded.value = !isExpanded.value;
 }
 
-// Expose method for parent to expand/collapse
 defineExpose({
   expand: () => {
     isExpanded.value = true;
@@ -61,13 +57,13 @@ defineExpose({
 </script>
 
 <style scoped>
-.blip-list-item {
+.blip-item {
   list-style: none;
   border-bottom: 1px solid var(--color-border-subtle);
   transition: border-color var(--transition-theme);
 }
 
-.blip-list-item.highlighted {
+.blip-item.highlighted {
   background: var(--color-surface-highlight);
   transition: background-color var(--transition-theme);
 }
