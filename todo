@@ -1,8 +1,0 @@
-XXXX export the methods on geomatry files as static methods of a class or something
-XXXX write unit tests for the geometry files
-- simplify getRingLabelsOnSeparators, and how to render ring labels, now that there is no angle involved, it is always on the horizantal line separators
-- radar legend needs to be inside the tech radar container
-- radar container should not have border or background color, or drop shadows
-- radar search should be renamed search background
-- we need a component BlipList, not quadrant table
-- get rid of models/types in favour of putting those types where it belongs (inside geometry files)

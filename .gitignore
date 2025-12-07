@@ -1,5 +1,8 @@
 .envrc 
 
+tasks.md
+todo.md
+
 # Logs
 logs
 *.log
