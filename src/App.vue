@@ -4,7 +4,9 @@
       <div class="header-content">
         <div class="header-text">
           <h1 class="header-title">Tech Radar</h1>
-          <p class="header-subtitle">Technology choices for our engineering teams</p>
+          <p class="header-subtitle">
+            Technology choices for our engineering teams
+          </p>
         </div>
         <ThemeToggle />
       </div>
@@ -80,108 +82,109 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, computed, onMounted } from 'vue'
-import TechRadar from './components/TechRadar.vue'
-import QuadrantTable from './components/QuadrantTable.vue'
-import RadarLegend from './components/RadarLegend.vue'
-import RadarSearch from './components/RadarSearch.vue'
-import RadarHeader from './components/RadarHeader.vue'
-import ThemeToggle from './components/ThemeToggle.vue'
-import { createRadarFromData } from './data/radar-factory'
-import { sampleRadarData } from './data/sample-data'
-import type { Radar } from './models/radar'
-import { Ring } from './models/ring'
-import type { PositionedBlip, QuadrantGeometry } from './data/types'
-import { type QuadrantOrder, graphConfig } from './config/radar-config'
-import { useTheme } from './composables/useTheme'
+import { shallowRef, ref, computed, onMounted } from "vue";
+import TechRadar from "./components/TechRadar.vue";
+import QuadrantTable from "./components/QuadrantTable.vue";
+import RadarLegend from "./components/RadarLegend.vue";
+import RadarSearch from "./components/RadarSearch.vue";
+import RadarHeader from "./components/RadarHeader.vue";
+import ThemeToggle from "./components/ThemeToggle.vue";
+import { Radar } from "./models/radar";
+import { Ring } from "./models/ring";
+import { sampleRadarData } from "./data/sample-data";
+import type { PositionedBlip, QuadrantGeometry } from "./models/types";
+import { type QuadrantOrder, graphConfig } from "./config/radar-config";
+import { useTheme } from "./composables/useTheme";
 
 interface SearchResult {
-  blip: { name: string }
-  quadrant: QuadrantOrder
-  quadrantName: string
+  blip: { name: string };
+  quadrant: QuadrantOrder;
+  quadrantName: string;
 }
 
 // Initialize theme system
-useTheme()
+useTheme();
 
-const radar = shallowRef<Radar | null>(null)
-const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null)
-const selectedQuadrant = ref<QuadrantOrder | null>(null)
-const hoveredBlipId = ref<number | null>(null)
+const radar = shallowRef<Radar | null>(null);
+const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
+const selectedQuadrant = ref<QuadrantOrder | null>(null);
+const hoveredBlipId = ref<number | null>(null);
 
 onMounted(() => {
-  radar.value = createRadarFromData(sampleRadarData)
-})
+  radar.value = Radar.create(sampleRadarData);
+});
 
 // Get the selected quadrant configuration
 const selectedQuadrantConfig = computed(() => {
-  if (!radar.value || !selectedQuadrant.value) return null
-  return radar.value.quadrants.find((q) => q.order === selectedQuadrant.value)
-})
+  if (!radar.value || !selectedQuadrant.value) return null;
+  return radar.value.quadrants.find((q) => q.order === selectedQuadrant.value);
+});
 
 // Get positioned blips for the selected quadrant
 const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
-  if (!selectedQuadrantConfig.value?.quadrant) return []
+  if (!selectedQuadrantConfig.value?.quadrant) return [];
 
-  const ringRadii = Ring.calculateRadii(graphConfig.quadrantSize)
+  const ringRadii = Ring.calculateRadii(graphConfig.quadrantSize);
   const geometry: QuadrantGeometry = {
     startAngle: selectedQuadrantConfig.value.startAngle,
     quadrantSize: graphConfig.quadrantSize,
     ringRadii,
     center: { x: 0, y: 0 },
-  }
+  };
 
-  return selectedQuadrantConfig.value.quadrant.calculateBlipPositions(geometry)
-})
+  return selectedQuadrantConfig.value.quadrant.calculateBlipPositions(geometry);
+});
 
 // Determine if radar should move to the right (first/second quadrants selected)
 // First/Second quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
 // Third/Fourth quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
 const isRadarOnRight = computed(() => {
-  return selectedQuadrant.value === 'first' || selectedQuadrant.value === 'second'
-})
+  return (
+    selectedQuadrant.value === "first" || selectedQuadrant.value === "second"
+  );
+});
 
 // Layout classes for the radar-layout container
 const layoutClasses = computed(() => ({
-  'has-selection': !!selectedQuadrant.value,
-  'table-on-left': isRadarOnRight.value,
-  'table-on-right': selectedQuadrant.value && !isRadarOnRight.value,
-}))
+  "has-selection": !!selectedQuadrant.value,
+  "table-on-left": isRadarOnRight.value,
+  "table-on-right": selectedQuadrant.value && !isRadarOnRight.value,
+}));
 
 // Radar wrapper style - changes width when quadrant is selected
 const radarWrapperStyle = computed(() => {
   if (!selectedQuadrant.value) {
     return {
-      width: '1024px',
-    }
+      width: "1024px",
+    };
   }
 
   // Shrink to 0.6 of original width (614px)
   return {
-    width: '614px',
-  }
-})
+    width: "614px",
+  };
+});
 
 function handleQuadrantSelected(order: QuadrantOrder | null) {
-  selectedQuadrant.value = order
+  selectedQuadrant.value = order;
 }
 
 function handleBlipSelected(blip: PositionedBlip) {
-  console.log('Blip selected:', blip.name)
+  console.log("Blip selected:", blip.name);
 }
 
 function handleBlipHovered(blip: PositionedBlip | null) {
-  hoveredBlipId.value = blip?.id ?? null
+  hoveredBlipId.value = blip?.id ?? null;
 }
 
 function handleTableBlipHover(blip: PositionedBlip | null) {
-  hoveredBlipId.value = blip?.id ?? null
+  hoveredBlipId.value = blip?.id ?? null;
 }
 
 function handleSearchSelect(result: SearchResult) {
-  console.log('Search selected:', result.blip.name, 'in', result.quadrantName)
+  console.log("Search selected:", result.blip.name, "in", result.quadrantName);
   // Zoom to the quadrant
-  selectedQuadrant.value = result.quadrant
+  selectedQuadrant.value = result.quadrant;
 }
 </script>
 
@@ -190,8 +193,7 @@ function handleSearchSelect(result: SearchResult) {
   min-height: 100vh;
   background: var(--color-background);
   color: var(--color-text-primary);
-  transition:
-    background-color var(--transition-theme),
+  transition: background-color var(--transition-theme),
     color var(--transition-theme);
 }
 
@@ -262,9 +264,7 @@ function handleSearchSelect(result: SearchResult) {
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   box-shadow: var(--shadow-md);
-  transition:
-    width 1s ease,
-    background-color var(--transition-theme),
+  transition: width 1s ease, background-color var(--transition-theme),
     box-shadow var(--transition-theme);
   flex-shrink: 0;
   box-sizing: border-box;

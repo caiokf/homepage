@@ -1,7 +1,7 @@
-import type { RawRadarData } from "./types";
+import type { TechRadarData } from "../models/radar";
 import { RING_NAMES, QUADRANT_NAMES } from "../config/radar-config";
 
-export const sampleRadarData: RawRadarData = {
+export const sampleRadarData: TechRadarData = {
   title: "Technology Radar",
   rings: [...RING_NAMES],
   quadrants: [...QUADRANT_NAMES],

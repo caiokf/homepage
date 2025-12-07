@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { PositionedBlip } from "../data/types";
+import type { PositionedBlip } from "../models/types";
 
 defineProps<{
   blip: PositionedBlip;

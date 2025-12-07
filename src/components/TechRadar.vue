@@ -187,7 +187,7 @@ import { ref, computed, onMounted, onUnmounted, type CSSProperties } from "vue";
 import * as d3 from "d3";
 import type { Radar } from "../models/radar";
 import { Ring } from "../models/ring";
-import type { PositionedBlip, QuadrantGeometry } from "../data/types";
+import type { PositionedBlip, QuadrantGeometry } from "../models/types";
 import { graphConfig, type QuadrantOrder } from "../config/radar-config";
 import {
   getZoomedViewBoxOffset,

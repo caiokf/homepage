@@ -14,14 +14,6 @@ describe("Radar", () => {
   });
 
   describe("constructor", () => {
-    it("should initialize with empty alternatives", () => {
-      expect(radar.alternatives).toEqual([]);
-    });
-
-    it("should initialize with empty current sheet", () => {
-      expect(radar.currentSheet).toBe("");
-    });
-
     it("should initialize with empty rings", () => {
       expect(radar.rings).toEqual({});
     });
@@ -33,39 +25,6 @@ describe("Radar", () => {
       expect(quadrants[1].order).toBe("second");
       expect(quadrants[2].order).toBe("third");
       expect(quadrants[3].order).toBe("fourth");
-    });
-  });
-
-  describe("addAlternative", () => {
-    it("should add an alternative sheet name", () => {
-      radar.addAlternative("Sheet1");
-      expect(radar.alternatives).toContain("Sheet1");
-    });
-
-    it("should add multiple alternatives", () => {
-      radar.addAlternative("Sheet1");
-      radar.addAlternative("Sheet2");
-      expect(radar.alternatives).toEqual(["Sheet1", "Sheet2"]);
-    });
-  });
-
-  describe("alternatives", () => {
-    it("should return the alternatives array", () => {
-      radar.addAlternative("Sheet1");
-      expect(radar.alternatives).toEqual(["Sheet1"]);
-    });
-  });
-
-  describe("currentSheet", () => {
-    it("should set and get current sheet", () => {
-      radar.currentSheet = "Main Sheet";
-      expect(radar.currentSheet).toBe("Main Sheet");
-    });
-
-    it("should update current sheet", () => {
-      radar.currentSheet = "Sheet1";
-      radar.currentSheet = "Sheet2";
-      expect(radar.currentSheet).toBe("Sheet2");
     });
   });
 
@@ -159,27 +118,6 @@ describe("Radar", () => {
     });
   });
 
-  describe("rings", () => {
-    it("should set and get rings", () => {
-      const ring1 = new Ring("Adopt", 1);
-      const rings = {
-        adopt: ring1,
-      };
-
-      radar.rings = rings;
-      expect(radar.rings).toBe(rings);
-    });
-
-    it("should update rings", () => {
-      const ring1 = new Ring("Adopt", 1);
-      const ring2 = new Ring("Trial", 2);
-
-      radar.rings = { adopt: ring1 };
-      radar.rings = { trial: ring2 };
-      expect(radar.rings).toEqual({ trial: ring2 });
-    });
-  });
-
   describe("quadrants", () => {
     it("should return quadrant configs", () => {
       const quadrants = radar.quadrants;
@@ -192,6 +130,73 @@ describe("Radar", () => {
     it("should have undefined quadrant initially", () => {
       const quadrants = radar.quadrants;
       expect(quadrants[0].quadrant).toBeUndefined();
+    });
+  });
+
+  describe("create", () => {
+    it("should create a radar from TechRadarData", () => {
+      const data = {
+        title: "Test Radar",
+        blips: [
+          {
+            name: "TypeScript",
+            ring: "Adopt",
+            quadrant: "Languages",
+            isNew: true,
+            status: "new" as const,
+            description: "Typed JavaScript",
+          },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+        quadrants: ["Languages", "Tools", "Platforms", "Techniques"],
+      };
+
+      const radar = Radar.create(data);
+
+      expect(radar.quadrants).toHaveLength(4);
+      expect(radar.quadrants[0].quadrant?.name).toBe("Languages");
+      expect(radar.quadrants[0].quadrant?.blips()).toHaveLength(1);
+      expect(radar.quadrants[0].quadrant?.blips()[0].name).toBe("TypeScript");
+    });
+
+    it("should use default ring and quadrant names if not provided", () => {
+      const data = {
+        blips: [],
+      };
+
+      const radar = Radar.create(data);
+
+      expect(radar.quadrants).toHaveLength(4);
+      expect(Object.keys(radar.rings)).toHaveLength(4);
+    });
+
+    it("should assign sequential IDs to blips", () => {
+      const data = {
+        blips: [
+          {
+            name: "Blip1",
+            ring: "Adopt",
+            quadrant: "Techniques",
+            isNew: false,
+          },
+          {
+            name: "Blip2",
+            ring: "Trial",
+            quadrant: "Platforms",
+            isNew: true,
+          },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
+      };
+
+      const radar = Radar.create(data);
+
+      const allBlips = radar.quadrants.flatMap(
+        (q) => q.quadrant?.blips() ?? []
+      );
+      expect(allBlips[0].id).toBe(1);
+      expect(allBlips[1].id).toBe(2);
     });
   });
 });
