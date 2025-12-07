@@ -92,7 +92,7 @@ import ThemeToggle from "./components/ThemeToggle.vue";
 import { Radar } from "./models/radar";
 import { SampleDataProvider } from "./data/providers/sample-data-provider";
 import type { TechRadarDataProvider } from "./data/tech-radar-data-provider";
-import type { PositionedBlip, QuadrantGeometryConfig } from "./models/types";
+import type { PositionedBlip, QuadrantGeometryConfig } from "./models/quadrant.geometry";
 import { type QuadrantPosition, graphConfig } from "./config/radar-config";
 import { useTheme } from "./composables/useTheme";
 import { RingGeometry } from "./models/ring.geometry";

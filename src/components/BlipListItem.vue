@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { PositionedBlip } from "../models/types";
+import type { PositionedBlip } from "../models/quadrant.geometry";
 
 defineProps<{
   blip: PositionedBlip;

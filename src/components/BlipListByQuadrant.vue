@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import BlipListByRing from "./BlipListByRing.vue";
-import type { PositionedBlip } from "../models/types";
+import type { PositionedBlip } from "../models/quadrant.geometry";
 import { RING_NAMES, type QuadrantPosition } from "../config/radar-config";
 
 const props = defineProps<{

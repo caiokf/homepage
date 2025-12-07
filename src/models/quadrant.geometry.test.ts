@@ -3,7 +3,7 @@ import { QuadrantGeometry } from "./quadrant.geometry";
 import { Blip } from "./blip";
 import { Ring } from "./ring";
 import { RingGeometry } from "./ring.geometry";
-import type { QuadrantGeometryConfig } from "./types";
+import type { QuadrantGeometryConfig } from "./quadrant.geometry";
 
 describe("QuadrantGeometry", () => {
   const createTestBlip = (name: string, ringOrder: number): Blip => {
