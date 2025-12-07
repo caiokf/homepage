@@ -65,7 +65,7 @@
     padding: var(--space-2);
     border-radius: var(--radius-md);
     background-color: transparent;
-    color: var(--color-text-inverse);
+    color: inherit;
     cursor: pointer;
     transition: background-color var(--transition-fast),
       transform var(--transition-fast);

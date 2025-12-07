@@ -27,10 +27,10 @@
   const route = useRoute();
 
   const navItems: NavItem[] = [
-    { path: "/about", labelLong: "about", labelShort: "abt" },
+    { path: "/about", labelLong: "about", labelShort: "about" },
     { path: "/tech-radar", labelLong: "tech-radar", labelShort: "radar" },
     { path: "/experience", labelLong: "experience", labelShort: "xp" },
-    { path: "/articles", labelLong: "articles", labelShort: "blog" },
+    { path: "/articles", labelLong: "articles", labelShort: "articles" },
   ];
 
   function isActive(path: string): boolean {
@@ -58,9 +58,7 @@
     -webkit-backdrop-filter: blur(24px) saturate(1.5);
     background-color: oklch(0.18 0.01 260 / 0.82);
     border-top: 1px solid oklch(1 0 0 / 0.08);
-    box-shadow:
-      oklch(0 0 0 / 0.3) 0px -0.5px 0px 0px,
-      oklch(1 0 0 / 0.05) 0px -0.5px 0px 0px inset;
+    box-shadow: oklch(0 0 0 / 0.3) 0px -0.5px 0px 0px, oklch(1 0 0 / 0.05) 0px -0.5px 0px 0px inset;
 
     font-family: var(--font-mono);
     color: oklch(0.95 0.002 261.7);
@@ -81,9 +79,7 @@
     text-decoration: none;
     color: inherit;
     opacity: 0.7;
-    transition:
-      opacity var(--transition-fast),
-      color var(--transition-fast);
+    transition: opacity var(--transition-fast), color var(--transition-fast);
     text-transform: lowercase;
     white-space: nowrap;
   }
@@ -107,9 +103,7 @@
     background-color: oklch(0.98 0.005 260 / 0.82);
     color: oklch(0.25 0.01 260);
     border-top-color: oklch(0 0 0 / 0.08);
-    box-shadow:
-      oklch(0 0 0 / 0.1) 0px -0.5px 0px 0px,
-      oklch(1 0 0 / 0.5) 0px -0.5px 0px 0px inset;
+    box-shadow: oklch(0 0 0 / 0.1) 0px -0.5px 0px 0px, oklch(1 0 0 / 0.5) 0px -0.5px 0px 0px inset;
   }
 
   /* Mobile/small screens: show short labels */
