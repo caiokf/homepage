@@ -2,7 +2,7 @@ export type Experience = {
   company: string;
   companyLogoPath?: string;
   position: string;
-  remote: boolean;
+  tags: string[];
   website: string;
   startDate: string;
   endDate?: string;
@@ -14,7 +14,7 @@ export const experiencesConfig: Experience[] = [
   {
     company: "Flex",
     position: "Lead Frontend Developer",
-    remote: true,
+    tags: ["remote", "fintech", "startup"],
     website: "https://www.getflex.com",
     startDate: "2020-05-22",
     highlights: [
@@ -29,8 +29,8 @@ export const experiencesConfig: Experience[] = [
   {
     company: "InDebted",
     position: "Senior Full-stack Developer",
+    tags: ["remote", "fintech", "startup"],
     website: "https://www.indebted.co",
-    remote: true,
     startDate: "2019-11-20",
     endDate: "2020-05-22",
     highlights: [

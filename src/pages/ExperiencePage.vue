@@ -26,7 +26,13 @@
             <div class="experience-meta">
               <span class="date-range">{{ formatDateRange(experience) }}</span>
               <span class="duration">{{ calculateDuration(experience) }}</span>
-              <span v-if="experience.remote" class="remote-badge">remote</span>
+              <span
+                v-for="tag in experience.tags"
+                :key="tag"
+                class="experience-tag"
+              >
+                {{ tag }}
+              </span>
             </div>
           </header>
 
@@ -230,7 +236,7 @@
     color: var(--color-text-muted);
   }
 
-  .remote-badge {
+  .experience-tag {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-primary);
