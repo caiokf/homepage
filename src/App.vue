@@ -268,12 +268,7 @@
   }
 
   .radar-wrapper {
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    padding: var(--space-4);
-    box-shadow: var(--shadow-md);
-    transition: width 1s ease, background-color var(--transition-theme),
-      box-shadow var(--transition-theme);
+    transition: width 1s ease;
     flex-shrink: 0;
     box-sizing: border-box;
   }
@@ -376,7 +371,6 @@
     }
 
     .radar-wrapper {
-      padding: var(--space-2);
       overflow-x: auto;
     }
   }
