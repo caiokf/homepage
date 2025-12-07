@@ -49,209 +49,209 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type { Radar } from "../models/radar";
-import type { Blip } from "../models/blip";
-import type { QuadrantPosition } from "../config/radar-config";
+  import { ref, computed } from "vue";
+  import type { Radar } from "../models/radar";
+  import type { Blip } from "../models/blip";
+  import type { QuadrantPosition } from "../config/radar-config";
 
-type SearchResult = {
-  blip: Blip;
-  quadrant: QuadrantPosition;
-  quadrantName: string;
-};
+  type SearchResult = {
+    blip: Blip;
+    quadrant: QuadrantPosition;
+    quadrantName: string;
+  };
 
-const props = defineProps<{
-  radar: Radar;
-}>();
+  const props = defineProps<{
+    radar: Radar;
+  }>();
 
-const emit = defineEmits<{
-  (e: "select", result: SearchResult): void;
-}>();
+  const emit = defineEmits<{
+    (e: "select", result: SearchResult): void;
+  }>();
 
-const searchQuery = ref("");
-const showResults = ref(false);
-const highlightedIndex = ref(0);
+  const searchQuery = ref("");
+  const showResults = ref(false);
+  const highlightedIndex = ref(0);
 
-// Get all blips from all quadrants
-const allBlips = computed<SearchResult[]>(() => {
-  const results: SearchResult[] = [];
+  // Get all blips from all quadrants
+  const allBlips = computed<SearchResult[]>(() => {
+    const results: SearchResult[] = [];
 
-  for (const quadrant of props.radar.quadrants) {
-    for (const blip of quadrant.blips()) {
-      results.push({
-        blip,
-        quadrant: quadrant.position,
-        quadrantName: quadrant.name,
-      });
+    for (const quadrant of props.radar.quadrants) {
+      for (const blip of quadrant.blips()) {
+        results.push({
+          blip,
+          quadrant: quadrant.position,
+          quadrantName: quadrant.name,
+        });
+      }
+    }
+
+    return results;
+  });
+
+  // Filter blips by search query
+  const filteredBlips = computed(() => {
+    if (searchQuery.value.length < 2) return [];
+
+    const query = searchQuery.value.toLowerCase();
+
+    return allBlips.value.filter(
+      (result) =>
+        result.blip.name.toLowerCase().includes(query) ||
+        result.blip.description.toLowerCase().includes(query)
+    );
+  });
+
+  function handleInput() {
+    showResults.value = true;
+    highlightedIndex.value = 0;
+  }
+
+  function handleBlur() {
+    // Delay to allow click on result
+    setTimeout(() => {
+      showResults.value = false;
+    }, 200);
+  }
+
+  function closeResults() {
+    showResults.value = false;
+    searchQuery.value = "";
+  }
+
+  function navigateResults(direction: number) {
+    const newIndex = highlightedIndex.value + direction;
+    if (newIndex >= 0 && newIndex < filteredBlips.value.length) {
+      highlightedIndex.value = newIndex;
     }
   }
 
-  return results;
-});
-
-// Filter blips by search query
-const filteredBlips = computed(() => {
-  if (searchQuery.value.length < 2) return [];
-
-  const query = searchQuery.value.toLowerCase();
-
-  return allBlips.value.filter(
-    (result) =>
-      result.blip.name.toLowerCase().includes(query) ||
-      result.blip.description.toLowerCase().includes(query)
-  );
-});
-
-function handleInput() {
-  showResults.value = true;
-  highlightedIndex.value = 0;
-}
-
-function handleBlur() {
-  // Delay to allow click on result
-  setTimeout(() => {
-    showResults.value = false;
-  }, 200);
-}
-
-function closeResults() {
-  showResults.value = false;
-  searchQuery.value = "";
-}
-
-function navigateResults(direction: number) {
-  const newIndex = highlightedIndex.value + direction;
-  if (newIndex >= 0 && newIndex < filteredBlips.value.length) {
-    highlightedIndex.value = newIndex;
+  function selectHighlighted() {
+    if (filteredBlips.value.length > 0) {
+      selectResult(filteredBlips.value[highlightedIndex.value]);
+    }
   }
-}
 
-function selectHighlighted() {
-  if (filteredBlips.value.length > 0) {
-    selectResult(filteredBlips.value[highlightedIndex.value]);
+  function selectResult(result: SearchResult) {
+    emit("select", result);
+    closeResults();
   }
-}
-
-function selectResult(result: SearchResult) {
-  emit("select", result);
-  closeResults();
-}
 </script>
 
 <style scoped>
-.radar-search {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-}
+  .radar-search {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+  }
 
-.search-input-container {
-  position: relative;
-}
+  .search-input-container {
+    position: relative;
+  }
 
-.search-input {
-  width: 100%;
-  padding: var(--space-3) var(--space-4) var(--space-3) 44px;
-  border: 2px solid var(--color-search-border);
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  font-family: var(--font-mono);
-  background: var(--color-search-bg);
-  color: var(--color-text-primary);
-  outline: none;
-  transition: border-color var(--transition-fast),
-    background-color var(--transition-theme), color var(--transition-theme);
-}
+  .search-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4) var(--space-3) 44px;
+    border: 2px solid var(--color-search-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-family: var(--font-mono);
+    background: var(--color-search-bg);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color var(--transition-fast),
+      background-color var(--transition-theme), color var(--transition-theme);
+  }
 
-.search-input:focus {
-  border-color: var(--color-search-focus);
-}
+  .search-input:focus {
+    border-color: var(--color-search-focus);
+  }
 
-.search-input::placeholder {
-  color: var(--color-text-muted);
-  font-family: var(--font-sans);
-}
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+  }
 
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--color-text-muted);
-  transition: color var(--transition-theme);
-}
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--color-text-muted);
+    transition: color var(--transition-theme);
+  }
 
-.search-icon path {
-  fill: currentColor;
-}
+  .search-icon path {
+    fill: currentColor;
+  }
 
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin: var(--space-1) 0 0;
-  padding: 0;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  list-style: none;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 100;
-  transition: background-color var(--transition-theme),
-    border-color var(--transition-theme);
-}
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: var(--space-1) 0 0;
+    padding: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    transition: background-color var(--transition-theme),
+      border-color var(--transition-theme);
+  }
 
-.search-result {
-  padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  border-bottom: 1px solid var(--color-border-subtle);
-  transition: background-color var(--transition-fast),
-    border-color var(--transition-theme);
-}
+  .search-result {
+    padding: var(--space-3) var(--space-4);
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color var(--transition-fast),
+      border-color var(--transition-theme);
+  }
 
-.search-result:last-child {
-  border-bottom: none;
-}
+  .search-result:last-child {
+    border-bottom: none;
+  }
 
-.search-result.highlighted {
-  background: var(--color-surface-hover);
-}
+  .search-result.highlighted {
+    background: var(--color-surface-hover);
+  }
 
-.result-name {
-  display: block;
-  font-weight: var(--font-medium);
-  font-family: var(--font-mono);
-  color: var(--color-text-primary);
-  margin-bottom: 2px;
-  transition: color var(--transition-theme);
-}
+  .result-name {
+    display: block;
+    font-weight: var(--font-medium);
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+    transition: color var(--transition-theme);
+  }
 
-.result-meta {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  font-family: var(--font-mono);
-  transition: color var(--transition-theme);
-}
+  .result-meta {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    transition: color var(--transition-theme);
+  }
 
-.no-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin: var(--space-1) 0 0;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
-  font-size: var(--text-base);
-  font-family: var(--font-sans);
-  z-index: 100;
-  transition: background-color var(--transition-theme),
-    border-color var(--transition-theme), color var(--transition-theme);
-}
+  .no-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: var(--space-1) 0 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    font-family: var(--font-sans);
+    z-index: 100;
+    transition: background-color var(--transition-theme),
+      border-color var(--transition-theme), color var(--transition-theme);
+  }
 </style>

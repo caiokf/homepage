@@ -183,382 +183,395 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type CSSProperties } from "vue";
-import * as d3 from "d3";
-import type { Radar } from "../models/radar";
-import type { Quadrant } from "../models/quadrant";
-import type { PositionedBlip, QuadrantGeometryConfig } from "../models/quadrant.geometry";
-import { graphConfig, type QuadrantPosition } from "../config/radar-config";
-import { RingGeometry } from "../models/ring.geometry";
-import { QuadrantGeometry } from "../models/quadrant.geometry";
-import { RadarGeometry } from "../models/radar.geometry";
-import { BlipGeometry } from "../models/blip.geometry";
+  import {
+    ref,
+    computed,
+    onMounted,
+    onUnmounted,
+    type CSSProperties,
+  } from "vue";
+  import * as d3 from "d3";
+  import type { Radar } from "../models/radar";
+  import type { Quadrant } from "../models/quadrant";
+  import type {
+    PositionedBlip,
+    QuadrantGeometryConfig,
+  } from "../models/quadrant.geometry";
+  import { graphConfig, type QuadrantPosition } from "../config/radar-config";
+  import { RingGeometry } from "../models/ring.geometry";
+  import { QuadrantGeometry } from "../models/quadrant.geometry";
+  import { RadarGeometry } from "../models/radar.geometry";
+  import { BlipGeometry } from "../models/blip.geometry";
 
-type Props = {
-  radar: Radar;
-  selectedQuadrant: QuadrantPosition | null;
-};
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  quadrantSelected: [position: QuadrantPosition | null];
-  blipSelected: [blip: PositionedBlip];
-  blipHovered: [blip: PositionedBlip | null];
-}>();
-
-const svgRef = ref<SVGSVGElement | null>(null);
-const tooltipRef = ref<HTMLDivElement | null>(null);
-const hoveredBlip = ref<PositionedBlip | null>(null);
-const mousePosition = ref({ x: 0, y: 0 });
-
-const radarSize = computed(() => graphConfig.radarSize);
-const quadrantSize = computed(() => graphConfig.quadrantSize);
-
-// SVG dimensions - responsive, fills container
-const svgWidth = "100%";
-const svgHeight = "100%";
-
-const viewBox = computed(() => {
-  if (!props.selectedQuadrant) {
-    return `0 0 ${radarSize.value} ${radarSize.value}`;
-  }
-  // When zoomed, show just the selected quadrant (half the radar in each dimension)
-  const offset = RadarGeometry.getZoomedViewBoxOffset(
-    props.selectedQuadrant,
-    radarSize.value
-  );
-  const zoomSize = radarSize.value / 2;
-  return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`;
-});
-
-// Compute ring radii
-const ringRadii = computed(() => RingGeometry.calculateRadii(quadrantSize.value));
-
-// Get all quadrants from radar
-const quadrants = computed(() => props.radar.quadrants);
-
-// Cache positioned blips per quadrant
-const positionedBlipsCache = computed(() => {
-  const cache: PositionedBlip[][] = [];
-
-  for (const quadrant of quadrants.value) {
-    const geometry: QuadrantGeometryConfig = {
-      startAngle: quadrant.startAngle,
-      quadrantSize: quadrantSize.value,
-      ringRadii: ringRadii.value,
-      center: { x: 0, y: 0 },
-    };
-
-    cache.push(QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry));
-  }
-
-  return cache;
-});
-
-function getPositionedBlips(quadrantIndex: number): PositionedBlip[] {
-  return positionedBlipsCache.value[quadrantIndex] || [];
-}
-
-function getQuadrantTransform(): string {
-  // All quadrants share the same center - the center of the radar
-  const centerX = radarSize.value / 2;
-  const centerY = radarSize.value / 2;
-  return `translate(${centerX}, ${centerY})`;
-}
-
-function getQuadrantStyle(position: QuadrantPosition): CSSProperties {
-  if (!props.selectedQuadrant) {
-    return {};
-  }
-  if (props.selectedQuadrant === position) {
-    return {};
-  }
-  return { opacity: 0, pointerEvents: "none" };
-}
-
-function getRingPaths(quadrant: Quadrant): string[] {
-  const paths: string[] = [];
-  // Convert to radians and adjust for D3's coordinate system
-  // D3 arc: 0 = 12 o'clock, positive = clockwise
-  // We need to offset by -pi/2 to align with standard math coordinates
-  const startAngle = ((quadrant.startAngle - 90) * Math.PI) / 180;
-  const endAngle = startAngle + Math.PI / 2; // 90 degree arc clockwise
-
-  for (let i = 0; i < ringRadii.value.length - 1; i++) {
-    const arc = d3
-      .arc()
-      .innerRadius(ringRadii.value[i])
-      .outerRadius(ringRadii.value[i + 1])
-      .startAngle(startAngle)
-      .endAngle(endAngle);
-
-    paths.push(arc({} as d3.DefaultArcObject) || "");
-  }
-
-  return paths;
-}
-
-function getQuadrantLabelX(position: QuadrantPosition): number {
-  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return RadarGeometry.getQuadrantLabelX(position, outerRadius);
-}
-
-function getQuadrantLabelY(position: QuadrantPosition): number {
-  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return RadarGeometry.getQuadrantLabelY(position, outerRadius);
-}
-
-function getSeparatorLines() {
-  const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return RadarGeometry.getSeparatorLines(outerRadius);
-}
-
-function calcRingLabelsOnSeparators() {
-  return RingGeometry.getLabelsOnSeparators(ringRadii.value);
-}
-
-// Quadrant selection
-function selectQuadrant(position: QuadrantPosition) {
-  if (props.selectedQuadrant) return; // Already zoomed, don't re-zoom
-  emit("quadrantSelected", position);
-}
-
-// Tooltip positioning
-const tooltipStyle = computed<CSSProperties>(() => {
-  if (!hoveredBlip.value) return { display: "none" };
-
-  return {
-    left: `${mousePosition.value.x + 15}px`,
-    top: `${mousePosition.value.y - 10}px`,
+  type Props = {
+    radar: Radar;
+    selectedQuadrant: QuadrantPosition | null;
   };
-});
 
-function handleBlipHover(blip: PositionedBlip) {
-  hoveredBlip.value = blip;
-  emit("blipHovered", blip);
-}
+  const props = defineProps<Props>();
 
-function handleBlipLeave() {
-  hoveredBlip.value = null;
-  emit("blipHovered", null);
-}
+  const emit = defineEmits<{
+    quadrantSelected: [position: QuadrantPosition | null];
+    blipSelected: [blip: PositionedBlip];
+    blipHovered: [blip: PositionedBlip | null];
+  }>();
 
-function handleBlipClick(blip: PositionedBlip) {
-  emit("blipSelected", blip);
-}
+  const svgRef = ref<SVGSVGElement | null>(null);
+  const tooltipRef = ref<HTMLDivElement | null>(null);
+  const hoveredBlip = ref<PositionedBlip | null>(null);
+  const mousePosition = ref({ x: 0, y: 0 });
 
-// Track mouse position for tooltip
-function handleMouseMove(e: MouseEvent) {
-  mousePosition.value = { x: e.clientX, y: e.clientY };
-}
+  const radarSize = computed(() => graphConfig.radarSize);
+  const quadrantSize = computed(() => graphConfig.quadrantSize);
 
-onMounted(() => {
-  document.addEventListener("mousemove", handleMouseMove);
-});
+  // SVG dimensions - responsive, fills container
+  const svgWidth = "100%";
+  const svgHeight = "100%";
 
-onUnmounted(() => {
-  document.removeEventListener("mousemove", handleMouseMove);
-});
+  const viewBox = computed(() => {
+    if (!props.selectedQuadrant) {
+      return `0 0 ${radarSize.value} ${radarSize.value}`;
+    }
+    // When zoomed, show just the selected quadrant (half the radar in each dimension)
+    const offset = RadarGeometry.getZoomedViewBoxOffset(
+      props.selectedQuadrant,
+      radarSize.value
+    );
+    const zoomSize = radarSize.value / 2;
+    return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`;
+  });
+
+  // Compute ring radii
+  const ringRadii = computed(() =>
+    RingGeometry.calculateRadii(quadrantSize.value)
+  );
+
+  // Get all quadrants from radar
+  const quadrants = computed(() => props.radar.quadrants);
+
+  // Cache positioned blips per quadrant
+  const positionedBlipsCache = computed(() => {
+    const cache: PositionedBlip[][] = [];
+
+    for (const quadrant of quadrants.value) {
+      const geometry: QuadrantGeometryConfig = {
+        startAngle: quadrant.startAngle,
+        quadrantSize: quadrantSize.value,
+        ringRadii: ringRadii.value,
+        center: { x: 0, y: 0 },
+      };
+
+      cache.push(
+        QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry)
+      );
+    }
+
+    return cache;
+  });
+
+  function getPositionedBlips(quadrantIndex: number): PositionedBlip[] {
+    return positionedBlipsCache.value[quadrantIndex] || [];
+  }
+
+  function getQuadrantTransform(): string {
+    // All quadrants share the same center - the center of the radar
+    const centerX = radarSize.value / 2;
+    const centerY = radarSize.value / 2;
+    return `translate(${centerX}, ${centerY})`;
+  }
+
+  function getQuadrantStyle(position: QuadrantPosition): CSSProperties {
+    if (!props.selectedQuadrant) {
+      return {};
+    }
+    if (props.selectedQuadrant === position) {
+      return {};
+    }
+    return { opacity: 0, pointerEvents: "none" };
+  }
+
+  function getRingPaths(quadrant: Quadrant): string[] {
+    const paths: string[] = [];
+    // Convert to radians and adjust for D3's coordinate system
+    // D3 arc: 0 = 12 o'clock, positive = clockwise
+    // We need to offset by -pi/2 to align with standard math coordinates
+    const startAngle = ((quadrant.startAngle - 90) * Math.PI) / 180;
+    const endAngle = startAngle + Math.PI / 2; // 90 degree arc clockwise
+
+    for (let i = 0; i < ringRadii.value.length - 1; i++) {
+      const arc = d3
+        .arc()
+        .innerRadius(ringRadii.value[i])
+        .outerRadius(ringRadii.value[i + 1])
+        .startAngle(startAngle)
+        .endAngle(endAngle);
+
+      paths.push(arc({} as d3.DefaultArcObject) || "");
+    }
+
+    return paths;
+  }
+
+  function getQuadrantLabelX(position: QuadrantPosition): number {
+    const outerRadius = ringRadii.value[ringRadii.value.length - 1];
+    return RadarGeometry.getQuadrantLabelX(position, outerRadius);
+  }
+
+  function getQuadrantLabelY(position: QuadrantPosition): number {
+    const outerRadius = ringRadii.value[ringRadii.value.length - 1];
+    return RadarGeometry.getQuadrantLabelY(position, outerRadius);
+  }
+
+  function getSeparatorLines() {
+    const outerRadius = ringRadii.value[ringRadii.value.length - 1];
+    return RadarGeometry.getSeparatorLines(outerRadius);
+  }
+
+  function calcRingLabelsOnSeparators() {
+    return RingGeometry.getLabelsOnSeparators(ringRadii.value);
+  }
+
+  // Quadrant selection
+  function selectQuadrant(position: QuadrantPosition) {
+    if (props.selectedQuadrant) return; // Already zoomed, don't re-zoom
+    emit("quadrantSelected", position);
+  }
+
+  // Tooltip positioning
+  const tooltipStyle = computed<CSSProperties>(() => {
+    if (!hoveredBlip.value) return { display: "none" };
+
+    return {
+      left: `${mousePosition.value.x + 15}px`,
+      top: `${mousePosition.value.y - 10}px`,
+    };
+  });
+
+  function handleBlipHover(blip: PositionedBlip) {
+    hoveredBlip.value = blip;
+    emit("blipHovered", blip);
+  }
+
+  function handleBlipLeave() {
+    hoveredBlip.value = null;
+    emit("blipHovered", null);
+  }
+
+  function handleBlipClick(blip: PositionedBlip) {
+    emit("blipSelected", blip);
+  }
+
+  // Track mouse position for tooltip
+  function handleMouseMove(e: MouseEvent) {
+    mousePosition.value = { x: e.clientX, y: e.clientY };
+  }
+
+  onMounted(() => {
+    document.addEventListener("mousemove", handleMouseMove);
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener("mousemove", handleMouseMove);
+  });
 </script>
 
 <style scoped>
-.tech-radar {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-}
+  .tech-radar {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
 
-.radar-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+  .radar-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
-/* Quadrant group transitions */
-.quadrant-group {
-  transition: opacity var(--transition-slow);
-}
+  /* Quadrant group transitions */
+  .quadrant-group {
+    transition: opacity var(--transition-slow);
+  }
 
-.quadrant-hidden {
-  opacity: 0;
-  pointer-events: none;
-}
+  .quadrant-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.quadrant-background {
-  cursor: pointer;
-}
+  .quadrant-background {
+    cursor: pointer;
+  }
 
-.quadrant-selected .quadrant-background {
-  cursor: default;
-}
+  .quadrant-selected .quadrant-background {
+    cursor: default;
+  }
 
-/* Separator lines between quadrants */
-.separator-line {
-  stroke: var(--color-separator);
-  stroke-width: 32;
-  pointer-events: none;
-}
+  /* Separator lines between quadrants */
+  .separator-line {
+    stroke: var(--color-separator);
+    stroke-width: 32;
+    pointer-events: none;
+  }
 
-/* Ring arc colors */
-.ring-arc-0 {
-  fill: var(--ring-0);
-}
+  /* Ring arc colors */
+  .ring-arc-0 {
+    fill: var(--ring-0);
+  }
 
-.ring-arc-1 {
-  fill: var(--ring-1);
-}
+  .ring-arc-1 {
+    fill: var(--ring-1);
+  }
 
-.ring-arc-2 {
-  fill: var(--ring-2);
-}
+  .ring-arc-2 {
+    fill: var(--ring-2);
+  }
 
-.ring-arc-3 {
-  fill: var(--ring-3);
-}
+  .ring-arc-3 {
+    fill: var(--ring-3);
+  }
 
-/* Invisible clickable ring arcs in layer 3 */
-.ring-arc-invisible {
-  fill: transparent;
-  pointer-events: all;
-}
+  /* Invisible clickable ring arcs in layer 3 */
+  .ring-arc-invisible {
+    fill: transparent;
+    pointer-events: all;
+  }
 
-/* Quadrant blip colors */
-.blip-circle.NE {
-  fill: var(--quadrant-NE);
-}
+  /* Quadrant blip colors */
+  .blip-circle.NE {
+    fill: var(--quadrant-NE);
+  }
 
-.blip-circle.NW {
-  fill: var(--quadrant-NW);
-}
+  .blip-circle.NW {
+    fill: var(--quadrant-NW);
+  }
 
-.blip-circle.SW {
-  fill: var(--quadrant-SW);
-}
+  .blip-circle.SW {
+    fill: var(--quadrant-SW);
+  }
 
-.blip-circle.SE {
-  fill: var(--quadrant-SE);
-}
+  .blip-circle.SE {
+    fill: var(--quadrant-SE);
+  }
 
-/* Blip indicators (new, moved in, moved out) */
-.blip-indicator {
-  fill: none;
-  stroke-width: 2;
-}
+  /* Blip indicators (new, moved in, moved out) */
+  .blip-indicator {
+    fill: none;
+    stroke-width: 2;
+  }
 
-.blip-indicator.NE {
-  fill: var(--quadrant-NE);
-}
+  .blip-indicator.NE {
+    fill: var(--quadrant-NE);
+  }
 
-.blip-indicator.NW {
-  fill: var(--quadrant-NW);
-}
+  .blip-indicator.NW {
+    fill: var(--quadrant-NW);
+  }
 
-.blip-indicator.SW {
-  fill: var(--quadrant-SW);
-}
+  .blip-indicator.SW {
+    fill: var(--quadrant-SW);
+  }
 
-.blip-indicator.SE {
-  fill: var(--quadrant-SE);
-}
+  .blip-indicator.SE {
+    fill: var(--quadrant-SE);
+  }
 
-/* Blip text */
-.blip-text {
-  pointer-events: none;
-  font-style: normal;
-  font-family: var(--font-mono);
-  fill: var(--color-text-inverse);
-}
+  /* Blip text */
+  .blip-text {
+    pointer-events: none;
+    font-style: normal;
+    font-family: var(--font-mono);
+    fill: var(--color-text-inverse);
+  }
 
-/* Blip hover effects */
-.blip {
-  cursor: pointer;
-  transition: opacity var(--transition-normal);
-}
+  /* Blip hover effects */
+  .blip {
+    cursor: pointer;
+    transition: opacity var(--transition-normal);
+  }
 
-.blip-faded {
-  opacity: 0.3;
-}
+  .blip-faded {
+    opacity: 0.3;
+  }
 
-.blip:hover {
-  opacity: 1;
-}
+  .blip:hover {
+    opacity: 1;
+  }
 
-/* Ring names */
-.ring-name {
-  fill: var(--color-text-primary);
-  font-size: 11px;
-  font-weight: var(--font-medium);
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-}
+  /* Ring names */
+  .ring-name {
+    fill: var(--color-text-primary);
+    font-size: 11px;
+    font-weight: var(--font-medium);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
 
-/* Ring labels on separator lines */
-.ring-label-separator {
-  fill: var(--color-text-primary);
-  font-size: 12px;
-  font-weight: var(--font-semibold);
-  font-family: var(--font-mono);
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-  paint-order: stroke fill;
-  stroke: var(--color-separator);
-  stroke-width: 4px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+  /* Ring labels on separator lines */
+  .ring-label-separator {
+    fill: var(--color-text-primary);
+    font-size: 12px;
+    font-weight: var(--font-semibold);
+    font-family: var(--font-mono);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    paint-order: stroke fill;
+    stroke: var(--color-separator);
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
-/* Quadrant names */
-.quadrant-name-group {
-  pointer-events: none;
-}
+  /* Quadrant names */
+  .quadrant-name-group {
+    pointer-events: none;
+  }
 
-.quadrant-name-text {
-  font-size: var(--text-lg);
-  font-weight: var(--font-semibold);
-  font-family: var(--font-mono);
-  max-width: 150px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  line-height: var(--leading-tight);
-}
+  .quadrant-name-text {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    font-family: var(--font-mono);
+    max-width: 150px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: var(--leading-tight);
+  }
 
-.quadrant-name-text.NE {
-  color: var(--quadrant-NE);
-  text-align: left;
-}
+  .quadrant-name-text.NE {
+    color: var(--quadrant-NE);
+    text-align: left;
+  }
 
-.quadrant-name-text.NW {
-  color: var(--quadrant-NW);
-  text-align: left;
-}
+  .quadrant-name-text.NW {
+    color: var(--quadrant-NW);
+    text-align: left;
+  }
 
-.quadrant-name-text.SW {
-  color: var(--quadrant-SW);
-  text-align: right;
-}
+  .quadrant-name-text.SW {
+    color: var(--quadrant-SW);
+    text-align: right;
+  }
 
-.quadrant-name-text.SE {
-  color: var(--quadrant-SE);
-  text-align: right;
-}
+  .quadrant-name-text.SE {
+    color: var(--quadrant-SE);
+    text-align: right;
+  }
 
-/* Tooltip */
-.radar-tooltip {
-  position: fixed;
-  background: var(--color-tooltip-bg);
-  color: var(--color-tooltip-text);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
-  pointer-events: none;
-  z-index: 100;
-  max-width: 200px;
-  box-shadow: var(--shadow-lg);
-  transition: background-color var(--transition-theme),
-    color var(--transition-theme);
-}
+  /* Tooltip */
+  .radar-tooltip {
+    position: fixed;
+    background: var(--color-tooltip-bg);
+    color: var(--color-tooltip-text);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    pointer-events: none;
+    z-index: 100;
+    max-width: 200px;
+    box-shadow: var(--shadow-lg);
+    transition: background-color var(--transition-theme),
+      color var(--transition-theme);
+  }
 </style>

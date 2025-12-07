@@ -16,56 +16,56 @@
 </template>
 
 <script setup lang="ts">
-import BlipListItem from "./BlipListItem.vue";
-import type { PositionedBlip } from "../models/quadrant.geometry";
+  import BlipListItem from "./BlipListItem.vue";
+  import type { PositionedBlip } from "../models/quadrant.geometry";
 
-defineProps<{
-  ringName: string;
-  blips: PositionedBlip[];
-  highlightedBlipId: number | null;
-}>();
+  defineProps<{
+    ringName: string;
+    blips: PositionedBlip[];
+    highlightedBlipId: number | null;
+  }>();
 
-defineEmits<{
-  "blip-hover": [blip: PositionedBlip | null];
-  "blip-click": [blip: PositionedBlip];
-}>();
+  defineEmits<{
+    "blip-hover": [blip: PositionedBlip | null];
+    "blip-click": [blip: PositionedBlip];
+  }>();
 </script>
 
 <style scoped>
-.ring-blip-list {
-  border-bottom: 1px solid var(--color-border);
-}
+  .ring-blip-list {
+    border-bottom: 1px solid var(--color-border);
+  }
 
-.ring-blip-list:last-child {
-  border-bottom: none;
-}
+  .ring-blip-list:last-child {
+    border-bottom: none;
+  }
 
-.ring-title {
-  margin: 0;
-  padding: var(--space-3) var(--space-5);
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
-  font-family: var(--font-mono);
-  color: var(--color-text-primary);
-  background: var(--color-background-subtle);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: background-color var(--transition-theme),
-    color var(--transition-theme);
-}
+  .ring-title {
+    margin: 0;
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    background: var(--color-background-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color var(--transition-theme),
+      color var(--transition-theme);
+  }
 
-.blip-list {
-  margin: 0;
-  padding: 0;
-}
+  .blip-list {
+    margin: 0;
+    padding: 0;
+  }
 
-.empty-ring {
-  margin: 0;
-  padding: var(--space-3) var(--space-5);
-  color: var(--color-text-muted);
-  font-style: italic;
-  font-size: var(--text-sm);
-  font-family: var(--font-sans);
-  transition: color var(--transition-theme);
-}
+  .empty-ring {
+    margin: 0;
+    padding: var(--space-3) var(--space-5);
+    color: var(--color-text-muted);
+    font-style: italic;
+    font-size: var(--text-sm);
+    font-family: var(--font-sans);
+    transition: color var(--transition-theme);
+  }
 </style>

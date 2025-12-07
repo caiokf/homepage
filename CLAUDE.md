@@ -40,6 +40,7 @@ src/
 
 ## Key Patterns
 
+- **Vue file formatting:** Indent content inside `<script>` and `<style>` tags (configured via `vueIndentScriptAndStyle: true` in `.prettierrc`)
 - **Private fields with underscore prefix** (`_fieldName`) with getter-only access
 - **Array copying** via `.slice(0)` to prevent external mutations
 - **Vue 3 Composition API** with `<script setup>` syntax

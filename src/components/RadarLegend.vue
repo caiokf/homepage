@@ -35,41 +35,41 @@
 <script setup lang="ts"></script>
 
 <style scoped>
-.radar-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-6);
-  justify-content: center;
-  padding: var(--space-4) var(--space-6);
-  background: var(--color-background-muted);
-  border-radius: var(--radius-md);
-  margin-top: var(--space-5);
-  transition: background-color var(--transition-theme);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.legend-icon {
-  color: var(--color-legend-icon);
-  transition: color var(--transition-theme);
-}
-
-.legend-item span {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  font-family: var(--font-mono);
-  transition: color var(--transition-theme);
-}
-
-@media (max-width: 600px) {
   .radar-legend {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    justify-content: center;
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-background-muted);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-5);
+    transition: background-color var(--transition-theme);
   }
-}
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .legend-icon {
+    color: var(--color-legend-icon);
+    transition: color var(--transition-theme);
+  }
+
+  .legend-item span {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    transition: color var(--transition-theme);
+  }
+
+  @media (max-width: 600px) {
+    .radar-legend {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+  }
 </style>

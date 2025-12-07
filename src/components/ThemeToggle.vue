@@ -45,52 +45,52 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useTheme } from "../composables/useTheme";
+  import { computed } from "vue";
+  import { useTheme } from "../composables/useTheme";
 
-const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
-const ariaLabel = computed(() =>
-  theme.value === "dark" ? "Switch to light theme" : "Switch to dark theme"
-);
+  const ariaLabel = computed(() =>
+    theme.value === "dark" ? "Switch to light theme" : "Switch to dark theme"
+  );
 </script>
 
 <style scoped>
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-  background-color: transparent;
-  color: var(--color-text-inverse);
-  cursor: pointer;
-  transition: background-color var(--transition-fast),
-    transform var(--transition-fast);
-}
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    background-color: transparent;
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    transition: background-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
 
-.theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05);
-}
+  .theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+  }
 
-.theme-toggle:active {
-  transform: scale(0.95);
-}
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
 
-.theme-icon {
-  width: 22px;
-  height: 22px;
-}
+  .theme-icon {
+    width: 22px;
+    height: 22px;
+  }
 
-/* When placed outside header (dark theme context) */
-[data-theme="dark"] .theme-toggle {
-  color: var(--color-text-primary);
-}
+  /* When placed outside header (dark theme context) */
+  [data-theme="dark"] .theme-toggle {
+    color: var(--color-text-primary);
+  }
 
-[data-theme="dark"] .theme-toggle:hover {
-  background-color: var(--color-surface-hover);
-}
+  [data-theme="dark"] .theme-toggle:hover {
+    background-color: var(--color-surface-hover);
+  }
 </style>
