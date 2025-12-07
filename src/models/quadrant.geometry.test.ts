@@ -145,7 +145,7 @@ describe("QuadrantGeometry", () => {
         { startAngle: -180, name: "SE" }, // x > 0, y > 0
       ];
 
-      for (const { startAngle, name } of positions) {
+      for (const { startAngle } of positions) {
         const geometry = createGeometry(startAngle);
         const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
         const positioned = result[0];

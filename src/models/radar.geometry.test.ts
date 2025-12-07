@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RadarGeometry, type SeparatorLine } from "./radar.geometry";
+import { RadarGeometry } from "./radar.geometry";
 
 describe("RadarGeometry", () => {
   describe("getZoomedViewBoxOffset", () => {

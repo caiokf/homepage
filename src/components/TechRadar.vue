@@ -59,7 +59,7 @@
           v-for="(label, index) in calcRingLabelsOnSeparators()"
           :key="`ring-label-${index}`"
           :x="label.x"
-          :y="label.y"
+          y="0"
           class="ring-label-separator"
         >
           {{ label.name }}

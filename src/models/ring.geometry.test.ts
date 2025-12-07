@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RingGeometry, type RingLabel } from "./ring.geometry";
+import { RingGeometry } from "./ring.geometry";
 import { RING_RATIOS, RING_NAMES } from "../config/radar-config";
 
 describe("RingGeometry", () => {
@@ -103,47 +103,46 @@ describe("RingGeometry", () => {
       }
     });
 
-    it("should have labels with x, y, and name properties", () => {
+    it("should have labels with x and name properties", () => {
       const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
 
       for (const label of labels) {
         expect(label).toHaveProperty("x");
-        expect(label).toHaveProperty("y");
         expect(label).toHaveProperty("name");
         expect(typeof label.x).toBe("number");
-        expect(typeof label.y).toBe("number");
         expect(typeof label.name).toBe("string");
       }
     });
 
-    it("should position labels at midpoint of each ring", () => {
+    it("should position labels at midpoint of each ring on horizontal line", () => {
       const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
 
-      // Check first set of labels (left separator, angle = 0)
+      // Labels alternate: left (-x), right (+x) for each ring
       for (let i = 0; i < RING_NAMES.length; i++) {
-        const label = labels[i];
+        const leftLabel = labels[i * 2];
+        const rightLabel = labels[i * 2 + 1];
         const expectedRadius = (ringRadii[i] + ringRadii[i + 1]) / 2;
-        const actualRadius = Math.sqrt(label.x * label.x + label.y * label.y);
-        expect(actualRadius).toBeCloseTo(expectedRadius, 1);
+
+        // Left label has negative x at midpoint radius
+        expect(leftLabel.x).toBeCloseTo(-expectedRadius, 1);
+
+        // Right label has positive x at midpoint radius
+        expect(rightLabel.x).toBeCloseTo(expectedRadius, 1);
       }
     });
 
-    it("should have symmetric labels on left and right separators", () => {
+    it("should have symmetric labels on left and right", () => {
       const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
-      const halfLength = labels.length / 2;
 
-      for (let i = 0; i < halfLength; i++) {
-        const leftLabel = labels[i];
-        const rightLabel = labels[i + halfLength];
+      for (let i = 0; i < RING_NAMES.length; i++) {
+        const leftLabel = labels[i * 2];
+        const rightLabel = labels[i * 2 + 1];
 
         // Same name
         expect(leftLabel.name).toBe(rightLabel.name);
 
         // Symmetric x positions (opposite signs)
         expect(leftLabel.x).toBeCloseTo(-rightLabel.x, 5);
-
-        // Same y positions
-        expect(leftLabel.y).toBeCloseTo(rightLabel.y, 5);
       }
     });
   });
