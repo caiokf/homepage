@@ -13,7 +13,7 @@
 
         <div class="avatar-wrapper">
           <img
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=caio"
+            :src="avatarImage"
             alt="Caio Kinzel Filho"
             class="avatar"
           />
@@ -45,6 +45,7 @@
 
 <script setup lang="ts">
   import { skillsConfig } from "../config/skills-config";
+  import avatarImage from "../assets/images/avatar.png";
 </script>
 
 <style scoped>
