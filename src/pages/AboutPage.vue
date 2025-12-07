@@ -2,14 +2,6 @@
   <div class="about-page">
     <section class="hero">
       <div class="hero-content">
-        <div class="avatar-wrapper">
-          <img
-            src="https://via.placeholder.com/160"
-            alt="Caio Kinzel Filho"
-            class="avatar"
-          />
-        </div>
-
         <h1 class="name">caio kinzel filho</h1>
         <p class="tagline">software engineer & technical leader</p>
 
@@ -18,28 +10,35 @@
           developer experience, and turning complex problems into elegant
           solutions.
         </p>
+
+        <div class="avatar-wrapper">
+          <img
+            src="https://via.placeholder.com/160"
+            alt="Caio Kinzel Filho"
+            class="avatar"
+          />
+        </div>
       </div>
     </section>
 
     <section class="skills-section">
-      <h2 class="section-title">what i do</h2>
+      <h2 class="section-title">what i can do</h2>
 
-      <div class="skills-grid">
-        <article v-for="skill in skillsConfig" :key="skill.title" class="skill-card">
-          <div class="skill-icon-wrapper">
-            <img
-              v-if="skill.iconPath"
-              :src="skill.iconPath"
-              :alt="skill.title"
-              class="skill-icon"
-            />
-            <div v-else class="skill-icon-placeholder"></div>
-          </div>
-
+      <article v-for="skill in skillsConfig" :key="skill.title" class="skill-block">
+        <div class="skill-icon-wrapper">
+          <img
+            v-if="skill.iconPath"
+            :src="skill.iconPath"
+            :alt="skill.title"
+            class="skill-icon"
+          />
+          <div v-else class="skill-icon-placeholder"></div>
+        </div>
+        <div class="skill-content">
           <h3 class="skill-title">{{ skill.title }}</h3>
           <p class="skill-description">{{ skill.description }}</p>
-        </article>
-      </div>
+        </div>
+      </article>
     </section>
   </div>
 </template>
@@ -68,7 +67,7 @@
   }
 
   .avatar-wrapper {
-    margin-bottom: var(--space-6);
+    margin-top: var(--space-8);
   }
 
   .avatar {
@@ -111,18 +110,18 @@
 
   /* Skills Section */
   .skills-section {
-    max-width: 1000px;
+    max-width: 600px;
     margin: 0 auto;
   }
 
   .section-title {
     font-family: var(--font-mono);
-    font-size: var(--text-2xl);
+    font-size: var(--text-xl);
     font-weight: var(--font-semibold);
     color: var(--color-text-primary);
     text-transform: lowercase;
-    text-align: center;
     margin: 0 0 var(--space-8) 0;
+    text-align: center;
   }
 
   .section-title::before {
@@ -130,43 +129,35 @@
     color: var(--color-primary);
   }
 
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
+  .skill-block {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
   }
 
-  .skill-card {
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-md);
-    transition:
-      background-color var(--transition-theme),
-      box-shadow var(--transition-theme),
-      transform var(--transition-fast);
-  }
-
-  .skill-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+  .skill-block:last-child {
+    margin-bottom: 0;
   }
 
   .skill-icon-wrapper {
-    margin-bottom: var(--space-4);
+    flex-shrink: 0;
   }
 
   .skill-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
   }
 
   .skill-icon-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     background: var(--color-primary-light);
     border-radius: var(--radius-md);
+  }
+
+  .skill-content {
+    flex: 1;
   }
 
   .skill-title {
@@ -175,17 +166,17 @@
     font-weight: var(--font-semibold);
     color: var(--color-text-primary);
     text-transform: lowercase;
-    margin: 0 0 var(--space-3) 0;
+    margin: 0 0 var(--space-2) 0;
   }
 
   .skill-title::before {
-    content: "> ";
+    content: "// ";
     color: var(--color-primary);
   }
 
   .skill-description {
     font-family: var(--font-sans);
-    font-size: var(--text-base);
+    font-size: var(--text-md);
     line-height: var(--leading-relaxed);
     color: var(--color-text-secondary);
     margin: 0;
@@ -218,15 +209,26 @@
     }
 
     .section-title {
-      font-size: var(--text-xl);
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-6);
     }
 
-    .skills-grid {
-      grid-template-columns: 1fr;
+    .skill-block {
+      margin-bottom: var(--space-6);
     }
 
-    .skill-card {
-      padding: var(--space-4);
+    .skill-icon,
+    .skill-icon-placeholder {
+      width: 32px;
+      height: 32px;
+    }
+
+    .skill-title {
+      font-size: var(--text-md);
+    }
+
+    .skill-description {
+      font-size: var(--text-base);
     }
   }
 </style>
