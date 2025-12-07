@@ -63,6 +63,11 @@
     letter-spacing: 0.05em;
   }
 
+  .logo-text::before {
+    content: "// ";
+    color: var(--color-primary);
+  }
+
   /* Light theme adjustments */
   :root:not([data-theme="dark"]) .app-header,
   [data-theme="light"] .app-header {
