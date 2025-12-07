@@ -1,6 +1,9 @@
 <template>
   <li
-    :class="['blip-list-item', { expanded: isExpanded, highlighted: isHighlighted }]"
+    :class="[
+      'blip-list-item',
+      { expanded: isExpanded, highlighted: isHighlighted },
+    ]"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
   >
@@ -12,106 +15,125 @@
       <span class="blip-number">{{ blip.blipText }}.</span>
       <span class="blip-name">{{ blip.name }}</span>
       <span v-if="blip.isNew" class="blip-badge new">NEW</span>
-      <span v-else-if="blip.status === 'moved in'" class="blip-badge moved">IN</span>
-      <span v-else-if="blip.status === 'moved out'" class="blip-badge moved">OUT</span>
+      <span v-else-if="blip.status === 'moved in'" class="blip-badge moved"
+        >IN</span
+      >
+      <span v-else-if="blip.status === 'moved out'" class="blip-badge moved"
+        >OUT</span
+      >
       <span class="expand-arrow" :class="{ rotated: isExpanded }">&#9660;</span>
     </button>
     <div class="blip-description" :class="{ visible: isExpanded }">
-      <p>{{ blip.description || 'No description available.' }}</p>
+      <p>{{ blip.description || "No description available." }}</p>
     </div>
   </li>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { PositionedBlip } from '../data/types'
+import { ref } from "vue";
+import type { PositionedBlip } from "../data/types";
 
 defineProps<{
-  blip: PositionedBlip
-  isHighlighted: boolean
-}>()
+  blip: PositionedBlip;
+  isHighlighted: boolean;
+}>();
 
 defineEmits<{
-  (e: 'hover', blip: PositionedBlip | null): void
-  (e: 'click', blip: PositionedBlip): void
-}>()
+  (e: "hover", blip: PositionedBlip | null): void;
+  (e: "click", blip: PositionedBlip): void;
+}>();
 
-const isExpanded = ref(false)
+const isExpanded = ref(false);
 
 function toggleExpand() {
-  isExpanded.value = !isExpanded.value
+  isExpanded.value = !isExpanded.value;
 }
 
 // Expose method for parent to expand/collapse
 defineExpose({
-  expand: () => { isExpanded.value = true },
-  collapse: () => { isExpanded.value = false },
-})
+  expand: () => {
+    isExpanded.value = true;
+  },
+  collapse: () => {
+    isExpanded.value = false;
+  },
+});
 </script>
 
 <style scoped>
 .blip-list-item {
   list-style: none;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: border-color var(--transition-theme);
 }
 
 .blip-list-item.highlighted {
-  background: #f0f7ff;
+  background: var(--color-surface-highlight);
+  transition: background-color var(--transition-theme);
 }
 
 .blip-header {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
-  font-size: 14px;
-  transition: background 0.2s ease;
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-fast),
+    color var(--transition-theme);
 }
 
 .blip-header:hover {
-  background: #f5f5f5;
+  background: var(--color-surface-hover);
 }
 
 .blip-number {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
-  color: #666;
+  color: var(--color-text-secondary);
   min-width: 24px;
+  transition: color var(--transition-theme);
 }
 
 .blip-name {
   flex: 1;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   font-family: var(--font-mono);
+  color: var(--color-text-primary);
+  transition: color var(--transition-theme);
 }
 
 .blip-badge {
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   text-transform: uppercase;
 }
 
 .blip-badge.new {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme);
 }
 
 .blip-badge.moved {
-  background: #fff3e0;
-  color: #f57c00;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme);
 }
 
 .expand-arrow {
   font-size: 10px;
-  color: #999;
-  transition: transform 0.2s ease;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast), color var(--transition-theme);
 }
 
 .expand-arrow.rotated {
@@ -121,20 +143,21 @@ defineExpose({
 .blip-description {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  padding: 0 16px;
+  transition: max-height var(--transition-slow), padding var(--transition-slow);
+  padding: 0 var(--space-4);
 }
 
 .blip-description.visible {
   max-height: 200px;
-  padding: 0 16px 16px 48px;
+  padding: 0 var(--space-4) var(--space-4) 48px;
 }
 
 .blip-description p {
   margin: 0;
-  color: #666;
-  font-size: 13px;
-  line-height: 1.5;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
   font-family: var(--font-sans);
+  transition: color var(--transition-theme);
 }
 </style>

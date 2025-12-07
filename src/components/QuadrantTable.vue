@@ -14,63 +14,67 @@
           @click="handleBlipClick"
         />
       </ul>
-      <p v-if="ring.blips.length === 0" class="empty-ring">No items in this ring</p>
+      <p v-if="ring.blips.length === 0" class="empty-ring">
+        No items in this ring
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import BlipListItem from './BlipListItem.vue'
-import type { PositionedBlip } from '../data/types'
-import { RING_NAMES, type QuadrantOrder } from '../config/radar-config'
+import { computed } from "vue";
+import BlipListItem from "./BlipListItem.vue";
+import type { PositionedBlip } from "../data/types";
+import { RING_NAMES, type QuadrantOrder } from "../config/radar-config";
 
 const props = defineProps<{
-  quadrantName: string
-  quadrantOrder: QuadrantOrder
-  blips: PositionedBlip[]
-  highlightedBlipId: number | null
-}>()
+  quadrantName: string;
+  quadrantOrder: QuadrantOrder;
+  blips: PositionedBlip[];
+  highlightedBlipId: number | null;
+}>();
 
 const emit = defineEmits<{
-  (e: 'blip-hover', blip: PositionedBlip | null): void
-  (e: 'blip-click', blip: PositionedBlip): void
-}>()
+  (e: "blip-hover", blip: PositionedBlip | null): void;
+  (e: "blip-click", blip: PositionedBlip): void;
+}>();
 
 // Group blips by ring
 const ringGroups = computed(() => {
   return RING_NAMES.map((ringName, index) => ({
     name: ringName,
     blips: props.blips.filter((b) => b.ringIndex === index),
-  }))
-})
+  }));
+});
 
 function handleBlipHover(blip: PositionedBlip | null) {
-  emit('blip-hover', blip)
+  emit("blip-hover", blip);
 }
 
 function handleBlipClick(blip: PositionedBlip) {
-  emit('blip-click', blip)
+  emit("blip-click", blip);
 }
 </script>
 
 <style scoped>
 .quadrant-table {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
+  transition: background-color var(--transition-theme),
+    box-shadow var(--transition-theme);
 }
 
 .quadrant-title {
   margin: 0;
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 600;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
-  color: white;
+  color: var(--color-text-inverse);
 }
 
 .quadrant-table.first .quadrant-title {
@@ -87,7 +91,7 @@ function handleBlipClick(blip: PositionedBlip) {
 }
 
 .ring-section {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .ring-section:last-child {
@@ -96,14 +100,16 @@ function handleBlipClick(blip: PositionedBlip) {
 
 .ring-title {
   margin: 0;
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
-  color: #333;
-  background: #f5f5f5;
+  color: var(--color-text-primary);
+  background: var(--color-background-subtle);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme);
 }
 
 .blip-list {
@@ -113,10 +119,11 @@ function handleBlipClick(blip: PositionedBlip) {
 
 .empty-ring {
   margin: 0;
-  padding: 12px 20px;
-  color: #999;
+  padding: var(--space-3) var(--space-5);
+  color: var(--color-text-muted);
   font-style: italic;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-family: var(--font-sans);
+  transition: color var(--transition-theme);
 }
 </style>

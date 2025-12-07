@@ -16,16 +16,13 @@
       />
       <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
         <path
-          fill="#999"
+          fill="currentColor"
           d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
         />
       </svg>
     </div>
 
-    <ul
-      v-if="showResults && filteredBlips.length > 0"
-      class="search-results"
-    >
+    <ul v-if="showResults && filteredBlips.length > 0" class="search-results">
       <li
         v-for="(result, index) in filteredBlips"
         :key="`${result.quadrant}-${result.blip.name}`"
@@ -41,7 +38,9 @@
     </ul>
 
     <div
-      v-else-if="showResults && searchQuery.length >= 2 && filteredBlips.length === 0"
+      v-else-if="
+        showResults && searchQuery.length >= 2 && filteredBlips.length === 0
+      "
       class="no-results"
     >
       No technologies found
@@ -50,94 +49,94 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { Radar } from '../models/radar'
-import type { Blip } from '../models/blip'
-import type { QuadrantOrder } from '../config/radar-config'
+import { ref, computed } from "vue";
+import type { Radar } from "../models/radar";
+import type { Blip } from "../models/blip";
+import type { QuadrantOrder } from "../config/radar-config";
 
 interface SearchResult {
-  blip: Blip
-  quadrant: QuadrantOrder
-  quadrantName: string
+  blip: Blip;
+  quadrant: QuadrantOrder;
+  quadrantName: string;
 }
 
 const props = defineProps<{
-  radar: Radar
-}>()
+  radar: Radar;
+}>();
 
 const emit = defineEmits<{
-  (e: 'select', result: SearchResult): void
-}>()
+  (e: "select", result: SearchResult): void;
+}>();
 
-const searchQuery = ref('')
-const showResults = ref(false)
-const highlightedIndex = ref(0)
+const searchQuery = ref("");
+const showResults = ref(false);
+const highlightedIndex = ref(0);
 
 // Get all blips from all quadrants
 const allBlips = computed<SearchResult[]>(() => {
-  const results: SearchResult[] = []
+  const results: SearchResult[] = [];
 
   for (const config of props.radar.quadrants) {
-    if (!config.quadrant) continue
+    if (!config.quadrant) continue;
 
     for (const blip of config.quadrant.blips()) {
       results.push({
         blip,
         quadrant: config.order,
         quadrantName: config.quadrant.name,
-      })
+      });
     }
   }
 
-  return results
-})
+  return results;
+});
 
 // Filter blips by search query
 const filteredBlips = computed(() => {
-  if (searchQuery.value.length < 2) return []
+  if (searchQuery.value.length < 2) return [];
 
-  const query = searchQuery.value.toLowerCase()
+  const query = searchQuery.value.toLowerCase();
 
   return allBlips.value.filter(
     (result) =>
       result.blip.name.toLowerCase().includes(query) ||
       result.blip.description.toLowerCase().includes(query)
-  )
-})
+  );
+});
 
 function handleInput() {
-  showResults.value = true
-  highlightedIndex.value = 0
+  showResults.value = true;
+  highlightedIndex.value = 0;
 }
 
 function handleBlur() {
   // Delay to allow click on result
   setTimeout(() => {
-    showResults.value = false
-  }, 200)
+    showResults.value = false;
+  }, 200);
 }
 
 function closeResults() {
-  showResults.value = false
-  searchQuery.value = ''
+  showResults.value = false;
+  searchQuery.value = "";
 }
 
 function navigateResults(direction: number) {
-  const newIndex = highlightedIndex.value + direction
+  const newIndex = highlightedIndex.value + direction;
   if (newIndex >= 0 && newIndex < filteredBlips.value.length) {
-    highlightedIndex.value = newIndex
+    highlightedIndex.value = newIndex;
   }
 }
 
 function selectHighlighted() {
   if (filteredBlips.value.length > 0) {
-    selectResult(filteredBlips.value[highlightedIndex.value])
+    selectResult(filteredBlips.value[highlightedIndex.value]);
   }
 }
 
 function selectResult(result: SearchResult) {
-  emit('select', result)
-  closeResults()
+  emit("select", result);
+  closeResults();
 }
 </script>
 
@@ -154,21 +153,24 @@ function selectResult(result: SearchResult) {
 
 .search-input {
   width: 100%;
-  padding: 12px 16px 12px 44px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: var(--space-3) var(--space-4) var(--space-3) 44px;
+  border: 2px solid var(--color-search-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
   font-family: var(--font-mono);
+  background: var(--color-search-bg);
+  color: var(--color-text-primary);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--transition-fast),
+    background-color var(--transition-theme), color var(--transition-theme);
 }
 
 .search-input:focus {
-  border-color: #667eea;
+  border-color: var(--color-search-focus);
 }
 
 .search-input::placeholder {
-  color: #999;
+  color: var(--color-text-muted);
   font-family: var(--font-sans);
 }
 
@@ -178,6 +180,12 @@ function selectResult(result: SearchResult) {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+  color: var(--color-text-muted);
+  transition: color var(--transition-theme);
+}
+
+.search-icon path {
+  fill: currentColor;
 }
 
 .search-results {
@@ -185,22 +193,26 @@ function selectResult(result: SearchResult) {
   top: 100%;
   left: 0;
   right: 0;
-  margin: 4px 0 0;
+  margin: var(--space-1) 0 0;
   padding: 0;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
   list-style: none;
   max-height: 300px;
   overflow-y: auto;
   z-index: 100;
+  transition: background-color var(--transition-theme),
+    border-color var(--transition-theme);
 }
 
 .search-result {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background-color var(--transition-fast),
+    border-color var(--transition-theme);
 }
 
 .search-result:last-child {
@@ -208,20 +220,23 @@ function selectResult(result: SearchResult) {
 }
 
 .search-result.highlighted {
-  background: #f5f5f5;
+  background: var(--color-surface-hover);
 }
 
 .result-name {
   display: block;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   font-family: var(--font-mono);
+  color: var(--color-text-primary);
   margin-bottom: 2px;
+  transition: color var(--transition-theme);
 }
 
 .result-meta {
-  font-size: 12px;
-  color: #666;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
   font-family: var(--font-mono);
+  transition: color var(--transition-theme);
 }
 
 .no-results {
@@ -229,14 +244,16 @@ function selectResult(result: SearchResult) {
   top: 100%;
   left: 0;
   right: 0;
-  margin: 4px 0 0;
-  padding: 12px 16px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  color: #666;
-  font-size: 14px;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
   font-family: var(--font-sans);
   z-index: 100;
+  transition: background-color var(--transition-theme),
+    border-color var(--transition-theme), color var(--transition-theme);
 }
 </style>

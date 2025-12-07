@@ -1,8 +1,13 @@
 <template>
   <div id="app">
-    <header>
-      <h1>Tech Radar</h1>
-      <p class="subtitle">Technology choices for our engineering teams</p>
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="header-title">Tech Radar</h1>
+          <p class="header-subtitle">Technology choices for our engineering teams</p>
+        </div>
+        <ThemeToggle />
+      </div>
     </header>
 
     <!-- Quadrant navigation tabs -->
@@ -81,18 +86,23 @@ import QuadrantTable from './components/QuadrantTable.vue'
 import RadarLegend from './components/RadarLegend.vue'
 import RadarSearch from './components/RadarSearch.vue'
 import RadarHeader from './components/RadarHeader.vue'
+import ThemeToggle from './components/ThemeToggle.vue'
 import { createRadarFromData } from './data/radar-factory'
 import { sampleRadarData } from './data/sample-data'
-import { Radar } from './models/radar'
+import type { Radar } from './models/radar'
 import { Ring } from './models/ring'
 import type { PositionedBlip, QuadrantGeometry } from './data/types'
 import { type QuadrantOrder, graphConfig } from './config/radar-config'
+import { useTheme } from './composables/useTheme'
 
 interface SearchResult {
   blip: { name: string }
   quadrant: QuadrantOrder
   quadrantName: string
 }
+
+// Initialize theme system
+useTheme()
 
 const radar = shallowRef<Radar | null>(null)
 const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null)
@@ -175,75 +185,93 @@ function handleSearchSelect(result: SearchResult) {
 }
 </script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
-
+<style scoped>
 #app {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme);
 }
 
-header {
+/* Header Styles */
+.app-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-header-start) 0%,
+    var(--color-header-end) 100%
+  );
+  color: var(--color-text-inverse);
+  padding: var(--space-8);
+  transition: background var(--transition-theme);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-text {
   text-align: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
 }
 
-header h1 {
-  margin: 0 0 0.5rem;
-  font-size: 2.5rem;
-  font-weight: 600;
+.header-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
 }
 
-header .subtitle {
+.header-subtitle {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
   opacity: 0.9;
   font-family: var(--font-sans);
 }
 
+/* Main Content */
 .main-content {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--space-8);
 }
 
 .search-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
+/* Radar Layout */
 .radar-layout {
   display: flex;
   gap: 0;
   justify-content: center;
   align-items: flex-start;
-  /* Container stays at original radar size (1024px + padding) */
   width: 1056px; /* 1024 + 2*16px padding */
   margin: 0 auto;
 }
 
 .radar-wrapper {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 1s ease;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-md);
+  transition:
+    width 1s ease,
+    background-color var(--transition-theme),
+    box-shadow var(--transition-theme);
   flex-shrink: 0;
   box-sizing: border-box;
 }
 
+/* Table Wrapper */
 .table-wrapper {
-  /* Table is 0.4 of 1024px = 410px */
   width: 410px;
   flex-shrink: 0;
   max-height: 80vh;
@@ -285,23 +313,24 @@ header .subtitle {
   }
 }
 
+/* Loading State */
 .loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 50vh;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #667eea;
-  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: var(--radius-full);
   animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 @keyframes spin {
@@ -310,10 +339,12 @@ header .subtitle {
   }
 }
 
+/* Responsive Styles */
 @media (max-width: 1200px) {
   .radar-layout {
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
 
   .table-wrapper {
@@ -324,20 +355,20 @@ header .subtitle {
 }
 
 @media (max-width: 768px) {
-  header h1 {
+  .header-title {
     font-size: 1.8rem;
   }
 
-  header .subtitle {
+  .header-subtitle {
     font-size: 0.9rem;
   }
 
   .main-content {
-    padding: 1rem;
+    padding: var(--space-4);
   }
 
   .radar-wrapper {
-    padding: 0.5rem;
+    padding: var(--space-2);
     overflow-x: auto;
   }
 }

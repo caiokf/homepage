@@ -1,5 +1,0 @@
----
-alwaysApply: true
----
-
-- Always export named classes and constants, never export default

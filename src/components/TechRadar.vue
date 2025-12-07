@@ -146,7 +146,6 @@
             dominant-baseline="central"
             font-size="10px"
             font-weight="bold"
-            fill="white"
           >
             {{ blip.blipText }}
           </text>
@@ -201,15 +200,17 @@ import {
   getMovedOutPath,
 } from "./radar-geometry";
 
-const props = defineProps<{
+interface Props {
   radar: Radar;
   selectedQuadrant: QuadrantOrder | null;
-}>();
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: "quadrant-selected", order: QuadrantOrder | null): void;
-  (e: "blip-selected", blip: PositionedBlip): void;
-  (e: "blip-hovered", blip: PositionedBlip | null): void;
+  quadrantSelected: [order: QuadrantOrder | null];
+  blipSelected: [blip: PositionedBlip];
+  blipHovered: [blip: PositionedBlip | null];
 }>();
 
 const svgRef = ref<SVGSVGElement | null>(null);
@@ -221,8 +222,8 @@ const radarSize = computed(() => graphConfig.radarSize);
 const quadrantSize = computed(() => graphConfig.quadrantSize);
 
 // SVG dimensions - responsive, fills container
-const svgWidth = '100%';
-const svgHeight = '100%';
+const svgWidth = "100%";
+const svgHeight = "100%";
 
 const viewBox = computed(() => {
   if (!props.selectedQuadrant) {
@@ -293,7 +294,7 @@ function getRingPaths(
   const paths: string[] = [];
   // Convert to radians and adjust for D3's coordinate system
   // D3 arc: 0 = 12 o'clock, positive = clockwise
-  // We need to offset by -π/2 to align with standard math coordinates
+  // We need to offset by -pi/2 to align with standard math coordinates
   const startAngle = ((quadrantConfig.startAngle - 90) * Math.PI) / 180;
   const endAngle = startAngle + Math.PI / 2; // 90 degree arc clockwise
 
@@ -305,7 +306,7 @@ function getRingPaths(
       .startAngle(startAngle)
       .endAngle(endAngle);
 
-    paths.push(arc({} as any) || "");
+    paths.push(arc({} as d3.DefaultArcObject) || "");
   }
 
   return paths;
@@ -333,7 +334,7 @@ function getRingLabelsOnSeparators() {
 // Quadrant selection
 function selectQuadrant(order: QuadrantOrder) {
   if (props.selectedQuadrant) return; // Already zoomed, don't re-zoom
-  emit("quadrant-selected", order);
+  emit("quadrantSelected", order);
 }
 
 // Tooltip positioning
@@ -348,16 +349,16 @@ const tooltipStyle = computed<CSSProperties>(() => {
 
 function handleBlipHover(blip: PositionedBlip) {
   hoveredBlip.value = blip;
-  emit("blip-hovered", blip);
+  emit("blipHovered", blip);
 }
 
 function handleBlipLeave() {
   hoveredBlip.value = null;
-  emit("blip-hovered", null);
+  emit("blipHovered", null);
 }
 
 function handleBlipClick(blip: PositionedBlip) {
-  emit("blip-selected", blip);
+  emit("blipSelected", blip);
 }
 
 // Track mouse position for tooltip
@@ -389,7 +390,7 @@ onUnmounted(() => {
 
 /* Quadrant group transitions */
 .quadrant-group {
-  transition: opacity 0.5s ease;
+  transition: opacity var(--transition-slow);
 }
 
 .quadrant-hidden {
@@ -407,7 +408,7 @@ onUnmounted(() => {
 
 /* Separator lines between quadrants */
 .separator-line {
-  stroke: white;
+  stroke: var(--color-separator);
   stroke-width: 32;
   pointer-events: none;
 }
@@ -416,12 +417,15 @@ onUnmounted(() => {
 .ring-arc-0 {
   fill: var(--ring-0);
 }
+
 .ring-arc-1 {
   fill: var(--ring-1);
 }
+
 .ring-arc-2 {
   fill: var(--ring-2);
 }
+
 .ring-arc-3 {
   fill: var(--ring-3);
 }
@@ -436,12 +440,15 @@ onUnmounted(() => {
 .blip-circle.first {
   fill: var(--quadrant-first);
 }
+
 .blip-circle.second {
   fill: var(--quadrant-second);
 }
+
 .blip-circle.third {
   fill: var(--quadrant-third);
 }
+
 .blip-circle.fourth {
   fill: var(--quadrant-fourth);
 }
@@ -451,15 +458,19 @@ onUnmounted(() => {
   fill: none;
   stroke-width: 2;
 }
+
 .blip-indicator.first {
   fill: var(--quadrant-first);
 }
+
 .blip-indicator.second {
   fill: var(--quadrant-second);
 }
+
 .blip-indicator.third {
   fill: var(--quadrant-third);
 }
+
 .blip-indicator.fourth {
   fill: var(--quadrant-fourth);
 }
@@ -469,12 +480,13 @@ onUnmounted(() => {
   pointer-events: none;
   font-style: normal;
   font-family: var(--font-mono);
+  fill: var(--color-text-inverse);
 }
 
 /* Blip hover effects */
 .blip {
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--transition-normal);
 }
 
 .blip-faded {
@@ -487,9 +499,9 @@ onUnmounted(() => {
 
 /* Ring names */
 .ring-name {
-  fill: #333;
+  fill: var(--color-text-primary);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
@@ -497,15 +509,15 @@ onUnmounted(() => {
 
 /* Ring labels on separator lines */
 .ring-label-separator {
-  fill: #333;
+  fill: var(--color-text-primary);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
   paint-order: stroke fill;
-  stroke: white;
+  stroke: var(--color-separator);
   stroke-width: 4px;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -517,27 +529,30 @@ onUnmounted(() => {
 }
 
 .quadrant-name-text {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
   font-family: var(--font-mono);
   max-width: 150px;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  line-height: 1.2;
+  line-height: var(--leading-tight);
 }
 
 .quadrant-name-text.first {
   color: var(--quadrant-first);
   text-align: left;
 }
+
 .quadrant-name-text.second {
   color: var(--quadrant-second);
   text-align: left;
 }
+
 .quadrant-name-text.third {
   color: var(--quadrant-third);
   text-align: right;
 }
+
 .quadrant-name-text.fourth {
   color: var(--quadrant-fourth);
   text-align: right;
@@ -546,13 +561,17 @@ onUnmounted(() => {
 /* Tooltip */
 .radar-tooltip {
   position: fixed;
-  background: #163c4d;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  background: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
   pointer-events: none;
   z-index: 100;
   max-width: 200px;
+  box-shadow: var(--shadow-lg);
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme);
 }
 </style>
