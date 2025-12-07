@@ -52,6 +52,7 @@
             @blip-selected="handleBlipSelected"
             @blip-hovered="handleBlipHovered"
           />
+          <RadarLegend />
         </div>
 
         <!-- Table on RIGHT (for SW/SE quadrants - radar moves left) -->
@@ -69,9 +70,6 @@
           />
         </div>
       </main>
-
-      <!-- Legend -->
-      <RadarLegend />
     </div>
 
     <div v-else class="loading">
