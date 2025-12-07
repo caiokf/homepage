@@ -186,6 +186,11 @@
     text-transform: lowercase;
   }
 
+  .company-name::before {
+    content: "// ";
+    color: var(--color-primary);
+  }
+
   .company-link {
     color: inherit;
     text-decoration: none;
@@ -197,10 +202,11 @@
   }
 
   .position {
-    font-family: var(--font-sans);
-    font-size: var(--text-md);
-    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    color: var(--color-primary);
     text-transform: lowercase;
+    font-weight: var(--font-semibold);
   }
 
   .experience-meta {
