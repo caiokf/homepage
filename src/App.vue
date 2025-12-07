@@ -23,7 +23,7 @@
     <div v-if="radar" class="main-content">
       <!-- Search bar -->
       <div class="search-container">
-        <RadarSearch :radar="radar" @select="handleSearchSelect" />
+        <Search :radar="radar" @select="handleSearchSelect" />
       </div>
 
       <!-- Main radar and table container -->
@@ -84,7 +84,7 @@
   import TechRadar from "./components/TechRadar.vue";
   import BlipListByQuadrant from "./components/BlipListByQuadrant.vue";
   import RadarLegend from "./components/RadarLegend.vue";
-  import RadarSearch from "./components/RadarSearch.vue";
+  import Search from "./components/Search.vue";
   import RadarHeader from "./components/RadarHeader.vue";
   import ThemeToggle from "./components/ThemeToggle.vue";
   import { Radar } from "./models/radar";
