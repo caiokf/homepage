@@ -63,13 +63,13 @@ export function getQuadrantLabelY(
   }
 }
 
-export interface SeparatorLine {
+export type SeparatorLine = {
   angle: number;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-}
+};
 
 /**
  * Calculate separator lines between quadrants
@@ -90,11 +90,11 @@ export function getSeparatorLines(outerRadius: number): SeparatorLine[] {
   });
 }
 
-export interface RingLabel {
+export type RingLabel = {
   x: number;
   y: number;
   name: string;
-}
+};
 
 /**
  * Calculate ring label positions on separator lines

@@ -1,10 +1,10 @@
 import type { TechRadarDataProvider } from "../tech-radar-data-provider";
 import type { TechRadarData, TechRadarBlipData } from "../tech-radar-data";
 
-export interface GoogleSheetsConfig {
+export type GoogleSheetsConfig = {
   sheetId: string;
   apiKey?: string;
-}
+};
 
 export class GoogleSheetsProvider implements TechRadarDataProvider {
   constructor(private config: GoogleSheetsConfig) {}

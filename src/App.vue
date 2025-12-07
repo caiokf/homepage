@@ -97,11 +97,11 @@ import type { PositionedBlip, QuadrantGeometry } from "./models/types";
 import { type QuadrantPosition, graphConfig } from "./config/radar-config";
 import { useTheme } from "./composables/useTheme";
 
-interface SearchResult {
+type SearchResult = {
   blip: { name: string };
   quadrant: QuadrantPosition;
   quadrantName: string;
-}
+};
 
 // Initialize theme system
 useTheme();

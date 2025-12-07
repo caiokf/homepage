@@ -24,11 +24,11 @@ class SeededRandom {
   }
 }
 
-interface BlipCoordinate {
+type BlipCoordinate = {
   x: number;
   y: number;
   width: number;
-}
+};
 
 export class Quadrant {
   private _blips: Blip[] = [];

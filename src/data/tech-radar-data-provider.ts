@@ -1,5 +1,5 @@
 import type { TechRadarData } from "./tech-radar-data";
 
-export interface TechRadarDataProvider {
+export type TechRadarDataProvider = {
   fetch(): Promise<TechRadarData>;
-}
+};

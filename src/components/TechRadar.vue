@@ -201,10 +201,10 @@ import {
   getMovedOutPath,
 } from "./radar-geometry";
 
-interface Props {
+type Props = {
   radar: Radar;
   selectedQuadrant: QuadrantPosition | null;
-}
+};
 
 const props = defineProps<Props>();
 

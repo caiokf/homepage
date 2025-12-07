@@ -54,11 +54,11 @@ import type { Radar } from "../models/radar";
 import type { Blip } from "../models/blip";
 import type { QuadrantPosition } from "../config/radar-config";
 
-interface SearchResult {
+type SearchResult = {
   blip: Blip;
   quadrant: QuadrantPosition;
   quadrantName: string;
-}
+};
 
 const props = defineProps<{
   radar: Radar;

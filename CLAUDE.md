@@ -46,6 +46,25 @@ src/
 - **D3 integration:** Imperative DOM manipulation within Vue lifecycle hooks, separate from Vue reactivity
 - **Constants:** `IDEAL_BLIP_WIDTH = 22px`, `NEW_GROUP_BLIP_WIDTH = 88px`, `EXISTING_GROUP_BLIP_WIDTH = 124px`
 
+## TypeScript Conventions
+
+- **Use `type` instead of `interface`** for all type definitions. The only exception is `.d.ts` declaration files where `interface` may be required for module augmentation.
+- **Use `type` for object shapes:**
+  ```typescript
+  // Correct
+  type SearchResult = {
+    blip: Blip;
+    quadrant: QuadrantPosition;
+  };
+
+  // Incorrect
+  interface SearchResult {
+    blip: Blip;
+    quadrant: QuadrantPosition;
+  }
+  ```
+- **Quadrant positions use compass directions:** `"NE" | "NW" | "SE" | "SW"` (not "first", "second", etc.)
+
 ## Testing
 
 Vitest with globals enabled. Test files colocated with source (`*.test.ts`).
