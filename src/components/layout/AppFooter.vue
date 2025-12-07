@@ -12,11 +12,26 @@
         <span class="nav-label-short">[{{ item.labelShort }}]</span>
       </router-link>
     </nav>
+
+    <div class="social-links">
+      <a
+        v-for="social in socialsConfig"
+        :key="social.network"
+        :href="social.url"
+        :title="social.network"
+        class="social-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img :src="social.icon" :alt="social.network" class="social-icon" />
+      </a>
+    </div>
   </footer>
 </template>
 
 <script setup lang="ts">
   import { useRoute } from "vue-router";
+  import { socialsConfig } from "../../config/socials-config";
 
   type NavItem = {
     path: string;
@@ -97,6 +112,34 @@
     display: none;
   }
 
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: var(--space-6);
+    padding-left: var(--space-6);
+    border-left: 1px solid oklch(1 0 0 / 0.15);
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .social-link:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  .social-icon {
+    width: 18px;
+    height: 18px;
+    filter: invert(1);
+  }
+
   /* Light theme adjustments */
   :root:not([data-theme="dark"]) .app-footer,
   [data-theme="light"] .app-footer {
@@ -104,6 +147,16 @@
     color: oklch(0.25 0.01 260);
     border-top-color: oklch(0 0 0 / 0.08);
     box-shadow: oklch(0 0 0 / 0.1) 0px -0.5px 0px 0px, oklch(1 0 0 / 0.5) 0px -0.5px 0px 0px inset;
+  }
+
+  :root:not([data-theme="dark"]) .social-links,
+  [data-theme="light"] .social-links {
+    border-left-color: oklch(0 0 0 / 0.15);
+  }
+
+  :root:not([data-theme="dark"]) .social-icon,
+  [data-theme="light"] .social-icon {
+    filter: invert(0);
   }
 
   /* Mobile/small screens: show short labels */
@@ -123,6 +176,17 @@
 
     .nav-item {
       font-size: var(--text-sm);
+    }
+
+    .social-links {
+      gap: var(--space-3);
+      margin-left: var(--space-4);
+      padding-left: var(--space-4);
+    }
+
+    .social-icon {
+      width: 16px;
+      height: 16px;
     }
   }
 </style>
