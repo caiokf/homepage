@@ -30,12 +30,7 @@
   }
 
   .page-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
     margin-bottom: var(--space-6);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
   }
 
   .about-text {
@@ -53,10 +48,6 @@
   @media (max-width: 768px) {
     .about-page {
       padding: var(--space-6);
-    }
-
-    .page-title {
-      font-size: var(--text-2xl);
     }
 
     .about-text {

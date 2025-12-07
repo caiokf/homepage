@@ -24,12 +24,7 @@
   }
 
   .page-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
     margin-bottom: var(--space-6);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
   }
 
   .placeholder-text {
@@ -41,10 +36,6 @@
   @media (max-width: 768px) {
     .articles-page {
       padding: var(--space-6);
-    }
-
-    .page-title {
-      font-size: var(--text-2xl);
     }
 
     .placeholder-text {
