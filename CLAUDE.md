@@ -84,3 +84,7 @@ describe("ClassName", () => {
 ## Legacy Code
 
 `src/legacy/` contains original JavaScript implementation not currently in use. The project is being modernized to TypeScript with component-based Vue 3 architecture.
+
+## Workflow
+
+After completing code changes, always end your response with a suggested lowercase git commit message in backticks, e.g.: `add user authentication to api routes`
