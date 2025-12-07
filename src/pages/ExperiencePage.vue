@@ -26,13 +26,15 @@
             <div class="experience-meta">
               <span class="date-range">{{ formatDateRange(experience) }}</span>
               <span class="duration">{{ calculateDuration(experience) }}</span>
-              <span
-                v-for="tag in experience.tags"
-                :key="tag"
-                class="experience-tag"
-              >
-                {{ tag }}
-              </span>
+              <div class="experience-tags">
+                <span
+                  v-for="tag in experience.tags"
+                  :key="tag"
+                  class="experience-tag"
+                >
+                  {{ tag }}
+                </span>
+              </div>
             </div>
           </header>
 
@@ -234,6 +236,13 @@
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
+  }
+
+  .experience-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    justify-content: flex-end;
   }
 
   .experience-tag {
