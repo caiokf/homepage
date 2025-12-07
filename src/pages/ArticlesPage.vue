@@ -35,7 +35,7 @@
                   {{ tag }}
                 </span>
               </div>
-              <span class="read-more">read more →</span>
+              <span class="read-more">[read more]</span>
             </footer>
           </router-link>
         </article>
