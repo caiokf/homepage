@@ -50,9 +50,9 @@
 
 <script setup lang="ts">
   import { ref, computed } from "vue";
-  import type { Radar } from "../models/radar";
-  import type { Blip } from "../models/blip";
-  import type { QuadrantPosition } from "../config/radar-config";
+  import type { Radar } from "../../models/radar";
+  import type { Blip } from "../../models/blip";
+  import type { QuadrantPosition } from "../../config/radar-config";
 
   type SearchResult = {
     blip: Blip;

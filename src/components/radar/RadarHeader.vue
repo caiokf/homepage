@@ -28,8 +28,8 @@
 
 <script setup lang="ts">
   import { computed } from "vue";
-  import type { Radar } from "../models/radar";
-  import type { QuadrantPosition } from "../config/radar-config";
+  import type { Radar } from "../../models/radar";
+  import type { QuadrantPosition } from "../../config/radar-config";
 
   const props = defineProps<{
     radar: Radar;

@@ -79,12 +79,12 @@
 
 <script setup lang="ts">
   import { shallowRef, ref, computed, onMounted } from "vue";
-  import TechRadar from "../components/TechRadar.vue";
-  import BlipList from "../components/BlipList.vue";
-  import BlipListByQuadrant from "../components/BlipListByQuadrant.vue";
-  import RadarLegend from "../components/RadarLegend.vue";
-  import Search from "../components/Search.vue";
-  import RadarHeader from "../components/RadarHeader.vue";
+  import TechRadar from "../components/radar/TechRadar.vue";
+  import BlipList from "../components/radar/BlipList.vue";
+  import BlipListByQuadrant from "../components/radar/BlipListByQuadrant.vue";
+  import RadarLegend from "../components/radar/RadarLegend.vue";
+  import Search from "../components/radar/Search.vue";
+  import RadarHeader from "../components/radar/RadarHeader.vue";
   import { Radar } from "../models/radar";
   import { SampleDataProvider } from "../data/providers/sample-data-provider";
   import type { TechRadarDataProvider } from "../data/tech-radar-data-provider";

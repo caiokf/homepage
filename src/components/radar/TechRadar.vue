@@ -191,17 +191,17 @@
     type CSSProperties,
   } from "vue";
   import * as d3 from "d3";
-  import type { Radar } from "../models/radar";
-  import type { Quadrant } from "../models/quadrant";
+  import type { Radar } from "../../models/radar";
+  import type { Quadrant } from "../../models/quadrant";
   import type {
     PositionedBlip,
     QuadrantGeometryConfig,
-  } from "../models/quadrant.geometry";
-  import { graphConfig, type QuadrantPosition } from "../config/radar-config";
-  import { RingGeometry } from "../models/ring.geometry";
-  import { QuadrantGeometry } from "../models/quadrant.geometry";
-  import { RadarGeometry } from "../models/radar.geometry";
-  import { BlipGeometry } from "../models/blip.geometry";
+  } from "../../models/quadrant.geometry";
+  import { graphConfig, type QuadrantPosition } from "../../config/radar-config";
+  import { RingGeometry } from "../../models/ring.geometry";
+  import { QuadrantGeometry } from "../../models/quadrant.geometry";
+  import { RadarGeometry } from "../../models/radar.geometry";
+  import { BlipGeometry } from "../../models/blip.geometry";
 
   type Props = {
     radar: Radar;
