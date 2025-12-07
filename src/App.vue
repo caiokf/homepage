@@ -275,7 +275,7 @@
 
   /* Table Wrapper */
   .table-wrapper {
-    width: 410px;
+    width: 400px;
     flex-shrink: 0;
     max-height: 80vh;
     overflow-y: auto;
