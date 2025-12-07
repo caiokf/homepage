@@ -35,7 +35,7 @@
                   {{ tag }}
                 </span>
               </div>
-              <span class="read-more">[read more]</span>
+              <span class="bracket-link">read more</span>
             </footer>
           </router-link>
         </article>
@@ -209,13 +209,6 @@
     text-transform: lowercase;
   }
 
-  .read-more {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-primary);
-    text-transform: lowercase;
-  }
-
   .no-articles {
     text-align: center;
     font-family: var(--font-sans);
@@ -251,7 +244,7 @@
       gap: var(--space-3);
     }
 
-    .read-more {
+    .bracket-link {
       align-self: flex-end;
     }
   }

@@ -5,11 +5,11 @@
         v-for="item in navItems"
         :key="item.path"
         :to="item.path"
-        class="nav-item"
+        class="nav-item bracket-link"
         :class="{ active: isActive(item.path) }"
       >
-        <span class="nav-label-long">[{{ item.labelLong }}]</span>
-        <span class="nav-label-short">[{{ item.labelShort }}]</span>
+        <span class="nav-label-long">{{ item.labelLong }}</span>
+        <span class="nav-label-short">{{ item.labelShort }}</span>
       </router-link>
     </nav>
 
@@ -90,12 +90,8 @@
 
   .nav-item {
     font-size: var(--text-base);
-    font-family: var(--font-mono);
-    text-decoration: none;
     color: inherit;
     opacity: 0.7;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
-    text-transform: lowercase;
     white-space: nowrap;
   }
 
