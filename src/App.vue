@@ -163,13 +163,13 @@
   const radarWrapperStyle = computed(() => {
     if (!selectedQuadrant.value) {
       return {
-        width: "1024px",
+        width: "1056px",
       };
     }
 
-    // Shrink to 0.6 of original width (614px)
+    // Shrink to 0.6 of original width
     return {
-      width: "614px",
+      width: "634px",
     };
   });
 
