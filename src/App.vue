@@ -91,7 +91,8 @@ import RadarHeader from "./components/RadarHeader.vue";
 import ThemeToggle from "./components/ThemeToggle.vue";
 import { Radar } from "./models/radar";
 import { Ring } from "./models/ring";
-import { sampleRadarData } from "./data/sample-data";
+import { SampleDataProvider } from "./data/providers/sample-data-provider";
+import type { TechRadarDataProvider } from "./data/tech-radar-data-provider";
 import type { PositionedBlip, QuadrantGeometry } from "./models/types";
 import { type QuadrantOrder, graphConfig } from "./config/radar-config";
 import { useTheme } from "./composables/useTheme";
@@ -105,13 +106,17 @@ interface SearchResult {
 // Initialize theme system
 useTheme();
 
+// Data provider - can be swapped for different data sources
+const dataProvider: TechRadarDataProvider = new SampleDataProvider();
+
 const radar = shallowRef<Radar | null>(null);
 const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
 const selectedQuadrant = ref<QuadrantOrder | null>(null);
 const hoveredBlipId = ref<number | null>(null);
 
-onMounted(() => {
-  radar.value = Radar.create(sampleRadarData);
+onMounted(async () => {
+  const data = await dataProvider.fetch();
+  radar.value = Radar.create(data);
 });
 
 // Get the selected quadrant configuration

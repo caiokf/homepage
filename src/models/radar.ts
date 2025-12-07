@@ -2,6 +2,7 @@ import { Quadrant } from "./quadrant";
 import { Ring } from "./ring";
 import { Blip, type BlipStatus } from "./blip";
 import { RING_NAMES, QUADRANT_NAMES } from "../config/radar-config";
+import type { TechRadarData } from "../data/tech-radar-data";
 
 class MalformedDataError extends Error {
   constructor(message: string) {
@@ -14,30 +15,13 @@ const ExceptionMessages = {
   TOO_MANY_QUADRANTS: "Too many quadrants",
 };
 
-export interface QuadrantConfig {
+export type QuadrantConfig = {
   order: "first" | "second" | "third" | "fourth";
   startAngle: number;
   quadrant?: Quadrant;
-}
+};
 
 export type RingsMap = Record<string, Ring>;
-
-export type TechRadarBlipData = {
-  name: string;
-  ring: string;
-  quadrant: string;
-  isNew: boolean;
-  status?: BlipStatus;
-  description?: string;
-  topic?: string;
-};
-
-export type TechRadarData = {
-  title?: string;
-  blips: TechRadarBlipData[];
-  rings?: string[];
-  quadrants?: string[];
-};
 
 export class Radar {
   private _blipNumber: number = 0;

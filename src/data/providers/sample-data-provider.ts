@@ -1,7 +1,8 @@
-import type { TechRadarData } from "../models/radar";
-import { RING_NAMES, QUADRANT_NAMES } from "../config/radar-config";
+import type { TechRadarDataProvider } from "../tech-radar-data-provider";
+import type { TechRadarData } from "../tech-radar-data";
+import { RING_NAMES, QUADRANT_NAMES } from "../../config/radar-config";
 
-export const sampleRadarData: TechRadarData = {
+const sampleData: TechRadarData = {
   title: "Technology Radar",
   rings: [...RING_NAMES],
   quadrants: [...QUADRANT_NAMES],
@@ -253,3 +254,9 @@ export const sampleRadarData: TechRadarData = {
     },
   ],
 };
+
+export class SampleDataProvider implements TechRadarDataProvider {
+  async fetch(): Promise<TechRadarData> {
+    return sampleData;
+  }
+}
