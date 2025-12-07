@@ -1,8 +1,5 @@
 import { Ring } from "./ring";
-
-const IDEAL_BLIP_WIDTH = 22;
-const NEW_GROUP_BLIP_WIDTH = 88;
-const EXISTING_GROUP_BLIP_WIDTH = 124;
+import { IDEAL_BLIP_WIDTH, BlipGeometry } from "./blip.geometry";
 
 export type BlipStatus = "new" | "moved in" | "moved out" | "no change";
 
@@ -35,7 +32,7 @@ export class Blip {
   }
 
   groupBlipWidth(): number {
-    return this._isNew ? NEW_GROUP_BLIP_WIDTH : EXISTING_GROUP_BLIP_WIDTH;
+    return BlipGeometry.getGroupWidth(this._isNew);
   }
 
   get topic(): string {

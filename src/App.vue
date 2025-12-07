@@ -90,12 +90,13 @@ import RadarSearch from "./components/RadarSearch.vue";
 import RadarHeader from "./components/RadarHeader.vue";
 import ThemeToggle from "./components/ThemeToggle.vue";
 import { Radar } from "./models/radar";
-import { Ring } from "./models/ring";
 import { SampleDataProvider } from "./data/providers/sample-data-provider";
 import type { TechRadarDataProvider } from "./data/tech-radar-data-provider";
-import type { PositionedBlip, QuadrantGeometry } from "./models/types";
+import type { PositionedBlip, QuadrantGeometryConfig } from "./models/types";
 import { type QuadrantPosition, graphConfig } from "./config/radar-config";
 import { useTheme } from "./composables/useTheme";
+import { RingGeometry } from "./models/ring.geometry";
+import { QuadrantGeometry } from "./models/quadrant.geometry";
 
 type SearchResult = {
   blip: { name: string };
@@ -129,15 +130,15 @@ const selectedQuadrantObj = computed(() => {
 const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
   if (!selectedQuadrantObj.value) return [];
 
-  const ringRadii = Ring.calculateRadii(graphConfig.quadrantSize);
-  const geometry: QuadrantGeometry = {
+  const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
+  const geometry: QuadrantGeometryConfig = {
     startAngle: selectedQuadrantObj.value.startAngle,
     quadrantSize: graphConfig.quadrantSize,
     ringRadii,
     center: { x: 0, y: 0 },
   };
 
-  return selectedQuadrantObj.value.calculateBlipPositions(geometry);
+  return QuadrantGeometry.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
 });
 
 // Determine if radar should move to the right (NE/NW quadrants selected)

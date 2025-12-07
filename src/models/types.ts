@@ -16,7 +16,7 @@ export type PositionedBlip = {
 };
 
 // Quadrant geometry configuration for positioning calculations
-export type QuadrantGeometry = {
+export type QuadrantGeometryConfig = {
   startAngle: number;
   quadrantSize: number;
   ringRadii: number[];

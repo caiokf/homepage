@@ -56,7 +56,7 @@
         />
         <!-- Ring labels on horizontal separator -->
         <text
-          v-for="(label, index) in getRingLabelsOnSeparators()"
+          v-for="(label, index) in calcRingLabelsOnSeparators()"
           :key="`ring-label-${index}`"
           :x="label.x"
           :y="label.y"
@@ -120,19 +120,19 @@
           <!-- Indicator based on status -->
           <path
             v-if="blip.isNew"
-            :d="getOuterCirclePath()"
+            :d="BlipGeometry.getNewIndicatorPath()"
             :class="['blip-indicator', quadrant.position]"
             opacity="1"
           />
           <path
             v-else-if="blip.status === 'moved in'"
-            :d="getMovedInPath(quadrant.position)"
+            :d="BlipGeometry.getMovedInIndicatorPath(quadrant.position)"
             :class="['blip-indicator', quadrant.position]"
             opacity="1"
           />
           <path
             v-else-if="blip.status === 'moved out'"
-            :d="getMovedOutPath(quadrant.position)"
+            :d="BlipGeometry.getMovedOutIndicatorPath(quadrant.position)"
             :class="['blip-indicator', quadrant.position]"
             opacity="1"
           />
@@ -187,19 +187,12 @@ import { ref, computed, onMounted, onUnmounted, type CSSProperties } from "vue";
 import * as d3 from "d3";
 import type { Radar } from "../models/radar";
 import type { Quadrant } from "../models/quadrant";
-import { Ring } from "../models/ring";
-import type { PositionedBlip, QuadrantGeometry } from "../models/types";
+import type { PositionedBlip, QuadrantGeometryConfig } from "../models/types";
 import { graphConfig, type QuadrantPosition } from "../config/radar-config";
-import {
-  getZoomedViewBoxOffset,
-  getQuadrantLabelX as calcQuadrantLabelX,
-  getQuadrantLabelY as calcQuadrantLabelY,
-  getSeparatorLines as calcSeparatorLines,
-  getRingLabelsOnSeparators as calcRingLabelsOnSeparators,
-  getOuterCirclePath,
-  getMovedInPath,
-  getMovedOutPath,
-} from "./radar-geometry";
+import { RingGeometry } from "../models/ring.geometry";
+import { QuadrantGeometry } from "../models/quadrant.geometry";
+import { RadarGeometry } from "../models/radar.geometry";
+import { BlipGeometry } from "../models/blip.geometry";
 
 type Props = {
   radar: Radar;
@@ -231,7 +224,7 @@ const viewBox = computed(() => {
     return `0 0 ${radarSize.value} ${radarSize.value}`;
   }
   // When zoomed, show just the selected quadrant (half the radar in each dimension)
-  const offset = getZoomedViewBoxOffset(
+  const offset = RadarGeometry.getZoomedViewBoxOffset(
     props.selectedQuadrant,
     radarSize.value
   );
@@ -240,7 +233,7 @@ const viewBox = computed(() => {
 });
 
 // Compute ring radii
-const ringRadii = computed(() => Ring.calculateRadii(quadrantSize.value));
+const ringRadii = computed(() => RingGeometry.calculateRadii(quadrantSize.value));
 
 // Get all quadrants from radar
 const quadrants = computed(() => props.radar.quadrants);
@@ -250,14 +243,14 @@ const positionedBlipsCache = computed(() => {
   const cache: PositionedBlip[][] = [];
 
   for (const quadrant of quadrants.value) {
-    const geometry: QuadrantGeometry = {
+    const geometry: QuadrantGeometryConfig = {
       startAngle: quadrant.startAngle,
       quadrantSize: quadrantSize.value,
       ringRadii: ringRadii.value,
       center: { x: 0, y: 0 },
     };
 
-    cache.push(quadrant.calculateBlipPositions(geometry));
+    cache.push(QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry));
   }
 
   return cache;
@@ -308,21 +301,21 @@ function getRingPaths(quadrant: Quadrant): string[] {
 
 function getQuadrantLabelX(position: QuadrantPosition): number {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return calcQuadrantLabelX(position, outerRadius);
+  return RadarGeometry.getQuadrantLabelX(position, outerRadius);
 }
 
 function getQuadrantLabelY(position: QuadrantPosition): number {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return calcQuadrantLabelY(position, outerRadius);
+  return RadarGeometry.getQuadrantLabelY(position, outerRadius);
 }
 
 function getSeparatorLines() {
   const outerRadius = ringRadii.value[ringRadii.value.length - 1];
-  return calcSeparatorLines(outerRadius);
+  return RadarGeometry.getSeparatorLines(outerRadius);
 }
 
-function getRingLabelsOnSeparators() {
-  return calcRingLabelsOnSeparators(ringRadii.value);
+function calcRingLabelsOnSeparators() {
+  return RingGeometry.getLabelsOnSeparators(ringRadii.value);
 }
 
 // Quadrant selection

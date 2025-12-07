@@ -1,9 +1,34 @@
 // Radar Configuration
 // Configurable ring and quadrant names, dimensions, and colors
 
+/**
+/**
+ * Adopt
+ * Trial
+ * Assess
+ * Hold
+ * 
+ * -- Alternative meaning scheme:
+ * Proven (things I am experienced with and comfortably use in production)
+ * Experimental (used in smaller features or places with low risk/easy change)
+ * Learning (currently exploring or skill-building)
+ * Avoid (known not to suit our context)
+ */
 export const RING_NAMES = ["Adopt", "Trial", "Assess", "Hold"] as const;
 export type RingName = (typeof RING_NAMES)[number];
 
+/**
+ * "Techniques",
+ * "Platforms",
+ * "Tools",
+ * "Languages & Frameworks",
+ *
+ * -- Alternative:
+ * Techniques:
+ * Tools:
+ * Tech Stack:
+ * AI:
+ */
 export const QUADRANT_NAMES = [
   "Techniques",
   "Platforms",
