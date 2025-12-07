@@ -1,5 +1,5 @@
 <template>
-  <div class="quadrant-table" :class="quadrantOrder">
+  <div class="quadrant-table" :class="quadrantPosition">
     <h2 class="quadrant-title">{{ quadrantName }}</h2>
 
     <div v-for="ring in ringGroups" :key="ring.name" class="ring-section">
@@ -25,11 +25,11 @@
 import { computed } from "vue";
 import BlipListItem from "./BlipListItem.vue";
 import type { PositionedBlip } from "../models/types";
-import { RING_NAMES, type QuadrantOrder } from "../config/radar-config";
+import { RING_NAMES, type QuadrantPosition } from "../config/radar-config";
 
 const props = defineProps<{
   quadrantName: string;
-  quadrantOrder: QuadrantOrder;
+  quadrantPosition: QuadrantPosition;
   blips: PositionedBlip[];
   highlightedBlipId: number | null;
 }>();
@@ -77,17 +77,17 @@ function handleBlipClick(blip: PositionedBlip) {
   color: var(--color-text-inverse);
 }
 
-.quadrant-table.first .quadrant-title {
-  background: var(--quadrant-first);
+.quadrant-table.NE .quadrant-title {
+  background: var(--quadrant-NE);
 }
-.quadrant-table.second .quadrant-title {
-  background: var(--quadrant-second);
+.quadrant-table.NW .quadrant-title {
+  background: var(--quadrant-NW);
 }
-.quadrant-table.third .quadrant-title {
-  background: var(--quadrant-third);
+.quadrant-table.SW .quadrant-title {
+  background: var(--quadrant-SW);
 }
-.quadrant-table.fourth .quadrant-title {
-  background: var(--quadrant-fourth);
+.quadrant-table.SE .quadrant-title {
+  background: var(--quadrant-SE);
 }
 
 .ring-section {

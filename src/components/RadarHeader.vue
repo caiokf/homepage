@@ -8,18 +8,18 @@
       </li>
       <li
         v-for="quadrant in quadrants"
-        :key="quadrant.order"
+        :key="quadrant.position"
         :class="[
           'radar-header__item',
-          quadrant.order,
-          { 'active-item': selectedQuadrant === quadrant.order },
+          quadrant.position,
+          { 'active-item': selectedQuadrant === quadrant.position },
         ]"
       >
         <button
           class="radar-header__button"
-          @click="$emit('select', quadrant.order)"
+          @click="$emit('select', quadrant.position)"
         >
-          {{ quadrant.quadrant?.name }}
+          {{ quadrant.name }}
         </button>
       </li>
     </ul>
@@ -29,15 +29,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Radar } from "../models/radar";
-import type { QuadrantOrder } from "../config/radar-config";
+import type { QuadrantPosition } from "../config/radar-config";
 
 const props = defineProps<{
   radar: Radar;
-  selectedQuadrant: QuadrantOrder | null;
+  selectedQuadrant: QuadrantPosition | null;
 }>();
 
 defineEmits<{
-  (e: "select", quadrant: QuadrantOrder | null): void;
+  (e: "select", position: QuadrantPosition | null): void;
 }>();
 
 const quadrants = computed(() => props.radar.quadrants);
@@ -87,20 +87,20 @@ const quadrants = computed(() => props.radar.quadrants);
   border-color: var(--color-text-muted);
 }
 
-.radar-header__item.first.active-item {
-  border-color: var(--quadrant-first);
+.radar-header__item.NE.active-item {
+  border-color: var(--quadrant-NE);
 }
 
-.radar-header__item.second.active-item {
-  border-color: var(--quadrant-second);
+.radar-header__item.NW.active-item {
+  border-color: var(--quadrant-NW);
 }
 
-.radar-header__item.third.active-item {
-  border-color: var(--quadrant-third);
+.radar-header__item.SW.active-item {
+  border-color: var(--quadrant-SW);
 }
 
-.radar-header__item.fourth.active-item {
-  border-color: var(--quadrant-fourth);
+.radar-header__item.SE.active-item {
+  border-color: var(--quadrant-SE);
 }
 
 .radar-header__item:not(.active-item):hover {

@@ -52,11 +52,11 @@
 import { ref, computed } from "vue";
 import type { Radar } from "../models/radar";
 import type { Blip } from "../models/blip";
-import type { QuadrantOrder } from "../config/radar-config";
+import type { QuadrantPosition } from "../config/radar-config";
 
 interface SearchResult {
   blip: Blip;
-  quadrant: QuadrantOrder;
+  quadrant: QuadrantPosition;
   quadrantName: string;
 }
 
@@ -76,14 +76,12 @@ const highlightedIndex = ref(0);
 const allBlips = computed<SearchResult[]>(() => {
   const results: SearchResult[] = [];
 
-  for (const config of props.radar.quadrants) {
-    if (!config.quadrant) continue;
-
-    for (const blip of config.quadrant.blips()) {
+  for (const quadrant of props.radar.quadrants) {
+    for (const blip of quadrant.blips()) {
       results.push({
         blip,
-        quadrant: config.order,
-        quadrantName: config.quadrant.name,
+        quadrant: quadrant.position,
+        quadrantName: quadrant.name,
       });
     }
   }

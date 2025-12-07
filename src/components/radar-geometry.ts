@@ -1,25 +1,23 @@
-import type { QuadrantOrder } from "../config/radar-config";
+import type { QuadrantPosition } from "../config/radar-config";
 import { RING_NAMES } from "../config/radar-config";
 
 /**
  * Calculate viewBox offset for zoomed quadrant view
  */
 export function getZoomedViewBoxOffset(
-  order: QuadrantOrder,
+  position: QuadrantPosition,
   radarSize: number
 ): { x: number; y: number } {
   const center = radarSize / 2;
-  switch (order) {
-    case "first": // top-right
+  switch (position) {
+    case "NE": // top-right
       return { x: center, y: 0 };
-    case "second": // top-left
+    case "NW": // top-left
       return { x: 0, y: 0 };
-    case "third": // bottom-left
+    case "SW": // bottom-left
       return { x: 0, y: center };
-    case "fourth": // bottom-right
+    case "SE": // bottom-right
       return { x: center, y: center };
-    default:
-      return { x: 0, y: 0 };
   }
 }
 
@@ -27,22 +25,20 @@ export function getZoomedViewBoxOffset(
  * Calculate X position for quadrant label
  */
 export function getQuadrantLabelX(
-  order: QuadrantOrder,
+  position: QuadrantPosition,
   outerRadius: number
 ): number {
   const offset = 30;
 
-  switch (order) {
-    case "first": // top-left quadrant
+  switch (position) {
+    case "NE": // top-right quadrant (label on left side)
       return -outerRadius + offset;
-    case "second": // bottom-left quadrant
+    case "NW": // top-left quadrant (label on left side)
       return -outerRadius + offset;
-    case "third": // top-right quadrant
+    case "SW": // bottom-left quadrant (label on right side)
       return outerRadius - offset - 150;
-    case "fourth": // bottom-right quadrant
+    case "SE": // bottom-right quadrant (label on right side)
       return outerRadius - offset - 150;
-    default:
-      return 0;
   }
 }
 
@@ -50,22 +46,20 @@ export function getQuadrantLabelX(
  * Calculate Y position for quadrant label
  */
 export function getQuadrantLabelY(
-  order: QuadrantOrder,
+  position: QuadrantPosition,
   outerRadius: number
 ): number {
   const offset = 30;
 
-  switch (order) {
-    case "first": // top-left quadrant
+  switch (position) {
+    case "NE": // top-right quadrant
       return -outerRadius + offset;
-    case "second": // bottom-left quadrant
+    case "NW": // top-left quadrant (actually bottom in screen coords)
       return outerRadius - 2 * offset;
-    case "third": // top-right quadrant
+    case "SW": // bottom-left quadrant
       return -outerRadius + offset;
-    case "fourth": // bottom-right quadrant
+    case "SE": // bottom-right quadrant
       return outerRadius - 2 * offset;
-    default:
-      return 0;
   }
 }
 
@@ -136,33 +130,25 @@ export function getOuterCirclePath(): string {
 /**
  * SVG path for "moved in" blip indicator (pointing toward center)
  */
-export function getMovedInPath(order: QuadrantOrder): string {
-  const paths: Record<QuadrantOrder, string> = {
-    first:
-      "M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z",
-    second:
-      "M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z",
-    third:
-      "M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z",
-    fourth:
-      "M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z",
+export function getMovedInPath(position: QuadrantPosition): string {
+  const paths: Record<QuadrantPosition, string> = {
+    NE: "M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z",
+    NW: "M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z",
+    SW: "M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z",
+    SE: "M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z",
   };
-  return paths[order];
+  return paths[position];
 }
 
 /**
  * SVG path for "moved out" blip indicator (pointing away from center)
  */
-export function getMovedOutPath(order: QuadrantOrder): string {
-  const paths: Record<QuadrantOrder, string> = {
-    first:
-      "M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z",
-    second:
-      "M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z",
-    third:
-      "M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z",
-    fourth:
-      "M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z",
+export function getMovedOutPath(position: QuadrantPosition): string {
+  const paths: Record<QuadrantPosition, string> = {
+    NE: "M19.5 1.56c0 0.86-0.7 1.56-1.56 1.56c-8.16 0-14.8 6.64-14.8 14.8c0 0.86-0.7 1.56-1.56 1.56S0 18.8 0 17.93C0 8.04 8.04 0 17.93 0C18.8 0 19.5 0.7 19.5 1.56z",
+    NW: "M19.5 34.44c0-.86-.7-1.56-1.56-1.56c-8.16 0-14.8-6.64-14.8-14.8c0-.86-.7-1.56-1.56-1.56S0 17.2 0 18.07C0 27.96 8.04 36 17.93 36C18.8 36 19.5 35.3 19.5 34.44z",
+    SW: "M16.5 1.56c0 .86.7 1.56 1.56 1.56c8.16 0 14.8 6.64 14.8 14.8c0 .86.7 1.56 1.56 1.56c.86 0 1.56-.7 1.56-1.56C36 8.04 27.96 0 18.07 0C17.2 0 16.5.7 16.5 1.56z",
+    SE: "M16.5 34.44c0-.86.7-1.56 1.56-1.56c8.16 0 14.8-6.64 14.8-14.8c0-.86.7-1.56 1.56-1.56c.86 0 1.56.7 1.56 1.56C36 27.96 27.96 36 18.07 36C17.2 36 16.5 35.3 16.5 34.44z",
   };
-  return paths[order];
+  return paths[position];
 }

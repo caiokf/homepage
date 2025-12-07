@@ -9,12 +9,30 @@ describe("Quadrant", () => {
 
   beforeEach(() => {
     ring = new Ring("Adopt", 1);
-    quadrant = new Quadrant("Languages & Frameworks");
+    quadrant = new Quadrant("NE", "Techniques");
   });
 
   describe("constructor", () => {
-    it("should create a quadrant with a name", () => {
-      expect(quadrant.name).toBe("Languages & Frameworks");
+    it("should create a quadrant with a position and custom name", () => {
+      expect(quadrant.position).toBe("NE");
+      expect(quadrant.name).toBe("Techniques");
+    });
+
+    it("should use default name if not provided", () => {
+      const defaultQuadrant = new Quadrant("NW");
+      expect(defaultQuadrant.name).toBe("Platforms");
+    });
+
+    it("should set start angle based on position", () => {
+      const neQuadrant = new Quadrant("NE");
+      const nwQuadrant = new Quadrant("NW");
+      const swQuadrant = new Quadrant("SW");
+      const seQuadrant = new Quadrant("SE");
+
+      expect(neQuadrant.startAngle).toBe(0);
+      expect(nwQuadrant.startAngle).toBe(-90);
+      expect(swQuadrant.startAngle).toBe(90);
+      expect(seQuadrant.startAngle).toBe(-180);
     });
 
     it("should start with empty blips array", () => {
@@ -82,7 +100,7 @@ describe("Quadrant", () => {
 
   describe("name", () => {
     it("should return the quadrant name", () => {
-      const quadrant = new Quadrant("Tools");
+      const quadrant = new Quadrant("SW", "Tools");
       expect(quadrant.name).toBe("Tools");
     });
   });

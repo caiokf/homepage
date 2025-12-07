@@ -82,16 +82,16 @@
 
 :root {
   /* Quadrant Base Colors */
-  --quadrant-first-base: #47a1ad;   /* Sapphire - Techniques */
-  --quadrant-second-base: #cc850a;  /* Turmeric - Platforms */
-  --quadrant-third-base: #6b9e78;   /* Jade - Tools */
-  --quadrant-fourth-base: #e16a7c;  /* Flamingo - Languages & Frameworks */
+  --quadrant-NE-base: #47a1ad;   /* Sapphire - Techniques */
+  --quadrant-NW-base: #cc850a;  /* Turmeric - Platforms */
+  --quadrant-SW-base: #6b9e78;   /* Jade - Tools */
+  --quadrant-SE-base: #e16a7c;  /* Flamingo - Languages & Frameworks */
 
   /* Quadrant Dark Accent Colors (for blips, titles) */
-  --quadrant-first: #1f8290;
-  --quadrant-second: #a06908;
-  --quadrant-third: #517b5c;
-  --quadrant-fourth: #9b293c;
+  --quadrant-NE: #1f8290;
+  --quadrant-NW: #a06908;
+  --quadrant-SW: #517b5c;
+  --quadrant-SE: #9b293c;
 }
 
 /* ==========================================================================
@@ -247,10 +247,10 @@
   --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.6);
 
   /* Quadrant colors adjusted for dark theme visibility */
-  --quadrant-first: #5abdc9;
-  --quadrant-second: #e0a020;
-  --quadrant-third: #7dc090;
-  --quadrant-fourth: #f08090;
+  --quadrant-NE: #5abdc9;
+  --quadrant-NW: #e0a020;
+  --quadrant-SW: #7dc090;
+  --quadrant-SE: #f08090;
 }
 
 /* ==========================================================================

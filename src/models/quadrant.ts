@@ -1,7 +1,8 @@
 import { Blip } from "./blip";
 import type { PositionedBlip, QuadrantGeometry } from "./types";
+import type { QuadrantPosition } from "../config/radar-config";
+import { QUADRANT_CONFIG } from "../config/radar-config";
 
-// Seeded random number generator for reproducible positioning
 class SeededRandom {
   private seed: number;
 
@@ -31,11 +32,26 @@ interface BlipCoordinate {
 
 export class Quadrant {
   private _blips: Blip[] = [];
+  private _name: string;
+  private _position: QuadrantPosition;
+  private _startAngle: number;
 
-  constructor(private _name: string) {}
+  constructor(position: QuadrantPosition, name?: string) {
+    this._position = position;
+    this._startAngle = QUADRANT_CONFIG[position].startAngle;
+    this._name = name ?? QUADRANT_CONFIG[position].defaultName;
+  }
 
   get name(): string {
     return this._name;
+  }
+
+  get position(): QuadrantPosition {
+    return this._position;
+  }
+
+  get startAngle(): number {
+    return this._startAngle;
   }
 
   add(newBlips: Blip | Blip[]): void {
@@ -55,7 +71,7 @@ export class Quadrant {
    * Uses seeded random for reproducible positions.
    */
   calculateBlipPositions(geometry: QuadrantGeometry): PositionedBlip[] {
-    const { startAngle, quadrantSize, ringRadii, center } = geometry;
+    const { quadrantSize, ringRadii, center } = geometry;
     const positioned: PositionedBlip[] = [];
     const allCoordinates: BlipCoordinate[] = [];
 
@@ -76,7 +92,7 @@ export class Quadrant {
           blip,
           minRadius,
           maxRadius,
-          startAngle,
+          this._startAngle,
           center,
           allCoordinates,
           random

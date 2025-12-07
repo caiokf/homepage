@@ -12,6 +12,23 @@ export const QUADRANT_NAMES = [
 ] as const;
 export type QuadrantName = (typeof QUADRANT_NAMES)[number];
 
+// Quadrant positions using compass directions
+export type QuadrantPosition = "NE" | "NW" | "SE" | "SW";
+
+// Quadrant configuration with position, angle, and default name
+export const QUADRANT_CONFIG: Record<
+  QuadrantPosition,
+  { startAngle: number; defaultName: string }
+> = {
+  NE: { startAngle: 0, defaultName: "Techniques" },
+  NW: { startAngle: -90, defaultName: "Platforms" },
+  SW: { startAngle: 90, defaultName: "Tools" },
+  SE: { startAngle: -180, defaultName: "Languages & Frameworks" },
+} as const;
+
+// Ordered list of positions for iteration
+export const QUADRANT_POSITIONS: QuadrantPosition[] = ["NE", "NW", "SW", "SE"];
+
 // Graph dimensions
 export const graphConfig = {
   quadrantSize: 512,
@@ -44,27 +61,28 @@ export const MAX_BLIPS_PER_RING = [8, 22, 17, 18] as const;
 // Group blip angles per ring
 export const GROUP_BLIP_ANGLES = [30, 35, 60, 80] as const;
 
-// Quadrant colors
-export const quadrantColors = {
-  first: {
+// Quadrant colors by position
+export const quadrantColors: Record<
+  QuadrantPosition,
+  { base: string; dark: string }
+> = {
+  NE: {
     base: "#47a1ad", // sapphire
     dark: "#1f8290",
   },
-  second: {
+  NW: {
     base: "#cc850a", // turmeric
     dark: "#a06908",
   },
-  third: {
+  SW: {
     base: "#6b9e78", // jade
     dark: "#517b5c",
   },
-  fourth: {
+  SE: {
     base: "#e16a7c", // flamingo
     dark: "#9b293c",
   },
 } as const;
-
-export type QuadrantOrder = keyof typeof quadrantColors;
 
 // Ring fill colors (grayscale from center outward)
 export const ringColors = {
@@ -80,14 +98,6 @@ export const uiColors = {
   mist: "#edf1f3", // light gray for backgrounds
   white: "#ffffff",
   black: "#000000",
-} as const;
-
-// Quadrant angles (starting angle for each quadrant)
-export const quadrantAngles = {
-  first: 0,
-  second: -90,
-  third: 90,
-  fourth: -180,
 } as const;
 
 // Animation timing

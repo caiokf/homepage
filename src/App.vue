@@ -28,14 +28,14 @@
 
       <!-- Main radar and table container -->
       <main class="radar-layout" :class="layoutClasses">
-        <!-- Table on LEFT (for first/second quadrants - radar moves right) -->
+        <!-- Table on LEFT (for NE/NW quadrants - radar moves right) -->
         <div
-          v-if="selectedQuadrant && selectedQuadrantConfig && isRadarOnRight"
+          v-if="selectedQuadrant && selectedQuadrantObj && isRadarOnRight"
           class="table-wrapper table-left"
         >
           <QuadrantTable
-            :quadrant-name="selectedQuadrantConfig.quadrant?.name || ''"
-            :quadrant-order="selectedQuadrant"
+            :quadrant-name="selectedQuadrantObj.name"
+            :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
             :highlighted-blip-id="hoveredBlipId"
             @blip-hover="handleTableBlipHover"
@@ -54,14 +54,14 @@
           />
         </div>
 
-        <!-- Table on RIGHT (for third/fourth quadrants - radar moves left) -->
+        <!-- Table on RIGHT (for SW/SE quadrants - radar moves left) -->
         <div
-          v-if="selectedQuadrant && selectedQuadrantConfig && !isRadarOnRight"
+          v-if="selectedQuadrant && selectedQuadrantObj && !isRadarOnRight"
           class="table-wrapper table-right"
         >
           <QuadrantTable
-            :quadrant-name="selectedQuadrantConfig.quadrant?.name || ''"
-            :quadrant-order="selectedQuadrant"
+            :quadrant-name="selectedQuadrantObj.name"
+            :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
             :highlighted-blip-id="hoveredBlipId"
             @blip-hover="handleTableBlipHover"
@@ -94,12 +94,12 @@ import { Ring } from "./models/ring";
 import { SampleDataProvider } from "./data/providers/sample-data-provider";
 import type { TechRadarDataProvider } from "./data/tech-radar-data-provider";
 import type { PositionedBlip, QuadrantGeometry } from "./models/types";
-import { type QuadrantOrder, graphConfig } from "./config/radar-config";
+import { type QuadrantPosition, graphConfig } from "./config/radar-config";
 import { useTheme } from "./composables/useTheme";
 
 interface SearchResult {
   blip: { name: string };
-  quadrant: QuadrantOrder;
+  quadrant: QuadrantPosition;
   quadrantName: string;
 }
 
@@ -111,7 +111,7 @@ const dataProvider: TechRadarDataProvider = new SampleDataProvider();
 
 const radar = shallowRef<Radar | null>(null);
 const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
-const selectedQuadrant = ref<QuadrantOrder | null>(null);
+const selectedQuadrant = ref<QuadrantPosition | null>(null);
 const hoveredBlipId = ref<number | null>(null);
 
 onMounted(async () => {
@@ -119,33 +119,33 @@ onMounted(async () => {
   radar.value = Radar.create(data);
 });
 
-// Get the selected quadrant configuration
-const selectedQuadrantConfig = computed(() => {
+// Get the selected quadrant
+const selectedQuadrantObj = computed(() => {
   if (!radar.value || !selectedQuadrant.value) return null;
-  return radar.value.quadrants.find((q) => q.order === selectedQuadrant.value);
+  return radar.value.getQuadrant(selectedQuadrant.value);
 });
 
 // Get positioned blips for the selected quadrant
 const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
-  if (!selectedQuadrantConfig.value?.quadrant) return [];
+  if (!selectedQuadrantObj.value) return [];
 
   const ringRadii = Ring.calculateRadii(graphConfig.quadrantSize);
   const geometry: QuadrantGeometry = {
-    startAngle: selectedQuadrantConfig.value.startAngle,
+    startAngle: selectedQuadrantObj.value.startAngle,
     quadrantSize: graphConfig.quadrantSize,
     ringRadii,
     center: { x: 0, y: 0 },
   };
 
-  return selectedQuadrantConfig.value.quadrant.calculateBlipPositions(geometry);
+  return selectedQuadrantObj.value.calculateBlipPositions(geometry);
 });
 
-// Determine if radar should move to the right (first/second quadrants selected)
-// First/Second quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
-// Third/Fourth quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
+// Determine if radar should move to the right (NE/NW quadrants selected)
+// NE/NW quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
+// SW/SE quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
 const isRadarOnRight = computed(() => {
   return (
-    selectedQuadrant.value === "first" || selectedQuadrant.value === "second"
+    selectedQuadrant.value === "NE" || selectedQuadrant.value === "NW"
   );
 });
 
@@ -170,8 +170,8 @@ const radarWrapperStyle = computed(() => {
   };
 });
 
-function handleQuadrantSelected(order: QuadrantOrder | null) {
-  selectedQuadrant.value = order;
+function handleQuadrantSelected(position: QuadrantPosition | null) {
+  selectedQuadrant.value = position;
 }
 
 function handleBlipSelected(blip: PositionedBlip) {
