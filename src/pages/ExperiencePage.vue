@@ -183,6 +183,7 @@
     font-weight: var(--font-semibold);
     margin: 0;
     color: var(--color-text-primary);
+    text-transform: lowercase;
   }
 
   .company-link {
@@ -199,6 +200,7 @@
     font-family: var(--font-sans);
     font-size: var(--text-md);
     color: var(--color-text-secondary);
+    text-transform: lowercase;
   }
 
   .experience-meta {

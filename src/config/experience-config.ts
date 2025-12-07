@@ -12,7 +12,7 @@ export type Experience = {
 
 export const experiencesConfig: Experience[] = [
   {
-    company: "Flexible Finance",
+    company: "Flex",
     position: "Lead Frontend Developer",
     remote: true,
     website: "https://www.getflex.com",
