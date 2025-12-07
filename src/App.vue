@@ -31,7 +31,7 @@
         <!-- Table on LEFT (for NE/NW quadrants - radar moves right) -->
         <div
           v-if="selectedQuadrant && selectedQuadrantObj && isRadarOnRight"
-          class="table-wrapper table-left"
+          class="table-wrapper table-side table-left"
         >
           <BlipListByQuadrant
             :quadrant-name="selectedQuadrantObj.name"
@@ -58,7 +58,7 @@
         <!-- Table on RIGHT (for SW/SE quadrants - radar moves left) -->
         <div
           v-if="selectedQuadrant && selectedQuadrantObj && !isRadarOnRight"
-          class="table-wrapper table-right"
+          class="table-wrapper table-side table-right"
         >
           <BlipListByQuadrant
             :quadrant-name="selectedQuadrantObj.name"
@@ -70,6 +70,16 @@
           />
         </div>
       </main>
+
+      <!-- Blip list below radar when all quadrants visible -->
+      <div v-if="!selectedQuadrant" class="table-wrapper table-bottom">
+        <BlipList
+          :quadrants="allQuadrantsWithBlips"
+          :highlighted-blip-id="hoveredBlipId"
+          @blip-hover="handleTableBlipHover"
+          @blip-click="handleBlipSelected"
+        />
+      </div>
     </div>
 
     <div v-else class="loading">
@@ -82,6 +92,7 @@
 <script setup lang="ts">
   import { shallowRef, ref, computed, onMounted } from "vue";
   import TechRadar from "./components/TechRadar.vue";
+  import BlipList from "./components/BlipList.vue";
   import BlipListByQuadrant from "./components/BlipListByQuadrant.vue";
   import RadarLegend from "./components/RadarLegend.vue";
   import Search from "./components/Search.vue";
@@ -145,6 +156,31 @@
     );
   });
 
+  // Get all quadrants with their positioned blips (for "all quadrants" view)
+  const allQuadrantsWithBlips = computed(() => {
+    if (!radar.value) return [];
+
+    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
+
+    return radar.value.quadrants.map((quadrant) => {
+      const geometry: QuadrantGeometryConfig = {
+        startAngle: quadrant.startAngle,
+        quadrantSize: graphConfig.quadrantSize,
+        ringRadii,
+        center: { x: 0, y: 0 },
+      };
+
+      return {
+        position: quadrant.position,
+        name: quadrant.name,
+        blips: QuadrantGeometry.calculateBlipPositions(
+          quadrant.blips(),
+          geometry
+        ),
+      };
+    });
+  });
+
   // Determine if radar should move to the right (NE/NW quadrants selected)
   // NE/NW quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
   // SW/SE quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
@@ -167,9 +203,9 @@
       };
     }
 
-    // Shrink to 0.6 of original width
+    // Shrink when zoomed to single quadrant
     return {
-      width: "634px",
+      width: "620px",
     };
   });
 
@@ -260,11 +296,14 @@
   /* Radar Layout */
   .radar-layout {
     display: flex;
-    gap: 0;
     justify-content: center;
     align-items: flex-start;
-    width: 1056px; /* 1024 + 2*16px padding */
+    width: 1056px;
     margin: 0 auto;
+  }
+
+  .radar-layout.has-selection {
+    gap: 36px;
   }
 
   .radar-wrapper {
@@ -273,14 +312,18 @@
     box-sizing: border-box;
   }
 
-  /* Table Wrapper */
+  /* Table Wrapper - shared styles */
   .table-wrapper {
+    box-sizing: border-box;
+  }
+
+  /* Side table (when single quadrant selected) */
+  .table-wrapper.table-side {
     width: 400px;
     flex-shrink: 0;
     max-height: 80vh;
     overflow-y: auto;
     overflow-x: hidden;
-    box-sizing: border-box;
     animation: slideIn 1s ease;
   }
 
@@ -292,6 +335,12 @@
   .table-wrapper.table-right {
     order: 1;
     animation-name: slideInFromRight;
+  }
+
+  /* Bottom table (when all quadrants visible) */
+  .table-wrapper.table-bottom {
+    width: 1056px;
+    margin: var(--space-8) auto 0;
   }
 
   @keyframes slideInFromLeft {
@@ -350,9 +399,17 @@
       width: 100%;
     }
 
-    .table-wrapper {
+    .radar-layout.has-selection {
+      gap: var(--space-6);
+    }
+
+    .table-wrapper.table-side {
       flex: none;
       max-width: 100%;
+      width: 100%;
+    }
+
+    .table-wrapper.table-bottom {
       width: 100%;
     }
   }
