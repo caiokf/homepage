@@ -51,7 +51,7 @@
           />
           <RadarLegend />
 
-          <!-- Overlay blip list on the opposite quadrant when one is selected -->
+          <!-- Overlay blip list at the top when one quadrant is selected -->
           <div
             v-if="selectedQuadrant && selectedQuadrantObj"
             class="table-overlay"
@@ -185,20 +185,17 @@
   }));
 
   // Position the table overlay on the opposite side of the selected quadrant
-  // NE selected -> overlay on SW (bottom-left)
-  // NW selected -> overlay on SE (bottom-right)
-  // SW selected -> overlay on NE (top-right)
-  // SE selected -> overlay on NW (top-left)
+  // All overlays at the top, but left/right based on opposite quadrant
   const tableOverlayPosition = computed(() => {
     switch (selectedQuadrant.value) {
-      case "NE":
-        return "overlay-sw";
-      case "NW":
-        return "overlay-se";
-      case "SW":
-        return "overlay-ne";
-      case "SE":
-        return "overlay-nw";
+      case "NE": // top-right -> overlay top-left
+        return "overlay-left";
+      case "NW": // top-left -> overlay top-right
+        return "overlay-right";
+      case "SW": // bottom-left -> overlay top-right
+        return "overlay-right";
+      case "SE": // bottom-right -> overlay top-left
+        return "overlay-left";
       default:
         return "";
     }
@@ -276,9 +273,10 @@
     box-sizing: border-box;
   }
 
-  /* Overlay table on top of radar */
+  /* Overlay table at the top of radar */
   .table-overlay {
     position: absolute;
+    top: 0;
     width: 50%;
     height: 50%;
     overflow-y: auto;
@@ -289,23 +287,11 @@
     box-sizing: border-box;
   }
 
-  .table-overlay.overlay-nw {
-    top: 0;
+  .table-overlay.overlay-left {
     left: 0;
   }
 
-  .table-overlay.overlay-ne {
-    top: 0;
-    right: 0;
-  }
-
-  .table-overlay.overlay-sw {
-    bottom: 0;
-    left: 0;
-  }
-
-  .table-overlay.overlay-se {
-    bottom: 0;
+  .table-overlay.overlay-right {
     right: 0;
   }
 
