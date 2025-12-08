@@ -4,7 +4,7 @@
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Search technologies..."
+        placeholder="search technologies..."
         class="search-input"
         @input="handleInput"
         @focus="showResults = true"
@@ -152,24 +152,28 @@
   .search-input {
     width: 100%;
     padding: var(--space-3) var(--space-4) var(--space-3) 44px;
-    border: 2px solid var(--color-search-border);
-    border-radius: var(--radius-md);
-    font-size: var(--text-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
     font-family: var(--font-mono);
-    background: var(--color-search-bg);
+    background: transparent;
     color: var(--color-text-primary);
     outline: none;
-    transition: border-color var(--transition-fast),
-      background-color var(--transition-theme), color var(--transition-theme);
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-theme),
+      color var(--transition-theme);
   }
 
   .search-input:focus {
-    border-color: var(--color-search-focus);
+    border-color: var(--color-primary);
+    background: var(--color-surface);
   }
 
   .search-input::placeholder {
     color: var(--color-text-muted);
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
+    text-transform: lowercase;
   }
 
   .search-icon {
@@ -180,6 +184,12 @@
     pointer-events: none;
     color: var(--color-text-muted);
     transition: color var(--transition-theme);
+    width: 16px;
+    height: 16px;
+  }
+
+  .search-input:focus + .search-icon {
+    color: var(--color-primary);
   }
 
   .search-icon path {
@@ -191,17 +201,18 @@
     top: 100%;
     left: 0;
     right: 0;
-    margin: var(--space-1) 0 0;
+    margin: var(--space-2) 0 0;
     padding: 0;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     box-shadow: var(--shadow-lg);
     list-style: none;
     max-height: 300px;
     overflow-y: auto;
     z-index: 100;
-    transition: background-color var(--transition-theme),
+    transition:
+      background-color var(--transition-theme),
       border-color var(--transition-theme);
   }
 
@@ -209,7 +220,8 @@
     padding: var(--space-3) var(--space-4);
     cursor: pointer;
     border-bottom: 1px solid var(--color-border-subtle);
-    transition: background-color var(--transition-fast),
+    transition:
+      background-color var(--transition-fast),
       border-color var(--transition-theme);
   }
 
@@ -221,19 +233,26 @@
     background: var(--color-surface-hover);
   }
 
+  .search-result.highlighted .result-name {
+    color: var(--color-primary);
+  }
+
   .result-name {
     display: block;
     font-weight: var(--font-medium);
     font-family: var(--font-mono);
+    font-size: var(--text-sm);
     color: var(--color-text-primary);
     margin-bottom: 2px;
+    text-transform: lowercase;
     transition: color var(--transition-theme);
   }
 
   .result-meta {
     font-size: var(--text-xs);
-    color: var(--color-text-secondary);
+    color: var(--color-text-muted);
     font-family: var(--font-mono);
+    text-transform: lowercase;
     transition: color var(--transition-theme);
   }
 
@@ -242,16 +261,19 @@
     top: 100%;
     left: 0;
     right: 0;
-    margin: var(--space-1) 0 0;
+    margin: var(--space-2) 0 0;
     padding: var(--space-3) var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    color: var(--color-text-secondary);
-    font-size: var(--text-base);
-    font-family: var(--font-sans);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    text-transform: lowercase;
     z-index: 100;
-    transition: background-color var(--transition-theme),
-      border-color var(--transition-theme), color var(--transition-theme);
+    transition:
+      background-color var(--transition-theme),
+      border-color var(--transition-theme),
+      color var(--transition-theme);
   }
 </style>
