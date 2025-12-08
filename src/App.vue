@@ -28,8 +28,6 @@
   }
 
   .main-content {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
     padding-top: 56px;
     padding-bottom: 56px;
   }
