@@ -81,22 +81,53 @@
 }
 
 /* ==========================================================================
-   Design Tokens - Quadrant Colors (Theme-Invariant Brand Colors)
-   These remain consistent across light/dark themes for brand recognition
+   Design Tokens - Brand Colors Palette
+   Named colors for consistent use across the application
    ========================================================================== */
 
 :root {
-  /* Quadrant Base Colors */
-  --quadrant-NE-base: #47a1ad; /* Sapphire - Techniques */
-  --quadrant-NW-base: #cc850a; /* Turmeric - Platforms */
-  --quadrant-SW-base: #6b9e78; /* Jade - Tools */
-  --quadrant-SE-base: #e16a7c; /* Flamingo - Languages & Frameworks */
+  /* Purple - Primary brand color */
+  --color-purple: oklch(0.607 0.142 306.375);
+  --color-purple-light: oklch(0.72 0.12 306.375);
+  --color-purple-dark: oklch(0.5 0.15 306.375);
 
-  /* Quadrant Dark Accent Colors (for blips, titles) */
-  --quadrant-NE: #1f8290;
-  --quadrant-NW: #a06908;
-  --quadrant-SW: #517b5c;
-  --quadrant-SE: #9b293c;
+  /* Teal - Techniques quadrant */
+  --color-teal: oklch(0.55 0.1 200);
+  --color-teal-light: oklch(0.65 0.1 200);
+  --color-teal-dark: oklch(0.45 0.1 200);
+
+  /* Orange - Platforms quadrant */
+  --color-orange: oklch(0.6 0.15 70);
+  --color-orange-light: oklch(0.7 0.15 70);
+  --color-orange-dark: oklch(0.5 0.15 70);
+
+  /* Green - Tools quadrant */
+  --color-green: oklch(0.55 0.1 145);
+  --color-green-light: oklch(0.65 0.1 145);
+  --color-green-dark: oklch(0.45 0.1 145);
+
+  /* Red - Languages & Frameworks quadrant */
+  --color-red: oklch(0.55 0.15 15);
+  --color-red-light: oklch(0.65 0.15 15);
+  --color-red-dark: oklch(0.45 0.15 15);
+}
+
+/* ==========================================================================
+   Design Tokens - Quadrant Colors
+   Maps quadrant positions to brand colors
+   ========================================================================== */
+
+:root {
+  /* Quadrant colors mapped to brand palette */
+  --quadrant-NE: var(--color-teal-dark);
+  --quadrant-NW: var(--color-orange-dark);
+  --quadrant-SW: var(--color-green-dark);
+  --quadrant-SE: var(--color-red-dark);
+
+  --quadrant-NE-base: var(--color-teal);
+  --quadrant-NW-base: var(--color-orange);
+  --quadrant-SW-base: var(--color-green);
+  --quadrant-SE-base: var(--color-red);
 }
 
 /* ==========================================================================
@@ -251,11 +282,11 @@
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.6);
 
-  /* Quadrant colors adjusted for dark theme visibility */
-  --quadrant-NE: #5abdc9;
-  --quadrant-NW: #e0a020;
-  --quadrant-SW: #7dc090;
-  --quadrant-SE: #f08090;
+  /* Quadrant colors - use light variants for dark theme visibility */
+  --quadrant-NE: var(--color-teal-light);
+  --quadrant-NW: var(--color-orange-light);
+  --quadrant-SW: var(--color-green-light);
+  --quadrant-SE: var(--color-red-light);
 }
 
 /* ==========================================================================

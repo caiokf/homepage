@@ -86,43 +86,13 @@ export const MAX_BLIPS_PER_RING = [8, 22, 17, 18] as const;
 // Group blip angles per ring
 export const GROUP_BLIP_ANGLES = [30, 35, 60, 80] as const;
 
-// Quadrant colors by position
-export const quadrantColors: Record<
-  QuadrantPosition,
-  { base: string; dark: string }
-> = {
-  NE: {
-    base: "#47a1ad", // sapphire
-    dark: "#1f8290",
-  },
-  NW: {
-    base: "#cc850a", // turmeric
-    dark: "#a06908",
-  },
-  SW: {
-    base: "#6b9e78", // jade
-    dark: "#517b5c",
-  },
-  SE: {
-    base: "#e16a7c", // flamingo
-    dark: "#9b293c",
-  },
-} as const;
-
-// Ring fill colors (grayscale from center outward)
-export const ringColors = {
-  adopt: "#bababa",
-  trial: "#cacaca",
-  assess: "#dadada",
-  hold: "#eeeeee",
-} as const;
-
-// UI colors
-export const uiColors = {
-  wave: "#163c4d", // deep blue for tooltips, buttons
-  mist: "#edf1f3", // light gray for backgrounds
-  white: "#ffffff",
-  black: "#000000",
+// Quadrant colors - these reference CSS custom properties from style.css
+// Use getComputedStyle(document.documentElement).getPropertyValue('--quadrant-NE') to access
+export const QUADRANT_CSS_VARS: Record<QuadrantPosition, string> = {
+  NE: "--quadrant-NE",
+  NW: "--quadrant-NW",
+  SW: "--quadrant-SW",
+  SE: "--quadrant-SE",
 } as const;
 
 // Animation timing
