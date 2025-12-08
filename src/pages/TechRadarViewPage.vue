@@ -1,11 +1,10 @@
 <template>
   <div class="tech-radar-view">
-    <!-- Quadrant navigation tabs (hidden on mobile) -->
+    <!-- Quadrant navigation tabs -->
     <RadarHeader
       v-if="radar"
       :radar="radar"
       :selected-quadrant="selectedQuadrant"
-      class="desktop-nav"
       @select="handleQuadrantSelected"
     />
 
@@ -28,15 +27,6 @@
           <span class="quadrant-card__count">{{ quadrant.blips().length }} items</span>
         </button>
       </div>
-
-      <!-- Mobile back button (when quadrant selected) -->
-      <button
-        v-if="selectedQuadrant"
-        class="mobile-back-btn bracket-link"
-        @click="handleQuadrantSelected(null)"
-      >
-        all quadrants
-      </button>
 
       <!-- Main radar and table container (hidden on mobile unless quadrant selected) -->
       <main class="radar-layout" :class="layoutClasses">
@@ -345,7 +335,9 @@
     border: none;
     border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
     min-height: 100px;
     overflow: hidden;
   }
@@ -359,10 +351,22 @@
     transform: translateY(0);
   }
 
-  .quadrant-card.NE { background-color: var(--color-teal); }
-  .quadrant-card.NW { background-color: var(--color-orange); }
-  .quadrant-card.SW { background-color: var(--color-green); }
-  .quadrant-card.SE { background-color: var(--color-red); }
+  .quadrant-card.NE {
+    background-color: var(--quadrant-NE);
+    order: 2; /* top-right */
+  }
+  .quadrant-card.NW {
+    background-color: var(--quadrant-NW);
+    order: 1; /* top-left */
+  }
+  .quadrant-card.SW {
+    background-color: var(--quadrant-SW);
+    order: 3; /* bottom-left */
+  }
+  .quadrant-card.SE {
+    background-color: var(--quadrant-SE);
+    order: 4; /* bottom-right */
+  }
 
   /* Ring decorations in inner corners */
   .quadrant-card__rings {
@@ -399,40 +403,40 @@
     height: 100px;
   }
 
-  /* NE quadrant: rings in bottom-right corner */
+  /* NE quadrant: rings in bottom-left corner (opposite of position) */
   .quadrant-card.NE .quadrant-card__rings {
-    bottom: -60px;
-    right: -60px;
-  }
-  .quadrant-card.NE .quadrant-card__rings::before {
-    bottom: 40px;
-    right: 40px;
-  }
-  .quadrant-card.NE .quadrant-card__rings::after {
-    bottom: 25px;
-    right: 25px;
-  }
-  .quadrant-card.NE .quadrant-card__rings span {
-    bottom: 10px;
-    right: 10px;
-  }
-
-  /* NW quadrant: rings in bottom-left corner */
-  .quadrant-card.NW .quadrant-card__rings {
     bottom: -60px;
     left: -60px;
   }
-  .quadrant-card.NW .quadrant-card__rings::before {
+  .quadrant-card.NE .quadrant-card__rings::before {
     bottom: 40px;
     left: 40px;
   }
-  .quadrant-card.NW .quadrant-card__rings::after {
+  .quadrant-card.NE .quadrant-card__rings::after {
     bottom: 25px;
     left: 25px;
   }
-  .quadrant-card.NW .quadrant-card__rings span {
+  .quadrant-card.NE .quadrant-card__rings span {
     bottom: 10px;
     left: 10px;
+  }
+
+  /* NW quadrant: rings in bottom-right corner */
+  .quadrant-card.NW .quadrant-card__rings {
+    bottom: -60px;
+    right: -60px;
+  }
+  .quadrant-card.NW .quadrant-card__rings::before {
+    bottom: 40px;
+    right: 40px;
+  }
+  .quadrant-card.NW .quadrant-card__rings::after {
+    bottom: 25px;
+    right: 25px;
+  }
+  .quadrant-card.NW .quadrant-card__rings span {
+    bottom: 10px;
+    right: 10px;
   }
 
   /* SW quadrant: rings in top-right corner */
@@ -492,15 +496,6 @@
     text-transform: lowercase;
   }
 
-  /* Mobile back button */
-  .mobile-back-btn {
-    display: none;
-    margin-bottom: var(--space-4);
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
   /* Responsive Styles */
   @media (max-width: 1200px) {
     .radar-layout {
@@ -525,17 +520,9 @@
   }
 
   @media (max-width: 1000px) {
-    /* Hide desktop nav, show mobile grid */
-    .desktop-nav {
-      display: none;
-    }
-
+    /* Show mobile quadrant grid */
     .mobile-quadrant-grid {
       display: grid;
-    }
-
-    .mobile-back-btn {
-      display: inline-block;
     }
 
     /* Hide radar and bottom table on mobile when no quadrant selected */
@@ -556,7 +543,6 @@
     .table-wrapper.table-side {
       width: 100%;
       max-height: none;
-      animation: none;
     }
 
     /* Hide radar wrapper on mobile */
@@ -579,4 +565,5 @@
       font-size: var(--text-sm);
     }
   }
+
 </style>
