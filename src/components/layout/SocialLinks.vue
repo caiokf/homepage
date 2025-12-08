@@ -54,10 +54,8 @@
     if (containerRef.value) {
       const width = containerRef.value.offsetWidth;
       isCompact.value = width < COMPACT_THRESHOLD;
-      if (!isCompact.value) {
-        isPopupOpen.value = false;
-      }
     }
+    isPopupOpen.value = false;
   }
 
   function togglePopup() {
