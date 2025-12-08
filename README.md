@@ -1,88 +1,38 @@
-# Tech Radar
+# caiokf.com
 
-A Vue 3 + TypeScript application with D3.js and d3-tip for data visualization.
+Personal homepage showcasing my experience, tech radar, and articles.
+
+[![Homepage Screenshot](https://api.microlink.io/?url=https://caiokf.github.io/homepage&screenshot=true&meta=false&embed=screenshot.url)](https://caiokf.github.io/homepage)
+
+## Pages
+
+- **About** - Bio and skills overview
+- **Experience** - Career timeline with company logos and tech stacks
+- **Tech Radar** - Interactive D3.js visualization of technology opinions
+- **Articles** - Blog posts and writing
 
 ## Tech Stack
 
-- **Vue 3** - Progressive JavaScript framework
-- **TypeScript** - Typed JavaScript
-- **D3.js** - Data visualization library
-- **d3-tip** - Tooltip plugin for D3
-- **Vite** - Fast build tool and dev server
+- Vue 3 + TypeScript
+- D3.js for the tech radar visualization
+- Vite for build tooling
+- Hosted on GitHub Pages
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher recommended)
-- npm or yarn
-
-### Installation
+## Development
 
 ```bash
-npm install
+pnpm install
+pnpm run dev
 ```
 
-### Development
-
-Start the development server:
+## Build & Deploy
 
 ```bash
-npm run dev
+pnpm run build
 ```
 
-The app will be available at `http://localhost:5173`
-
-### Build
-
-Build for production:
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
-
-### Type Checking
-
-Run TypeScript type checking:
-
-```bash
-npm run type-check
-```
-
-## Project Structure
-
-```
-.
-├── src/
-│   ├── components/     # Vue components
-│   │   └── D3Chart.vue # Example D3 chart component with tooltips
-│   ├── App.vue         # Root component
-│   ├── main.ts         # Application entry point
-│   ├── style.css       # Global styles
-│   └── vite-env.d.ts   # TypeScript declarations
-├── index.html          # HTML entry point
-├── package.json        # Dependencies and scripts
-├── tsconfig.json       # TypeScript configuration
-└── vite.config.ts      # Vite configuration
-```
-
-## Example Component
-
-The `D3Chart.vue` component demonstrates:
-- D3.js integration with Vue 3
-- d3-tip tooltip implementation
-- Responsive SVG charts
-- Interactive data visualization
-
-You can modify this component or create new ones following the same pattern.
+Deploys automatically to GitHub Pages via GitHub Actions on push to main.
 
 ## License
 
 MIT
-
