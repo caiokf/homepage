@@ -47,14 +47,14 @@
   .ring-title {
     margin: 0;
     padding: var(--space-3) var(--space-5);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    color: var(--color-text-primary);
+    color: var(--color-text-secondary);
     background: var(--color-background-subtle);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: background-color var(--transition-theme),
+    text-transform: lowercase;
+    transition:
+      background-color var(--transition-theme),
       color var(--transition-theme);
   }
 

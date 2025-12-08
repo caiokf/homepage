@@ -63,6 +63,12 @@
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
     color: var(--color-text-inverse);
+    text-transform: lowercase;
+  }
+
+  .quadrant-title::before {
+    content: "// ";
+    opacity: 0.7;
   }
 
   .quadrant-blip-list.NE .quadrant-title {
