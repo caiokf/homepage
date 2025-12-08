@@ -16,7 +16,7 @@
       <div class="content">
         <div class="timeline">
         <article
-          v-for="(experience, index) in experiencesConfig"
+          v-for="(experience, index) in visibleExperiences"
           :key="index"
           class="experience-card"
         >
@@ -71,6 +71,14 @@
             </div>
           </footer>
         </article>
+
+        <div v-if="!showAll" class="show-more-container">
+          <button @click="showAll = true" class="show-more-button">
+            <span class="show-more-line"><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a lot</span>
+            <span class="show-more-line"><span class="comment-prefix"></span>there's more history where that came from</span>
+            <span class="show-more-line"><span class="comment-prefix"></span>archaeologists, click here</span>
+          </button>
+        </div>
       </div>
       </div>
     </div>
@@ -78,11 +86,30 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, ref } from "vue";
   import {
     experiencesConfig,
     type Experience,
   } from "../config/experience-config";
+
+  const INITIAL_VISIBLE_COUNT = 6;
+  const showAll = ref(false);
+
+  const yearsOfExperience = computed(() => {
+    const oldestStartDate = experiencesConfig
+      .map((exp) => new Date(exp.startDate).getTime())
+      .sort((a, b) => a - b)[0];
+    const startYear = new Date(oldestStartDate).getFullYear();
+    const currentYear = new Date().getFullYear();
+    return currentYear - startYear;
+  });
+
+  const visibleExperiences = computed(() => {
+    if (showAll.value) {
+      return experiencesConfig;
+    }
+    return experiencesConfig.slice(0, INITIAL_VISIBLE_COUNT);
+  });
 
   const RECENT_YEARS = 8;
 
@@ -392,6 +419,40 @@
     transition:
       background-color var(--transition-theme),
       color var(--transition-theme);
+  }
+
+  .show-more-container {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-6) 0;
+  }
+
+  .show-more-button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-4);
+    text-transform: lowercase;
+    transition: color var(--transition-fast);
+  }
+
+  .show-more-button:hover {
+    color: var(--color-text-primary);
+  }
+
+  .show-more-button .comment-prefix {
+    color: var(--color-primary);
+  }
+
+  .show-more-line {
+    display: block;
   }
 
   @media (max-width: 1024px) {
