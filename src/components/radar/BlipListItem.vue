@@ -135,14 +135,14 @@
 
   .blip-description.visible {
     max-height: 200px;
-    padding: 0 var(--space-4) var(--space-4) 48px;
+    padding: var(--space-4) var(--space-4) var(--space-4) 48px;
   }
 
   .blip-description p {
     margin: 0;
     color: var(--color-text-secondary);
-    font-size: var(--text-sm);
-    line-height: var(--leading-normal);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
     font-family: var(--font-sans);
     transition: color var(--transition-theme);
   }
