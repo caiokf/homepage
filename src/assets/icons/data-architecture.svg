@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Database cylinders connected -->
+  <ellipse cx="6" cy="6" rx="4" ry="2"/>
+  <path d="M2 6v4c0 1.1 1.8 2 4 2s4-.9 4-2V6"/>
+  <ellipse cx="18" cy="6" rx="4" ry="2"/>
+  <path d="M14 6v4c0 1.1 1.8 2 4 2s4-.9 4-2V6"/>
+  <!-- Central hub -->
+  <circle cx="12" cy="18" r="3"/>
+  <!-- Connections -->
+  <path d="M6 12v2.5L9.5 16.5"/>
+  <path d="M18 12v2.5L14.5 16.5"/>
+</svg>
