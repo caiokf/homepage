@@ -21,7 +21,7 @@
             'quadrant-zoomed': selectedQuadrant === quadrant.position,
           },
         ]"
-        :transform="getQuadrantTransform()"
+        :transform="getQuadrantTransform(quadrant.position)"
         :style="getQuadrantStyle(quadrant.position)"
       >
         <!-- Clickable background for quadrant selection -->
@@ -241,10 +241,21 @@
     return `translate(${centerX}, ${centerY})`;
   }
 
-  function getQuadrantTransform(): string {
-    // All quadrants share the same center - the center of the radar
+  function getQuadrantTransform(position: QuadrantPosition): string {
     const centerX = radarSize.value / 2;
     const centerY = radarSize.value / 2;
+
+    // If this quadrant is selected and it's a bottom quadrant, move it to the top
+    if (props.selectedQuadrant === position) {
+      switch (position) {
+        case "SW": // bottom-left -> move up to top-left
+          return `translate(${centerX}, 0)`;
+        case "SE": // bottom-right -> move up to top-right
+          return `translate(${centerX}, 0)`;
+      }
+    }
+
+    // Default: center of radar
     return `translate(${centerX}, ${centerY})`;
   }
 
