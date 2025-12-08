@@ -30,10 +30,10 @@
   const route = useRoute();
 
   const navItems: NavItem[] = [
-    { path: "/about", labelLong: "about", labelShort: "about" },
+    { path: "/about", labelLong: "about", labelShort: "abt" },
     { path: "/tech-radar", labelLong: "tech-radar", labelShort: "radar" },
     { path: "/experience", labelLong: "experience", labelShort: "xp" },
-    { path: "/articles", labelLong: "articles", labelShort: "articles" },
+    { path: "/articles", labelLong: "articles", labelShort: "artcl" },
   ];
 
   function isActive(path: string): boolean {

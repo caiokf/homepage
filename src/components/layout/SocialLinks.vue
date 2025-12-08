@@ -1,5 +1,5 @@
 <template>
-  <div ref="containerRef" class="social-links-container">
+  <div ref="containerRef" class="social-links-container" :class="{ compact: isCompact }">
     <!-- Expanded view (icons) -->
     <div v-if="!isCompact" class="social-links">
       <a
@@ -83,9 +83,14 @@
     position: relative;
     display: flex;
     align-items: center;
+    min-width: 130px;
     margin-left: var(--space-6);
     padding-left: var(--space-6);
     border-left: 1px solid oklch(1 0 0 / 0.15);
+  }
+
+  .social-links-container.compact {
+    min-width: auto;
   }
 
   .social-links {
