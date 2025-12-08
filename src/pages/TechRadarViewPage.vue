@@ -1,10 +1,11 @@
 <template>
   <div class="tech-radar-view">
-    <!-- Quadrant navigation tabs -->
+    <!-- Quadrant navigation tabs (hidden on mobile) -->
     <RadarHeader
       v-if="radar"
       :radar="radar"
       :selected-quadrant="selectedQuadrant"
+      class="desktop-nav"
       @select="handleQuadrantSelected"
     />
 
@@ -14,7 +15,29 @@
         <Search :radar="radar" @select="handleSearchSelect" />
       </div>
 
-      <!-- Main radar and table container -->
+      <!-- Mobile quadrant grid (shows below 750px) -->
+      <div v-if="!selectedQuadrant" class="mobile-quadrant-grid">
+        <button
+          v-for="quadrant in radar.quadrants"
+          :key="quadrant.position"
+          :class="['quadrant-card', quadrant.position]"
+          @click="handleQuadrantSelected(quadrant.position)"
+        >
+          <span class="quadrant-card__name">{{ quadrant.name }}</span>
+          <span class="quadrant-card__count">{{ quadrant.blips().length }} items</span>
+        </button>
+      </div>
+
+      <!-- Mobile back button (when quadrant selected) -->
+      <button
+        v-if="selectedQuadrant"
+        class="mobile-back-btn bracket-link"
+        @click="handleQuadrantSelected(null)"
+      >
+        all quadrants
+      </button>
+
+      <!-- Main radar and table container (hidden on mobile unless quadrant selected) -->
       <main class="radar-layout" :class="layoutClasses">
         <!-- Table on LEFT (for NE/NW quadrants - radar moves right) -->
         <div
@@ -336,6 +359,67 @@
     }
   }
 
+  /* Mobile Quadrant Grid - hidden by default, shown below 750px */
+  .mobile-quadrant-grid {
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .quadrant-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-4);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    min-height: 100px;
+  }
+
+  .quadrant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .quadrant-card:active {
+    transform: translateY(0);
+  }
+
+  .quadrant-card.NE { background-color: var(--color-teal); }
+  .quadrant-card.NW { background-color: var(--color-orange); }
+  .quadrant-card.SW { background-color: var(--color-green); }
+  .quadrant-card.SE { background-color: var(--color-red); }
+
+  .quadrant-card__name {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: white;
+    text-transform: lowercase;
+    text-align: center;
+    margin-bottom: var(--space-1);
+  }
+
+  .quadrant-card__count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: lowercase;
+  }
+
+  /* Mobile back button */
+  .mobile-back-btn {
+    display: none;
+    margin-bottom: var(--space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
   /* Responsive Styles */
   @media (max-width: 1200px) {
     .radar-layout {
@@ -359,13 +443,59 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
+    /* Hide desktop nav, show mobile grid */
+    .desktop-nav {
+      display: none;
+    }
+
+    .mobile-quadrant-grid {
+      display: grid;
+    }
+
+    .mobile-back-btn {
+      display: inline-block;
+    }
+
+    /* Hide radar and bottom table on mobile when no quadrant selected */
+    .radar-layout {
+      display: none;
+    }
+
+    .radar-layout.has-selection {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-wrapper.table-bottom {
+      display: none;
+    }
+
+    /* When quadrant is selected, show only the table */
+    .table-wrapper.table-side {
+      width: 100%;
+      max-height: none;
+      animation: none;
+    }
+
+    /* Hide radar wrapper on mobile */
+    .radar-wrapper {
+      display: none;
+    }
+
     .main-content {
       padding: var(--space-4);
     }
+  }
 
-    .radar-wrapper {
-      overflow-x: auto;
+  @media (max-width: 480px) {
+    .quadrant-card {
+      padding: var(--space-4) var(--space-3);
+      min-height: 80px;
+    }
+
+    .quadrant-card__name {
+      font-size: var(--text-sm);
     }
   }
 </style>
