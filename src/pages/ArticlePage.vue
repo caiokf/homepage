@@ -12,11 +12,7 @@
         </div>
 
         <div class="article-tags">
-          <span
-            v-for="tag in article.frontmatter.tags"
-            :key="tag"
-            class="article-tag"
-          >
+          <span v-for="tag in article.frontmatter.tags" :key="tag" class="article-tag">
             {{ tag }}
           </span>
         </div>
@@ -73,7 +69,7 @@
   }
 
   .content {
-    max-width: 800px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
   }
 
@@ -147,7 +143,7 @@
   }
 
   .not-found {
-    max-width: 600px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
     text-align: center;
   }

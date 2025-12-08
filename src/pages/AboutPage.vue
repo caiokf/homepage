@@ -6,17 +6,12 @@
         <p class="tagline">software engineer & technical leader</p>
 
         <p class="bio">
-          Building products that matter. Passionate about clean architecture,
-          developer experience, and turning complex problems into elegant
-          solutions.
+          Building products that matter. Passionate about clean architecture, developer experience,
+          and turning complex problems into elegant solutions.
         </p>
 
         <div class="avatar-wrapper">
-          <img
-            :src="avatarImage"
-            alt="Caio Kinzel Filho"
-            class="avatar"
-          />
+          <img :src="avatarImage" alt="Caio Kinzel Filho" class="avatar" />
         </div>
       </div>
     </section>
@@ -26,12 +21,7 @@
 
       <article v-for="skill in skillsConfig" :key="skill.title" class="skill-block">
         <div class="skill-icon-wrapper">
-          <img
-            v-if="skill.iconPath"
-            :src="skill.iconPath"
-            :alt="skill.title"
-            class="skill-icon"
-          />
+          <img v-if="skill.iconPath" :src="skill.iconPath" :alt="skill.title" class="skill-icon" />
           <div v-else class="skill-icon-placeholder"></div>
         </div>
         <div class="skill-content">
@@ -56,7 +46,7 @@
 
   /* Hero Section */
   .hero {
-    max-width: 600px;
+    max-width: var(--content-max-width);
     margin: 0 auto var(--space-12) auto;
     text-align: center;
   }
@@ -111,7 +101,7 @@
 
   /* Skills Section */
   .skills-section {
-    max-width: 600px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
   }
 

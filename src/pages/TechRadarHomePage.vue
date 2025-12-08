@@ -3,14 +3,13 @@
     <div class="content">
       <h1 class="page-title">tech radar</h1>
       <p class="description">
-        The Tech Radar is a tool to visualize technology choices. It provides a
-        snapshot of the technologies, tools, languages, and frameworks that are
-        relevant to our engineering work.
+        The Tech Radar is a tool to visualize technology choices. It provides a snapshot of the
+        technologies, tools, languages, and frameworks that are relevant to our engineering work.
       </p>
       <p class="description">
-        Items are organized into quadrants (Techniques, Platforms, Tools, and
-        Languages & Frameworks) and rings (Adopt, Trial, Assess, and Hold) based
-        on their current recommendation status.
+        Items are organized into quadrants (Techniques, Platforms, Tools, and Languages &
+        Frameworks) and rings (Adopt, Trial, Assess, and Hold) based on their current recommendation
+        status.
       </p>
 
       <div class="radar-links">
@@ -34,7 +33,7 @@
   }
 
   .content {
-    max-width: 600px;
+    max-width: var(--content-max-width);
     text-align: center;
   }
 
@@ -60,9 +59,7 @@
     font-size: var(--text-lg);
     color: var(--color-primary);
     text-decoration: none;
-    transition:
-      opacity var(--transition-fast),
-      transform var(--transition-fast);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
 
   .radar-link:hover {

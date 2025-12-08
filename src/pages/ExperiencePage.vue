@@ -230,7 +230,7 @@
 
   .content {
     flex: 1;
-    max-width: 800px;
+    max-width: var(--content-max-width);
   }
 
   .page-title {

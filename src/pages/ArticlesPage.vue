@@ -96,7 +96,7 @@
   }
 
   .content {
-    max-width: 800px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
   }
 
