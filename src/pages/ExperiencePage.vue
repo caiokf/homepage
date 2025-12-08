@@ -56,8 +56,10 @@
                 </span>
               </div>
               <div class="experience-meta">
-                <span class="date-range">{{ formatDateRange(experience) }}</span>
-                <span class="duration">{{ calculateDuration(experience) }}</span>
+                <div class="date-info">
+                  <span class="date-range">{{ formatDateRange(experience) }}</span>
+                  <span class="duration">{{ calculateDuration(experience) }}</span>
+                </div>
                 <div class="experience-tags">
                   <span v-for="tag in experience.tags" :key="tag" class="experience-tag">
                     {{ tag }}
@@ -428,6 +430,13 @@
     text-align: right;
   }
 
+  .date-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-1);
+  }
+
   .date-range {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
@@ -579,6 +588,16 @@
     .experience-meta {
       align-items: flex-start;
       text-align: left;
+    }
+
+    .date-info {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--space-3);
+    }
+
+    .duration::before {
+      content: "• ";
     }
 
     .company-name {
