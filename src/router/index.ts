@@ -3,18 +3,10 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Handle GitHub Pages SPA redirect and default route
     {
       path: "/",
-      redirect: (_to) => {
-        const redirectPath = new URLSearchParams(window.location.search).get("p");
-        if (redirectPath) {
-          // Clear the query param from URL
-          window.history.replaceState(null, "", import.meta.env.BASE_URL);
-          return redirectPath;
-        }
-        return "/about";
-      },
+      name: "home",
+      component: () => import("../pages/AboutPage.vue"),
     },
     {
       path: "/about",
