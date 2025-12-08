@@ -21,12 +21,21 @@
             class="experience-card"
           >
             <header class="experience-header">
-              <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
-                <img
-                  :src="getCompanyLogo(experience)"
-                  :alt="experience.company"
-                  class="company-logo"
-                />
+              <div class="logos-wrapper">
+                <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
+                  <img
+                    :src="getCompanyLogo(experience)"
+                    :alt="experience.company"
+                    class="company-logo"
+                  />
+                </div>
+                <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
+                  <img
+                    :src="getViaLogo(experience.via)"
+                    :alt="experience.via"
+                    class="via-logo"
+                  />
+                </div>
               </div>
               <div class="experience-title">
                 <h2 class="company-name">
@@ -41,7 +50,10 @@
                   </a>
                   <span v-else>{{ experience.company }}</span>
                 </h2>
-                <span class="position">{{ experience.position }}</span>
+                <span class="position">
+                  {{ experience.position }}
+                  <span class="via-text" v-if="experience.via">&bull; via {{ getViaName(experience.via) }}</span>
+                </span>
               </div>
               <div class="experience-meta">
                 <span class="date-range">{{ formatDateRange(experience) }}</span>
@@ -113,6 +125,25 @@
 
   function getCompanyLogo(experience: Experience): string | undefined {
     return companyLogos[experience.slug];
+  }
+
+  // Via company logos and names mapping
+  const viaLogos: Record<string, string> = {
+    toptal: companyLogos["toptal"],
+    tw: companyLogos["thoughtworks"],
+  };
+
+  const viaNames: Record<string, string> = {
+    toptal: "Toptal",
+    tw: "ThoughtWorks",
+  };
+
+  function getViaLogo(via: string): string | undefined {
+    return viaLogos[via];
+  }
+
+  function getViaName(via: string): string {
+    return viaNames[via] || via;
   }
 
   const INITIAL_VISIBLE_COUNT = 6;
@@ -313,6 +344,13 @@
     border-bottom: 1px solid var(--color-border);
   }
 
+  .logos-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
   .company-logo-wrapper {
     flex-shrink: 0;
   }
@@ -322,6 +360,18 @@
     height: 58px;
     border-radius: var(--radius-md);
     object-fit: cover;
+  }
+
+  .via-logo-wrapper {
+    flex-shrink: 0;
+  }
+
+  .via-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    opacity: 0.8;
   }
 
   .experience-title {
@@ -361,6 +411,13 @@
     color: var(--color-primary);
     text-transform: lowercase;
     font-weight: var(--font-semibold);
+  }
+
+  .via-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-transform: lowercase;
   }
 
   .experience-meta {
@@ -512,6 +569,11 @@
     .company-logo {
       width: 50px;
       height: 50px;
+    }
+
+    .via-logo {
+      width: 26px;
+      height: 26px;
     }
 
     .experience-meta {

@@ -76,7 +76,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "selectquote",
     company: "SelectQuote",
-    via: "Toptal",
+    via: "toptal",
     position: "Senior Full-stack Developer",
     tags: ["remote", "insurance", "contract"],
     website: "https://www.selectquote.com",
@@ -132,7 +132,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "scribe-intelligence",
     company: "Scribe Intelligence",
-    via: "Toptal",
+    via: "toptal",
     position: "Technical Lead",
     tags: ["remote", "startup", "ai", "contract"],
     website: "https://www.linkedin.com/company/scribe-intelligence/posts/?feedView=all",
@@ -170,8 +170,8 @@ export const experiencesConfig: Experience[] = [
 
   {
     slug: "buffalo-suny",
-    company: "University at Buffalo—SUNY",
-    via: "Toptal",
+    company: "University at Buffalo",
+    via: "toptal",
     position: "Senior React Developer",
     tags: ["remote", "education", "contract"],
     website: "",
@@ -190,7 +190,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "zenefits",
     company: "Zenefits | MustWin",
-    via: "Toptal",
+    via: "toptal",
     position: "Senior Frontend Developer",
     tags: ["remote", "hr-tech", "contract"],
     website: "https://www.zenefits.com",
@@ -208,12 +208,12 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "cisco",
     company: "Cisco | MustWin",
-    via: "Toptal",
+    via: "toptal",
     position: "Senior Fullstack Developer",
     tags: ["remote", "enterprise", "contract"],
     website: "",
-    startDate: "2016-08-21",
-    endDate: "2016-04-04",
+    startDate: "2016-04-04",
+    endDate: "2016-08-21",
     highlights: [
       "Worked as a JavaScript frontend developer on an AngularJS code base.",
       "Set up a unit testing framework for frontend application.",
@@ -226,7 +226,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "rackspace",
     company: "Rackspace",
-    via: "ThoughtWorks",
+    via: "tw",
     position: "Lead Consultant",
     tags: ["remote", "cloud"],
     website: "https://www.rackspace.com",
@@ -244,7 +244,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "jse",
     company: "Johannesburg Stock Exchange",
-    via: "ThoughtWorks",
+    via: "tw",
     position: "Technical Lead",
     tags: ["on-site", "fintech"],
     website: "https://www.jse.co.za",
@@ -263,7 +263,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "visioncritical",
     company: "Vision Critical",
-    via: "ThoughtWorks",
+    via: "tw",
     position: "Senior Web Developer",
     tags: ["on-site", "saas"],
     website: "https://www.visioncritical.com",
@@ -282,7 +282,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "measuredprogress",
     company: "Measured Progress",
-    via: "ThoughtWorks",
+    via: "tw",
     position: "Technical Lead",
     tags: ["on-site", "education"],
     website: "https://www.measuredprogress.org",
@@ -301,7 +301,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "gap",
     company: "Gap Inc.",
-    via: "ThoughtWorks",
+    via: "tw",
     position: "Senior Web Developer",
     tags: ["on-site", "e-commerce"],
     website: "",
