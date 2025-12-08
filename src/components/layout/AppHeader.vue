@@ -28,12 +28,12 @@
     /* Glassy iOS-like effect */
     backdrop-filter: blur(24px) saturate(1.5);
     -webkit-backdrop-filter: blur(24px) saturate(1.5);
-    background-color: oklch(0.18 0.01 260 / 0.65);
+    background-color: oklch(0.12 0 0 / 0.75);
     border-bottom: 1px solid oklch(1 0 0 / 0.08);
     box-shadow: oklch(0 0 0 / 0.3) 0px 0.5px 0px 0px, oklch(1 0 0 / 0.05) 0px 0.5px 0px 0px inset;
 
     font-family: var(--font-mono);
-    color: oklch(0.95 0.002 261.7);
+    color: oklch(0.92 0 0);
     will-change: backdrop-filter, transform;
   }
 
