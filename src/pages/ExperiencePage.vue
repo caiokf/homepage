@@ -1,5 +1,7 @@
 <template>
   <div class="experience-page">
+    <h1 class="page-title">experience</h1>
+
     <div class="page-layout">
       <aside class="sidebar">
         <h3 class="sidebar-title">technologies</h3>
@@ -12,8 +14,6 @@
       </aside>
 
       <div class="content">
-        <h1 class="page-title">experience</h1>
-
         <div class="timeline">
         <article
           v-for="(experience, index) in experiencesConfig"
@@ -189,10 +189,6 @@
     width: 220px;
     flex-shrink: 0;
     height: fit-content;
-    padding: var(--space-4);
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
   }
 
   .sidebar-title {
@@ -240,6 +236,9 @@
   .page-title {
     margin-bottom: var(--space-8);
     text-align: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .timeline {
