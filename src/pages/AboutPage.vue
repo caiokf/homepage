@@ -148,6 +148,13 @@
     width: 40px;
     height: 40px;
     object-fit: contain;
+    /* Filter to convert black stroke to #667eea (light theme primary) */
+    filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(220deg) brightness(98%) contrast(89%);
+  }
+
+  [data-theme="dark"] .skill-icon {
+    /* Filter to convert black stroke to #8b9ef5 (dark theme primary) */
+    filter: invert(65%) sepia(47%) saturate(1021%) hue-rotate(203deg) brightness(102%) contrast(92%);
   }
 
   .skill-icon-placeholder {
