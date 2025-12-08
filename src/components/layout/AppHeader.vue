@@ -61,6 +61,7 @@
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
     letter-spacing: 0.05em;
+    color: var(--color-primary);
   }
 
   .logo-text::before {
