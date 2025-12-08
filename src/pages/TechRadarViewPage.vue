@@ -15,7 +15,7 @@
         <Search :radar="radar" @select="handleSearchSelect" />
       </div>
 
-      <!-- Mobile quadrant grid (shows below 750px) -->
+      <!-- Mobile quadrant grid (shows below 1000px) -->
       <div v-if="!selectedQuadrant" class="mobile-quadrant-grid">
         <button
           v-for="quadrant in radar.quadrants"
@@ -23,6 +23,7 @@
           :class="['quadrant-card', quadrant.position]"
           @click="handleQuadrantSelected(quadrant.position)"
         >
+          <div class="quadrant-card__rings"><span></span></div>
           <span class="quadrant-card__name">{{ quadrant.name }}</span>
           <span class="quadrant-card__count">{{ quadrant.blips().length }} items</span>
         </button>
@@ -359,7 +360,7 @@
     }
   }
 
-  /* Mobile Quadrant Grid - hidden by default, shown below 750px */
+  /* Mobile Quadrant Grid - hidden by default, shown below 1000px */
   .mobile-quadrant-grid {
     display: none;
     grid-template-columns: repeat(2, 1fr);
@@ -368,6 +369,7 @@
   }
 
   .quadrant-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -378,6 +380,7 @@
     cursor: pointer;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     min-height: 100px;
+    overflow: hidden;
   }
 
   .quadrant-card:hover {
@@ -394,7 +397,116 @@
   .quadrant-card.SW { background-color: var(--color-green); }
   .quadrant-card.SE { background-color: var(--color-red); }
 
+  /* Ring decorations in inner corners */
+  .quadrant-card__rings {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
+  }
+
+  .quadrant-card__rings::before,
+  .quadrant-card__rings::after,
+  .quadrant-card__rings span {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+  }
+
+  /* Ring 1 - smallest */
+  .quadrant-card__rings::before {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Ring 2 - medium */
+  .quadrant-card__rings::after {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* Ring 3 - largest */
+  .quadrant-card__rings span {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* NE quadrant: rings in bottom-right corner */
+  .quadrant-card.NE .quadrant-card__rings {
+    bottom: -60px;
+    right: -60px;
+  }
+  .quadrant-card.NE .quadrant-card__rings::before {
+    bottom: 40px;
+    right: 40px;
+  }
+  .quadrant-card.NE .quadrant-card__rings::after {
+    bottom: 25px;
+    right: 25px;
+  }
+  .quadrant-card.NE .quadrant-card__rings span {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  /* NW quadrant: rings in bottom-left corner */
+  .quadrant-card.NW .quadrant-card__rings {
+    bottom: -60px;
+    left: -60px;
+  }
+  .quadrant-card.NW .quadrant-card__rings::before {
+    bottom: 40px;
+    left: 40px;
+  }
+  .quadrant-card.NW .quadrant-card__rings::after {
+    bottom: 25px;
+    left: 25px;
+  }
+  .quadrant-card.NW .quadrant-card__rings span {
+    bottom: 10px;
+    left: 10px;
+  }
+
+  /* SW quadrant: rings in top-right corner */
+  .quadrant-card.SW .quadrant-card__rings {
+    top: -60px;
+    right: -60px;
+  }
+  .quadrant-card.SW .quadrant-card__rings::before {
+    top: 40px;
+    right: 40px;
+  }
+  .quadrant-card.SW .quadrant-card__rings::after {
+    top: 25px;
+    right: 25px;
+  }
+  .quadrant-card.SW .quadrant-card__rings span {
+    top: 10px;
+    right: 10px;
+  }
+
+  /* SE quadrant: rings in top-left corner */
+  .quadrant-card.SE .quadrant-card__rings {
+    top: -60px;
+    left: -60px;
+  }
+  .quadrant-card.SE .quadrant-card__rings::before {
+    top: 40px;
+    left: 40px;
+  }
+  .quadrant-card.SE .quadrant-card__rings::after {
+    top: 25px;
+    left: 25px;
+  }
+  .quadrant-card.SE .quadrant-card__rings span {
+    top: 10px;
+    left: 10px;
+  }
+
   .quadrant-card__name {
+    position: relative;
+    z-index: 1;
     font-family: var(--font-mono);
     font-size: var(--text-base);
     font-weight: var(--font-semibold);
@@ -405,6 +517,8 @@
   }
 
   .quadrant-card__count {
+    position: relative;
+    z-index: 1;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: rgba(255, 255, 255, 0.8);
