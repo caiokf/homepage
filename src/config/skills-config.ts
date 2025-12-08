@@ -6,23 +6,23 @@ export type Skill = {
 
 export const skillsConfig: Skill[] = [
   {
-    title: "frontend architecture",
+    title: "architecture for rapid scaling",
     description:
-      "Building scalable, maintainable frontend systems with modern frameworks like React and Vue. Focus on performance, developer experience, and clean architecture patterns.",
+      "Design and implement systems that ship fast while preventing the technical debt paralysis that kills scaling. This means making architectural decisions that intentionally accommodate 10x growth without rewrites, prioritizing data flow integrity, event-driven patterns, and observable systems over perfection. I establish which technical shortcuts are strategic versus dangerous, document these decisions explicitly, and create architectural guard rails that prevent future teams from undoing good decisions or repeating mistakes.",
   },
   {
-    title: "backend development",
+    title: "data architecture as business strategy",
     description:
-      "Designing and implementing robust backend services using Node.js, TypeScript, and cloud-native technologies. Experience with event-driven architectures and microservices.",
+      "Build data models and ontologies that force clarity about what actually matters. Bad data architecture hides business assumptions and allows founders to operate on beliefs rather than signals. I design systems where data flows tell the truth about product-market fit, customer behavior, and operational health—making it obvious when you're chasing ghosts versus solving real problems.",
   },
   {
-    title: "technical leadership",
+    title: "technical foundation as hiring and culture accelerant",
     description:
-      "Leading engineering teams through complex projects. Balancing technical excellence with business goals while mentoring developers and fostering a culture of continuous improvement.",
+      "Establish technical standards, decision-making frameworks, and ownership patterns that make hiring and scaling frictionless. I build systems where junior engineers can thrive without constant senior oversight, create transparent decision frameworks that eliminate consensus theater and establish accountability, and design processes that enable junior hires to be productive in weeks not months. The engineering culture compounds.It determines whether you attract talent, retain people, and scale velocity.",
   },
   {
-    title: "system design",
+    title: "ai-augmented team productivity",
     description:
-      "Architecting distributed systems that scale. From database design to API contracts, ensuring systems are resilient, observable, and maintainable.",
+      "Build LLM-driven workflows and developer experience systems that turn junior engineers into force multipliers and let senior engineers tackle bigger problems. I architect context systems, code generation frameworks, and agentic tools that augment human judgment rather than replace it, making exploration and refactoring fast enough to keep pace with product pivots. This isn't about replacing engineers—it's about making the small team you have maximally productive so you can validate product-market fit faster, onboard new engineers more effectively, and keep technical decisions clean.",
   },
 ];
