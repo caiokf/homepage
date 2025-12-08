@@ -1,6 +1,6 @@
 export type Experience = {
+  slug: string;
   company: string;
-  companyLogoPath?: string;
   via?: string;
   position: string;
   tags: string[];
@@ -13,6 +13,7 @@ export type Experience = {
 
 export const experiencesConfig: Experience[] = [
   {
+    slug: "flex",
     company: "Flex",
     position: "Lead Frontend Developer",
     tags: ["remote", "fintech", "startup"],
@@ -28,6 +29,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "indebted",
     company: "InDebted",
     position: "Senior Full-stack Developer",
     tags: ["remote", "fintech", "startup"],
@@ -46,6 +48,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "selectquote",
     company: "SelectQuote",
     via: "Toptal",
     position: "Senior Full-stack Developer",
@@ -62,6 +65,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "runthecall",
     company: "Run The Call",
     position: "Lead Front-end Engineer",
     tags: ["remote", "startup"],
@@ -82,6 +86,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "ethereum-marketplace",
     company: "Ethereum Marketplace Startup",
     position: "Full-stack Developer",
     tags: ["remote", "startup", "web3"],
@@ -99,11 +104,12 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "scribe-intelligence",
     company: "Scribe Intelligence",
     via: "Toptal",
     position: "Technical Lead",
     tags: ["remote", "startup", "ai"],
-    website: "https://www.scribeintelligence.com/",
+    website: "https://www.linkedin.com/company/scribe-intelligence/posts/?feedView=all",
     startDate: "2017-11-20",
     endDate: "2018-08-24",
     highlights: [
@@ -119,6 +125,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "clinova",
     company: "Clinova",
     position: "Lead React Native Developer",
     tags: ["remote", "healthcare"],
@@ -136,6 +143,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "buffalo-suny",
     company: "University at Buffalo—SUNY",
     via: "Toptal",
     position: "Senior React Developer",
@@ -154,6 +162,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "zenefits",
     company: "Zenefits | MustWin",
     via: "Toptal",
     position: "Senior Frontend Developer",
@@ -171,6 +180,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "cisco",
     company: "Cisco | MustWin",
     via: "Toptal",
     position: "Senior Fullstack Developer",
@@ -188,6 +198,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "rackspace",
     company: "Rackspace",
     via: "ThoughtWorks",
     position: "Lead Consultant",
@@ -205,6 +216,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "jse",
     company: "Johannesburg Stock Exchange",
     via: "ThoughtWorks",
     position: "Technical Lead",
@@ -223,6 +235,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "visioncritical",
     company: "Vision Critical",
     via: "ThoughtWorks",
     position: "Senior Web Developer",
@@ -241,6 +254,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "measuredprogress",
     company: "Measured Progress",
     via: "ThoughtWorks",
     position: "Technical Lead",
@@ -259,7 +273,8 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
-    company: "World's Largest Apparel Retailer",
+    slug: "gap",
+    company: "Gap Inc.",
     via: "ThoughtWorks",
     position: "Senior Web Developer",
     tags: ["on-site", "e-commerce"],
@@ -275,6 +290,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "totvs",
     company: "TOTVS",
     position: "Senior Web Developer",
     tags: ["on-site", "healthcare", "enterprise"],
@@ -291,6 +307,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "hos",
     company: "Farmácias Aguiar / HOS",
     position: "Technical Lead",
     tags: ["on-site", "healthcare"],
@@ -306,6 +323,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "conceitoweb",
     company: "Conceito Web",
     position: "Freelancer Web Developer",
     tags: ["remote", "e-commerce"],
@@ -321,6 +339,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "solontavares",
     company: "Solon Tavares Technical State School",
     position: "Trainer",
     tags: ["on-site", "education"],
@@ -335,6 +354,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "zeta",
     company: "Zeta Informática",
     position: "Developer",
     tags: ["on-site", "erp"],
@@ -349,6 +369,7 @@ export const experiencesConfig: Experience[] = [
   },
 
   {
+    slug: "server",
     company: "Server Informática",
     position: "Developer",
     tags: ["on-site", "internship"],

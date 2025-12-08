@@ -15,71 +15,83 @@
 
       <div class="content">
         <div class="timeline">
-        <article
-          v-for="(experience, index) in visibleExperiences"
-          :key="index"
-          class="experience-card"
-        >
-          <header class="experience-header">
-            <div class="experience-title">
-              <h2 class="company-name">
-                <a
-                  :href="experience.website"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="company-link"
-                >
-                  {{ experience.company }}
-                </a>
-              </h2>
-              <span class="position">{{ experience.position }}</span>
-            </div>
-            <div class="experience-meta">
-              <span class="date-range">{{ formatDateRange(experience) }}</span>
-              <span class="duration">{{ calculateDuration(experience) }}</span>
-              <div class="experience-tags">
+          <article
+            v-for="(experience, index) in visibleExperiences"
+            :key="index"
+            class="experience-card"
+          >
+            <header class="experience-header">
+              <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
+                <img
+                  :src="getCompanyLogo(experience)"
+                  :alt="experience.company"
+                  class="company-logo"
+                />
+              </div>
+              <div class="experience-title">
+                <h2 class="company-name">
+                  <a
+                    v-if="experience.website"
+                    :href="experience.website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="company-link"
+                  >
+                    {{ experience.company }}
+                  </a>
+                  <span v-else>{{ experience.company }}</span>
+                </h2>
+                <span class="position">{{ experience.position }}</span>
+              </div>
+              <div class="experience-meta">
+                <span class="date-range">{{ formatDateRange(experience) }}</span>
+                <span class="duration">{{ calculateDuration(experience) }}</span>
+                <div class="experience-tags">
+                  <span v-for="tag in experience.tags" :key="tag" class="experience-tag">
+                    {{ tag }}
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            <ul class="highlights">
+              <li
+                v-for="(highlight, hIndex) in experience.highlights"
+                :key="hIndex"
+                class="highlight-item"
+              >
+                {{ highlight }}
+              </li>
+            </ul>
+
+            <footer class="experience-footer">
+              <div class="technologies">
                 <span
-                  v-for="tag in experience.tags"
-                  :key="tag"
-                  class="experience-tag"
+                  v-for="tech in parseTechnologies(experience.technologies)"
+                  :key="tech"
+                  class="tech-tag"
                 >
-                  {{ tag }}
+                  {{ tech }}
                 </span>
               </div>
-            </div>
-          </header>
+            </footer>
+          </article>
 
-          <ul class="highlights">
-            <li
-              v-for="(highlight, hIndex) in experience.highlights"
-              :key="hIndex"
-              class="highlight-item"
-            >
-              {{ highlight }}
-            </li>
-          </ul>
-
-          <footer class="experience-footer">
-            <div class="technologies">
-              <span
-                v-for="tech in parseTechnologies(experience.technologies)"
-                :key="tech"
-                class="tech-tag"
+          <div v-if="!showAll" class="show-more-container">
+            <button @click="showAll = true" class="show-more-button">
+              <span class="show-more-line"
+                ><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a
+                lot</span
               >
-                {{ tech }}
-              </span>
-            </div>
-          </footer>
-        </article>
-
-        <div v-if="!showAll" class="show-more-container">
-          <button @click="showAll = true" class="show-more-button">
-            <span class="show-more-line"><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a lot</span>
-            <span class="show-more-line"><span class="comment-prefix"></span>there's more history where that came from</span>
-            <span class="show-more-line"><span class="comment-prefix"></span>archaeologists, click here</span>
-          </button>
+              <span class="show-more-line"
+                ><span class="comment-prefix"></span>there's more history where that came from</span
+              >
+              <span class="show-more-line"
+                ><span class="comment-prefix"></span>archaeologists, click here</span
+              >
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -87,10 +99,21 @@
 
 <script setup lang="ts">
   import { computed, ref } from "vue";
-  import {
-    experiencesConfig,
-    type Experience,
-  } from "../config/experience-config";
+  import { experiencesConfig, type Experience } from "../config/experience-config";
+
+  // Dynamically import all logos from assets/logos
+  const logoModules = import.meta.glob("../assets/logos/*.jpeg", { eager: true, import: "default" });
+
+  // Build a map from slug to logo URL
+  const companyLogos: Record<string, string> = {};
+  for (const path in logoModules) {
+    const slug = path.replace("../assets/logos/", "").replace(".jpeg", "");
+    companyLogos[slug] = logoModules[path] as string;
+  }
+
+  function getCompanyLogo(experience: Experience): string | undefined {
+    return companyLogos[experience.slug];
+  }
 
   const INITIAL_VISIBLE_COUNT = 6;
   const showAll = ref(false);
@@ -126,9 +149,7 @@
       }
     });
 
-    return Array.from(techSet).sort((a, b) =>
-      a.toLowerCase().localeCompare(b.toLowerCase())
-    );
+    return Array.from(techSet).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
   });
 
   function formatDateRange(experience: Experience): string {
@@ -279,9 +300,7 @@
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     box-shadow: var(--shadow-md);
-    transition:
-      background-color var(--transition-theme),
-      box-shadow var(--transition-theme);
+    transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
   }
 
   .experience-header {
@@ -294,10 +313,22 @@
     border-bottom: 1px solid var(--color-border);
   }
 
+  .company-logo-wrapper {
+    flex-shrink: 0;
+  }
+
+  .company-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+  }
+
   .experience-title {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
+    flex: 1;
   }
 
   .company-name {
@@ -416,9 +447,7 @@
     padding: 4px 10px;
     border-radius: var(--radius-sm);
     text-transform: lowercase;
-    transition:
-      background-color var(--transition-theme),
-      color var(--transition-theme);
+    transition: background-color var(--transition-theme), color var(--transition-theme);
   }
 
   .show-more-container {
@@ -476,8 +505,13 @@
     }
 
     .experience-header {
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: var(--space-3);
+    }
+
+    .company-logo {
+      width: 40px;
+      height: 40px;
     }
 
     .experience-meta {
