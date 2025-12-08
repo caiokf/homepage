@@ -176,16 +176,16 @@
 
 [data-theme="dark"] {
   /* Background Colors */
-  --color-background: #0f0f1a;
-  --color-background-elevated: #1a1a2e;
-  --color-background-muted: #16162a;
-  --color-background-subtle: #202040;
+  --color-background: #161618;
+  --color-background-elevated: #1e1e20;
+  --color-background-muted: #1a1a1c;
+  --color-background-subtle: #282828;
 
   /* Surface Colors */
-  --color-surface: #1a1a2e;
-  --color-surface-hover: #252545;
-  --color-surface-active: #303060;
-  --color-surface-highlight: #252560;
+  --color-surface: #1e1e20;
+  --color-surface-hover: #2a2a2c;
+  --color-surface-active: #363638;
+  --color-surface-highlight: #2e2e30;
 
   /* Text Colors */
   --color-text-primary: #e8e8f0;
@@ -194,9 +194,9 @@
   --color-text-inverse: #0f0f1a;
 
   /* Border Colors */
-  --color-border: #303050;
-  --color-border-subtle: #252540;
-  --color-border-strong: #404060;
+  --color-border: #333335;
+  --color-border-subtle: #28282a;
+  --color-border-strong: #444446;
 
   /* Interactive Colors */
   --color-primary: #8b9ef5;
@@ -222,10 +222,10 @@
   --color-header-end: #5a3d80;
 
   /* Ring Colors (darker for dark theme) */
-  --ring-0: #303050;
-  --ring-1: #383860;
-  --ring-2: #404070;
-  --ring-3: #484880;
+  --ring-0: #333335;
+  --ring-1: #3a3a3c;
+  --ring-2: #424244;
+  --ring-3: #4a4a4c;
 
   /* Tooltip */
   --color-tooltip-bg: #e8e8f0;
@@ -288,6 +288,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-theme), color var(--transition-theme);
+}
+
+/* Spotlight effect from top center (dark theme only) */
+[data-theme="dark"] body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    1600px circle at 50% 0%,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 40%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Focus styles for accessibility */
