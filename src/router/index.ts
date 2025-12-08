@@ -38,6 +38,11 @@ const router = createRouter({
       name: "article",
       component: () => import("../pages/ArticlePage.vue"),
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("../pages/NotFoundPage.vue"),
+    },
   ],
 });
 

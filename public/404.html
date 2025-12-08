@@ -4,17 +4,10 @@
     <meta charset="utf-8">
     <title>Redirecting...</title>
     <script>
-      // Single Page App redirect for GitHub Pages
-      // Converts path to query string and redirects to index.html
-      const segment = 1; // Keep 1 segment for /homepage/
-      const path = window.location.pathname
-        .split('/')
-        .slice(segment + 1)
-        .join('/');
-      const search = window.location.search;
-      const hash = window.location.hash;
-      const redirect = '/' + (path ? '?p=' + encodeURIComponent('/' + path) + (search ? '&q=' + encodeURIComponent(search) : '') : '') + hash;
-      window.location.replace('/homepage' + redirect);
+      // GitHub Pages SPA redirect
+      // Redirects 404s to index.html while preserving the path
+      sessionStorage.setItem('redirect', window.location.pathname);
+      window.location.replace('/homepage/');
     </script>
   </head>
   <body>
