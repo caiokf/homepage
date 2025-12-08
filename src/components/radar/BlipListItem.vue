@@ -27,33 +27,23 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
   import type { PositionedBlip } from "../../models/quadrant.geometry";
 
-  defineProps<{
+  const props = defineProps<{
     blip: PositionedBlip;
     isHighlighted: boolean;
+    isExpanded: boolean;
   }>();
 
-  defineEmits<{
+  const emit = defineEmits<{
     hover: [blip: PositionedBlip | null];
     click: [blip: PositionedBlip];
+    toggle: [blipId: number];
   }>();
 
-  const isExpanded = ref(false);
-
   function toggleExpand() {
-    isExpanded.value = !isExpanded.value;
+    emit("toggle", props.blip.id);
   }
-
-  defineExpose({
-    expand: () => {
-      isExpanded.value = true;
-    },
-    collapse: () => {
-      isExpanded.value = false;
-    },
-  });
 </script>
 
 <style scoped>

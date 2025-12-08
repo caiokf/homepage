@@ -50,8 +50,10 @@
             :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
             :highlighted-blip-id="hoveredBlipId"
+            :expanded-blip-id="expandedBlipId"
             @blip-hover="handleTableBlipHover"
             @blip-click="handleBlipSelected"
+            @blip-toggle="handleBlipToggle"
           />
         </div>
 
@@ -77,8 +79,10 @@
             :quadrant-position="selectedQuadrant"
             :blips="selectedQuadrantBlips"
             :highlighted-blip-id="hoveredBlipId"
+            :expanded-blip-id="expandedBlipId"
             @blip-hover="handleTableBlipHover"
             @blip-click="handleBlipSelected"
+            @blip-toggle="handleBlipToggle"
           />
         </div>
       </main>
@@ -88,8 +92,10 @@
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
+          :expanded-blip-id="expandedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
+          @blip-toggle="handleBlipToggle"
         />
       </div>
     </div>
@@ -133,6 +139,7 @@
   const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
   const hoveredBlipId = ref<number | null>(null);
+  const expandedBlipId = ref<number | null>(null);
 
   onMounted(async () => {
     const data = await dataProvider.fetch();
@@ -236,6 +243,11 @@
     console.log("Search selected:", result.blip.name, "in", result.quadrantName);
     // Zoom to the quadrant
     selectedQuadrant.value = result.quadrant;
+  }
+
+  function handleBlipToggle(blipId: number) {
+    // Toggle: if clicking the same blip, close it; otherwise open the new one
+    expandedBlipId.value = expandedBlipId.value === blipId ? null : blipId;
   }
 </script>
 

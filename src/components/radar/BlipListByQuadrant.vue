@@ -8,8 +8,10 @@
       :ring-name="ring.name"
       :blips="ring.blips"
       :highlighted-blip-id="highlightedBlipId"
+      :expanded-blip-id="expandedBlipId"
       @blip-hover="$emit('blip-hover', $event)"
       @blip-click="$emit('blip-click', $event)"
+      @blip-toggle="$emit('blip-toggle', $event)"
     />
   </div>
 </template>
@@ -25,11 +27,13 @@
     quadrantPosition: QuadrantPosition;
     blips: PositionedBlip[];
     highlightedBlipId: number | null;
+    expandedBlipId: number | null;
   }>();
 
   defineEmits<{
     "blip-hover": [blip: PositionedBlip | null];
     "blip-click": [blip: PositionedBlip];
+    "blip-toggle": [blipId: number];
   }>();
 
   const ringGroups = computed(() => {

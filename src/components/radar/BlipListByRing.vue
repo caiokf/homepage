@@ -7,8 +7,10 @@
         :key="blip.id"
         :blip="blip"
         :is-highlighted="highlightedBlipId === blip.id"
+        :is-expanded="expandedBlipId === blip.id"
         @hover="$emit('blip-hover', $event)"
         @click="$emit('blip-click', $event)"
+        @toggle="$emit('blip-toggle', $event)"
       />
     </ul>
     <p v-else class="empty-ring">No items in this ring</p>
@@ -23,11 +25,13 @@
     ringName: string;
     blips: PositionedBlip[];
     highlightedBlipId: number | null;
+    expandedBlipId: number | null;
   }>();
 
   defineEmits<{
     "blip-hover": [blip: PositionedBlip | null];
     "blip-click": [blip: PositionedBlip];
+    "blip-toggle": [blipId: number];
   }>();
 </script>
 
