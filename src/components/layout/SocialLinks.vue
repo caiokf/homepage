@@ -48,13 +48,11 @@
   const isCompact = ref(false);
   const isPopupOpen = ref(false);
 
-  const COMPACT_THRESHOLD = 130;
+  // Window width threshold where we switch to compact mode
+  const COMPACT_WINDOW_THRESHOLD = 500;
 
   function checkSize() {
-    if (containerRef.value) {
-      const width = containerRef.value.offsetWidth;
-      isCompact.value = width < COMPACT_THRESHOLD;
-    }
+    isCompact.value = window.innerWidth < COMPACT_WINDOW_THRESHOLD;
     isPopupOpen.value = false;
   }
 
