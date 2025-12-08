@@ -521,6 +521,7 @@
     stroke-width: 4px;
     stroke-linecap: round;
     stroke-linejoin: round;
+    text-transform: lowercase;
   }
 
   /* Quadrant names */
@@ -536,6 +537,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     line-height: var(--leading-tight);
+    text-transform: lowercase;
   }
 
   .quadrant-name-text.NE {
