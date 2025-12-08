@@ -40,24 +40,7 @@
 
       <!-- Main radar and table container (hidden on mobile unless quadrant selected) -->
       <main class="radar-layout" :class="layoutClasses">
-        <!-- Table on LEFT (for NE/NW quadrants - radar moves right) -->
-        <div
-          v-if="selectedQuadrant && selectedQuadrantObj && isRadarOnRight"
-          class="table-wrapper table-side table-left"
-        >
-          <BlipListByQuadrant
-            :quadrant-name="selectedQuadrantObj.name"
-            :quadrant-position="selectedQuadrant"
-            :blips="selectedQuadrantBlips"
-            :highlighted-blip-id="hoveredBlipId"
-            :expanded-blip-id="expandedBlipId"
-            @blip-hover="handleTableBlipHover"
-            @blip-click="handleBlipSelected"
-            @blip-toggle="handleBlipToggle"
-          />
-        </div>
-
-        <div class="radar-wrapper" :style="radarWrapperStyle">
+        <div class="radar-wrapper">
           <TechRadar
             ref="techRadarRef"
             :radar="radar"
@@ -67,23 +50,24 @@
             @blip-hovered="handleBlipHovered"
           />
           <RadarLegend />
-        </div>
 
-        <!-- Table on RIGHT (for SW/SE quadrants - radar moves left) -->
-        <div
-          v-if="selectedQuadrant && selectedQuadrantObj && !isRadarOnRight"
-          class="table-wrapper table-side table-right"
-        >
-          <BlipListByQuadrant
-            :quadrant-name="selectedQuadrantObj.name"
-            :quadrant-position="selectedQuadrant"
-            :blips="selectedQuadrantBlips"
-            :highlighted-blip-id="hoveredBlipId"
-            :expanded-blip-id="expandedBlipId"
-            @blip-hover="handleTableBlipHover"
-            @blip-click="handleBlipSelected"
-            @blip-toggle="handleBlipToggle"
-          />
+          <!-- Overlay blip list on the opposite quadrant when one is selected -->
+          <div
+            v-if="selectedQuadrant && selectedQuadrantObj"
+            class="table-overlay"
+            :class="tableOverlayPosition"
+          >
+            <BlipListByQuadrant
+              :quadrant-name="selectedQuadrantObj.name"
+              :quadrant-position="selectedQuadrant"
+              :blips="selectedQuadrantBlips"
+              :highlighted-blip-id="hoveredBlipId"
+              :expanded-blip-id="expandedBlipId"
+              @blip-hover="handleTableBlipHover"
+              @blip-click="handleBlipSelected"
+              @blip-toggle="handleBlipToggle"
+            />
+          </div>
         </div>
       </main>
 
@@ -195,32 +179,29 @@
     });
   });
 
-  // Determine if radar should move to the right (NE/NW quadrants selected)
-  // NE/NW quadrants are on LEFT side of radar, so radar moves RIGHT, table on LEFT
-  // SW/SE quadrants are on RIGHT side of radar, so radar moves LEFT, table on RIGHT
-  const isRadarOnRight = computed(() => {
-    return selectedQuadrant.value === "NE" || selectedQuadrant.value === "NW";
-  });
-
   // Layout classes for the radar-layout container
   const layoutClasses = computed(() => ({
     "has-selection": !!selectedQuadrant.value,
-    "table-on-left": isRadarOnRight.value,
-    "table-on-right": selectedQuadrant.value && !isRadarOnRight.value,
   }));
 
-  // Radar wrapper style - changes width when quadrant is selected
-  const radarWrapperStyle = computed(() => {
-    if (!selectedQuadrant.value) {
-      return {
-        width: "1056px",
-      };
+  // Position the table overlay on the opposite side of the selected quadrant
+  // NE selected -> overlay on SW (bottom-left)
+  // NW selected -> overlay on SE (bottom-right)
+  // SW selected -> overlay on NE (top-right)
+  // SE selected -> overlay on NW (top-left)
+  const tableOverlayPosition = computed(() => {
+    switch (selectedQuadrant.value) {
+      case "NE":
+        return "overlay-sw";
+      case "NW":
+        return "overlay-se";
+      case "SW":
+        return "overlay-ne";
+      case "SE":
+        return "overlay-nw";
+      default:
+        return "";
     }
-
-    // Shrink when zoomed to single quadrant
-    return {
-      width: "620px",
-    };
   });
 
   function handleQuadrantSelected(position: QuadrantPosition | null) {
@@ -283,12 +264,9 @@
     margin: 0 auto;
   }
 
-  .radar-layout.has-selection {
-    gap: 36px;
-  }
-
   .radar-wrapper {
-    transition: width 1s ease;
+    position: relative;
+    width: 1056px;
     flex-shrink: 0;
     box-sizing: border-box;
   }
@@ -298,52 +276,43 @@
     box-sizing: border-box;
   }
 
-  /* Side table (when single quadrant selected) */
-  .table-wrapper.table-side {
-    width: 400px;
-    flex-shrink: 0;
-    max-height: 80vh;
+  /* Overlay table on top of radar */
+  .table-overlay {
+    position: absolute;
+    width: 50%;
+    height: 50%;
     overflow-y: auto;
     overflow-x: hidden;
-    animation: slideIn 1s ease;
+    background: var(--color-background);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-sizing: border-box;
   }
 
-  .table-wrapper.table-left {
-    order: -1;
-    animation-name: slideInFromLeft;
+  .table-overlay.overlay-nw {
+    top: 0;
+    left: 0;
   }
 
-  .table-wrapper.table-right {
-    order: 1;
-    animation-name: slideInFromRight;
+  .table-overlay.overlay-ne {
+    top: 0;
+    right: 0;
+  }
+
+  .table-overlay.overlay-sw {
+    bottom: 0;
+    left: 0;
+  }
+
+  .table-overlay.overlay-se {
+    bottom: 0;
+    right: 0;
   }
 
   /* Bottom table (when all quadrants visible) */
   .table-wrapper.table-bottom {
     width: 1056px;
     margin: var(--space-8) auto 0;
-  }
-
-  @keyframes slideInFromLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes slideInFromRight {
-    from {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
   }
 
   /* Loading State */

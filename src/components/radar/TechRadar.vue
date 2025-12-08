@@ -8,10 +8,10 @@
       class="radar-svg"
       :class="{ 'is-zoomed': selectedQuadrant }"
     >
-      <!-- Layer 1: Ring arcs -->
+      <!-- Each quadrant as a single group -->
       <g
-        v-for="quadrant in quadrants"
-        :key="`rings-${quadrant.position}`"
+        v-for="(quadrant, index) in quadrants"
+        :key="`quadrant-${quadrant.position}`"
         :class="[
           'quadrant-group',
           quadrant.position,
@@ -35,63 +35,6 @@
             :key="`ring-${ringIndex}`"
             :d="ringPath"
             :class="['ring-arc', `ring-arc-${ringIndex}`]"
-          />
-        </g>
-      </g>
-
-      <!-- Layer 2: Separator lines (drawn on top of rings, under blips) -->
-      <g
-        v-if="!selectedQuadrant"
-        :transform="getQuadrantTransform()"
-        class="quadrant-separators"
-      >
-        <line
-          v-for="separator in getSeparatorLines()"
-          :key="`separator-${separator.angle}`"
-          :x1="separator.x1"
-          :y1="separator.y1"
-          :x2="separator.x2"
-          :y2="separator.y2"
-          class="separator-line"
-        />
-        <!-- Ring labels on horizontal separator -->
-        <text
-          v-for="(label, index) in calcRingLabelsOnSeparators()"
-          :key="`ring-label-${index}`"
-          :x="label.x"
-          y="0"
-          class="ring-label-separator"
-        >
-          {{ label.name }}
-        </text>
-      </g>
-
-      <!-- Layer 3: Ring labels, blips, and quadrant names -->
-      <g
-        v-for="(quadrant, index) in quadrants"
-        :key="`content-${quadrant.position}`"
-        :class="[
-          'quadrant-group',
-          quadrant.position,
-          {
-            'quadrant-hidden':
-              selectedQuadrant && selectedQuadrant !== quadrant.position,
-            'quadrant-zoomed': selectedQuadrant === quadrant.position,
-          },
-        ]"
-        :transform="getQuadrantTransform()"
-        :style="getQuadrantStyle(quadrant.position)"
-      >
-        <!-- Clickable background (invisible, for interaction) -->
-        <g
-          class="quadrant-background"
-          @click="selectQuadrant(quadrant.position)"
-        >
-          <path
-            v-for="(ringPath, ringIndex) in getRingPaths(quadrant)"
-            :key="`ring-invisible-${ringIndex}`"
-            :d="ringPath"
-            class="ring-arc-invisible"
           />
         </g>
 
@@ -151,7 +94,7 @@
           </text>
         </g>
 
-        <!-- Quadrant name with caret -->
+        <!-- Quadrant name -->
         <g :class="['quadrant-name-group', quadrant.position]">
           <foreignObject
             :x="getQuadrantLabelX(quadrant.position)"
@@ -167,6 +110,33 @@
             </div>
           </foreignObject>
         </g>
+      </g>
+
+      <!-- Separator lines (drawn on top of quadrants) -->
+      <g
+        v-if="!selectedQuadrant"
+        :transform="getCenterTransform()"
+        class="quadrant-separators"
+      >
+        <line
+          v-for="separator in getSeparatorLines()"
+          :key="`separator-${separator.angle}`"
+          :x1="separator.x1"
+          :y1="separator.y1"
+          :x2="separator.x2"
+          :y2="separator.y2"
+          class="separator-line"
+        />
+        <!-- Ring labels on horizontal separator -->
+        <text
+          v-for="(label, index) in calcRingLabelsOnSeparators()"
+          :key="`ring-label-${index}`"
+          :x="label.x"
+          y="0"
+          class="ring-label-separator"
+        >
+          {{ label.name }}
+        </text>
       </g>
     </svg>
 
@@ -229,16 +199,8 @@
   const svgHeight = "100%";
 
   const viewBox = computed(() => {
-    if (!props.selectedQuadrant) {
-      return `0 0 ${radarSize.value} ${radarSize.value}`;
-    }
-    // When zoomed, show just the selected quadrant (half the radar in each dimension)
-    const offset = RadarGeometry.getZoomedViewBoxOffset(
-      props.selectedQuadrant,
-      radarSize.value
-    );
-    const zoomSize = radarSize.value / 2;
-    return `${offset.x} ${offset.y} ${zoomSize} ${zoomSize}`;
+    // Always show the full radar - no zooming
+    return `0 0 ${radarSize.value} ${radarSize.value}`;
   });
 
   // Compute ring radii
@@ -271,6 +233,12 @@
 
   function getPositionedBlips(quadrantIndex: number): PositionedBlip[] {
     return positionedBlipsCache.value[quadrantIndex] || [];
+  }
+
+  function getCenterTransform(): string {
+    const centerX = radarSize.value / 2;
+    const centerY = radarSize.value / 2;
+    return `translate(${centerX}, ${centerY})`;
   }
 
   function getQuadrantTransform(): string {
@@ -390,7 +358,9 @@
 
   /* Quadrant group transitions */
   .quadrant-group {
-    transition: opacity var(--transition-slow);
+    transition:
+      opacity var(--transition-slow),
+      transform var(--transition-slow);
   }
 
   .quadrant-hidden {
@@ -540,19 +510,19 @@
     text-transform: lowercase;
   }
 
-  .quadrant-name-text.NE {
-    color: var(--quadrant-NE);
-    text-align: left;
-  }
-
   .quadrant-name-text.NW {
     color: var(--quadrant-NW);
     text-align: left;
   }
 
+  .quadrant-name-text.NE {
+    color: var(--quadrant-NE);
+    text-align: right;
+  }
+
   .quadrant-name-text.SW {
     color: var(--quadrant-SW);
-    text-align: right;
+    text-align: left;
   }
 
   .quadrant-name-text.SE {

@@ -14,6 +14,7 @@ export type SeparatorLine = {
 export class RadarGeometry {
   /**
    * Calculate viewBox offset for zoomed quadrant view.
+   * Position labels match visual location (NW = top-left, etc.)
    */
   static getZoomedViewBoxOffset(
     position: QuadrantPosition,
@@ -21,10 +22,10 @@ export class RadarGeometry {
   ): { x: number; y: number } {
     const center = radarSize / 2;
     switch (position) {
-      case "NE": // top-right
-        return { x: center, y: 0 };
       case "NW": // top-left
         return { x: 0, y: 0 };
+      case "NE": // top-right
+        return { x: center, y: 0 };
       case "SW": // bottom-left
         return { x: 0, y: center };
       case "SE": // bottom-right
@@ -34,6 +35,7 @@ export class RadarGeometry {
 
   /**
    * Calculate X position for quadrant label.
+   * Position labels match visual location (NW = top-left, etc.)
    */
   static getQuadrantLabelX(
     position: QuadrantPosition,
@@ -42,11 +44,11 @@ export class RadarGeometry {
     const offset = 30;
 
     switch (position) {
-      case "NE": // top-right quadrant (label on left side)
-        return -outerRadius + offset;
       case "NW": // top-left quadrant (label on left side)
         return -outerRadius + offset;
-      case "SW": // bottom-left quadrant (label on right side)
+      case "SW": // bottom-left quadrant (label on left side)
+        return -outerRadius + offset;
+      case "NE": // top-right quadrant (label on right side)
         return outerRadius - offset - 150;
       case "SE": // bottom-right quadrant (label on right side)
         return outerRadius - offset - 150;
@@ -55,6 +57,7 @@ export class RadarGeometry {
 
   /**
    * Calculate Y position for quadrant label.
+   * Position labels match visual location (NW = top-left, etc.)
    */
   static getQuadrantLabelY(
     position: QuadrantPosition,
@@ -63,11 +66,11 @@ export class RadarGeometry {
     const offset = 30;
 
     switch (position) {
-      case "NE": // top-right quadrant
+      case "NW": // top-left quadrant
         return -outerRadius + offset;
-      case "NW": // top-left quadrant (actually bottom in screen coords)
-        return outerRadius - 2 * offset;
       case "SW": // bottom-left quadrant
+        return outerRadius - 2 * offset;
+      case "NE": // top-right quadrant
         return -outerRadius + offset;
       case "SE": // bottom-right quadrant
         return outerRadius - 2 * offset;

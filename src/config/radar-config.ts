@@ -41,13 +41,14 @@ export type QuadrantName = (typeof QUADRANT_NAMES)[number];
 export type QuadrantPosition = "NE" | "NW" | "SE" | "SW";
 
 // Quadrant configuration with position, angle, and default name
+// Position labels match visual location on screen (NW = top-left, etc.)
 export const QUADRANT_CONFIG: Record<
   QuadrantPosition,
   { startAngle: number; defaultName: string }
 > = {
-  NE: { startAngle: 0, defaultName: "Techniques" },
-  NW: { startAngle: -90, defaultName: "Platforms" },
-  SW: { startAngle: 90, defaultName: "Tools" },
+  NW: { startAngle: 0, defaultName: "Techniques" },
+  SW: { startAngle: -90, defaultName: "Platforms" },
+  NE: { startAngle: 90, defaultName: "Tools" },
   SE: { startAngle: -180, defaultName: "Languages & Frameworks" },
 } as const;
 

@@ -16,14 +16,14 @@ describe("RadarGeometry", () => {
       expect(offset).toEqual({ x: 0, y: 0 });
     });
 
-    it("should return bottom-left offset for SW quadrant", () => {
+    it("should return bottom-right offset for SW quadrant", () => {
       const offset = RadarGeometry.getZoomedViewBoxOffset("SW", radarSize);
-      expect(offset).toEqual({ x: 0, y: center });
+      expect(offset).toEqual({ x: center, y: center });
     });
 
-    it("should return bottom-right offset for SE quadrant", () => {
+    it("should return bottom-left offset for SE quadrant", () => {
       const offset = RadarGeometry.getZoomedViewBoxOffset("SE", radarSize);
-      expect(offset).toEqual({ x: center, y: center });
+      expect(offset).toEqual({ x: 0, y: center });
     });
 
     it("should scale offsets proportionally to radar size", () => {
