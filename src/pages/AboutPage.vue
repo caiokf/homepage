@@ -3,11 +3,13 @@
     <section class="hero">
       <div class="hero-content">
         <h1 class="name">caio kinzel filho</h1>
-        <p class="tagline">software engineer & technical leader</p>
+        <p class="tagline">I'm a software engineer based in Sunshine Coast, Australia.</p>
 
         <p class="bio">
-          Building products that matter. Passionate about clean architecture, developer experience,
-          and turning complex problems into elegant solutions.
+          Since 2005, I've enjoyed turning complex problems into scalable, elegant solutions. I
+          specialize in architecture for rapid scaling, event-driven systems, and building
+          engineering teams that deliver. When I'm not coding, you'll find me on the trails,
+          on the beach, or in a sim racing lobby near you.
         </p>
 
         <div class="avatar-wrapper">
