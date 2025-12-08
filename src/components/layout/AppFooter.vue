@@ -109,7 +109,7 @@
   @media (max-width: 600px) {
     .footer-nav {
       gap: var(--space-4);
-      padding: 0 var(--space-4);
+      padding: 0 0;
     }
 
     .nav-label-long {

@@ -17,9 +17,7 @@
 
     <!-- Compact view (link with popup) -->
     <div v-else class="social-compact">
-      <button class="social-toggle bracket-link" @click="togglePopup">
-        socials
-      </button>
+      <button class="social-toggle bracket-link" @click="togglePopup">socials</button>
 
       <Transition name="popup">
         <div v-if="isPopupOpen" class="social-popup">
@@ -83,7 +81,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    min-width: 130px;
+    min-width: 150px;
     margin-left: var(--space-6);
     padding-left: var(--space-6);
     border-left: 1px solid oklch(1 0 0 / 0.15);
@@ -104,9 +102,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0.7;
-    transition:
-      opacity var(--transition-fast),
-      transform var(--transition-fast);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
 
   .social-link:hover {
@@ -166,9 +162,7 @@
   /* Popup transition */
   .popup-enter-active,
   .popup-leave-active {
-    transition:
-      opacity var(--transition-fast),
-      transform var(--transition-fast);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
 
   .popup-enter-from,
