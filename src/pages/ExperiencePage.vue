@@ -167,7 +167,7 @@
     return experiencesConfig.slice(0, INITIAL_VISIBLE_COUNT);
   });
 
-  const RECENT_YEARS = 8;
+  const RECENT_YEARS = 5;
 
   const recentTechnologies = computed(() => {
     const cutoffDate = new Date();

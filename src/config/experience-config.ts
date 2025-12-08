@@ -20,7 +20,7 @@ export const experiencesConfig: Experience[] = [
     website: "https://www.slice.co.uk",
     startDate: "2024-02-12",
     highlights: [
-      "Staff engineer at Slice, a fintech startup focused on buy-now-pay-later solutions.",
+      "Principal engineer at Slice, a fintech startup focused on lay-by solutions for travel.",
     ],
     technologies: "typescript, react, node, aws",
   },
@@ -33,7 +33,7 @@ export const experiencesConfig: Experience[] = [
     website: "https://www.forgetmenot.com",
     startDate: "2022-02-16",
     endDate: "2024-02-09",
-    highlights: ["Lead engineer at Forget Me Not, building financial management tools."],
+    highlights: ["Lead engineer at Forget Me Not, building micro learning solutions."],
     technologies: "typescript, react, node, aws, serverless",
   },
 
