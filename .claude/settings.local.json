@@ -10,7 +10,10 @@
       "Bash(node:*)",
       "WebFetch(domain:www.linkedin.com)",
       "WebSearch",
-      "WebFetch(domain:brandfetch.com)"
+      "WebFetch(domain:brandfetch.com)",
+      "Bash(gh run list:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
