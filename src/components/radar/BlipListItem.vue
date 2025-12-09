@@ -1,5 +1,6 @@
 <template>
   <li
+    ref="itemRef"
     :class="['blip-item', { expanded: isExpanded, highlighted: isHighlighted }]"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
@@ -27,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, watch, nextTick } from "vue";
   import type { PositionedBlip } from "../../models/quadrant.geometry";
 
   const props = defineProps<{
@@ -40,6 +42,20 @@
     click: [blip: PositionedBlip];
     toggle: [blipId: number];
   }>();
+
+  const itemRef = ref<HTMLLIElement | null>(null);
+
+  // Scroll into view when expanded
+  watch(
+    () => props.isExpanded,
+    (expanded) => {
+      if (expanded) {
+        nextTick(() => {
+          itemRef.value?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    }
+  );
 
   function toggleExpand() {
     emit("toggle", props.blip.id);
