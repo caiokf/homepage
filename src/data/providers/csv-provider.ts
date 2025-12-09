@@ -5,28 +5,11 @@ import type {
 import type { TechRadarData, TechRadarBlipData } from "../tech-radar-data";
 import type { BlipStatus } from "../../models/blip";
 
-export type GoogleSheetsConfig = {
-  sheetId: string;
-  apiKey: string;
+export type CsvProviderConfig = {
+  url: string;
 };
 
-type SheetMetadata = {
-  properties: {
-    title: string;
-  };
-  sheets: Array<{
-    properties: {
-      sheetId: number;
-      title: string;
-    };
-  }>;
-};
-
-type SheetValuesResponse = {
-  values: string[][];
-};
-
-type SheetRow = {
+type CsvRow = {
   name: string;
   ring: string;
   quadrant: string;
@@ -35,81 +18,48 @@ type SheetRow = {
   description: string;
 };
 
-const GOOGLE_SHEETS_API_BASE = "https://sheets.googleapis.com/v4/spreadsheets";
+export class CsvProvider implements TechRadarDataProvider {
+  private url: string;
 
-export class GoogleSheetsProvider implements TechRadarDataProvider {
-  private metadata: SheetMetadata | null = null;
-  private sheetId: string;
-  private apiKey: string;
-
-  constructor(config: GoogleSheetsConfig) {
-    this.sheetId = config.sheetId;
-    this.apiKey = config.apiKey;
+  constructor(config: CsvProviderConfig) {
+    this.url = config.url;
   }
 
   async listVersions(): Promise<RadarVersion[]> {
-    await this.ensureMetadata();
-
-    if (!this.metadata) {
-      return [];
-    }
-
-    return this.metadata.sheets.map((sheet) => ({
-      id: sheet.properties.title,
-      name: sheet.properties.title,
-    }));
+    // CSV files don't have multiple versions/tabs
+    return [{ id: "default", name: "Default" }];
   }
 
-  async fetchVersion(versionId: string): Promise<TechRadarData> {
-    await this.ensureMetadata();
-
-    const sheetName = versionId;
-    const range = `${sheetName}!A1:F`;
-
-    const url = `${GOOGLE_SHEETS_API_BASE}/${this.sheetId}/values/${encodeURIComponent(range)}?key=${this.apiKey}`;
-
-    const response = await fetch(url);
+  async fetchVersion(_versionId: string): Promise<TechRadarData> {
+    const response = await fetch(this.url);
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch sheet data: ${response.status} ${response.statusText}`
+        `Failed to fetch CSV data: ${response.status} ${response.statusText}`
       );
     }
 
-    const data: SheetValuesResponse = await response.json();
-    const blips = this.parseSheetData(data.values);
+    const csvText = await response.text();
+    const blips = this.parseCsv(csvText);
 
     return {
-      title: this.metadata?.properties.title ?? "Tech Radar",
+      title: "Tech Radar",
       blips,
     };
   }
 
-  private async ensureMetadata(): Promise<void> {
-    if (this.metadata) return;
+  private parseCsv(csvText: string): TechRadarBlipData[] {
+    const lines = csvText.split("\n").filter((line) => line.trim());
 
-    const url = `${GOOGLE_SHEETS_API_BASE}/${this.sheetId}?key=${this.apiKey}`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch sheet metadata: ${response.status} ${response.statusText}`
-      );
-    }
-
-    this.metadata = await response.json();
-  }
-
-  private parseSheetData(values: string[][]): TechRadarBlipData[] {
-    if (!values || values.length < 2) {
+    if (lines.length < 2) {
       return [];
     }
 
-    const [headerRow, ...dataRows] = values;
-    const headers = headerRow.map((h) => h.toLowerCase().trim());
+    const headers = this.parseCsvLine(lines[0]).map((h) =>
+      h.toLowerCase().trim()
+    );
 
-    const columnIndices = {
+    const columnIndices: Record<keyof CsvRow, number> = {
       name: headers.indexOf("name"),
       ring: headers.indexOf("ring"),
       quadrant: headers.indexOf("quadrant"),
@@ -118,17 +68,47 @@ export class GoogleSheetsProvider implements TechRadarDataProvider {
       description: headers.indexOf("description"),
     };
 
-    return dataRows
-      .map((row) => this.parseRow(row, columnIndices))
+    return lines
+      .slice(1)
+      .map((line) => this.parseRow(this.parseCsvLine(line), columnIndices))
       .filter((blip): blip is TechRadarBlipData => blip !== null);
   }
 
+  private parseCsvLine(line: string): string[] {
+    const result: string[] = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+
+      if (char === '"') {
+        if (inQuotes && line[i + 1] === '"') {
+          // Escaped quote
+          current += '"';
+          i++;
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    result.push(current.trim());
+    return result;
+  }
+
   private parseRow(
-    row: string[],
-    indices: Record<keyof SheetRow, number>
+    values: string[],
+    indices: Record<keyof CsvRow, number>
   ): TechRadarBlipData | null {
     const getValue = (index: number): string =>
-      index >= 0 && index < row.length ? row[index]?.trim() ?? "" : "";
+      index >= 0 && index < values.length ? values[index]?.trim() ?? "" : "";
 
     const name = getValue(indices.name);
     const ring = getValue(indices.ring);
@@ -174,7 +154,6 @@ export class GoogleSheetsProvider implements TechRadarDataProvider {
   }
 
   private normalizeRing(ring: string): string {
-    // Capitalize first letter of each word
     return ring
       .toLowerCase()
       .split(" ")
@@ -183,8 +162,6 @@ export class GoogleSheetsProvider implements TechRadarDataProvider {
   }
 
   private normalizeQuadrant(quadrant: string): string {
-    // Convert from kebab-case or other formats to title case
-    // e.g., "languages-and-frameworks" -> "Languages & Frameworks"
     const normalized = quadrant
       .toLowerCase()
       .replace(/-/g, " ")

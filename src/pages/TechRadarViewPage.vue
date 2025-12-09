@@ -91,12 +91,18 @@
   import RadarHeader from "../components/radar/RadarHeader.vue";
   import { Radar } from "../models/radar";
   import { SampleDataProvider } from "../data/providers/sample-data-provider";
+  import { GoogleSheetsProvider } from "../data/providers/google-sheets-provider";
   import type { TechRadarDataProvider } from "../data/tech-radar-data-provider";
   import type {
     PositionedBlip,
     QuadrantGeometryConfig,
   } from "../models/quadrant.geometry";
-  import { type QuadrantPosition, graphConfig } from "../config/radar-config";
+  import {
+    type QuadrantPosition,
+    graphConfig,
+    RADAR_SHEET_ID,
+    GOOGLE_API_KEY,
+  } from "../config/radar-config";
   import { RingGeometry } from "../models/ring.geometry";
   import { QuadrantGeometry } from "../models/quadrant.geometry";
 
@@ -106,8 +112,11 @@
     quadrantName: string;
   };
 
-  // Data provider - can be swapped for different data sources
-  const dataProvider: TechRadarDataProvider = new SampleDataProvider();
+  // Data provider - use Google Sheets if configured, otherwise fallback to sample data
+  const dataProvider: TechRadarDataProvider =
+    RADAR_SHEET_ID && GOOGLE_API_KEY
+      ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
+      : new SampleDataProvider();
 
   const radar = shallowRef<Radar | null>(null);
   const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
