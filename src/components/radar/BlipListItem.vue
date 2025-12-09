@@ -21,7 +21,7 @@
       <span class="expand-arrow" :class="{ rotated: isExpanded }">&#9660;</span>
     </button>
     <div class="blip-description" :class="{ visible: isExpanded }">
-      <p>{{ blip.description || "No description available." }}</p>
+      <div v-html="blip.description || 'No description available.'"></div>
     </div>
   </li>
 </template>
@@ -134,16 +134,48 @@
   }
 
   .blip-description.visible {
-    max-height: 200px;
+    max-height: 500px;
     padding: var(--space-4) var(--space-4) var(--space-4) 48px;
   }
 
-  .blip-description p {
-    margin: 0;
+  .blip-description :deep(p) {
+    margin: 0 0 var(--space-2) 0;
     color: var(--color-text-secondary);
-    font-size: var(--text-md);
+    font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
     font-family: var(--font-sans);
     transition: color var(--transition-theme);
+  }
+
+  .blip-description :deep(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .blip-description :deep(a) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .blip-description :deep(a:hover) {
+    color: var(--color-link-hover);
+  }
+
+  .blip-description :deep(ul),
+  .blip-description :deep(ol) {
+    margin: var(--space-2) 0;
+    padding-left: var(--space-6);
+    color: var(--color-text-secondary);
+  }
+
+  .blip-description :deep(li) {
+    margin-bottom: var(--space-1);
+  }
+
+  .blip-description :deep(code) {
+    background: var(--color-surface);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
   }
 </style>
