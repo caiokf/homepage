@@ -20,7 +20,7 @@ describe("Quadrant", () => {
 
     it("should use default name if not provided", () => {
       const defaultQuadrant = new Quadrant("NW");
-      expect(defaultQuadrant.name).toBe("Platforms");
+      expect(defaultQuadrant.name).toBe("Techniques");
     });
 
     it("should set start angle based on position", () => {
@@ -29,9 +29,14 @@ describe("Quadrant", () => {
       const swQuadrant = new Quadrant("SW");
       const seQuadrant = new Quadrant("SE");
 
-      expect(neQuadrant.startAngle).toBe(0);
-      expect(nwQuadrant.startAngle).toBe(-90);
-      expect(swQuadrant.startAngle).toBe(90);
+      // Position labels match visual location:
+      // NW (top-left): startAngle 0
+      // SW (bottom-left): startAngle -90
+      // NE (top-right): startAngle 90
+      // SE (bottom-right): startAngle -180
+      expect(nwQuadrant.startAngle).toBe(0);
+      expect(swQuadrant.startAngle).toBe(-90);
+      expect(neQuadrant.startAngle).toBe(90);
       expect(seQuadrant.startAngle).toBe(-180);
     });
 

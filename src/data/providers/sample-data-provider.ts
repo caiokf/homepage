@@ -1,6 +1,11 @@
-import type { TechRadarDataProvider } from "../tech-radar-data-provider";
+import type {
+  TechRadarDataProvider,
+  RadarVersion,
+} from "../tech-radar-data-provider";
 import type { TechRadarData } from "../tech-radar-data";
 import { RING_NAMES, QUADRANT_NAMES } from "../../config/radar-config";
+
+const DEFAULT_VERSION: RadarVersion = { id: "default", name: "Default" };
 
 const sampleData: TechRadarData = {
   title: "Technology Radar",
@@ -256,7 +261,11 @@ const sampleData: TechRadarData = {
 };
 
 export class SampleDataProvider implements TechRadarDataProvider {
-  async fetch(): Promise<TechRadarData> {
+  async listVersions(): Promise<RadarVersion[]> {
+    return [DEFAULT_VERSION];
+  }
+
+  async fetchVersion(_versionId: string): Promise<TechRadarData> {
     return sampleData;
   }
 }

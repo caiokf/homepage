@@ -116,8 +116,11 @@
   const expandedBlipId = ref<number | null>(null);
 
   onMounted(async () => {
-    const data = await dataProvider.fetch();
-    radar.value = Radar.create(data);
+    const versions = await dataProvider.listVersions();
+    if (versions.length > 0) {
+      const data = await dataProvider.fetchVersion(versions[0].id);
+      radar.value = Radar.create(data);
+    }
   });
 
   // Get the selected quadrant

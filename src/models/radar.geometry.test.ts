@@ -6,6 +6,7 @@ describe("RadarGeometry", () => {
     const radarSize = 1024;
     const center = radarSize / 2;
 
+    // Position labels match visual location on screen
     it("should return top-right offset for NE quadrant", () => {
       const offset = RadarGeometry.getZoomedViewBoxOffset("NE", radarSize);
       expect(offset).toEqual({ x: center, y: 0 });
@@ -16,14 +17,14 @@ describe("RadarGeometry", () => {
       expect(offset).toEqual({ x: 0, y: 0 });
     });
 
-    it("should return bottom-right offset for SW quadrant", () => {
+    it("should return bottom-left offset for SW quadrant", () => {
       const offset = RadarGeometry.getZoomedViewBoxOffset("SW", radarSize);
-      expect(offset).toEqual({ x: center, y: center });
+      expect(offset).toEqual({ x: 0, y: center });
     });
 
-    it("should return bottom-left offset for SE quadrant", () => {
+    it("should return bottom-right offset for SE quadrant", () => {
       const offset = RadarGeometry.getZoomedViewBoxOffset("SE", radarSize);
-      expect(offset).toEqual({ x: 0, y: center });
+      expect(offset).toEqual({ x: center, y: center });
     });
 
     it("should scale offsets proportionally to radar size", () => {
@@ -53,9 +54,13 @@ describe("RadarGeometry", () => {
   describe("getQuadrantLabelX", () => {
     const outerRadius = 512;
 
-    it("should return left-aligned position for NE quadrant", () => {
+    // Position labels match visual location:
+    // NW (top-left) and SW (bottom-left) have labels on left side (negative x)
+    // NE (top-right) and SE (bottom-right) have labels on right side (positive x)
+
+    it("should return right-aligned position for NE quadrant", () => {
       const x = RadarGeometry.getQuadrantLabelX("NE", outerRadius);
-      expect(x).toBeLessThan(0); // Left side of center
+      expect(x).toBeGreaterThan(0); // Right side of center
     });
 
     it("should return left-aligned position for NW quadrant", () => {
@@ -63,9 +68,9 @@ describe("RadarGeometry", () => {
       expect(x).toBeLessThan(0); // Left side of center
     });
 
-    it("should return right-aligned position for SW quadrant", () => {
+    it("should return left-aligned position for SW quadrant", () => {
       const x = RadarGeometry.getQuadrantLabelX("SW", outerRadius);
-      expect(x).toBeGreaterThan(0); // Right side of center
+      expect(x).toBeLessThan(0); // Left side of center
     });
 
     it("should return right-aligned position for SE quadrant", () => {
@@ -73,23 +78,23 @@ describe("RadarGeometry", () => {
       expect(x).toBeGreaterThan(0); // Right side of center
     });
 
-    it("should return same x for NE and NW quadrants", () => {
-      const xNE = RadarGeometry.getQuadrantLabelX("NE", outerRadius);
+    it("should return same x for NW and SW quadrants (left side)", () => {
       const xNW = RadarGeometry.getQuadrantLabelX("NW", outerRadius);
-      expect(xNE).toBe(xNW);
+      const xSW = RadarGeometry.getQuadrantLabelX("SW", outerRadius);
+      expect(xNW).toBe(xSW);
     });
 
-    it("should return same x for SW and SE quadrants", () => {
-      const xSW = RadarGeometry.getQuadrantLabelX("SW", outerRadius);
+    it("should return same x for NE and SE quadrants (right side)", () => {
+      const xNE = RadarGeometry.getQuadrantLabelX("NE", outerRadius);
       const xSE = RadarGeometry.getQuadrantLabelX("SE", outerRadius);
-      expect(xSW).toBe(xSE);
+      expect(xNE).toBe(xSE);
     });
 
     it("should scale with outer radius", () => {
-      const x256 = RadarGeometry.getQuadrantLabelX("NE", 256);
-      const x512 = RadarGeometry.getQuadrantLabelX("NE", 512);
+      const x256 = RadarGeometry.getQuadrantLabelX("NW", 256);
+      const x512 = RadarGeometry.getQuadrantLabelX("NW", 512);
 
-      // The offset is fixed, so the difference should scale with radius
+      // Larger radius means more negative x for left-side labels
       expect(x512).toBeLessThan(x256);
     });
   });
@@ -97,19 +102,23 @@ describe("RadarGeometry", () => {
   describe("getQuadrantLabelY", () => {
     const outerRadius = 512;
 
+    // Position labels match visual location:
+    // NW (top-left) and NE (top-right) have labels at top (negative y)
+    // SW (bottom-left) and SE (bottom-right) have labels at bottom (positive y)
+
     it("should return top position for NE quadrant", () => {
       const y = RadarGeometry.getQuadrantLabelY("NE", outerRadius);
       expect(y).toBeLessThan(0); // Top of center
     });
 
-    it("should return bottom position for NW quadrant", () => {
+    it("should return top position for NW quadrant", () => {
       const y = RadarGeometry.getQuadrantLabelY("NW", outerRadius);
-      expect(y).toBeGreaterThan(0); // Bottom of center
+      expect(y).toBeLessThan(0); // Top of center
     });
 
-    it("should return top position for SW quadrant", () => {
+    it("should return bottom position for SW quadrant", () => {
       const y = RadarGeometry.getQuadrantLabelY("SW", outerRadius);
-      expect(y).toBeLessThan(0); // Top of center
+      expect(y).toBeGreaterThan(0); // Bottom of center
     });
 
     it("should return bottom position for SE quadrant", () => {
@@ -117,16 +126,16 @@ describe("RadarGeometry", () => {
       expect(y).toBeGreaterThan(0); // Bottom of center
     });
 
-    it("should return same y for NE and SW quadrants", () => {
+    it("should return same y for NE and NW quadrants (top)", () => {
       const yNE = RadarGeometry.getQuadrantLabelY("NE", outerRadius);
-      const ySW = RadarGeometry.getQuadrantLabelY("SW", outerRadius);
-      expect(yNE).toBe(ySW);
+      const yNW = RadarGeometry.getQuadrantLabelY("NW", outerRadius);
+      expect(yNE).toBe(yNW);
     });
 
-    it("should return same y for NW and SE quadrants", () => {
-      const yNW = RadarGeometry.getQuadrantLabelY("NW", outerRadius);
+    it("should return same y for SW and SE quadrants (bottom)", () => {
+      const ySW = RadarGeometry.getQuadrantLabelY("SW", outerRadius);
       const ySE = RadarGeometry.getQuadrantLabelY("SE", outerRadius);
-      expect(yNW).toBe(ySE);
+      expect(ySW).toBe(ySE);
     });
   });
 

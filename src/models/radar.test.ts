@@ -24,18 +24,21 @@ describe("Radar", () => {
 
     it("should have default quadrant names", () => {
       const quadrants = radar.quadrants;
-      expect(quadrants[0].name).toBe("Techniques");
-      expect(quadrants[1].name).toBe("Platforms");
-      expect(quadrants[2].name).toBe("Tools");
-      expect(quadrants[3].name).toBe("Languages & Frameworks");
+      // Order: NE, NW, SW, SE (from QUADRANT_POSITIONS)
+      expect(quadrants[0].name).toBe("Tools"); // NE
+      expect(quadrants[1].name).toBe("Techniques"); // NW
+      expect(quadrants[2].name).toBe("Platforms"); // SW
+      expect(quadrants[3].name).toBe("Languages & Frameworks"); // SE
     });
 
     it("should have correct start angles for quadrants", () => {
       const quadrants = radar.quadrants;
-      expect(quadrants[0].startAngle).toBe(0);
-      expect(quadrants[1].startAngle).toBe(-90);
-      expect(quadrants[2].startAngle).toBe(90);
-      expect(quadrants[3].startAngle).toBe(-180);
+      // Order: NE, NW, SW, SE (from QUADRANT_POSITIONS)
+      // NE (top-right): 90, NW (top-left): 0, SW (bottom-left): -90, SE (bottom-right): -180
+      expect(quadrants[0].startAngle).toBe(90); // NE
+      expect(quadrants[1].startAngle).toBe(0); // NW
+      expect(quadrants[2].startAngle).toBe(-90); // SW
+      expect(quadrants[3].startAngle).toBe(-180); // SE
     });
   });
 

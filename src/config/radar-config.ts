@@ -1,6 +1,9 @@
 // Radar Configuration
 // Configurable ring and quadrant names, dimensions, and colors
 
+export const RADAR_SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/1B-ojvUlqVMigLGGs8egpn-0YaVTDmqe1Vb6EL2ji-aM/edit?gid=0#gid=0";
+
 /**
 /**
  * Adopt
