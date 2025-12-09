@@ -93,7 +93,9 @@ export const blipConfig = {
 };
 
 // Ring ratios for proportional spacing (0 = center, 1 = edge)
-export const RING_RATIOS = [0, 0.316, 0.652, 0.832, 1] as const;
+// First ratio includes buffer to prevent blips from being cut off at center
+// Buffer accounts for: quadrantsGap/2 (16px) + blipWidth (22px) + spacing margin
+export const RING_RATIOS = [0.11, 0.406, 0.652, 0.832, 1] as const;
 
 // Max blips per ring before grouping
 export const MAX_BLIPS_PER_RING = [8, 22, 17, 18] as const;

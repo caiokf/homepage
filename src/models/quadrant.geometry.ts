@@ -65,10 +65,7 @@ export class QuadrantGeometry {
    * Calculate positioned blips with collision detection for rendering.
    * Uses seeded random for reproducible positions.
    */
-  static calculateBlipPositions(
-    blips: Blip[],
-    geometry: QuadrantGeometryConfig
-  ): PositionedBlip[] {
+  static calculateBlipPositions(blips: Blip[], geometry: QuadrantGeometryConfig): PositionedBlip[] {
     const { startAngle, quadrantSize, ringRadii, center } = geometry;
     const positioned: PositionedBlip[] = [];
     const allCoordinates: BlipCoordinate[] = [];
@@ -168,26 +165,23 @@ export class QuadrantGeometry {
     random: SeededRandom
   ): { x: number; y: number } {
     // Random radius within ring bounds, accounting for blip size
-    const radius = random.float(minRadius + blipWidth / 2, maxRadius - blipWidth);
+    // Blip indicators extend 18px from center (36px diameter), so use 18 instead of blipWidth/2
+    const blipRadius = 18;
+    const radius = random.float(minRadius + blipRadius, maxRadius - blipWidth);
 
     // Calculate angle delta to prevent boundary overlap
     // Account for 32px separator lines (need extra clearance)
     const separatorBuffer = 35; // pixels buffer from separator line
-    const separatorAngleDelta =
-      (Math.asin(separatorBuffer / radius) * 180) / Math.PI;
+    const separatorAngleDelta = (Math.asin(separatorBuffer / radius) * 180) / Math.PI;
 
-    let angleDelta =
-      (Math.asin(blipWidth / 2 / radius) * 180) / (Math.PI - 1.25);
+    let angleDelta = (Math.asin(blipWidth / 2 / radius) * 180) / (Math.PI - 1.25);
     // Use the larger of the two deltas to ensure adequate spacing
     angleDelta = Math.max(angleDelta, separatorAngleDelta);
     angleDelta = Math.min(angleDelta, 45);
 
     // Random angle within quadrant (90 degree span)
     // Offset by the quadrant's start angle, adjusted for D3/SVG coordinate system
-    const angleOffset = random.int(
-      Math.ceil(angleDelta),
-      90 - Math.floor(angleDelta)
-    );
+    const angleOffset = random.int(Math.ceil(angleDelta), 90 - Math.floor(angleDelta));
     const angle = ((startAngleDegrees - 90 + angleOffset) * Math.PI) / 180;
 
     // Convert polar to Cartesian using D3/SVG coordinate system
@@ -205,13 +199,15 @@ export class QuadrantGeometry {
     width: number,
     allCoordinates: BlipCoordinate[]
   ): boolean {
-    const padding = 10; // Collision buffer
+    const padding = 8; // Collision buffer between blips
 
     return allCoordinates.some((coord) => {
       const minDistance = coord.width / 2 + width / 2 + padding;
-      return (
-        Math.abs(coord.x - x) < minDistance && Math.abs(coord.y - y) < minDistance
-      );
+      // Use Euclidean distance for proper circular collision detection
+      const dx = coord.x - x;
+      const dy = coord.y - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return distance < minDistance;
     });
   }
 }

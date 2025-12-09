@@ -42,8 +42,6 @@
   const error = ref<string | null>(null);
 
   // Create data provider
-  console.log("RADAR_SHEET_ID", RADAR_SHEET_ID);
-  console.log("GOOGLE_API_KEY", GOOGLE_API_KEY);
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
       ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })

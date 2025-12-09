@@ -118,6 +118,8 @@
         :transform="getCenterTransform()"
         class="quadrant-separators"
       >
+        <!-- Center circle to fill inner buffer gap -->
+        <circle cx="0" cy="0" :r="ringRadii[0]" class="center-circle" />
         <line
           v-for="separator in getSeparatorLines()"
           :key="`separator-${separator.angle}`"
@@ -385,6 +387,11 @@
 
   .quadrant-selected .quadrant-background {
     cursor: default;
+  }
+
+  /* Center circle to fill inner buffer gap */
+  .center-circle {
+    fill: var(--ring-0);
   }
 
   /* Separator lines between quadrants */
