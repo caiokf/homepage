@@ -280,9 +280,14 @@
     const endAngle = startAngle + Math.PI / 2; // 90 degree arc clockwise
 
     for (let i = 0; i < ringRadii.value.length - 1; i++) {
+      // When a quadrant is selected (zoomed), extend innermost ring to center
+      // to avoid visible gap at the corner
+      const innerRadius =
+        i === 0 && props.selectedQuadrant ? 0 : ringRadii.value[i];
+
       const arc = d3
         .arc()
-        .innerRadius(ringRadii.value[i])
+        .innerRadius(innerRadius)
         .outerRadius(ringRadii.value[i + 1])
         .startAngle(startAngle)
         .endAngle(endAngle);
