@@ -134,7 +134,7 @@
   }
 
   .blip-description.visible {
-    max-height: 500px;
+    max-height: none;
     padding: var(--space-4) var(--space-4) var(--space-4) 48px;
   }
 
