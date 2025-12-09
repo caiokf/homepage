@@ -226,8 +226,12 @@
     selectedQuadrant.value = position;
   }
 
-  function handleBlipSelected(blip: PositionedBlip) {
-    console.log("Blip selected:", blip.name);
+  function handleBlipSelected(blip: PositionedBlip, quadrant?: QuadrantPosition) {
+    // Select the quadrant and expand the blip in the list
+    if (quadrant) {
+      selectedQuadrant.value = quadrant;
+    }
+    expandedBlipId.value = blip.id;
   }
 
   function handleBlipHovered(blip: PositionedBlip | null) {

@@ -50,7 +50,7 @@
           :transform="`translate(${blip.x - 18}, ${blip.y - 18})`"
           @mouseenter="handleBlipHover(blip)"
           @mouseleave="handleBlipLeave()"
-          @click.stop="handleBlipClick(blip)"
+          @click.stop="handleBlipClick(blip, quadrant.position)"
         >
           <!-- Main circle (36x36 coordinate space, circle at cx=18, cy=18, r=12) -->
           <circle
@@ -184,7 +184,7 @@
 
   const emit = defineEmits<{
     quadrantSelected: [position: QuadrantPosition | null];
-    blipSelected: [blip: PositionedBlip];
+    blipSelected: [blip: PositionedBlip, quadrant: QuadrantPosition];
     blipHovered: [blip: PositionedBlip | null];
   }>();
 
@@ -338,8 +338,8 @@
     emit("blipHovered", null);
   }
 
-  function handleBlipClick(blip: PositionedBlip) {
-    emit("blipSelected", blip);
+  function handleBlipClick(blip: PositionedBlip, quadrant: QuadrantPosition) {
+    emit("blipSelected", blip, quadrant);
   }
 
   // Track mouse position for tooltip
