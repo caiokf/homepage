@@ -14,7 +14,9 @@
       "Bash(gh run list:*)",
       "WebFetch(domain:github.com)",
       "Bash(ls:*)",
-      "WebFetch(domain:werace.au)"
+      "WebFetch(domain:werace.au)",
+      "Bash(cat:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

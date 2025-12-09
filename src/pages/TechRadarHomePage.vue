@@ -13,15 +13,52 @@
       </p>
 
       <div class="radar-links">
-        <router-link to="/tech-radar/sample" class="radar-link">
-          <span class="link-text">[view sample radar]</span>
-        </router-link>
+        <div v-if="loading" class="loading-text">[loading versions...]</div>
+        <div v-else-if="error" class="error-text">[{{ error }}]</div>
+        <template v-else>
+          <router-link
+            v-for="version in versions"
+            :key="version.id"
+            :to="`/tech-radar/${encodeURIComponent(version.id)}`"
+            class="radar-link"
+          >
+            <span class="link-text">[{{ version.name }}]</span>
+          </router-link>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { ref, onMounted } from "vue";
+  import { GoogleSheetsProvider } from "../data/providers/google-sheets-provider";
+  import { SampleDataProvider } from "../data/providers/sample-data-provider";
+  import type { TechRadarDataProvider, RadarVersion } from "../data/tech-radar-data-provider";
+  import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../config/radar-config";
+
+  const versions = ref<RadarVersion[]>([]);
+  const loading = ref(true);
+  const error = ref<string | null>(null);
+
+  // Create data provider
+  console.log("RADAR_SHEET_ID", RADAR_SHEET_ID);
+  console.log("GOOGLE_API_KEY", GOOGLE_API_KEY);
+  const dataProvider: TechRadarDataProvider =
+    RADAR_SHEET_ID && GOOGLE_API_KEY
+      ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
+      : new SampleDataProvider();
+
+  onMounted(async () => {
+    try {
+      versions.value = await dataProvider.listVersions();
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : "Failed to load versions";
+    } finally {
+      loading.value = false;
+    }
+  });
+</script>
 
 <style scoped>
   .tech-radar-home {
@@ -51,6 +88,10 @@
 
   .radar-links {
     margin-top: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: center;
   }
 
   .radar-link {
@@ -71,6 +112,18 @@
     text-transform: lowercase;
   }
 
+  .loading-text,
+  .error-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    text-transform: lowercase;
+  }
+
+  .error-text {
+    color: var(--color-error, #ef4444);
+  }
+
   @media (max-width: 768px) {
     .tech-radar-home {
       padding: var(--space-6);
@@ -80,7 +133,9 @@
       font-size: var(--text-base);
     }
 
-    .radar-link {
+    .radar-link,
+    .loading-text,
+    .error-text {
       font-size: var(--text-md);
     }
   }

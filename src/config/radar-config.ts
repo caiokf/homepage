@@ -6,18 +6,14 @@ export const RADAR_SHEET_URL =
 
 // Extract sheet ID from Google Sheets URL
 export function extractSheetId(url: string): string | null {
-  const match = url.match(
-    /docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/
-  );
+  const match = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;
 }
 
 export const RADAR_SHEET_ID = extractSheetId(RADAR_SHEET_URL);
 
 // Google Sheets API key (for public sheets)
-export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as
-  | string
-  | undefined;
+export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as string | undefined;
 
 /**
 /**

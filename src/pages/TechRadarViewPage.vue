@@ -82,7 +82,8 @@
 </template>
 
 <script setup lang="ts">
-  import { shallowRef, ref, computed, onMounted } from "vue";
+  import { shallowRef, ref, computed, onMounted, watch } from "vue";
+  import { useRoute } from "vue-router";
   import TechRadar from "../components/radar/TechRadar.vue";
   import BlipList from "../components/radar/BlipList.vue";
   import BlipListByQuadrant from "../components/radar/BlipListByQuadrant.vue";
@@ -112,6 +113,8 @@
     quadrantName: string;
   };
 
+  const route = useRoute();
+
   // Data provider - use Google Sheets if configured, otherwise fallback to sample data
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
@@ -124,13 +127,28 @@
   const hoveredBlipId = ref<number | null>(null);
   const expandedBlipId = ref<number | null>(null);
 
+  async function loadVersion(versionId: string) {
+    radar.value = null;
+    const data = await dataProvider.fetchVersion(versionId);
+    radar.value = Radar.create(data);
+  }
+
   onMounted(async () => {
-    const versions = await dataProvider.listVersions();
-    if (versions.length > 0) {
-      const data = await dataProvider.fetchVersion(versions[0].id);
-      radar.value = Radar.create(data);
+    const versionId = route.params.id as string;
+    if (versionId) {
+      await loadVersion(decodeURIComponent(versionId));
     }
   });
+
+  // Watch for route changes to reload data
+  watch(
+    () => route.params.id,
+    async (newId) => {
+      if (newId) {
+        await loadVersion(decodeURIComponent(newId as string));
+      }
+    }
+  );
 
   // Get the selected quadrant
   const selectedQuadrantObj = computed(() => {
