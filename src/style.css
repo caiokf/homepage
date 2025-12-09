@@ -160,14 +160,14 @@
   --color-border-strong: #d0d0d0;
 
   /* Interactive Colors */
-  --color-primary: oklch(0.607 0.142 306.375);
-  --color-primary-hover: oklch(0.55 0.142 306.375);
-  --color-primary-light: oklch(0.95 0.03 306.375);
+  --color-primary: oklch(0.55 0.12 200);
+  --color-primary-hover: oklch(0.48 0.12 200);
+  --color-primary-light: oklch(0.95 0.03 200);
 
-  --color-accent: oklch(0.55 0.12 306.375);
-  --color-accent-hover: oklch(0.5 0.12 306.375);
+  --color-accent: oklch(0.50 0.10 200);
+  --color-accent-hover: oklch(0.45 0.10 200);
 
-  --color-link: oklch(0.607 0.142 306.375);
+  --color-link: oklch(0.55 0.12 200);
   --color-link-hover: #bd4257;
 
   /* Status Colors */
@@ -233,15 +233,15 @@
   --color-border-strong: #444446;
 
   /* Interactive Colors */
-  --color-primary: oklch(0.72 0.12 306.375);
-  --color-primary-hover: oklch(0.78 0.12 306.375);
-  --color-primary-light: oklch(0.25 0.06 306.375);
+  --color-primary: oklch(0.65 0.12 200);
+  --color-primary-hover: oklch(0.72 0.12 200);
+  --color-primary-light: oklch(0.25 0.06 200);
 
-  --color-accent: oklch(0.65 0.1 306.375);
-  --color-accent-hover: oklch(0.7 0.1 306.375);
+  --color-accent: oklch(0.60 0.10 200);
+  --color-accent-hover: oklch(0.65 0.10 200);
 
-  --color-link: oklch(0.72 0.12 306.375);
-  --color-link-hover: #e07088;
+  --color-link: oklch(0.65 0.12 200);
+  --color-link-hover: oklch(0.72 0.12 200);
 
   /* Status Colors */
   --color-success: #66bb6a;

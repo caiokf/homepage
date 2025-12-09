@@ -140,13 +140,13 @@
     width: 40px;
     height: 40px;
     object-fit: contain;
-    /* Filter to convert black stroke to oklch(0.607 0.142 306.375) - magenta/purple */
-    filter: invert(36%) sepia(60%) saturate(1200%) hue-rotate(270deg) brightness(90%) contrast(95%);
+    /* Filter to convert black stroke to teal - oklch(0.55 0.12 200) */
+    filter: invert(45%) sepia(50%) saturate(500%) hue-rotate(140deg) brightness(95%) contrast(95%);
   }
 
   [data-theme="dark"] .skill-icon {
-    /* Filter to convert black stroke to oklch(0.72 0.12 306.375) - lighter purple for dark theme */
-    filter: invert(60%) sepia(50%) saturate(800%) hue-rotate(270deg) brightness(110%) contrast(90%);
+    /* Filter to convert black stroke to lighter teal for dark theme - oklch(0.65 0.12 200) */
+    filter: invert(55%) sepia(40%) saturate(400%) hue-rotate(140deg) brightness(110%) contrast(90%);
   }
 
   .skill-icon-placeholder {
