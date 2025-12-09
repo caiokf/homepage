@@ -75,8 +75,12 @@
     </div>
 
     <div v-else class="loading">
-      <div class="spinner"></div>
-      <p>Loading radar data...</p>
+      <div class="spotlight-container">
+        <div class="spotlight spotlight-ne"></div>
+        <div class="spotlight spotlight-nw"></div>
+        <div class="spotlight spotlight-sw"></div>
+        <div class="spotlight spotlight-se"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -324,27 +328,72 @@
   /* Loading State */
   .loading {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 50vh;
-    color: var(--color-text-secondary);
   }
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--color-border);
-    border-top-color: var(--color-primary);
-    border-radius: var(--radius-full);
-    animation: spin 1s linear infinite;
-    margin-bottom: var(--space-4);
+  .spotlight-container {
+    position: relative;
+    width: 360px;
+    height: 360px;
   }
 
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+  .spotlight {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    filter: blur(24px);
+    opacity: 0.4;
+  }
+
+  .spotlight-ne {
+    background-color: var(--quadrant-NE);
+    animation: dance-ne 2.5s ease-in-out infinite;
+  }
+
+  .spotlight-nw {
+    background-color: var(--quadrant-NW);
+    animation: dance-nw 2.5s ease-in-out infinite;
+  }
+
+  .spotlight-sw {
+    background-color: var(--quadrant-SW);
+    animation: dance-sw 2.5s ease-in-out infinite;
+  }
+
+  .spotlight-se {
+    background-color: var(--quadrant-SE);
+    animation: dance-se 2.5s ease-in-out infinite;
+  }
+
+  @keyframes dance-ne {
+    0%, 100% { transform: translate(180px, 60px) scale(1); }
+    25% { transform: translate(120px, 180px) scale(1.2); }
+    50% { transform: translate(210px, 150px) scale(0.9); }
+    75% { transform: translate(150px, 90px) scale(1.1); }
+  }
+
+  @keyframes dance-nw {
+    0%, 100% { transform: translate(60px, 90px) scale(1.1); }
+    25% { transform: translate(150px, 60px) scale(0.9); }
+    50% { transform: translate(90px, 165px) scale(1.2); }
+    75% { transform: translate(180px, 120px) scale(1); }
+  }
+
+  @keyframes dance-sw {
+    0%, 100% { transform: translate(90px, 210px) scale(0.9); }
+    25% { transform: translate(180px, 150px) scale(1.1); }
+    50% { transform: translate(60px, 120px) scale(1); }
+    75% { transform: translate(135px, 195px) scale(1.2); }
+  }
+
+  @keyframes dance-se {
+    0%, 100% { transform: translate(210px, 180px) scale(1.2); }
+    25% { transform: translate(90px, 135px) scale(1); }
+    50% { transform: translate(165px, 75px) scale(1.1); }
+    75% { transform: translate(120px, 165px) scale(0.9); }
   }
 
   /* Mobile Quadrant Grid - hidden by default, shown below 1000px */
