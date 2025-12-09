@@ -122,7 +122,7 @@
       ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
       : new SampleDataProvider();
 
-  const MIN_LOADING_DURATION = 100000;
+  const MIN_LOADING_DURATION = 1000;
 
   const radar = shallowRef<Radar | null>(null);
   const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
@@ -341,11 +341,11 @@
 
   .spotlight {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.8;
+    filter: blur(60px);
+    opacity: 1;
   }
 
   .spotlight-ne {
