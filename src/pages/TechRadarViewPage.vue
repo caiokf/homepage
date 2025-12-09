@@ -98,10 +98,7 @@
   import { SampleDataProvider } from "../data/providers/sample-data-provider";
   import { GoogleSheetsProvider } from "../data/providers/google-sheets-provider";
   import type { TechRadarDataProvider } from "../data/tech-radar-data-provider";
-  import type {
-    PositionedBlip,
-    QuadrantGeometryConfig,
-  } from "../models/quadrant.geometry";
+  import type { PositionedBlip, QuadrantGeometryConfig } from "../models/quadrant.geometry";
   import {
     type QuadrantPosition,
     graphConfig,
@@ -125,6 +122,8 @@
       ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
       : new SampleDataProvider();
 
+  const MIN_LOADING_DURATION = 100000;
+
   const radar = shallowRef<Radar | null>(null);
   const techRadarRef = ref<InstanceType<typeof TechRadar> | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
@@ -133,7 +132,16 @@
 
   async function loadVersion(versionId: string) {
     radar.value = null;
+    const startTime = Date.now();
+
     const data = await dataProvider.fetchVersion(versionId);
+
+    // Ensure minimum loading duration for smooth animation
+    const elapsed = Date.now() - startTime;
+    if (elapsed < MIN_LOADING_DURATION) {
+      await new Promise((resolve) => setTimeout(resolve, MIN_LOADING_DURATION - elapsed));
+    }
+
     radar.value = Radar.create(data);
   }
 
@@ -172,10 +180,7 @@
       center: { x: 0, y: 0 },
     };
 
-    return QuadrantGeometry.calculateBlipPositions(
-      selectedQuadrantObj.value.blips(),
-      geometry
-    );
+    return QuadrantGeometry.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
   });
 
   // Get all quadrants with their positioned blips (for "all quadrants" view)
@@ -195,10 +200,7 @@
       return {
         position: quadrant.position,
         name: quadrant.name,
-        blips: QuadrantGeometry.calculateBlipPositions(
-          quadrant.blips(),
-          geometry
-        ),
+        blips: QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry),
       };
     });
   });
@@ -258,9 +260,7 @@
     min-height: calc(100vh - 112px);
     background: var(--color-background);
     color: var(--color-text-primary);
-    transition:
-      background-color var(--transition-theme),
-      color var(--transition-theme);
+    transition: background-color var(--transition-theme), color var(--transition-theme);
   }
 
   /* Main Content */
@@ -330,70 +330,166 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50vh;
+    min-height: calc(100vh - 112px);
   }
 
   .spotlight-container {
     position: relative;
-    width: 360px;
-    height: 360px;
+    width: 500px;
+    height: 500px;
   }
 
   .spotlight {
     position: absolute;
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    filter: blur(24px);
-    opacity: 0.4;
+    filter: blur(100px);
+    opacity: 0.8;
   }
 
   .spotlight-ne {
     background-color: var(--quadrant-NE);
-    animation: dance-ne 2.5s ease-in-out infinite;
+    animation: dance-ne 8s linear infinite;
   }
 
   .spotlight-nw {
     background-color: var(--quadrant-NW);
-    animation: dance-nw 2.5s ease-in-out infinite;
+    animation: dance-nw 15s linear infinite;
   }
 
   .spotlight-sw {
     background-color: var(--quadrant-SW);
-    animation: dance-sw 2.5s ease-in-out infinite;
+    animation: dance-sw 13s linear infinite;
   }
 
   .spotlight-se {
     background-color: var(--quadrant-SE);
-    animation: dance-se 2.5s ease-in-out infinite;
+    animation: dance-se 14s linear infinite;
   }
 
+  /* NE: smooth orbit around top-right area */
   @keyframes dance-ne {
-    0%, 100% { transform: translate(180px, 60px) scale(1); }
-    25% { transform: translate(120px, 180px) scale(1.2); }
-    50% { transform: translate(210px, 150px) scale(0.9); }
-    75% { transform: translate(150px, 90px) scale(1.1); }
+    0% {
+      transform: translate(280px, 40px) scale(1);
+    }
+    12.5% {
+      transform: translate(310px, 70px) scale(1.05);
+    }
+    25% {
+      transform: translate(300px, 110px) scale(1.08);
+    }
+    37.5% {
+      transform: translate(260px, 130px) scale(1.05);
+    }
+    50% {
+      transform: translate(220px, 110px) scale(1);
+    }
+    62.5% {
+      transform: translate(200px, 70px) scale(0.95);
+    }
+    75% {
+      transform: translate(220px, 30px) scale(0.92);
+    }
+    87.5% {
+      transform: translate(260px, 20px) scale(0.95);
+    }
+    100% {
+      transform: translate(280px, 40px) scale(1);
+    }
   }
 
+  /* NW: smooth orbit around top-left area */
   @keyframes dance-nw {
-    0%, 100% { transform: translate(60px, 90px) scale(1.1); }
-    25% { transform: translate(150px, 60px) scale(0.9); }
-    50% { transform: translate(90px, 165px) scale(1.2); }
-    75% { transform: translate(180px, 120px) scale(1); }
+    0% {
+      transform: translate(60px, 60px) scale(1.05);
+    }
+    12.5% {
+      transform: translate(30px, 90px) scale(1);
+    }
+    25% {
+      transform: translate(20px, 130px) scale(0.95);
+    }
+    37.5% {
+      transform: translate(40px, 160px) scale(0.92);
+    }
+    50% {
+      transform: translate(80px, 150px) scale(0.95);
+    }
+    62.5% {
+      transform: translate(110px, 120px) scale(1);
+    }
+    75% {
+      transform: translate(100px, 80px) scale(1.05);
+    }
+    87.5% {
+      transform: translate(70px, 50px) scale(1.08);
+    }
+    100% {
+      transform: translate(60px, 60px) scale(1.05);
+    }
   }
 
+  /* SW: smooth orbit around bottom-left area */
   @keyframes dance-sw {
-    0%, 100% { transform: translate(90px, 210px) scale(0.9); }
-    25% { transform: translate(180px, 150px) scale(1.1); }
-    50% { transform: translate(60px, 120px) scale(1); }
-    75% { transform: translate(135px, 195px) scale(1.2); }
+    0% {
+      transform: translate(50px, 280px) scale(0.95);
+    }
+    12.5% {
+      transform: translate(30px, 250px) scale(1);
+    }
+    25% {
+      transform: translate(40px, 210px) scale(1.05);
+    }
+    37.5% {
+      transform: translate(70px, 190px) scale(1.08);
+    }
+    50% {
+      transform: translate(110px, 200px) scale(1.05);
+    }
+    62.5% {
+      transform: translate(130px, 230px) scale(1);
+    }
+    75% {
+      transform: translate(120px, 270px) scale(0.95);
+    }
+    87.5% {
+      transform: translate(80px, 290px) scale(0.92);
+    }
+    100% {
+      transform: translate(50px, 280px) scale(0.95);
+    }
   }
 
+  /* SE: smooth orbit around bottom-right area */
   @keyframes dance-se {
-    0%, 100% { transform: translate(210px, 180px) scale(1.2); }
-    25% { transform: translate(90px, 135px) scale(1); }
-    50% { transform: translate(165px, 75px) scale(1.1); }
-    75% { transform: translate(120px, 165px) scale(0.9); }
+    0% {
+      transform: translate(290px, 270px) scale(1.08);
+    }
+    12.5% {
+      transform: translate(260px, 290px) scale(1.05);
+    }
+    25% {
+      transform: translate(220px, 280px) scale(1);
+    }
+    37.5% {
+      transform: translate(200px, 250px) scale(0.95);
+    }
+    50% {
+      transform: translate(210px, 210px) scale(0.92);
+    }
+    62.5% {
+      transform: translate(240px, 190px) scale(0.95);
+    }
+    75% {
+      transform: translate(280px, 200px) scale(1);
+    }
+    87.5% {
+      transform: translate(310px, 230px) scale(1.05);
+    }
+    100% {
+      transform: translate(290px, 270px) scale(1.08);
+    }
   }
 
   /* Mobile Quadrant Grid - hidden by default, shown below 1000px */
@@ -414,9 +510,7 @@
     border: none;
     border-radius: var(--radius-lg);
     cursor: pointer;
-    transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     min-height: 100px;
     overflow: hidden;
   }
@@ -644,5 +738,4 @@
       font-size: var(--text-sm);
     }
   }
-
 </style>
