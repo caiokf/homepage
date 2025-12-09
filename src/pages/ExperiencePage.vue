@@ -30,11 +30,7 @@
                   />
                 </div>
                 <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
-                  <img
-                    :src="getViaLogo(experience.via)"
-                    :alt="experience.via"
-                    class="via-logo"
-                  />
+                  <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
                 </div>
               </div>
               <div class="experience-title">
@@ -52,7 +48,9 @@
                 </h2>
                 <span class="position">
                   {{ experience.position }}
-                  <span class="via-text" v-if="experience.via">&bull; via {{ getViaName(experience.via) }}</span>
+                  <span class="via-text" v-if="experience.via"
+                    >&bull; via {{ getViaName(experience.via) }}</span
+                  >
                 </span>
               </div>
               <div class="experience-meta">
@@ -98,7 +96,7 @@
                 lot</span
               >
               <span class="show-more-line"
-                ><span class="comment-prefix"></span>there's more history where that came from</span
+                ><span class="comment-prefix"></span>there's more where that came from</span
               >
               <span class="show-more-line"
                 ><span class="comment-prefix"></span>archaeologists, click here</span
@@ -116,7 +114,10 @@
   import { experiencesConfig, type Experience } from "../config/experience-config";
 
   // Dynamically import all logos from assets/logos
-  const logoModules = import.meta.glob("../assets/logos/*.jpeg", { eager: true, import: "default" });
+  const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
+    eager: true,
+    import: "default",
+  });
 
   // Build a map from slug to logo URL
   const companyLogos: Record<string, string> = {};

@@ -1,16 +1,11 @@
 <template>
   <div class="not-found-page">
-    <AppCard title="error" :show-cursor="true">
+    <AppCard title="error" :show-cursor="false">
       <div class="not-found-content">
-        <p class="error-line">
-          <span class="prompt">$</span> cat /{{ path }}
-        </p>
-        <p class="error-output">
-          <span class="error-code">404</span> page not found
-        </p>
-        <p class="error-description">
-          the requested path doesn't exist or has been moved.
-        </p>
+        <p class="error-line"><span class="prompt">$</span> cat /{{ path }}</p>
+        <p class="error-output"><span class="error-code">404</span> page not found</p>
+        <p class="error-description">how did we end up here?</p>
+        <p class="cursor-line"><span class="prompt">$</span> <span class="cursor">_</span></p>
       </div>
     </AppCard>
     <router-link to="/" class="home-link bracket-link">look at caio again</router-link>
@@ -71,6 +66,27 @@
     color: var(--color-text-muted);
     margin: 0;
     line-height: var(--leading-relaxed);
+  }
+
+  .cursor-line {
+    margin: var(--space-4) 0 0;
+    font-size: var(--text-base);
+    color: var(--color-text-primary);
+  }
+
+  .cursor {
+    color: var(--color-text-primary);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .home-link {
