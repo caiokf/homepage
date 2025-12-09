@@ -9,7 +9,7 @@ describe("RingGeometry", () => {
       const radii = RingGeometry.calculateRadii(maxRadius);
 
       expect(radii).toHaveLength(RING_RATIOS.length);
-      expect(radii[0]).toBe(0); // Center
+      expect(radii[0]).toBe(RING_RATIOS[0] * maxRadius); // Inner edge with buffer
       expect(radii[radii.length - 1]).toBe(maxRadius); // Outer edge
     });
 
@@ -51,7 +51,7 @@ describe("RingGeometry", () => {
 
     it("should return correct radius for valid index", () => {
       const radius = RingGeometry.getRadiusAtIndex(0, maxRadius);
-      expect(radius).toBe(0);
+      expect(radius).toBe(RING_RATIOS[0] * maxRadius); // Inner edge with buffer
 
       const lastIndex = RING_RATIOS.length - 1;
       const outerRadius = RingGeometry.getRadiusAtIndex(lastIndex, maxRadius);
