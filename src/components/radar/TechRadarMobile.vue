@@ -4,7 +4,14 @@
       <button
         v-for="quadrant in radar.quadrants"
         :key="quadrant.position"
-        :class="['quadrant-card', quadrant.position]"
+        :class="[
+          'quadrant-card',
+          quadrant.position,
+          {
+            'active-card': selectedQuadrant === quadrant.position,
+            'faded-card': selectedQuadrant && selectedQuadrant !== quadrant.position,
+          },
+        ]"
         @click="$emit('quadrant-selected', quadrant.position)"
       >
         <div class="quadrant-card__rings"><span></span></div>
@@ -65,6 +72,15 @@
 
   .quadrant-card:active {
     transform: translateY(0);
+  }
+
+  .quadrant-card.faded-card {
+    opacity: 0.4;
+  }
+
+  .quadrant-card.faded-card:hover {
+    opacity: 0.7;
+    transform: translateY(-2px);
   }
 
   .quadrant-card.NE {
