@@ -14,55 +14,36 @@
         <Search :radar="radar" @select="handleSearchSelect" />
       </div>
 
-      <!-- Mobile quadrant grid (shows below 1000px) -->
-      <div v-if="!selectedQuadrant" class="mobile-quadrant-grid">
-        <button
-          v-for="quadrant in radar.quadrants"
-          :key="quadrant.position"
-          :class="['quadrant-card', quadrant.position]"
-          @click="handleQuadrantSelected(quadrant.position)"
-        >
-          <div class="quadrant-card__rings"><span></span></div>
-          <span class="quadrant-card__name">{{ quadrant.name }}</span>
-          <span class="quadrant-card__count">{{ quadrant.blips().length }} items</span>
-        </button>
-      </div>
+      <!-- Desktop: Full radar with legend -->
+      <TechRadarDesktop
+        v-if="!isMobile"
+        :radar="radar"
+        :selected-quadrant="selectedQuadrant"
+        :highlighted-blip-id="hoveredBlipId"
+        :expanded-blip-id="expandedBlipId"
+        @quadrant-selected="handleQuadrantSelected"
+        @blip-selected="handleBlipSelected"
+        @blip-hovered="handleBlipHovered"
+        @blip-hover="handleTableBlipHover"
+        @blip-click="handleBlipSelected"
+        @blip-toggle="handleBlipToggle"
+      />
 
-      <!-- Main radar and table container (hidden on mobile unless quadrant selected) -->
-      <main class="radar-layout" :class="layoutClasses">
-        <div class="radar-wrapper">
-          <TechRadar
-            ref="techRadarRef"
-            :radar="radar"
-            :selected-quadrant="selectedQuadrant"
-            @quadrant-selected="handleQuadrantSelected"
-            @blip-selected="handleBlipSelected"
-            @blip-hovered="handleBlipHovered"
-          />
-          <RadarLegend />
+      <!-- Mobile: Quadrant cards grid or blip list -->
+      <TechRadarMobile
+        v-else
+        :radar="radar"
+        :selected-quadrant="selectedQuadrant"
+        :highlighted-blip-id="hoveredBlipId"
+        :expanded-blip-id="expandedBlipId"
+        @quadrant-selected="handleQuadrantSelected"
+        @blip-hover="handleTableBlipHover"
+        @blip-click="handleBlipSelected"
+        @blip-toggle="handleBlipToggle"
+      />
 
-          <!-- Overlay blip list at the top when one quadrant is selected -->
-          <div
-            v-if="selectedQuadrant && selectedQuadrantObj"
-            class="table-overlay"
-            :class="tableOverlayPosition"
-          >
-            <BlipListByQuadrant
-              :quadrant-name="selectedQuadrantObj.name"
-              :quadrant-position="selectedQuadrant"
-              :blips="selectedQuadrantBlips"
-              :highlighted-blip-id="hoveredBlipId"
-              :expanded-blip-id="expandedBlipId"
-              @blip-hover="handleTableBlipHover"
-              @blip-click="handleBlipSelected"
-              @blip-toggle="handleBlipToggle"
-            />
-          </div>
-        </div>
-      </main>
-
-      <!-- Blip list below radar when all quadrants visible -->
-      <div v-if="!selectedQuadrant" class="table-wrapper table-bottom">
+      <!-- Blip list below radar when all quadrants visible (desktop only) -->
+      <div v-if="!selectedQuadrant && !isMobile" class="table-wrapper table-bottom">
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
@@ -81,12 +62,11 @@
 </template>
 
 <script setup lang="ts">
-  import { shallowRef, ref, computed, onMounted, watch } from "vue";
+  import { shallowRef, ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { useRoute } from "vue-router";
-  import TechRadar from "../components/radar/TechRadar.vue";
+  import TechRadarDesktop from "../components/radar/TechRadarDesktop.vue";
+  import TechRadarMobile from "../components/radar/TechRadarMobile.vue";
   import BlipList from "../components/radar/BlipList.vue";
-  import BlipListByQuadrant from "../components/radar/BlipListByQuadrant.vue";
-  import RadarLegend from "../components/radar/RadarLegend.vue";
   import Search from "../components/radar/Search.vue";
   import RadarHeader from "../components/radar/RadarHeader.vue";
   import SpotlightLoader from "../components/SpotlightLoader.vue";
@@ -110,6 +90,8 @@
     quadrantName: string;
   };
 
+  const MOBILE_BREAKPOINT = 1000;
+
   const route = useRoute();
 
   // Data provider - use Google Sheets if configured, otherwise fallback to sample data
@@ -124,6 +106,12 @@
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
   const hoveredBlipId = ref<number | null>(null);
   const expandedBlipId = ref<number | null>(null);
+  const isMobile = ref(false);
+
+  // Check if we're on mobile based on window width
+  function checkMobile() {
+    isMobile.value = window.innerWidth < MOBILE_BREAKPOINT;
+  }
 
   async function loadVersion(versionId: string) {
     radar.value = null;
@@ -141,10 +129,17 @@
   }
 
   onMounted(async () => {
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const versionId = route.params.id as string;
     if (versionId) {
       await loadVersion(decodeURIComponent(versionId));
     }
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener("resize", checkMobile);
   });
 
   // Watch for route changes to reload data
@@ -156,27 +151,6 @@
       }
     }
   );
-
-  // Get the selected quadrant
-  const selectedQuadrantObj = computed(() => {
-    if (!radar.value || !selectedQuadrant.value) return null;
-    return radar.value.getQuadrant(selectedQuadrant.value);
-  });
-
-  // Get positioned blips for the selected quadrant
-  const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
-    if (!selectedQuadrantObj.value) return [];
-
-    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
-    const geometry: QuadrantGeometryConfig = {
-      startAngle: selectedQuadrantObj.value.startAngle,
-      quadrantSize: graphConfig.quadrantSize,
-      ringRadii,
-      center: { x: 0, y: 0 },
-    };
-
-    return QuadrantGeometry.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
-  });
 
   // Get all quadrants with their positioned blips (for "all quadrants" view)
   const allQuadrantsWithBlips = computed(() => {
@@ -198,28 +172,6 @@
         blips: QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry),
       };
     });
-  });
-
-  // Layout classes for the radar-layout container
-  const layoutClasses = computed(() => ({
-    "has-selection": !!selectedQuadrant.value,
-  }));
-
-  // Position the table overlay on the opposite side of the selected quadrant
-  // All overlays at the top, but left/right based on opposite quadrant
-  const tableOverlayPosition = computed(() => {
-    switch (selectedQuadrant.value) {
-      case "NE": // top-right -> overlay top-left
-        return "overlay-left";
-      case "NW": // top-left -> overlay top-right
-        return "overlay-right";
-      case "SW": // bottom-left -> overlay top-right
-        return "overlay-right";
-      case "SE": // bottom-right -> overlay top-left
-        return "overlay-left";
-      default:
-        return "";
-    }
   });
 
   function handleQuadrantSelected(position: QuadrantPosition | null) {
@@ -259,7 +211,9 @@
     min-height: calc(100vh - 112px);
     background: var(--color-background);
     color: var(--color-text-primary);
-    transition: background-color var(--transition-theme), color var(--transition-theme);
+    transition:
+      background-color var(--transition-theme),
+      color var(--transition-theme);
   }
 
   /* Main Content */
@@ -275,47 +229,9 @@
     margin-bottom: var(--space-8);
   }
 
-  /* Radar Layout */
-  .radar-layout {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: 1056px;
-    margin: 0 auto;
-  }
-
-  .radar-wrapper {
-    position: relative;
-    width: 1056px;
-    flex-shrink: 0;
-    box-sizing: border-box;
-  }
-
-  /* Table Wrapper - shared styles */
+  /* Table Wrapper */
   .table-wrapper {
     box-sizing: border-box;
-  }
-
-  /* Overlay table at the top of radar */
-  .table-overlay {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    height: 50%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: var(--color-background);
-    border-radius: var(--radius-lg);
-    padding: var(--space-4);
-    box-sizing: border-box;
-  }
-
-  .table-overlay.overlay-left {
-    left: 0;
-  }
-
-  .table-overlay.overlay-right {
-    right: 0;
   }
 
   /* Bottom table (when all quadrants visible) */
@@ -332,268 +248,16 @@
     min-height: calc(100vh - 112px);
   }
 
-  /* Mobile Quadrant Grid - hidden by default, shown below 1000px */
-  .mobile-quadrant-grid {
-    display: none;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-3);
-    margin-bottom: var(--space-6);
-  }
-
-  .quadrant-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-6) var(--space-4);
-    border: none;
-    border-radius: var(--radius-lg);
-    cursor: pointer;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    min-height: 100px;
-    overflow: hidden;
-  }
-
-  .quadrant-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .quadrant-card:active {
-    transform: translateY(0);
-  }
-
-  .quadrant-card.NE {
-    background-color: var(--quadrant-NE);
-    order: 2; /* top-right */
-  }
-  .quadrant-card.NW {
-    background-color: var(--quadrant-NW);
-    order: 1; /* top-left */
-  }
-  .quadrant-card.SW {
-    background-color: var(--quadrant-SW);
-    order: 3; /* bottom-left */
-  }
-  .quadrant-card.SE {
-    background-color: var(--quadrant-SE);
-    order: 4; /* bottom-right */
-  }
-
-  /* Ring decorations in inner corners */
-  .quadrant-card__rings {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    pointer-events: none;
-  }
-
-  .quadrant-card__rings::before,
-  .quadrant-card__rings::after,
-  .quadrant-card__rings span {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-  }
-
-  /* Ring 1 - smallest */
-  .quadrant-card__rings::before {
-    width: 40px;
-    height: 40px;
-  }
-
-  /* Ring 2 - medium */
-  .quadrant-card__rings::after {
-    width: 70px;
-    height: 70px;
-  }
-
-  /* Ring 3 - largest */
-  .quadrant-card__rings span {
-    width: 100px;
-    height: 100px;
-  }
-
-  /* NE quadrant: rings in bottom-left corner (opposite of position) */
-  .quadrant-card.NE .quadrant-card__rings {
-    bottom: -60px;
-    left: -60px;
-  }
-  .quadrant-card.NE .quadrant-card__rings::before {
-    bottom: 40px;
-    left: 40px;
-  }
-  .quadrant-card.NE .quadrant-card__rings::after {
-    bottom: 25px;
-    left: 25px;
-  }
-  .quadrant-card.NE .quadrant-card__rings span {
-    bottom: 10px;
-    left: 10px;
-  }
-
-  /* NW quadrant: rings in bottom-right corner */
-  .quadrant-card.NW .quadrant-card__rings {
-    bottom: -60px;
-    right: -60px;
-  }
-  .quadrant-card.NW .quadrant-card__rings::before {
-    bottom: 40px;
-    right: 40px;
-  }
-  .quadrant-card.NW .quadrant-card__rings::after {
-    bottom: 25px;
-    right: 25px;
-  }
-  .quadrant-card.NW .quadrant-card__rings span {
-    bottom: 10px;
-    right: 10px;
-  }
-
-  /* SW quadrant: rings in top-right corner */
-  .quadrant-card.SW .quadrant-card__rings {
-    top: -60px;
-    right: -60px;
-  }
-  .quadrant-card.SW .quadrant-card__rings::before {
-    top: 40px;
-    right: 40px;
-  }
-  .quadrant-card.SW .quadrant-card__rings::after {
-    top: 25px;
-    right: 25px;
-  }
-  .quadrant-card.SW .quadrant-card__rings span {
-    top: 10px;
-    right: 10px;
-  }
-
-  /* SE quadrant: rings in top-left corner */
-  .quadrant-card.SE .quadrant-card__rings {
-    top: -60px;
-    left: -60px;
-  }
-  .quadrant-card.SE .quadrant-card__rings::before {
-    top: 40px;
-    left: 40px;
-  }
-  .quadrant-card.SE .quadrant-card__rings::after {
-    top: 25px;
-    left: 25px;
-  }
-  .quadrant-card.SE .quadrant-card__rings span {
-    top: 10px;
-    left: 10px;
-  }
-
-  .quadrant-card__name {
-    position: relative;
-    z-index: 1;
-    font-family: var(--font-mono);
-    font-size: var(--text-base);
-    font-weight: var(--font-semibold);
-    color: white;
-    text-transform: lowercase;
-    text-align: center;
-    margin-bottom: var(--space-1);
-  }
-
-  .quadrant-card__count {
-    position: relative;
-    z-index: 1;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: rgba(255, 255, 255, 0.8);
-    text-transform: lowercase;
-  }
-
   /* Responsive Styles */
   @media (max-width: 1200px) {
-    .radar-layout {
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .radar-layout.has-selection {
-      gap: var(--space-6);
-    }
-
-    .table-wrapper.table-side {
-      flex: none;
-      max-width: 100%;
-      width: 100%;
-    }
-
     .table-wrapper.table-bottom {
       width: 100%;
     }
   }
 
   @media (max-width: 1000px) {
-    /* Show mobile quadrant grid */
-    .mobile-quadrant-grid {
-      display: grid;
-    }
-
-    /* Hide radar and bottom table on mobile when no quadrant selected */
-    .radar-layout {
-      display: none;
-    }
-
-    .radar-layout.has-selection {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .table-wrapper.table-bottom {
-      display: block;
-      width: 100%;
-      margin-top: var(--space-4);
-    }
-
-    /* When quadrant is selected, show only the table */
-    .table-wrapper.table-side {
-      width: 100%;
-      max-height: none;
-    }
-
-    /* Hide radar SVG on mobile, but show the wrapper for table overlay */
-    .radar-wrapper {
-      width: 100%;
-    }
-
-    .radar-wrapper :deep(.tech-radar) {
-      display: none;
-    }
-
-    .radar-wrapper :deep(.radar-legend) {
-      display: none;
-    }
-
-    /* Make table overlay full width on mobile */
-    .table-overlay {
-      position: static;
-      width: 100%;
-      height: auto;
-      max-height: none;
-    }
-
     .main-content {
       padding: var(--space-4);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .quadrant-card {
-      padding: var(--space-4) var(--space-3);
-      min-height: 80px;
-    }
-
-    .quadrant-card__name {
-      font-size: var(--text-sm);
     }
   }
 </style>
