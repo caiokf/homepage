@@ -566,7 +566,9 @@
     }
 
     .table-wrapper.table-bottom {
-      display: none;
+      display: block;
+      width: 100%;
+      margin-top: var(--space-4);
     }
 
     /* When quadrant is selected, show only the table */
