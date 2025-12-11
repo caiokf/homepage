@@ -1,7 +1,6 @@
 <template>
   <div class="tech-radar-mobile">
-    <!-- Quadrant selection grid (shows when no quadrant selected) -->
-    <div v-if="!selectedQuadrant" class="quadrant-grid">
+    <div class="quadrant-grid">
       <button
         v-for="quadrant in radar.quadrants"
         :key="quadrant.position"
@@ -13,74 +12,21 @@
         <span class="quadrant-card__count">{{ quadrant.blips().length }} items</span>
       </button>
     </div>
-
-    <!-- Blip list (shows when a quadrant is selected) -->
-    <div v-else-if="selectedQuadrantObj" class="blip-list-container">
-      <BlipListByQuadrant
-        :quadrant-name="selectedQuadrantObj.name"
-        :quadrant-position="selectedQuadrant"
-        :blips="selectedQuadrantBlips"
-        :highlighted-blip-id="highlightedBlipId"
-        :expanded-blip-id="expandedBlipId"
-        @blip-hover="$emit('blip-hover', $event)"
-        @blip-click="(blip) => $emit('blip-click', blip, selectedQuadrant!)"
-        @blip-toggle="$emit('blip-toggle', $event)"
-      />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
-  import BlipListByQuadrant from "./BlipListByQuadrant.vue";
   import type { Radar } from "../../models/radar";
-  import type {
-    PositionedBlip,
-    QuadrantGeometryConfig,
-  } from "../../models/quadrant.geometry";
-  import { graphConfig, type QuadrantPosition } from "../../config/radar-config";
-  import { RingGeometry } from "../../models/ring.geometry";
-  import { QuadrantGeometry } from "../../models/quadrant.geometry";
+  import type { QuadrantPosition } from "../../config/radar-config";
 
-  type Props = {
+  defineProps<{
     radar: Radar;
     selectedQuadrant: QuadrantPosition | null;
-    highlightedBlipId: number | null;
-    expandedBlipId: number | null;
-  };
-
-  const props = defineProps<Props>();
-
-  defineEmits<{
-    "quadrant-selected": [position: QuadrantPosition | null];
-    "blip-hover": [blip: PositionedBlip | null];
-    "blip-click": [blip: PositionedBlip, quadrant: QuadrantPosition];
-    "blip-toggle": [blipId: number];
   }>();
 
-  // Get the selected quadrant object
-  const selectedQuadrantObj = computed(() => {
-    if (!props.selectedQuadrant) return null;
-    return props.radar.getQuadrant(props.selectedQuadrant);
-  });
-
-  // Get positioned blips for the selected quadrant
-  const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
-    if (!selectedQuadrantObj.value) return [];
-
-    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
-    const geometry: QuadrantGeometryConfig = {
-      startAngle: selectedQuadrantObj.value.startAngle,
-      quadrantSize: graphConfig.quadrantSize,
-      ringRadii,
-      center: { x: 0, y: 0 },
-    };
-
-    return QuadrantGeometry.calculateBlipPositions(
-      selectedQuadrantObj.value.blips(),
-      geometry
-    );
-  });
+  defineEmits<{
+    "quadrant-selected": [position: QuadrantPosition];
+  }>();
 </script>
 
 <style scoped>
@@ -279,11 +225,6 @@
     font-size: var(--text-xs);
     color: rgba(255, 255, 255, 0.8);
     text-transform: lowercase;
-  }
-
-  /* Blip list container */
-  .blip-list-container {
-    width: 100%;
   }
 
   /* Responsive */

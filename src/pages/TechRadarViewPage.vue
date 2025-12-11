@@ -14,36 +14,54 @@
         <Search :radar="radar" @select="handleSearchSelect" />
       </div>
 
-      <!-- Desktop: Full radar with legend -->
-      <TechRadarDesktop
-        v-if="!isMobile"
-        :radar="radar"
-        :selected-quadrant="selectedQuadrant"
-        :highlighted-blip-id="hoveredBlipId"
-        :expanded-blip-id="expandedBlipId"
-        @quadrant-selected="handleQuadrantSelected"
-        @blip-selected="handleBlipSelected"
-        @blip-hovered="handleBlipHovered"
-        @blip-hover="handleTableBlipHover"
-        @blip-click="handleBlipSelected"
-        @blip-toggle="handleBlipToggle"
-      />
+      <!-- Radar visualization (handles mobile/desktop switching internally) -->
+      <div class="radar-section">
+        <div class="radar-wrapper">
+          <TechRadar
+            :radar="radar"
+            :selected-quadrant="selectedQuadrant"
+            @quadrant-selected="handleQuadrantSelected"
+            @blip-selected="handleBlipSelected"
+            @blip-hovered="handleBlipHovered"
+          />
+          <RadarLegend v-if="!isMobile" />
 
-      <!-- Mobile: Quadrant cards grid or blip list -->
-      <TechRadarMobile
-        v-else
-        :radar="radar"
-        :selected-quadrant="selectedQuadrant"
-        :highlighted-blip-id="hoveredBlipId"
-        :expanded-blip-id="expandedBlipId"
-        @quadrant-selected="handleQuadrantSelected"
-        @blip-hover="handleTableBlipHover"
-        @blip-click="handleBlipSelected"
-        @blip-toggle="handleBlipToggle"
-      />
+          <!-- Overlay blip list when a quadrant is selected (desktop only) -->
+          <div
+            v-if="!isMobile && selectedQuadrant && selectedQuadrantObj"
+            class="table-overlay"
+            :class="tableOverlayPosition"
+          >
+            <BlipListByQuadrant
+              :quadrant-name="selectedQuadrantObj.name"
+              :quadrant-position="selectedQuadrant"
+              :blips="selectedQuadrantBlips"
+              :highlighted-blip-id="hoveredBlipId"
+              :expanded-blip-id="expandedBlipId"
+              @blip-hover="handleTableBlipHover"
+              @blip-click="handleBlipSelected"
+              @blip-toggle="handleBlipToggle"
+            />
+          </div>
+        </div>
+      </div>
 
-      <!-- Blip list below radar when all quadrants visible (desktop only) -->
-      <div v-if="!selectedQuadrant && !isMobile" class="table-wrapper table-bottom">
+      <!-- Mobile: Blip list when a quadrant is selected -->
+      <div v-if="isMobile && selectedQuadrant && selectedQuadrantObj" class="mobile-blip-list">
+        <BlipListByQuadrant
+          :quadrant-name="selectedQuadrantObj.name"
+          :quadrant-position="selectedQuadrant"
+          :blips="selectedQuadrantBlips"
+          :highlighted-blip-id="hoveredBlipId"
+          :expanded-blip-id="expandedBlipId"
+          @blip-hover="handleTableBlipHover"
+          @blip-click="handleBlipSelected"
+          @blip-toggle="handleBlipToggle"
+        />
+      </div>
+
+      <!-- Desktop: Blip list below radar when all quadrants visible -->
+      <div v-if="!isMobile && !selectedQuadrant" class="table-wrapper table-bottom">
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
@@ -64,9 +82,10 @@
 <script setup lang="ts">
   import { shallowRef, ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { useRoute } from "vue-router";
-  import TechRadarDesktop from "../components/radar/TechRadarDesktop.vue";
-  import TechRadarMobile from "../components/radar/TechRadarMobile.vue";
+  import TechRadar from "../components/radar/TechRadar.vue";
   import BlipList from "../components/radar/BlipList.vue";
+  import BlipListByQuadrant from "../components/radar/BlipListByQuadrant.vue";
+  import RadarLegend from "../components/radar/RadarLegend.vue";
   import Search from "../components/radar/Search.vue";
   import RadarHeader from "../components/radar/RadarHeader.vue";
   import SpotlightLoader from "../components/SpotlightLoader.vue";
@@ -108,7 +127,6 @@
   const expandedBlipId = ref<number | null>(null);
   const isMobile = ref(false);
 
-  // Check if we're on mobile based on window width
   function checkMobile() {
     isMobile.value = window.innerWidth < MOBILE_BREAKPOINT;
   }
@@ -152,6 +170,30 @@
     }
   );
 
+  // Get the selected quadrant object
+  const selectedQuadrantObj = computed(() => {
+    if (!radar.value || !selectedQuadrant.value) return null;
+    return radar.value.getQuadrant(selectedQuadrant.value);
+  });
+
+  // Get positioned blips for the selected quadrant
+  const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
+    if (!selectedQuadrantObj.value) return [];
+
+    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
+    const geometry: QuadrantGeometryConfig = {
+      startAngle: selectedQuadrantObj.value.startAngle,
+      quadrantSize: graphConfig.quadrantSize,
+      ringRadii,
+      center: { x: 0, y: 0 },
+    };
+
+    return QuadrantGeometry.calculateBlipPositions(
+      selectedQuadrantObj.value.blips(),
+      geometry
+    );
+  });
+
   // Get all quadrants with their positioned blips (for "all quadrants" view)
   const allQuadrantsWithBlips = computed(() => {
     if (!radar.value) return [];
@@ -172,6 +214,22 @@
         blips: QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry),
       };
     });
+  });
+
+  // Position the table overlay on the opposite side of the selected quadrant
+  const tableOverlayPosition = computed(() => {
+    switch (selectedQuadrant.value) {
+      case "NE":
+        return "overlay-left";
+      case "NW":
+        return "overlay-right";
+      case "SW":
+        return "overlay-right";
+      case "SE":
+        return "overlay-left";
+      default:
+        return "";
+    }
   });
 
   function handleQuadrantSelected(position: QuadrantPosition | null) {
@@ -229,6 +287,46 @@
     margin-bottom: var(--space-8);
   }
 
+  /* Radar Section */
+  .radar-section {
+    display: flex;
+    justify-content: center;
+  }
+
+  .radar-wrapper {
+    position: relative;
+    width: 1056px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  /* Overlay table at the top of radar */
+  .table-overlay {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--color-background);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-sizing: border-box;
+  }
+
+  .table-overlay.overlay-left {
+    left: 0;
+  }
+
+  .table-overlay.overlay-right {
+    right: 0;
+  }
+
+  /* Mobile blip list */
+  .mobile-blip-list {
+    margin-top: var(--space-4);
+  }
+
   /* Table Wrapper */
   .table-wrapper {
     box-sizing: border-box;
@@ -250,6 +348,11 @@
 
   /* Responsive Styles */
   @media (max-width: 1200px) {
+    .radar-wrapper {
+      width: 100%;
+      max-width: 1056px;
+    }
+
     .table-wrapper.table-bottom {
       width: 100%;
     }
