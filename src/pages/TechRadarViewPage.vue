@@ -207,12 +207,14 @@
   });
 
   // Get all quadrants with their positioned blips (for "all quadrants" view)
+  const QUADRANT_ORDER: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
+
   const allQuadrantsWithBlips = computed(() => {
     if (!radar.value) return [];
 
     const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
 
-    return radar.value.quadrants.map((quadrant) => {
+    const quadrantsWithBlips = radar.value.quadrants.map((quadrant) => {
       const geometry: QuadrantGeometryConfig = {
         startAngle: quadrant.startAngle,
         quadrantSize: graphConfig.quadrantSize,
@@ -226,6 +228,11 @@
         blips: QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry),
       };
     });
+
+    // Sort by defined quadrant order
+    return quadrantsWithBlips.sort(
+      (a, b) => QUADRANT_ORDER.indexOf(a.position) - QUADRANT_ORDER.indexOf(b.position)
+    );
   });
 
   // Position the table overlay on the opposite side of the selected quadrant
