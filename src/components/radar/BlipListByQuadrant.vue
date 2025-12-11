@@ -64,6 +64,9 @@
     font-family: var(--font-mono);
     color: var(--color-text-inverse);
     text-transform: lowercase;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   .quadrant-title::before {
