@@ -49,7 +49,6 @@
     background: var(--color-surface);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
-    overflow: hidden;
     width: 100%;
     box-sizing: border-box;
     transition: background-color var(--transition-theme),
