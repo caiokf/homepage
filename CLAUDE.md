@@ -90,13 +90,3 @@ describe("ClassName", () => {
 ## Legacy Code
 
 `src/legacy/` contains original JavaScript implementation not currently in use. The project is being modernized to TypeScript with component-based Vue 3 architecture.
-
-## Workflow
-
-After completing code changes, always end your response with a suggested lowercase git commit message in command format, following conventional commits style, where the scopes are one of: (
-`repo`: for repo related tasks
-`radar`: for changes specific to the tech radar
-`homepage`: to the main page and layout, or changes affecting all pages
-`xp`: for changes affecting the Experience page
-`blog`: for changes affecting the Blog or Posts pages  
-). Example: `git ci -m 'feat(webapp): add user authentication to api routes'`
