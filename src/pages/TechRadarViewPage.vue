@@ -105,7 +105,7 @@
   import { QuadrantGeometry } from "../models/quadrant.geometry";
 
   type SearchResult = {
-    blip: { name: string };
+    blip: { id: number; name: string };
     quadrant: QuadrantPosition;
     quadrantName: string;
   };
@@ -243,9 +243,9 @@
   }
 
   function handleSearchSelect(result: SearchResult) {
-    console.log("Search selected:", result.blip.name, "in", result.quadrantName);
-    // Zoom to the quadrant
+    // Zoom to the quadrant and expand the blip (same as clicking)
     selectedQuadrant.value = result.quadrant;
+    expandedBlipId.value = result.blip.id;
   }
 
   function handleBlipToggle(blipId: number) {
