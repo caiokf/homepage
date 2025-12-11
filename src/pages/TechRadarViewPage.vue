@@ -329,7 +329,7 @@
   .table-overlay {
     position: absolute;
     top: 0;
-    width: 50%;
+    width: calc(50% - var(--space-4));
     /*
      * Calculate height: viewport - header(56px) - footer(56px) - RadarHeader(~56px)
      * - main padding top(32px) - search container + margin(~80px) - bottom margin(32px)
