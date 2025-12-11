@@ -324,7 +324,7 @@
     position: absolute;
     top: 0;
     width: 50%;
-    height: 50%;
+    max-height: calc(100vh - 250px); /* viewport - header - footer - margins */
     overflow-y: auto;
     overflow-x: hidden;
     background: var(--color-background);
