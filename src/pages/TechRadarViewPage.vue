@@ -560,9 +560,25 @@
       max-height: none;
     }
 
-    /* Hide radar wrapper on mobile */
+    /* Hide radar SVG on mobile, but show the wrapper for table overlay */
     .radar-wrapper {
+      width: 100%;
+    }
+
+    .radar-wrapper :deep(.tech-radar) {
       display: none;
+    }
+
+    .radar-wrapper :deep(.radar-legend) {
+      display: none;
+    }
+
+    /* Make table overlay full width on mobile */
+    .table-overlay {
+      position: static;
+      width: 100%;
+      height: auto;
+      max-height: none;
     }
 
     .main-content {
