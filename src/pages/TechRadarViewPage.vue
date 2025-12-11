@@ -337,9 +337,9 @@
     max-height: calc(100vh - 312px);
     overflow-y: auto;
     overflow-x: hidden;
-    background: var(--color-background);
+    background: transparent;
     border-radius: var(--radius-lg);
-    padding: 0 var(--space-4) var(--space-4) var(--space-4);
+    padding: 0;
     box-sizing: border-box;
   }
 
