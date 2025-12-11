@@ -31,6 +31,8 @@
   import type { Radar } from "../../models/radar";
   import type { QuadrantPosition } from "../../config/radar-config";
 
+  const QUADRANT_ORDER: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
+
   const props = defineProps<{
     radar: Radar;
     selectedQuadrant: QuadrantPosition | null;
@@ -40,7 +42,11 @@
     (e: "select", position: QuadrantPosition | null): void;
   }>();
 
-  const quadrants = computed(() => props.radar.quadrants);
+  const quadrants = computed(() =>
+    [...props.radar.quadrants].sort(
+      (a, b) => QUADRANT_ORDER.indexOf(a.position) - QUADRANT_ORDER.indexOf(b.position)
+    )
+  );
 </script>
 
 <style scoped>
