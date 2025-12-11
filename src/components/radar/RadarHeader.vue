@@ -12,7 +12,10 @@
         :class="[
           'radar-header__item',
           quadrant.position,
-          { 'active-item': selectedQuadrant === quadrant.position },
+          {
+            'active-item': selectedQuadrant === quadrant.position,
+            'faded-item': selectedQuadrant && selectedQuadrant !== quadrant.position,
+          },
         ]"
       >
         <button
@@ -96,6 +99,14 @@
   .radar-header__item.active-item .radar-header__button.bracket-link {
     opacity: 1;
     font-weight: var(--font-semibold);
+  }
+
+  .radar-header__item.faded-item .radar-header__button.bracket-link {
+    opacity: 0.4;
+  }
+
+  .radar-header__item.faded-item .radar-header__button.bracket-link:hover {
+    opacity: 0.7;
   }
 
   /* Active state colors */
