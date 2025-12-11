@@ -329,7 +329,7 @@
     overflow-x: hidden;
     background: var(--color-background);
     border-radius: var(--radius-lg);
-    padding: var(--space-4);
+    padding: 0 var(--space-4) var(--space-4) var(--space-4);
     box-sizing: border-box;
   }
 
