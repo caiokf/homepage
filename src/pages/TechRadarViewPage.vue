@@ -293,6 +293,12 @@
       color var(--transition-theme);
   }
 
+  /* When quadrant is selected, prevent page scroll */
+  .tech-radar-view:has(.table-overlay) {
+    height: calc(100vh - 112px);
+    overflow: hidden;
+  }
+
   /* Main Content */
   .main-content {
     max-width: 1600px;
@@ -324,7 +330,11 @@
     position: absolute;
     top: 0;
     width: 50%;
-    max-height: calc(100vh - 250px); /* viewport - header - footer - margins */
+    /*
+     * Calculate height: viewport - header(56px) - footer(56px) - RadarHeader(~56px)
+     * - main padding top(32px) - search container + margin(~80px) - bottom margin(32px)
+     */
+    max-height: calc(100vh - 312px);
     overflow-y: auto;
     overflow-x: hidden;
     background: var(--color-background);
