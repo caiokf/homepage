@@ -9,16 +9,11 @@
           :key="article.frontmatter.slug"
           class="article-card"
         >
-          <router-link
-            :to="`/articles/${article.frontmatter.slug}`"
-            class="article-link"
-          >
+          <router-link :to="`/articles/${article.frontmatter.slug}`" class="article-link">
             <header class="article-header">
               <h2 class="article-title">{{ article.frontmatter.title }}</h2>
               <div class="article-meta">
-                <span class="article-date">{{
-                  formatDate(article.frontmatter.date)
-                }}</span>
+                <span class="article-date">{{ formatDate(article.frontmatter.date) }}</span>
                 <span class="article-author">by Caio Kinzel Filho</span>
               </div>
             </header>
@@ -27,15 +22,16 @@
 
             <footer class="article-footer">
               <div class="article-tags">
-                <span
-                  v-for="tag in article.frontmatter.tags"
-                  :key="tag"
-                  class="article-tag"
-                >
+                <span v-for="tag in article.frontmatter.tags" :key="tag" class="article-tag">
                   {{ tag }}
                 </span>
               </div>
-              <span class="read-more-link">read more</span>
+              <BaseBracketLink
+                :to="`/articles/${article.frontmatter.slug}`"
+                class="read-more-link"
+              >
+                read more
+              </BaseBracketLink>
             </footer>
           </router-link>
         </article>
@@ -50,6 +46,7 @@
 
 <script setup lang="ts">
   import { getAllArticles } from "../content/articles";
+  import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
 
   const articles = getAllArticles();
 
@@ -207,21 +204,6 @@
     padding: 2px 8px;
     border-radius: var(--radius-sm);
     text-transform: lowercase;
-  }
-
-  .read-more-link {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-primary);
-    text-transform: lowercase;
-  }
-
-  .read-more-link::before {
-    content: "[";
-  }
-
-  .read-more-link::after {
-    content: "]";
   }
 
   .no-articles {
