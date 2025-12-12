@@ -10,6 +10,20 @@ import type { TechRadarData } from "../data/tech-radar-data";
 
 export type RingsMap = Record<string, Ring>;
 
+/**
+ * Convert a string to kebab-case lowercase
+ * e.g., "Languages & Frameworks" -> "languages-frameworks"
+ *       "Tech Stack" -> "tech-stack"
+ */
+function toKebabCase(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/&/g, "") // Remove ampersands
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with dashes
+    .replace(/^-+|-+$/g, "") // Trim leading/trailing dashes
+    .replace(/-+/g, "-"); // Collapse multiple dashes
+}
+
 export class Radar {
   private _blipNumber: number = 0;
   private _quadrants: Map<QuadrantPosition, Quadrant>;
@@ -33,22 +47,30 @@ export class Radar {
     });
     radar._rings = rings;
 
-    // Map quadrant names to positions
-    const quadrantNames = data.quadrants || [
-      "Techniques",
-      "Platforms",
-      "Tools",
-      "Languages & Frameworks",
+    // Extract distinct quadrant names from blips
+    const distinctQuadrants = [
+      ...new Set(data.blips.map((blip) => blip.quadrant)),
     ];
 
-    // Create a mapping from name to position
+    // Validate exactly 4 quadrant names
+    if (distinctQuadrants.length !== 4) {
+      throw new Error(
+        `Expected exactly 4 quadrant names, but found ${distinctQuadrants.length}: [${distinctQuadrants.join(", ")}]`
+      );
+    }
+
+    // Convert quadrant names to kebab-case lowercase for display
+    const quadrantNames = distinctQuadrants.map(toKebabCase);
+
+    // Create a mapping from original name (lowercase) to position
     const nameToPosition = new Map<string, QuadrantPosition>();
     QUADRANT_POSITIONS.forEach((position, index) => {
-      const name = quadrantNames[index];
-      if (name) {
-        nameToPosition.set(name.toLowerCase(), position);
-        // Update quadrant with custom name
-        radar._quadrants.set(position, new Quadrant(position, name));
+      const originalName = distinctQuadrants[index];
+      const kebabName = quadrantNames[index];
+      if (originalName && kebabName) {
+        nameToPosition.set(originalName.toLowerCase(), position);
+        // Create quadrant with kebab-case name
+        radar._quadrants.set(position, new Quadrant(position, kebabName));
       }
     });
 

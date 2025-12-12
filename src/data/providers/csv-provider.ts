@@ -130,7 +130,7 @@ export class CsvProvider implements TechRadarDataProvider {
     return {
       name,
       ring: this.normalizeRing(ring),
-      quadrant: this.normalizeQuadrant(quadrant),
+      quadrant, // Pass through raw quadrant name - Radar.create() handles normalization
       isNew,
       status,
       description,
@@ -159,19 +159,5 @@ export class CsvProvider implements TechRadarDataProvider {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  }
-
-  private normalizeQuadrant(quadrant: string): string {
-    const normalized = quadrant
-      .toLowerCase()
-      .replace(/-/g, " ")
-      .replace(/\band\b/g, "&")
-      .split(" ")
-      .map((word) =>
-        word === "&" ? "&" : word.charAt(0).toUpperCase() + word.slice(1)
-      )
-      .join(" ");
-
-    return normalized;
   }
 }

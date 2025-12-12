@@ -61,58 +61,57 @@ describe("Radar", () => {
       const data = {
         title: "Test Radar",
         blips: [
-          {
-            name: "TypeScript",
-            ring: "Adopt",
-            quadrant: "Techniques",
-            isNew: true,
-            status: "new" as const,
-            description: "Typed JavaScript",
-          },
+          { name: "TypeScript", ring: "Adopt", quadrant: "Techniques", isNew: true, status: "new" as const, description: "Typed JavaScript" },
+          { name: "AWS", ring: "Adopt", quadrant: "Platforms", isNew: false },
+          { name: "Vite", ring: "Trial", quadrant: "Tools", isNew: false },
+          { name: "Vue", ring: "Adopt", quadrant: "Languages & Frameworks", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
-        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
       };
 
       const radar = Radar.create(data);
 
       expect(radar.quadrants).toHaveLength(4);
-      // NE is the first position, which maps to "Techniques"
+      // NE is the first position, which maps to "Techniques" (kebab-cased)
       const neQuadrant = radar.getQuadrant("NE");
-      expect(neQuadrant.name).toBe("Techniques");
+      expect(neQuadrant.name).toBe("techniques");
       expect(neQuadrant.blips()).toHaveLength(1);
       expect(neQuadrant.blips()[0].name).toBe("TypeScript");
     });
 
-    it("should use default ring and quadrant names if not provided", () => {
+    it("should throw error if not exactly 4 quadrant names in blips", () => {
+      const data = {
+        blips: [
+          { name: "Blip1", ring: "Adopt", quadrant: "Techniques", isNew: false },
+          { name: "Blip2", ring: "Adopt", quadrant: "Platforms", isNew: false },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+      };
+
+      expect(() => Radar.create(data)).toThrow(
+        "Expected exactly 4 quadrant names, but found 2: [Techniques, Platforms]"
+      );
+    });
+
+    it("should throw error if no blips provided", () => {
       const data = {
         blips: [],
       };
 
-      const radar = Radar.create(data);
-
-      expect(radar.quadrants).toHaveLength(4);
-      expect(Object.keys(radar.rings)).toHaveLength(4);
+      expect(() => Radar.create(data)).toThrow(
+        "Expected exactly 4 quadrant names, but found 0: []"
+      );
     });
 
     it("should assign sequential IDs to blips", () => {
       const data = {
         blips: [
-          {
-            name: "Blip1",
-            ring: "Adopt",
-            quadrant: "Techniques",
-            isNew: false,
-          },
-          {
-            name: "Blip2",
-            ring: "Trial",
-            quadrant: "Platforms",
-            isNew: true,
-          },
+          { name: "Blip1", ring: "Adopt", quadrant: "Techniques", isNew: false },
+          { name: "Blip2", ring: "Trial", quadrant: "Platforms", isNew: true },
+          { name: "Blip3", ring: "Assess", quadrant: "Tools", isNew: false },
+          { name: "Blip4", ring: "Hold", quadrant: "Languages", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
-        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
       };
 
       const radar = Radar.create(data);
@@ -120,6 +119,8 @@ describe("Radar", () => {
       const allBlips = radar.quadrants.flatMap((q) => q.blips());
       expect(allBlips[0].id).toBe(1);
       expect(allBlips[1].id).toBe(2);
+      expect(allBlips[2].id).toBe(3);
+      expect(allBlips[3].id).toBe(4);
     });
 
     it("should handle blips in all quadrants", () => {
@@ -131,7 +132,6 @@ describe("Radar", () => {
           { name: "Blip4", ring: "Hold", quadrant: "Languages & Frameworks", isNew: true },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
-        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
       };
 
       const radar = Radar.create(data);
@@ -149,9 +149,11 @@ describe("Radar", () => {
         blips: [
           { name: "Valid", ring: "Adopt", quadrant: "Techniques", isNew: false },
           { name: "Invalid", ring: "Unknown", quadrant: "Techniques", isNew: true },
+          { name: "Blip3", ring: "Adopt", quadrant: "Platforms", isNew: false },
+          { name: "Blip4", ring: "Adopt", quadrant: "Tools", isNew: false },
+          { name: "Blip5", ring: "Adopt", quadrant: "Languages", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
-        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
       };
 
       const radar = Radar.create(data);
@@ -162,25 +164,24 @@ describe("Radar", () => {
       consoleSpy.mockRestore();
     });
 
-    it("should ignore blips with unknown quadrants", () => {
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
+    it("should convert quadrant names to kebab-case lowercase", () => {
       const data = {
         blips: [
-          { name: "Valid", ring: "Adopt", quadrant: "Techniques", isNew: false },
-          { name: "Invalid", ring: "Adopt", quadrant: "Unknown", isNew: true },
+          { name: "Blip1", ring: "Adopt", quadrant: "Languages & Frameworks", isNew: false },
+          { name: "Blip2", ring: "Adopt", quadrant: "Tech Stack", isNew: false },
+          { name: "Blip3", ring: "Adopt", quadrant: "AI Tools", isNew: false },
+          { name: "Blip4", ring: "Adopt", quadrant: "Infrastructure", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
-        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
       };
 
       const radar = Radar.create(data);
 
-      const totalBlips = radar.quadrants.reduce((sum, q) => sum + q.blips().length, 0);
-      expect(totalBlips).toBe(1);
-      expect(consoleSpy).toHaveBeenCalledWith("Unknown quadrant: Unknown");
-
-      consoleSpy.mockRestore();
+      const quadrantNames = radar.quadrants.map((q) => q.name);
+      expect(quadrantNames).toContain("languages-frameworks");
+      expect(quadrantNames).toContain("tech-stack");
+      expect(quadrantNames).toContain("ai-tools");
+      expect(quadrantNames).toContain("infrastructure");
     });
   });
 });

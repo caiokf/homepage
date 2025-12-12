@@ -3,14 +3,14 @@ import type {
   RadarVersion,
 } from "../tech-radar-data-provider";
 import type { TechRadarData } from "../tech-radar-data";
-import { RING_NAMES, QUADRANT_NAMES } from "../../config/radar-config";
+import { RING_NAMES } from "../../config/radar-config";
 
 const DEFAULT_VERSION: RadarVersion = { id: "default", name: "Default" };
 
 const sampleData: TechRadarData = {
   title: "Technology Radar",
   rings: [...RING_NAMES],
-  quadrants: [...QUADRANT_NAMES],
+  // Note: quadrant names are extracted from blips in Radar.create()
   blips: [
     // Techniques quadrant
     {
