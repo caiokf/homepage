@@ -12,13 +12,9 @@
     >
       <span class="blip-number">{{ blip.blipText }}.</span>
       <span class="blip-name">{{ blip.name }}</span>
-      <span v-if="blip.isNew" class="blip-badge new">NEW</span>
-      <span v-else-if="blip.status === 'moved in'" class="blip-badge moved"
-        >IN</span
-      >
-      <span v-else-if="blip.status === 'moved out'" class="blip-badge moved"
-        >OUT</span
-      >
+      <BaseBadge v-if="blip.isNew" variant="success">NEW</BaseBadge>
+      <BaseBadge v-else-if="blip.status === 'moved in'" variant="warning">IN</BaseBadge>
+      <BaseBadge v-else-if="blip.status === 'moved out'" variant="warning">OUT</BaseBadge>
       <span class="expand-arrow" :class="{ rotated: isExpanded }">&#9660;</span>
     </button>
     <div class="blip-description" :class="{ visible: isExpanded }">
@@ -30,6 +26,7 @@
 <script setup lang="ts">
   import { ref, watch, nextTick } from "vue";
   import type { PositionedBlip } from "../../models/quadrant.geometry";
+  import BaseBadge from "../../components/atoms/BaseBadge.vue";
 
   const props = defineProps<{
     blip: PositionedBlip;
@@ -152,28 +149,6 @@
     font-family: var(--font-mono);
     color: var(--color-text-primary);
     transition: color var(--transition-theme);
-  }
-
-  .blip-badge {
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
-    font-size: 10px;
-    font-weight: var(--font-semibold);
-    text-transform: uppercase;
-  }
-
-  .blip-badge.new {
-    background: var(--color-success-bg);
-    color: var(--color-success);
-    transition: background-color var(--transition-theme),
-      color var(--transition-theme);
-  }
-
-  .blip-badge.moved {
-    background: var(--color-warning-bg);
-    color: var(--color-warning);
-    transition: background-color var(--transition-theme),
-      color var(--transition-theme);
   }
 
   .expand-arrow {
