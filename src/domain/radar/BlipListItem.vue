@@ -45,13 +45,15 @@
 
   const itemRef = ref<HTMLLIElement | null>(null);
 
-  // Scroll into view when expanded
+  // Scroll into view when expanded (within the scrollable container only)
   watch(
     () => props.isExpanded,
     (expanded) => {
       if (expanded) {
         nextTick(() => {
-          itemRef.value?.scrollIntoView({ behavior: "smooth", block: "start" });
+          // Use 'nearest' to scroll only within the closest scrollable container
+          // and avoid scrolling the entire page
+          itemRef.value?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
       }
     }
