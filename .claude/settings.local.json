@@ -16,7 +16,25 @@
       "Bash(ls:*)",
       "WebFetch(domain:werace.au)",
       "Bash(cat:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(git mv:*)",
+      "Bash(lsof:*)",
+      "Bash(perl -i.bak -pe:*)",
+      "Bash(awk 'NR==45{system(\"\"cat /tmp/new_clickhouse.txt\"\"); next} 1' radar-data.tsv)",
+      "Bash(python3:*)",
+      "Bash(if [ -f radar-data.tsv.backup ])",
+      "Bash(then cp radar-data.tsv.backup radar-data.tsv)",
+      "Bash(else echo \"No backup found\")",
+      "Bash(fi)",
+      "Bash(pkill:*)",
+      "Bash(if [ -f /Users/caiokf/development/homepage/radar-data.tsv.bak ])",
+      "Bash(then cp /Users/caiokf/development/homepage/radar-data.tsv.bak /Users/caiokf/development/homepage/radar-data.tsv)",
+      "Bash(git diff:*)",
+      "Bash(git -C /Users/caiokf/development/homepage diff --no-index radar-data.tsv.backup radar-data.tsv)",
+      "Skill(conventions-vue)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm test:*)"
     ],
     "deny": [],
     "ask": []
@@ -33,6 +51,17 @@
         ]
       }
     ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|MultiEdit|Write",
@@ -40,6 +69,17 @@
           {
             "type": "command",
             "command": "but claude post-tool"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
           }
         ]
       }
