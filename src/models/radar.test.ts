@@ -57,7 +57,7 @@ describe("Radar", () => {
   });
 
   describe("create", () => {
-    it("should create a radar from TechRadarData", () => {
+    it("should create a radar from TechRadarData with alphabetical ordering", () => {
       const data = {
         title: "Test Radar",
         blips: [
@@ -72,11 +72,36 @@ describe("Radar", () => {
       const radar = Radar.create(data);
 
       expect(radar.quadrants).toHaveLength(4);
-      // NE is the first position, which maps to "Techniques" (kebab-cased)
-      const neQuadrant = radar.getQuadrant("NE");
-      expect(neQuadrant.name).toBe("techniques");
-      expect(neQuadrant.blips()).toHaveLength(1);
-      expect(neQuadrant.blips()[0].name).toBe("TypeScript");
+      // Without explicit quadrants order, alphabetical: languages-frameworks, platforms, techniques, tools
+      // Maps to positions: NE, NW, SW, SE
+      expect(radar.getQuadrant("NE").name).toBe("languages-frameworks");
+      expect(radar.getQuadrant("NW").name).toBe("platforms");
+      expect(radar.getQuadrant("SW").name).toBe("techniques");
+      expect(radar.getQuadrant("SE").name).toBe("tools");
+      // Check blips are in correct quadrants
+      expect(radar.getQuadrant("SW").blips()[0].name).toBe("TypeScript");
+      expect(radar.getQuadrant("NE").blips()[0].name).toBe("Vue");
+    });
+
+    it("should use provided quadrants order when specified", () => {
+      const data = {
+        blips: [
+          { name: "TypeScript", ring: "Adopt", quadrant: "Techniques", isNew: true },
+          { name: "AWS", ring: "Adopt", quadrant: "Platforms", isNew: false },
+          { name: "Vite", ring: "Trial", quadrant: "Tools", isNew: false },
+          { name: "Vue", ring: "Adopt", quadrant: "Languages & Frameworks", isNew: false },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+        quadrants: ["Techniques", "Platforms", "Tools", "Languages & Frameworks"],
+      };
+
+      const radar = Radar.create(data);
+
+      // Should use provided order: techniques, platforms, tools, languages-frameworks
+      expect(radar.getQuadrant("NE").name).toBe("techniques");
+      expect(radar.getQuadrant("NW").name).toBe("platforms");
+      expect(radar.getQuadrant("SW").name).toBe("tools");
+      expect(radar.getQuadrant("SE").name).toBe("languages-frameworks");
     });
 
     it("should throw error if not exactly 4 quadrant names in blips", () => {
@@ -88,8 +113,9 @@ describe("Radar", () => {
         rings: ["Adopt", "Trial", "Assess", "Hold"],
       };
 
+      // Error message shows original labels in alphabetical order
       expect(() => Radar.create(data)).toThrow(
-        "Expected exactly 4 quadrant names, but found 2: [Techniques, Platforms]"
+        "Expected exactly 4 quadrant names, but found 2: [Platforms, Techniques]"
       );
     });
 
@@ -103,20 +129,22 @@ describe("Radar", () => {
       );
     });
 
-    it("should assign sequential IDs to blips", () => {
+    it("should assign sequential IDs to blips in quadrant position order", () => {
       const data = {
         blips: [
-          { name: "Blip1", ring: "Adopt", quadrant: "Techniques", isNew: false },
-          { name: "Blip2", ring: "Trial", quadrant: "Platforms", isNew: true },
-          { name: "Blip3", ring: "Assess", quadrant: "Tools", isNew: false },
-          { name: "Blip4", ring: "Hold", quadrant: "Languages", isNew: false },
+          { name: "Blip1", ring: "Adopt", quadrant: "Alpha", isNew: false },
+          { name: "Blip2", ring: "Trial", quadrant: "Beta", isNew: true },
+          { name: "Blip3", ring: "Assess", quadrant: "Gamma", isNew: false },
+          { name: "Blip4", ring: "Hold", quadrant: "Delta", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
       };
 
       const radar = Radar.create(data);
 
+      // Alphabetical order: alpha, beta, delta, gamma -> NE, NW, SW, SE
       const allBlips = radar.quadrants.flatMap((q) => q.blips());
+      expect(allBlips.map((b) => b.name)).toEqual(["Blip1", "Blip2", "Blip4", "Blip3"]);
       expect(allBlips[0].id).toBe(1);
       expect(allBlips[1].id).toBe(2);
       expect(allBlips[2].id).toBe(3);
@@ -147,17 +175,18 @@ describe("Radar", () => {
 
       const data = {
         blips: [
-          { name: "Valid", ring: "Adopt", quadrant: "Techniques", isNew: false },
-          { name: "Invalid", ring: "Unknown", quadrant: "Techniques", isNew: true },
-          { name: "Blip3", ring: "Adopt", quadrant: "Platforms", isNew: false },
-          { name: "Blip4", ring: "Adopt", quadrant: "Tools", isNew: false },
-          { name: "Blip5", ring: "Adopt", quadrant: "Languages", isNew: false },
+          { name: "Valid", ring: "Adopt", quadrant: "Alpha", isNew: false },
+          { name: "Invalid", ring: "Unknown", quadrant: "Alpha", isNew: true },
+          { name: "Blip3", ring: "Adopt", quadrant: "Beta", isNew: false },
+          { name: "Blip4", ring: "Adopt", quadrant: "Gamma", isNew: false },
+          { name: "Blip5", ring: "Adopt", quadrant: "Delta", isNew: false },
         ],
         rings: ["Adopt", "Trial", "Assess", "Hold"],
       };
 
       const radar = Radar.create(data);
 
+      // Alpha is first alphabetically -> NE
       expect(radar.getQuadrant("NE").blips()).toHaveLength(1);
       expect(consoleSpy).toHaveBeenCalledWith("Unknown ring: Unknown");
 
@@ -182,6 +211,53 @@ describe("Radar", () => {
       expect(quadrantNames).toContain("tech-stack");
       expect(quadrantNames).toContain("ai-tools");
       expect(quadrantNames).toContain("infrastructure");
+    });
+
+    it("should treat case-insensitive quadrant names as the same", () => {
+      const data = {
+        blips: [
+          { name: "Blip1", ring: "Adopt", quadrant: "Tools", isNew: false },
+          { name: "Blip2", ring: "Adopt", quadrant: "tools", isNew: false },
+          { name: "Blip3", ring: "Adopt", quadrant: "TOOLS", isNew: false },
+          { name: "Blip4", ring: "Adopt", quadrant: "Platforms", isNew: false },
+          { name: "Blip5", ring: "Adopt", quadrant: "Techniques", isNew: false },
+          { name: "Blip6", ring: "Adopt", quadrant: "Languages", isNew: false },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+      };
+
+      const radar = Radar.create(data);
+
+      // All 3 Tools/tools/TOOLS variants should be in the same quadrant
+      const toolsQuadrant = radar.quadrants.find((q) => q.name === "tools");
+      expect(toolsQuadrant).toBeDefined();
+      expect(toolsQuadrant!.blips()).toHaveLength(3);
+    });
+
+    it("should warn about mismatches between data.quadrants and blips", () => {
+      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      const data = {
+        blips: [
+          { name: "Blip1", ring: "Adopt", quadrant: "Alpha", isNew: false },
+          { name: "Blip2", ring: "Adopt", quadrant: "Beta", isNew: false },
+          { name: "Blip3", ring: "Adopt", quadrant: "Gamma", isNew: false },
+          { name: "Blip4", ring: "Adopt", quadrant: "Delta", isNew: false },
+        ],
+        rings: ["Adopt", "Trial", "Assess", "Hold"],
+        quadrants: ["Alpha", "Beta", "Gamma", "Extra"], // Extra not in blips, Delta missing
+      };
+
+      Radar.create(data);
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Quadrants in data.quadrants not found in blips")
+      );
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Quadrants in blips not found in data.quadrants")
+      );
+
+      consoleSpy.mockRestore();
     });
   });
 });
