@@ -17,7 +17,7 @@
 
     <!-- Compact view (link with popup) -->
     <div v-else class="social-compact">
-      <button class="social-toggle bracket-link" @click="togglePopup">socials</button>
+      <BaseBracketLink class="social-toggle" @click="togglePopup">socials</BaseBracketLink>
 
       <Transition name="popup">
         <div v-if="isPopupOpen" class="social-popup">
@@ -41,6 +41,7 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from "vue";
   import { socialsConfig } from "../../config/socials-config";
+  import BaseBracketLink from "../atoms/BaseBracketLink.vue";
 
   const containerRef = ref<HTMLElement | null>(null);
   const isCompact = ref(false);
