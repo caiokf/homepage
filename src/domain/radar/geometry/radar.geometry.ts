@@ -1,4 +1,4 @@
-import type { QuadrantPosition } from "../config/radar-config";
+import type { QuadrantPosition } from "../config";
 
 export type SeparatorLine = {
   angle: number;

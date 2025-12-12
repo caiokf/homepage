@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { Radar } from "../../models/radar";
-  import type { QuadrantPosition } from "../../config/radar-config";
+  import type { Radar } from "../models/radar";
+  import type { QuadrantPosition } from "../config";
 
   defineProps<{
     radar: Radar;

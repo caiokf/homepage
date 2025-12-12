@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-  import { skillsConfig } from "../config/skills-config";
+  import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
 </script>
 

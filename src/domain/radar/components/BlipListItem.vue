@@ -25,8 +25,8 @@
 
 <script setup lang="ts">
   import { ref, watch, nextTick } from "vue";
-  import type { PositionedBlip } from "../../models/quadrant.geometry";
-  import BaseBadge from "../../components/atoms/BaseBadge.vue";
+  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import BaseBadge from "../../../components/atoms/BaseBadge.vue";
 
   const props = defineProps<{
     blip: PositionedBlip;

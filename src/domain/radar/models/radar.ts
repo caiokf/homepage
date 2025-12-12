@@ -5,7 +5,7 @@ import {
   RING_NAMES,
   QUADRANT_POSITIONS,
   type QuadrantPosition,
-} from "../config/radar-config";
+} from "../config";
 import type { TechRadarData } from "../data/tech-radar-data";
 
 export type RingsMap = Record<string, Ring>;

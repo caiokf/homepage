@@ -1,5 +1,5 @@
 import { Ring } from "./ring";
-import { IDEAL_BLIP_WIDTH, BlipGeometry } from "./blip.geometry";
+import { IDEAL_BLIP_WIDTH, BlipGeometry } from "../geometry/blip.geometry";
 
 export type BlipStatus = "new" | "moved in" | "moved out" | "no change";
 

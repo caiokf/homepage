@@ -1,4 +1,4 @@
-import type { Blip, BlipStatus } from "./blip";
+import type { Blip, BlipStatus } from "../models/blip";
 
 /**
  * Positioned blip for rendering (after collision detection).

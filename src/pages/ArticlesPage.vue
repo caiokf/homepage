@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-  import { getAllArticles } from "../content/articles";
+  import { getAllArticles } from "../domain/articles/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const articles = getAllArticles();

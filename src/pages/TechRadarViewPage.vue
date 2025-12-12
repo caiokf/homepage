@@ -94,26 +94,26 @@
 <script setup lang="ts">
   import { shallowRef, ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { useRoute } from "vue-router";
-  import TechRadar from "../domain/radar/TechRadar.vue";
-  import BlipList from "../domain/radar/BlipList.vue";
-  import BlipListByQuadrant from "../domain/radar/BlipListByQuadrant.vue";
-  import RadarLegend from "../domain/radar/RadarLegend.vue";
-  import Search from "../domain/radar/Search.vue";
-  import RadarHeader from "../domain/radar/RadarHeader.vue";
+  import TechRadar from "../domain/radar/components/TechRadar.vue";
+  import BlipList from "../domain/radar/components/BlipList.vue";
+  import BlipListByQuadrant from "../domain/radar/components/BlipListByQuadrant.vue";
+  import RadarLegend from "../domain/radar/components/RadarLegend.vue";
+  import Search from "../domain/radar/components/Search.vue";
+  import RadarHeader from "../domain/radar/components/RadarHeader.vue";
   import SpotlightLoader from "../components/atoms/BaseSpotlightLoader.vue";
-  import { Radar } from "../models/radar";
-  import { SampleDataProvider } from "../data/providers/sample-data-provider";
-  import { GoogleSheetsProvider } from "../data/providers/google-sheets-provider";
-  import type { TechRadarDataProvider } from "../data/tech-radar-data-provider";
-  import type { PositionedBlip, QuadrantGeometryConfig } from "../models/quadrant.geometry";
+  import { Radar } from "../domain/radar/models/radar";
+  import { SampleDataProvider } from "../domain/radar/data/providers/sample-data-provider";
+  import { GoogleSheetsProvider } from "../domain/radar/data/providers/google-sheets-provider";
+  import type { TechRadarDataProvider } from "../domain/radar/data/tech-radar-data-provider";
+  import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
   import {
     type QuadrantPosition,
     graphConfig,
     RADAR_SHEET_ID,
     GOOGLE_API_KEY,
-  } from "../config/radar-config";
-  import { RingGeometry } from "../models/ring.geometry";
-  import { QuadrantGeometry } from "../models/quadrant.geometry";
+  } from "../domain/radar/config";
+  import { RingGeometry } from "../domain/radar/geometry/ring.geometry";
+  import { QuadrantGeometry } from "../domain/radar/geometry/quadrant.geometry";
 
   type SearchResult = {
     blip: { id: number; name: string };

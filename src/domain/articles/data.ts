@@ -20,7 +20,7 @@ type ArticleModule = {
 
 // Import all markdown files at build time
 const articleModules = import.meta.glob<ArticleModule>(
-  "./articles/*.md",
+  "./content/*.md",
   { eager: true, query: "?raw", import: "default" }
 );
 

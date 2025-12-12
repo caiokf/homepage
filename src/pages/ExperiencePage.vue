@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from "vue";
-  import { experiencesConfig, type Experience } from "../config/experience-config";
+  import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   // Dynamically import all logos from assets/logos
