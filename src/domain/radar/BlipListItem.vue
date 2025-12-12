@@ -1,11 +1,11 @@
 <template>
   <li
-    ref="itemRef"
     :class="['blip-item', { expanded: isExpanded, highlighted: isHighlighted }]"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
   >
     <button
+      ref="headerRef"
       class="blip-header"
       :aria-expanded="isExpanded"
       @click="toggleExpand"
@@ -43,17 +43,60 @@
     toggle: [blipId: number];
   }>();
 
-  const itemRef = ref<HTMLLIElement | null>(null);
+  const headerRef = ref<HTMLButtonElement | null>(null);
 
-  // Scroll into view when expanded (within the scrollable container only)
+  // Find the closest scrollable ancestor
+  function getScrollableParent(element: HTMLElement | null): HTMLElement | null {
+    if (!element) return null;
+    let parent = element.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      if (style.overflowY === "auto" || style.overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return null;
+  }
+
+  // Scroll the header into view when expanded
   watch(
     () => props.isExpanded,
     (expanded) => {
-      if (expanded) {
+      if (expanded && headerRef.value) {
         nextTick(() => {
-          // Use 'nearest' to scroll only within the closest scrollable container
-          // and avoid scrolling the entire page
-          itemRef.value?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          const header = headerRef.value;
+          if (!header) return;
+
+          const scrollContainer = getScrollableParent(header);
+          if (!scrollContainer) return;
+
+          const headerRect = header.getBoundingClientRect();
+          const containerRect = scrollContainer.getBoundingClientRect();
+
+          // Account for sticky header (quadrant title)
+          const stickyOffset = 56;
+          const visibleTop = containerRect.top + stickyOffset;
+          const visibleBottom = containerRect.bottom;
+
+          // Only scroll if header is outside the visible area
+          if (headerRect.top < visibleTop) {
+            // Header is above visible area (hidden behind sticky header) - scroll up
+            const targetScrollTop =
+              scrollContainer.scrollTop + headerRect.top - containerRect.top - stickyOffset;
+            scrollContainer.scrollTo({
+              top: Math.max(0, targetScrollTop),
+              behavior: "smooth",
+            });
+          } else if (headerRect.bottom > visibleBottom) {
+            // Header is below visible area - scroll down to position it below sticky header
+            const targetScrollTop =
+              scrollContainer.scrollTop + headerRect.top - containerRect.top - stickyOffset;
+            scrollContainer.scrollTo({
+              top: targetScrollTop,
+              behavior: "smooth",
+            });
+          }
         });
       }
     }
