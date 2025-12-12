@@ -24,6 +24,7 @@
       >
         <BaseBracketLink
           class="radar-header__button"
+          :aria-pressed="selectedQuadrant === quadrant.position"
           @click="$emit('select', quadrant.position)"
         >
           {{ quadrant.name }}
