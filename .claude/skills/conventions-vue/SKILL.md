@@ -47,19 +47,19 @@ const open = defineModel<boolean>("open", { required: true });
 
 ## File Organization
 
-**components high level directory (atomic design):**
+### Components high-level directory (atomic design)
 
 - `atoms/` → `Base*` prefix (BaseButton, BaseInput, BaseCard)
 - `molecules/` → Descriptive (FormControl, TabsGroup)
 - `organisms/` → Complex (DataTable)
 - `layouts/` → FlexLayout, ModalContainer, SlideOut
 
-**domain high level directory**
+### Domain high-level directory
 
 - `domain/common/` → Shared
 - `domain/{feature}/` → Feature-specific, ie: domain/radar/
 
-**other high level directories**
+### Other high-level directories
 
 - `composables/` → Feature hooks
 - `stores/` → Pinia
@@ -117,7 +117,7 @@ export const useSessionStore = defineStore('session', {
 
 ## Styling
 
-See **css-conventions** skill. Key points:
+See **conventions-css** skill. Key points:
 
 - `<style scoped>` for domain components, unscoped for atomic design components
 - Design tokens via CSS custom properties exclusively
