@@ -47,22 +47,22 @@
 
   .spotlight-ne {
     background-color: var(--quadrant-NE);
-    animation: dance-ne 8s linear infinite;
+    animation: dance-ne 3s linear infinite;
   }
 
   .spotlight-nw {
     background-color: var(--quadrant-NW);
-    animation: dance-nw 15s linear infinite;
+    animation: dance-nw 6s linear infinite;
   }
 
   .spotlight-sw {
     background-color: var(--quadrant-SW);
-    animation: dance-sw 13s linear infinite;
+    animation: dance-sw 4s linear infinite;
   }
 
   .spotlight-se {
     background-color: var(--quadrant-SE);
-    animation: dance-se 14s linear infinite;
+    animation: dance-se 5s linear infinite;
   }
 
   /* NE: smooth orbit around top-right area */

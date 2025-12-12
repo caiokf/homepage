@@ -131,7 +131,7 @@
       ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
       : new SampleDataProvider();
 
-  const MIN_LOADING_DURATION = 1000;
+  const MIN_LOADING_DURATION = 1500;
 
   const radar = shallowRef<Radar | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
