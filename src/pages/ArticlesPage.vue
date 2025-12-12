@@ -26,20 +26,15 @@
                   {{ tag }}
                 </span>
               </div>
-              <BaseBracketLink
-                :to="`/articles/${article.frontmatter.slug}`"
-                class="read-more-link"
+              <BaseBracketLink :to="`/articles/${article.frontmatter.slug}`" class="read-more-link"
+                >read more</BaseBracketLink
               >
-                read more
-              </BaseBracketLink>
             </footer>
           </router-link>
         </article>
       </div>
 
-      <p v-if="articles.length === 0" class="no-articles">
-        No articles yet. Check back soon!
-      </p>
+      <p v-if="articles.length === 0" class="no-articles">No articles yet. Check back soon!</p>
     </div>
   </div>
 </template>
