@@ -1,21 +1,22 @@
 <template>
   <div class="not-found-page">
-    <AppCard title="error" :show-cursor="false">
+    <BaseCard title="error" :show-cursor="false">
       <div class="not-found-content">
         <p class="error-line"><span class="prompt">$</span> cat /{{ path }}</p>
         <p class="error-output"><span class="error-code">404</span> page not found</p>
         <p class="error-description">how did we end up here?</p>
         <p class="cursor-line"><span class="prompt">$</span> <span class="cursor">_</span></p>
       </div>
-    </AppCard>
-    <router-link to="/" class="home-link bracket-link">look at caio again</router-link>
+    </BaseCard>
+    <BaseBracketLink to="/" class="home-link">look at caio again</BaseBracketLink>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import AppCard from "../components/AppCard.vue";
+  import BaseCard from "../components/atoms/BaseCard.vue";
+  import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
 
   const route = useRoute();
   const path = computed(() => route.path.slice(1) || "unknown");

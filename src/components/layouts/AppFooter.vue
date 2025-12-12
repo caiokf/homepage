@@ -1,16 +1,16 @@
 <template>
   <footer class="app-footer">
     <nav class="footer-nav">
-      <router-link
+      <BaseBracketLink
         v-for="item in navItems"
         :key="item.path"
         :to="item.path"
-        class="nav-item bracket-link"
+        class="nav-item"
         :class="{ active: isActive(item.path) }"
       >
         <span class="nav-label-long">{{ item.labelLong }}</span>
         <span class="nav-label-short">{{ item.labelShort }}</span>
-      </router-link>
+      </BaseBracketLink>
     </nav>
 
     <SocialLinks />
@@ -20,6 +20,7 @@
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   import SocialLinks from "./SocialLinks.vue";
+  import BaseBracketLink from "../atoms/BaseBracketLink.vue";
 
   type NavItem = {
     path: string;

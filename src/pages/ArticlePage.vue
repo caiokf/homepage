@@ -2,7 +2,7 @@
   <div class="article-page">
     <div v-if="article" class="content">
       <header class="article-header">
-        <router-link to="/articles" class="bracket-link">back to articles</router-link>
+        <BaseBracketLink to="/articles" class="back-link">back to articles</BaseBracketLink>
 
         <h1 class="article-title">{{ article.frontmatter.title }}</h1>
 
@@ -21,14 +21,14 @@
       <article class="article-content" v-html="article.html"></article>
 
       <footer class="article-footer">
-        <router-link to="/articles" class="bracket-link">back to articles</router-link>
+        <BaseBracketLink to="/articles" class="back-link">back to articles</BaseBracketLink>
       </footer>
     </div>
 
     <div v-else class="not-found">
       <h1 class="page-title">article not found</h1>
       <p>The article you're looking for doesn't exist.</p>
-      <router-link to="/articles" class="bracket-link">back to articles</router-link>
+      <BaseBracketLink to="/articles" class="back-link">back to articles</BaseBracketLink>
     </div>
   </div>
 </template>
@@ -37,6 +37,7 @@
   import { computed } from "vue";
   import { useRoute } from "vue-router";
   import { getArticleBySlug } from "../content/articles";
+  import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
 
   const route = useRoute();
   const slug = computed(() => route.params.slug as string);
@@ -73,7 +74,7 @@
     margin: 0 auto;
   }
 
-  .bracket-link {
+  .back-link {
     display: inline-block;
     margin-bottom: var(--space-6);
   }

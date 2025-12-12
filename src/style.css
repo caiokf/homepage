@@ -418,27 +418,3 @@ svg {
   }
 }
 
-/* ==========================================================================
-   Bracket Link Styles
-   ========================================================================== */
-
-.bracket-link {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-primary);
-  text-decoration: none;
-  text-transform: lowercase;
-  transition: opacity var(--transition-fast);
-}
-
-.bracket-link::before {
-  content: "[";
-}
-
-.bracket-link::after {
-  content: "]";
-}
-
-.bracket-link:hover {
-  opacity: 0.8;
-}

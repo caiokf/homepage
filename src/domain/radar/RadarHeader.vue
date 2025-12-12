@@ -2,9 +2,9 @@
   <nav class="radar-header">
     <ul class="radar-header__list">
       <li :class="['radar-header__item', { 'active-item': !selectedQuadrant }]">
-        <button class="radar-header__button bracket-link" @click="$emit('select', null)">
+        <BaseBracketLink class="radar-header__button" @click="$emit('select', null)">
           all quadrants
-        </button>
+        </BaseBracketLink>
       </li>
       <li
         v-for="quadrant in quadrants"
@@ -18,12 +18,12 @@
           },
         ]"
       >
-        <button
-          class="radar-header__button bracket-link"
+        <BaseBracketLink
+          class="radar-header__button"
           @click="$emit('select', quadrant.position)"
         >
           {{ quadrant.name }}
-        </button>
+        </BaseBracketLink>
       </li>
     </ul>
   </nav>
@@ -33,6 +33,7 @@
   import { computed } from "vue";
   import type { Radar } from "../../models/radar";
   import type { QuadrantPosition } from "../../config/radar-config";
+  import BaseBracketLink from "../../components/atoms/BaseBracketLink.vue";
 
   const QUADRANT_ORDER: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
 
@@ -80,32 +81,25 @@
   }
 
   .radar-header__button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
     padding: var(--space-2) var(--space-1);
     white-space: nowrap;
-    text-transform: lowercase;
-  }
-
-  .radar-header__button.bracket-link {
     opacity: 0.7;
   }
 
-  .radar-header__button.bracket-link:hover {
+  .radar-header__button:hover {
     opacity: 1;
   }
 
-  .radar-header__item.active-item .radar-header__button.bracket-link {
+  .radar-header__item.active-item .radar-header__button {
     opacity: 1;
     font-weight: var(--font-semibold);
   }
 
-  .radar-header__item.faded-item .radar-header__button.bracket-link {
+  .radar-header__item.faded-item .radar-header__button {
     opacity: 0.4;
   }
 
-  .radar-header__item.faded-item .radar-header__button.bracket-link:hover {
+  .radar-header__item.faded-item .radar-header__button:hover {
     opacity: 0.7;
   }
 
