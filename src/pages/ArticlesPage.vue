@@ -176,6 +176,21 @@
     border-top: 1px solid var(--color-border);
   }
 
+  .read-more-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-primary);
+    text-transform: lowercase;
+  }
+
+  .read-more-link::before {
+    content: "[";
+  }
+
+  .read-more-link::after {
+    content: "]";
+  }
+
   .no-articles {
     text-align: center;
     font-family: var(--font-sans);
