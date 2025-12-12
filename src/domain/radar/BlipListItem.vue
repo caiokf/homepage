@@ -45,60 +45,59 @@
 
   const headerRef = ref<HTMLButtonElement | null>(null);
 
+  const STICKY_OFFSET_PX = 56;
+
   // Find the closest scrollable ancestor
   function getScrollableParent(element: HTMLElement | null): HTMLElement | null {
     if (!element) return null;
     let parent = element.parentElement;
     while (parent) {
       const style = getComputedStyle(parent);
-      if (style.overflowY === "auto" || style.overflowY === "scroll") {
+      const overflowY = style.overflowY;
+      const overflow = style.overflow;
+      const isScrollableY =
+        overflowY === "auto" ||
+        overflowY === "scroll" ||
+        overflowY === "overlay" ||
+        overflow === "auto" ||
+        overflow === "scroll";
+      if (isScrollableY && parent.scrollHeight > parent.clientHeight) {
         return parent;
       }
       parent = parent.parentElement;
     }
-    return null;
+    return (document.scrollingElement as HTMLElement | null) ?? null;
   }
 
   // Scroll the header into view when expanded
   watch(
     () => props.isExpanded,
-    (expanded) => {
-      if (expanded && headerRef.value) {
-        nextTick(() => {
-          const header = headerRef.value;
-          if (!header) return;
+    async (expanded) => {
+      if (!expanded) return;
+      await nextTick();
+      const header = headerRef.value;
+      if (!header) return;
 
-          const scrollContainer = getScrollableParent(header);
-          if (!scrollContainer) return;
+      const scrollContainer = getScrollableParent(header);
+      if (!scrollContainer) return;
 
-          const headerRect = header.getBoundingClientRect();
-          const containerRect = scrollContainer.getBoundingClientRect();
+      const headerRect = header.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
 
-          // Account for sticky header (quadrant title)
-          const stickyOffset = 56;
-          const visibleTop = containerRect.top + stickyOffset;
-          const visibleBottom = containerRect.bottom;
+      const visibleTop = containerRect.top + STICKY_OFFSET_PX;
+      const visibleBottom = containerRect.bottom;
 
-          // Only scroll if header is outside the visible area
-          if (headerRect.top < visibleTop) {
-            // Header is above visible area (hidden behind sticky header) - scroll up
-            const targetScrollTop =
-              scrollContainer.scrollTop + headerRect.top - containerRect.top - stickyOffset;
-            scrollContainer.scrollTo({
-              top: Math.max(0, targetScrollTop),
-              behavior: "smooth",
-            });
-          } else if (headerRect.bottom > visibleBottom) {
-            // Header is below visible area - scroll down to position it below sticky header
-            const targetScrollTop =
-              scrollContainer.scrollTop + headerRect.top - containerRect.top - stickyOffset;
-            scrollContainer.scrollTo({
-              top: targetScrollTop,
-              behavior: "smooth",
-            });
-          }
-        });
-      }
+      const isAbove = headerRect.top < visibleTop;
+      const isBelow = headerRect.bottom > visibleBottom;
+      if (!isAbove && !isBelow) return;
+
+      const targetScrollTop =
+        scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_OFFSET_PX;
+
+      scrollContainer.scrollTo({
+        top: Math.max(0, targetScrollTop),
+        behavior: "smooth",
+      });
     }
   );
 
