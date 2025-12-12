@@ -11,11 +11,7 @@
           <span class="article-author">by Caio Kinzel Filho</span>
         </div>
 
-        <div class="article-tags">
-          <span v-for="tag in article.frontmatter.tags" :key="tag" class="article-tag">
-            {{ tag }}
-          </span>
-        </div>
+        <BadgeGroup :items="article.frontmatter.tags" />
       </header>
 
       <article class="article-content" v-html="article.html"></article>
@@ -38,6 +34,7 @@
   import { useRoute } from "vue-router";
   import { getArticleBySlug } from "../content/articles";
   import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
+  import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const route = useRoute();
   const slug = computed(() => route.params.slug as string);
@@ -119,22 +116,6 @@
 
   .article-author::before {
     content: "• ";
-  }
-
-  .article-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .article-tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-primary);
-    background: var(--color-primary-light);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    text-transform: lowercase;
   }
 
   .article-footer {

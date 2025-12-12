@@ -6,11 +6,7 @@
       <aside class="sidebar">
         <h3 class="sidebar-title">technologies</h3>
         <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
-        <div class="tech-cloud">
-          <span v-for="tech in recentTechnologies" :key="tech" class="sidebar-tech">
-            {{ tech }}
-          </span>
-        </div>
+        <BadgeGroup :items="recentTechnologies" variant="muted" gap="xs" />
       </aside>
 
       <div class="content">
@@ -58,11 +54,7 @@
                   <span class="date-range">{{ formatDateRange(experience) }}</span>
                   <span class="duration">{{ calculateDuration(experience) }}</span>
                 </div>
-                <div class="experience-tags">
-                  <span v-for="tag in experience.tags" :key="tag" class="experience-tag">
-                    {{ tag }}
-                  </span>
-                </div>
+                <BadgeGroup :items="experience.tags" align="end" gap="xs" />
               </div>
             </header>
 
@@ -77,15 +69,11 @@
             </ul>
 
             <footer class="experience-footer">
-              <div class="technologies">
-                <span
-                  v-for="tech in parseTechnologies(experience.technologies)"
-                  :key="tech"
-                  class="tech-tag"
-                >
-                  {{ tech }}
-                </span>
-              </div>
+              <BadgeGroup
+                :items="parseTechnologies(experience.technologies)"
+                variant="muted"
+                size="md"
+              />
             </footer>
           </article>
 
@@ -112,6 +100,7 @@
 <script setup lang="ts">
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../config/experience-config";
+  import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   // Dynamically import all logos from assets/logos
   const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
@@ -294,22 +283,6 @@
     margin: 0 0 var(--space-4) 0;
   }
 
-  .tech-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-  }
-
-  .sidebar-tech {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    background: var(--color-background-subtle);
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
-    text-transform: lowercase;
-  }
-
   .content {
     flex: 1;
     max-width: var(--content-max-width);
@@ -451,23 +424,6 @@
     color: var(--color-text-muted);
   }
 
-  .experience-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-    justify-content: flex-end;
-  }
-
-  .experience-tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-primary);
-    background: var(--color-primary-light);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    text-transform: lowercase;
-  }
-
   .highlights {
     list-style: none;
     padding: 0;
@@ -498,23 +454,6 @@
   .experience-footer {
     padding-top: var(--space-4);
     border-top: 1px solid var(--color-border);
-  }
-
-  .technologies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .tech-tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    background: var(--color-background-subtle);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    text-transform: lowercase;
-    transition: background-color var(--transition-theme), color var(--transition-theme);
   }
 
   .show-more-container {

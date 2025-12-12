@@ -4,11 +4,7 @@
       <h1 class="page-title">articles</h1>
 
       <div class="articles-list">
-        <article
-          v-for="article in articles"
-          :key="article.frontmatter.slug"
-          class="article-card"
-        >
+        <article v-for="article in articles" :key="article.frontmatter.slug" class="article-card">
           <router-link :to="`/articles/${article.frontmatter.slug}`" class="article-link">
             <header class="article-header">
               <h2 class="article-title">{{ article.frontmatter.title }}</h2>
@@ -21,11 +17,7 @@
             <p class="article-excerpt">{{ getExcerpt(article.content) }}</p>
 
             <footer class="article-footer">
-              <div class="article-tags">
-                <span v-for="tag in article.frontmatter.tags" :key="tag" class="article-tag">
-                  {{ tag }}
-                </span>
-              </div>
+              <BadgeGroup :items="article.frontmatter.tags" />
               <BaseBracketLink :to="`/articles/${article.frontmatter.slug}`" class="read-more-link"
                 >read more</BaseBracketLink
               >
@@ -42,6 +34,7 @@
 <script setup lang="ts">
   import { getAllArticles } from "../content/articles";
   import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
+  import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const articles = getAllArticles();
 
@@ -108,9 +101,7 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-md);
-    transition:
-      background-color var(--transition-theme),
-      box-shadow var(--transition-theme),
+    transition: background-color var(--transition-theme), box-shadow var(--transition-theme),
       transform var(--transition-fast);
   }
 
@@ -185,22 +176,6 @@
     border-top: 1px solid var(--color-border);
   }
 
-  .article-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .article-tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-primary);
-    background: var(--color-primary-light);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    text-transform: lowercase;
-  }
-
   .no-articles {
     text-align: center;
     font-family: var(--font-sans);
@@ -236,7 +211,7 @@
       gap: var(--space-3);
     }
 
-    .bracket-link {
+    .read-more-link {
       align-self: flex-end;
     }
   }
