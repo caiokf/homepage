@@ -47,19 +47,19 @@ const open = defineModel<boolean>("open", { required: true });
 
 ## File Organization
 
-### Components high-level directory (atomic design)
+## Components high-level directory (atomic design)
 
 - `atoms/` → `Base*` prefix (BaseButton, BaseInput, BaseCard)
 - `molecules/` → Descriptive (FormControl, TabsGroup)
 - `organisms/` → Complex (DataTable)
 - `layouts/` → FlexLayout, ModalContainer, SlideOut
 
-### Domain high-level directory
+## Domain high-level directory
 
 - `domain/common/` → Shared
 - `domain/{feature}/` → Feature-specific, ie: domain/radar/
 
-### Other high-level directories
+## Other high-level directories
 
 - `composables/` → Feature hooks
 - `stores/` → Pinia
