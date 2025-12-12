@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
   import { computed } from "vue";
-  import { useTheme } from "../composables/useTheme";
+  import { useTheme } from "../../composables/useTheme";
 
   const { theme, toggleTheme } = useTheme();
 
