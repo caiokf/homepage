@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-  import AppHeader from "./components/layout/AppHeader.vue";
-  import AppFooter from "./components/layout/AppFooter.vue";
+  import AppHeader from "./components/layouts/AppHeader.vue";
+  import AppFooter from "./components/layouts/AppFooter.vue";
   import { useTheme } from "./composables/useTheme";
 
   // Initialize theme system

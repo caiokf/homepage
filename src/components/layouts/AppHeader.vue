@@ -4,13 +4,13 @@
       <router-link to="/about" class="header-logo">
         <span class="logo-text">caiokf</span>
       </router-link>
-      <ThemeToggle />
+      <BaseThemeToggle />
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-  import ThemeToggle from "../ThemeToggle.vue";
+  import BaseThemeToggle from "../atoms/BaseThemeToggle.vue";
 </script>
 
 <style scoped>
