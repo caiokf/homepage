@@ -36,9 +36,9 @@
 
 <script setup lang="ts">
   import { computed } from "vue";
-  import type { Radar } from "../../models/radar";
-  import type { QuadrantPosition } from "../../config/radar-config";
-  import BaseBracketLink from "../../components/atoms/BaseBracketLink.vue";
+  import type { Radar } from "../models/radar";
+  import type { QuadrantPosition } from "../config";
+  import BaseBracketLink from "../../../components/atoms/BaseBracketLink.vue";
 
   const QUADRANT_ORDER: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
 

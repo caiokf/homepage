@@ -32,7 +32,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import { getArticleBySlug } from "../content/articles";
+  import { getArticleBySlug } from "../domain/articles/data";
   import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 

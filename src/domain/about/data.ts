@@ -1,7 +1,7 @@
-import architectureScalingIcon from "../assets/icons/architecture-scaling.svg";
-import dataArchitectureIcon from "../assets/icons/data-architecture.svg";
-import teamCultureIcon from "../assets/icons/team-culture.svg";
-import aiProductivityIcon from "../assets/icons/ai-productivity.svg";
+import architectureScalingIcon from "../../assets/icons/architecture-scaling.svg";
+import dataArchitectureIcon from "../../assets/icons/data-architecture.svg";
+import teamCultureIcon from "../../assets/icons/team-culture.svg";
+import aiProductivityIcon from "../../assets/icons/ai-productivity.svg";
 
 export type Skill = {
   title: string;

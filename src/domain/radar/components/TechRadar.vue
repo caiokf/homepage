@@ -24,9 +24,9 @@
   import { ref, onMounted, onUnmounted } from "vue";
   import TechRadarDesktop from "./TechRadarDesktop.vue";
   import TechRadarMobile from "./TechRadarMobile.vue";
-  import type { Radar } from "../../models/radar";
-  import type { PositionedBlip } from "../../models/quadrant.geometry";
-  import type { QuadrantPosition } from "../../config/radar-config";
+  import type { Radar } from "../models/radar";
+  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import type { QuadrantPosition } from "../config";
 
   const MOBILE_BREAKPOINT = 1000;
 

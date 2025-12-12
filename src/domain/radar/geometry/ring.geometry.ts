@@ -1,4 +1,4 @@
-import { RING_RATIOS, RING_NAMES } from "../config/radar-config";
+import { RING_RATIOS, RING_NAMES } from "../config";
 
 export type RingLabel = {
   x: number;

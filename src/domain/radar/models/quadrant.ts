@@ -1,6 +1,6 @@
 import { Blip } from "./blip";
-import type { QuadrantPosition } from "../config/radar-config";
-import { QUADRANT_CONFIG } from "../config/radar-config";
+import type { QuadrantPosition } from "../config";
+import { QUADRANT_CONFIG } from "../config";
 
 export class Quadrant {
   private _blips: Blip[] = [];

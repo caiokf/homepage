@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { QuadrantGeometry } from "./quadrant.geometry";
-import { Blip } from "./blip";
-import { Ring } from "./ring";
+import { Blip } from "../models/blip";
+import { Ring } from "../models/ring";
 import { RingGeometry } from "./ring.geometry";
 import type { QuadrantGeometryConfig } from "./quadrant.geometry";
 
