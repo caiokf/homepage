@@ -2,7 +2,11 @@
   <nav class="radar-header">
     <ul class="radar-header__list">
       <li :class="['radar-header__item', { 'active-item': !selectedQuadrant }]">
-        <BaseBracketLink class="radar-header__button" @click="$emit('select', null)">
+        <BaseBracketLink
+          class="radar-header__button"
+          :aria-pressed="!selectedQuadrant"
+          @click="$emit('select', null)"
+        >
           all quadrants
         </BaseBracketLink>
       </li>
