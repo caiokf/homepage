@@ -17,10 +17,16 @@
 
     <!-- Compact view (link with popup) -->
     <div v-else class="social-compact">
-      <BaseBracketLink class="social-toggle" @click="togglePopup">socials</BaseBracketLink>
+      <BaseBracketLink
+        class="social-toggle"
+        :aria-expanded="isPopupOpen"
+        aria-controls="social-popup"
+        @click="togglePopup"
+        >socials</BaseBracketLink
+      >
 
       <Transition name="popup">
-        <div v-if="isPopupOpen" class="social-popup">
+        <div v-if="isPopupOpen" id="social-popup" class="social-popup">
           <a
             v-for="social in socialsConfig"
             :key="social.network"

@@ -18,9 +18,7 @@
 
             <footer class="article-footer">
               <BadgeGroup :items="article.frontmatter.tags" />
-              <BaseBracketLink :to="`/articles/${article.frontmatter.slug}`" class="read-more-link"
-                >read more</BaseBracketLink
-              >
+              <span class="read-more-link" aria-hidden="true">read more</span>
             </footer>
           </router-link>
         </article>
@@ -33,7 +31,6 @@
 
 <script setup lang="ts">
   import { getAllArticles } from "../content/articles";
-  import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const articles = getAllArticles();

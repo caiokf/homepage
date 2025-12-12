@@ -2,7 +2,7 @@
   <component
     :is="componentType"
     :to="to"
-    :href="href"
+    :href="isExternalLink ? href : undefined"
     :type="isButton ? 'button' : undefined"
     :target="isExternalLink ? '_blank' : undefined"
     :rel="isExternalLink ? 'noopener noreferrer' : undefined"
@@ -13,18 +13,27 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
-  import { RouterLink } from "vue-router";
+  import { computed, watchEffect } from "vue";
+  import { RouterLink, type RouteLocationRaw } from "vue-router";
 
-  interface Props {
-    to?: string;
+  type Props = {
+    to?: string | RouteLocationRaw;
     href?: string;
-  }
+  };
 
   const props = defineProps<Props>();
 
+  // Warn when both to and href are provided
+  watchEffect(() => {
+    if (props.to && props.href) {
+      console.warn(
+        "[BaseBracketLink] Both 'to' and 'href' props provided. 'to' takes precedence; 'href' will be ignored."
+      );
+    }
+  });
+
   const isButton = computed(() => !props.to && !props.href);
-  const isExternalLink = computed(() => !!props.href);
+  const isExternalLink = computed(() => !!props.href && !props.to);
 
   const componentType = computed(() => {
     if (props.to) return RouterLink;
