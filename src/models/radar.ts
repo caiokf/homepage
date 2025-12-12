@@ -47,31 +47,72 @@ export class Radar {
     });
     radar._rings = rings;
 
-    // Extract distinct quadrant names from blips
-    const distinctQuadrants = [
-      ...new Set(data.blips.map((blip) => blip.quadrant)),
-    ];
+    // Extract and normalize quadrant names from blips
+    // Build a map from normalized name -> first original label seen (preserves friendly display name)
+    const normalizedToOriginal = new Map<string, string>();
+    for (const blip of data.blips) {
+      const original = blip.quadrant.trim();
+      const normalized = toKebabCase(original);
+      if (!normalizedToOriginal.has(normalized)) {
+        normalizedToOriginal.set(normalized, original);
+      }
+    }
+
+    // Determine deterministic ordering for quadrants
+    let orderedNormalizedNames: string[];
+
+    if (data.quadrants && data.quadrants.length > 0) {
+      // Use provided quadrants order (normalized)
+      const providedNormalized = data.quadrants.map((q) => toKebabCase(q.trim()));
+      const blipNormalized = new Set(normalizedToOriginal.keys());
+
+      // Validate provided quadrants match blip quadrants
+      const missingInBlips = providedNormalized.filter((n) => !blipNormalized.has(n));
+      const missingInProvided = [...blipNormalized].filter(
+        (n) => !providedNormalized.includes(n)
+      );
+
+      if (missingInBlips.length > 0) {
+        console.warn(
+          `Quadrants in data.quadrants not found in blips: [${missingInBlips.join(", ")}]`
+        );
+      }
+      if (missingInProvided.length > 0) {
+        console.warn(
+          `Quadrants in blips not found in data.quadrants: [${missingInProvided.join(", ")}] (original labels: [${missingInProvided.map((n) => normalizedToOriginal.get(n)).join(", ")}])`
+        );
+      }
+
+      // Use provided order, filtering to only include those found in blips
+      orderedNormalizedNames = providedNormalized.filter((n) => blipNormalized.has(n));
+
+      // Add any missing from blips (sorted alphabetically)
+      const remaining = [...blipNormalized]
+        .filter((n) => !orderedNormalizedNames.includes(n))
+        .sort();
+      orderedNormalizedNames.push(...remaining);
+    } else {
+      // No explicit order provided - sort alphabetically for deterministic ordering
+      orderedNormalizedNames = [...normalizedToOriginal.keys()].sort();
+    }
 
     // Validate exactly 4 quadrant names
-    if (distinctQuadrants.length !== 4) {
+    if (orderedNormalizedNames.length !== 4) {
+      const originalLabels = orderedNormalizedNames.map(
+        (n) => normalizedToOriginal.get(n) || n
+      );
       throw new Error(
-        `Expected exactly 4 quadrant names, but found ${distinctQuadrants.length}: [${distinctQuadrants.join(", ")}]`
+        `Expected exactly 4 quadrant names, but found ${orderedNormalizedNames.length}: [${originalLabels.join(", ")}]`
       );
     }
 
-    // Convert quadrant names to kebab-case lowercase for display
-    const quadrantNames = distinctQuadrants.map(toKebabCase);
-
-    // Create a mapping from original name (lowercase) to position
-    const nameToPosition = new Map<string, QuadrantPosition>();
+    // Create mappings: normalized -> position and normalized -> display name
+    const normalizedToPosition = new Map<string, QuadrantPosition>();
     QUADRANT_POSITIONS.forEach((position, index) => {
-      const originalName = distinctQuadrants[index];
-      const kebabName = quadrantNames[index];
-      if (originalName && kebabName) {
-        nameToPosition.set(originalName.toLowerCase(), position);
-        // Create quadrant with kebab-case name
-        radar._quadrants.set(position, new Quadrant(position, kebabName));
-      }
+      const normalizedName = orderedNormalizedNames[index];
+      normalizedToPosition.set(normalizedName, position);
+      // Use kebab-case as the display name
+      radar._quadrants.set(position, new Quadrant(position, normalizedName));
     });
 
     // Add blips to their respective quadrants
@@ -82,9 +123,11 @@ export class Radar {
         return;
       }
 
-      const position = nameToPosition.get(rawBlip.quadrant.toLowerCase());
+      const normalizedQuadrant = toKebabCase(rawBlip.quadrant.trim());
+      const position = normalizedToPosition.get(normalizedQuadrant);
       if (!position) {
-        console.warn(`Unknown quadrant: ${rawBlip.quadrant}`);
+        const originalLabel = normalizedToOriginal.get(normalizedQuadrant) || rawBlip.quadrant;
+        console.warn(`Unknown quadrant: "${rawBlip.quadrant}" (normalized: "${normalizedQuadrant}", original label: "${originalLabel}")`);
         return;
       }
 
