@@ -94,13 +94,13 @@
 <script setup lang="ts">
   import { shallowRef, ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { useRoute } from "vue-router";
-  import TechRadar from "../components/radar/TechRadar.vue";
-  import BlipList from "../components/radar/BlipList.vue";
-  import BlipListByQuadrant from "../components/radar/BlipListByQuadrant.vue";
-  import RadarLegend from "../components/radar/RadarLegend.vue";
-  import Search from "../components/radar/Search.vue";
-  import RadarHeader from "../components/radar/RadarHeader.vue";
-  import SpotlightLoader from "../components/SpotlightLoader.vue";
+  import TechRadar from "../domain/radar/TechRadar.vue";
+  import BlipList from "../domain/radar/BlipList.vue";
+  import BlipListByQuadrant from "../domain/radar/BlipListByQuadrant.vue";
+  import RadarLegend from "../domain/radar/RadarLegend.vue";
+  import Search from "../domain/radar/Search.vue";
+  import RadarHeader from "../domain/radar/RadarHeader.vue";
+  import SpotlightLoader from "../components/atoms/BaseSpotlightLoader.vue";
   import { Radar } from "../models/radar";
   import { SampleDataProvider } from "../data/providers/sample-data-provider";
   import { GoogleSheetsProvider } from "../data/providers/google-sheets-provider";
@@ -200,10 +200,7 @@
       center: { x: 0, y: 0 },
     };
 
-    return QuadrantGeometry.calculateBlipPositions(
-      selectedQuadrantObj.value.blips(),
-      geometry
-    );
+    return QuadrantGeometry.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
   });
 
   // Get all quadrants with their positioned blips (for "all quadrants" view)
@@ -288,9 +285,7 @@
     min-height: calc(100vh - 112px);
     background: var(--color-background);
     color: var(--color-text-primary);
-    transition:
-      background-color var(--transition-theme),
-      color var(--transition-theme);
+    transition: background-color var(--transition-theme), color var(--transition-theme);
   }
 
   /* When quadrant is selected, prevent page scroll */
