@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Work Management with Beads
+
+Before starting any work:
+
+- Run `bd onboard` once to set up Beads integration
+
 ## Project Overview
 
 Tech Radar visualization application built with Vue 3, TypeScript, and D3.js. Displays technology trends in a radar chart format across 4 quadrants (angles: 0°, -90°, 90°, -180°) and multiple concentric rings (Adopt, Trial, Assess, Hold).
@@ -9,12 +15,12 @@ Tech Radar visualization application built with Vue 3, TypeScript, and D3.js. Di
 ## Commands
 
 ```bash
-npm run dev          # Start Vite dev server (localhost:5173)
-npm run build        # Compile TypeScript + production build
-npm run type-check   # Run vue-tsc TypeScript validation
-npm test             # Run Vitest unit tests
-npm run test:ui      # Run tests with Vitest UI dashboard
-npm run test:coverage # Generate test coverage reports
+pnpm dev           # Start Vite dev server (localhost:5173)
+pnpm build         # Compile TypeScript + production build
+pnpm type-check    # Run vue-tsc TypeScript validation
+pnpm test          # Run Vitest unit tests
+pnpm test:ui       # Run tests with Vitest UI dashboard
+pnpm test:coverage # Generate test coverage reports
 ```
 
 Development environment uses pnpm 10.22.0 and Node.js 20.10.0 (configured via devbox.json).
