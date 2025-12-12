@@ -5,9 +5,9 @@
       v-if="!isMobile"
       :radar="radar"
       :selected-quadrant="selectedQuadrant"
-      @quadrant-selected="$emit('quadrant-selected', $event)"
-      @blip-selected="(blip, quadrant) => $emit('blip-selected', blip, quadrant)"
-      @blip-hovered="$emit('blip-hovered', $event)"
+      @quadrant-selected="(...args) => $emit('quadrant-selected', ...args)"
+      @blip-selected="(...args) => $emit('blip-selected', ...args)"
+      @blip-hovered="(...args) => $emit('blip-hovered', ...args)"
     />
 
     <!-- Mobile: Colored quadrant cards -->
@@ -15,7 +15,7 @@
       v-else
       :radar="radar"
       :selected-quadrant="selectedQuadrant"
-      @quadrant-selected="$emit('quadrant-selected', $event)"
+      @quadrant-selected="(...args) => $emit('quadrant-selected', ...args)"
     />
   </div>
 </template>

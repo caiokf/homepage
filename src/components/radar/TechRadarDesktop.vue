@@ -183,9 +183,9 @@
   const props = defineProps<Props>();
 
   const emit = defineEmits<{
-    quadrantSelected: [position: QuadrantPosition | null];
-    blipSelected: [blip: PositionedBlip, quadrant: QuadrantPosition];
-    blipHovered: [blip: PositionedBlip | null];
+    "quadrant-selected": [position: QuadrantPosition | null];
+    "blip-selected": [blip: PositionedBlip, quadrant: QuadrantPosition];
+    "blip-hovered": [blip: PositionedBlip | null];
   }>();
 
   const svgRef = ref<SVGSVGElement | null>(null);
@@ -320,7 +320,7 @@
   // Quadrant selection
   function selectQuadrant(position: QuadrantPosition) {
     if (props.selectedQuadrant) return; // Already zoomed, don't re-zoom
-    emit("quadrantSelected", position);
+    emit("quadrant-selected", position);
   }
 
   // Tooltip positioning
@@ -335,16 +335,16 @@
 
   function handleBlipHover(blip: PositionedBlip) {
     hoveredBlip.value = blip;
-    emit("blipHovered", blip);
+    emit("blip-hovered", blip);
   }
 
   function handleBlipLeave() {
     hoveredBlip.value = null;
-    emit("blipHovered", null);
+    emit("blip-hovered", null);
   }
 
   function handleBlipClick(blip: PositionedBlip, quadrant: QuadrantPosition) {
-    emit("blipSelected", blip, quadrant);
+    emit("blip-selected", blip, quadrant);
   }
 
   // Track mouse position for tooltip
