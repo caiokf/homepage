@@ -21,7 +21,7 @@ This skill transforms CodeRabbit's raw findings into an executable task plan. It
 
 Analyze the issue distribution:
 
-```
+```text
 Critical (security, data corruption, crashes):
   - Race conditions, missing auth/validation, unsafe state mutations
   - Must fix immediately, cannot ship with these
@@ -56,36 +56,58 @@ For critical issues, check if they're in the same domain:
 - Race condition in webhook handler AND race condition in retry logic
 - Both race conditions, likely need same fix pattern
 
-### Step 3: Decide Execution Strategy
+### Step 3: Check File/Region Overlap
 
+Before deciding strategy, check if issues share files or have overlapping line ranges:
+
+```text
+File overlap check:
+  - Group all issues by file path
+  - If multiple issues target the same file → they are DEPENDENT
+  - Same-file issues cannot run in parallel (risk of merge conflicts)
+
+Region overlap check (for same-file issues):
+  - If line ranges overlap or are within 20 lines → tightly coupled
+  - If line ranges are far apart but same file → still dependent (file lock)
+
+Example:
+  Task 1: src/webhooks.ts:42 (signature verification)
+  Task 2: src/webhooks.ts:89 (idempotency handling)
+  Task 3: src/webhooks.ts:156 (error logging)
+  → All target same file → DEPENDENT → use SINGLE_COMPREHENSIVE or BATCH_SEQUENTIAL
 ```
+
+### Step 4: Decide Execution Strategy
+
+```text
 IF 0 critical issues:
   Strategy: "COMPLETE"
   Status: "No critical issues found"
   Offer: "Fix important + minor issues?"
 
-IF 1-3 critical AND all independent:
+IF 1-3 critical AND all in DIFFERENT files AND non-overlapping:
   Strategy: "PARALLEL_CRITICAL"
   Pattern: Dispatch each critical as separate subagent
   Then: Sequential important/minor fixers
+  Prerequisite: No two critical issues share the same file
 
-IF 3+ critical OR critical issues dependent:
+IF critical issues share same file OR have overlapping regions:
+  Strategy: "SINGLE_COMPREHENSIVE"
+  Pattern: One fixer with full file context handles all issues in that file
+  Reason: Prevents merge conflicts, simpler coordination for same-file edits
+
+IF 3+ critical OR critical issues have logical dependencies:
   Strategy: "SEQUENTIAL"
   Pattern: Fix each critical, verify, then move to next
   Reason: Complex dependencies require verification between fixes
 
-IF all critical in same file/domain AND interdependent:
-  Strategy: "SINGLE_COMPREHENSIVE"
-  Pattern: One fixer with full file context
-  Reason: Simpler coordination for tightly coupled issues
-
 IF only important/minor (no critical):
   Strategy: "BATCH_SEQUENTIAL"
-  Pattern: Group by file, fix each file completely
-  Reason: Reduces context switching
+  Pattern: Group by file, fix each file completely before moving to next
+  Reason: Reduces context switching, prevents same-file conflicts
 ```
 
-### Step 4: Create Task Dispatch Plan
+### Step 5: Create Task Dispatch Plan
 
 For each issue, create a fixer task:
 
@@ -97,10 +119,13 @@ For each issue, create a fixer task:
     "important": 2,
     "minor": 0
   },
-  "strategy": "PARALLEL_CRITICAL",
+  "strategy": "SINGLE_COMPREHENSIVE",
   "analysis": {
-    "critical_are_independent": true,
-    "important_are_related": false,
+    "all_issues_same_file": true,
+    "file": "src/webhooks.ts",
+    "reason": "All 3 issues target same file - must fix sequentially to prevent conflicts",
+    "critical_are_independent": false,
+    "important_are_related": true,
     "minor_count": 0
   },
   "tasks": [
@@ -135,8 +160,9 @@ For each issue, create a fixer task:
         "ONLY modify webhook entry point validation"
       ],
       "estimated_time": "10 minutes",
-      "can_run_parallel_with": [2, 3],
-      "must_complete_before": null
+      "can_run_parallel_with": [],
+      "must_complete_before": [2, 3],
+      "same_file_as": [2, 3]
     },
     {
       "task_id": 2,
@@ -171,8 +197,10 @@ For each issue, create a fixer task:
         "ONLY add idempotency deduplication"
       ],
       "estimated_time": "12 minutes",
-      "can_run_parallel_with": [1, 3],
-      "must_complete_before": null
+      "can_run_parallel_with": [],
+      "depends_on": [1],
+      "must_complete_before": [3],
+      "same_file_as": [1, 3]
     },
     {
       "task_id": 3,
@@ -209,26 +237,28 @@ For each issue, create a fixer task:
         "ONLY add observability logging"
       ],
       "estimated_time": "8 minutes",
-      "can_run_parallel_with": [1, 2],
-      "must_complete_before": null
+      "can_run_parallel_with": [],
+      "depends_on": [1, 2],
+      "same_file_as": [1, 2]
     }
   ],
   "execution_plan": {
-    "phase_1_parallel": [
-      "Dispatch task 1 (signature verification)",
-      "Dispatch task 2 (idempotency handling)",
-      "Dispatch task 3 (error logging)"
+    "phase_1_sequential": [
+      "Step 1: Fix task 1 (signature verification) - critical, must complete first",
+      "Step 2: Fix task 2 (idempotency handling) - depends on task 1 completing",
+      "Step 3: Fix task 3 (error logging) - depends on tasks 1 and 2 completing"
     ],
-    "phase_2_sequential": [],
+    "reason": "All tasks target src/webhooks.ts - sequential execution prevents merge conflicts",
     "verification": {
+      "after_each_fix": "Run npm test -- src/webhooks.test.ts",
       "after_all_fixes": [
         "Run full test suite: npm test",
-        "Re-run coderabbit- coderabbit --prompt-only --type uncommitted",
+        "Re-run coderabbit: coderabbit --prompt-only --type uncommitted",
         "Verify zero issues remain"
       ]
     }
   },
-  "summary": "3 issues identified. Strategy: Parallel fixers for 3 independent issues. Estimated total time: 30 minutes. All issues fixable without interactions."
+  "summary": "3 issues identified in src/webhooks.ts. Strategy: SINGLE_COMPREHENSIVE (all same file). Sequential execution required to prevent conflicts. Estimated total time: 30 minutes."
 }
 ```
 
@@ -258,10 +288,21 @@ Before returning plan, verify:
 
 ## Common Patterns
 
-**All independent critical issues**:
+**All independent critical issues (different files)**:
 
 ```json
-{"strategy": "PARALLEL_CRITICAL", "tasks": [...]}
+{
+  "strategy": "PARALLEL_CRITICAL",
+  "analysis": {
+    "files_are_independent": true,
+    "no_file_overlap": true
+  },
+  "tasks": [
+    {"task_id": 1, "file": "src/auth.ts", "can_run_parallel_with": [2, 3]},
+    {"task_id": 2, "file": "src/payments.ts", "can_run_parallel_with": [1, 3]},
+    {"task_id": 3, "file": "src/notifications.ts", "can_run_parallel_with": [1, 2]}
+  ]
+}
 ```
 
 **Mix of critical and important**:
@@ -288,7 +329,7 @@ Before returning plan, verify:
 
 ## Integration Points
 
-```
+```text
 coderabbit-request
         ↓ (outputs JSON)
 coderabbit-triage
