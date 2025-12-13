@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RingGeometry } from "./ring.geometry";
+import { RingGeometry } from "./svg-layout.geometry";
 import { RING_RATIOS, RING_NAMES } from "../constants";
 
 describe("RingGeometry", () => {

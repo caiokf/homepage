@@ -106,11 +106,10 @@
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
-  import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
-  import type { QuadrantPosition } from "../domain/radar/types";
+  import type { PositionedBlip, QuadrantGeometryConfig, QuadrantPosition } from "../domain/radar/types";
   import { QUADRANT_SIZE, RADAR_SHEET_ID, GOOGLE_API_KEY, MOBILE_BREAKPOINT, MIN_LOADING_DURATION_MS } from "../domain/radar/constants";
-  import { RingGeometry } from "../domain/radar/geometry/ring.geometry";
-  import { QuadrantGeometry } from "../domain/radar/geometry/quadrant.geometry";
+  import { RingGeometry } from "../domain/radar/geometry/svg-layout.geometry";
+  import { QuadrantGeometry } from "../domain/radar/geometry/blip-positioning.geometry";
 
   type SearchResult = {
     blip: { id: number; name: string };

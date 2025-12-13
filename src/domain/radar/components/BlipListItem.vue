@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
   import { ref, watch, nextTick } from "vue";
-  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import type { PositionedBlip } from "../types";
   import BaseBadge from "../../../components/atoms/BaseBadge.vue";
   import { STICKY_HEADER_HEIGHT, TRANSITION_DURATION_MS } from "../constants";
 

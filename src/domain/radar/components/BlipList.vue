@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
   import BlipListByQuadrant from "./BlipListByQuadrant.vue";
-  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import type { PositionedBlip } from "../types";
   import type { QuadrantPosition } from "../types";
 
   type QuadrantInfo = {

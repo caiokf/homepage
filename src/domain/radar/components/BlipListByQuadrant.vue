@@ -19,7 +19,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import BlipListByRing from "./BlipListByRing.vue";
-  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import type { PositionedBlip } from "../types";
 import type { QuadrantPosition } from "../types";
   import { RING_NAMES } from "../constants";
 
