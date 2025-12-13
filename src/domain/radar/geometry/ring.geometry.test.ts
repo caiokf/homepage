@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { RingGeometry } from "./ring.geometry";
-import { RING_RATIOS, RING_NAMES } from "../config";
+import { RING_RATIOS, RING_NAMES } from "../constants";
 
 describe("RingGeometry", () => {
   describe("calculateRadii", () => {
