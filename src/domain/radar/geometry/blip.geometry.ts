@@ -1,11 +1,5 @@
-import type { QuadrantPosition } from "../config";
-
-/**
- * Blip dimension constants for rendering.
- */
-export const IDEAL_BLIP_WIDTH = 22;
-export const NEW_GROUP_BLIP_WIDTH = 88;
-export const EXISTING_GROUP_BLIP_WIDTH = 124;
+import type { QuadrantPosition } from "../types";
+import { BLIP_NEW_GROUP_WIDTH, BLIP_EXISTING_GROUP_WIDTH } from "../constants";
 
 /**
  * Static geometry calculations for Blip rendering.
@@ -15,7 +9,7 @@ export class BlipGeometry {
    * Get blip width based on whether it's a group and new/existing.
    */
   static getGroupWidth(isNew: boolean): number {
-    return isNew ? NEW_GROUP_BLIP_WIDTH : EXISTING_GROUP_BLIP_WIDTH;
+    return isNew ? BLIP_NEW_GROUP_WIDTH : BLIP_EXISTING_GROUP_WIDTH;
   }
 
   /**

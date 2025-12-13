@@ -18,21 +18,21 @@ describe("Radar", () => {
       const radar = Radar.create(sampleData);
       const quadrants = radar.quadrants;
       expect(quadrants).toHaveLength(4);
-      expect(quadrants[0].position).toBe("NE");
-      expect(quadrants[1].position).toBe("NW");
-      expect(quadrants[2].position).toBe("SW");
-      expect(quadrants[3].position).toBe("SE");
+      // Order: NW, NE, SE, SW (clockwise from top-left)
+      expect(quadrants[0].position).toBe("NW");
+      expect(quadrants[1].position).toBe("NE");
+      expect(quadrants[2].position).toBe("SE");
+      expect(quadrants[3].position).toBe("SW");
     });
 
     it("should have correct start angles for quadrants", () => {
       const radar = Radar.create(sampleData);
       const quadrants = radar.quadrants;
-      // Order: NE, NW, SW, SE (from QUADRANT_POSITIONS)
-      // NE (top-right): 90, NW (top-left): 0, SW (bottom-left): -90, SE (bottom-right): -180
-      expect(quadrants[0].startAngle).toBe(90); // NE
-      expect(quadrants[1].startAngle).toBe(0); // NW
-      expect(quadrants[2].startAngle).toBe(-90); // SW
-      expect(quadrants[3].startAngle).toBe(-180); // SE
+      // Order: NW, NE, SE, SW (clockwise from top-left)
+      expect(quadrants[0].startAngle).toBe(0); // NW
+      expect(quadrants[1].startAngle).toBe(90); // NE
+      expect(quadrants[2].startAngle).toBe(-180); // SE
+      expect(quadrants[3].startAngle).toBe(-90); // SW
     });
 
     it("should return quadrant by position", () => {
@@ -64,14 +64,14 @@ describe("Radar", () => {
 
       expect(radar.quadrants).toHaveLength(4);
       // Without explicit quadrants order, alphabetical: languages-frameworks, platforms, techniques, tools
-      // Maps to positions: NE, NW, SW, SE
-      expect(radar.getQuadrant("NE").name).toBe("languages-frameworks");
-      expect(radar.getQuadrant("NW").name).toBe("platforms");
-      expect(radar.getQuadrant("SW").name).toBe("techniques");
-      expect(radar.getQuadrant("SE").name).toBe("tools");
+      // Maps to positions: NW, NE, SE, SW (clockwise from top-left)
+      expect(radar.getQuadrant("NW").name).toBe("languages-frameworks");
+      expect(radar.getQuadrant("NE").name).toBe("platforms");
+      expect(radar.getQuadrant("SE").name).toBe("techniques");
+      expect(radar.getQuadrant("SW").name).toBe("tools");
       // Check blips are in correct quadrants
-      expect(radar.getQuadrant("SW").blips()[0].name).toBe("TypeScript");
-      expect(radar.getQuadrant("NE").blips()[0].name).toBe("Vue");
+      expect(radar.getQuadrant("SE").blips()[0].name).toBe("TypeScript");
+      expect(radar.getQuadrant("NW").blips()[0].name).toBe("Vue");
     });
 
     it("should use provided quadrants order when specified", () => {
@@ -89,10 +89,11 @@ describe("Radar", () => {
       const radar = Radar.create(data);
 
       // Should use provided order: techniques, platforms, tools, languages-frameworks
-      expect(radar.getQuadrant("NE").name).toBe("techniques");
-      expect(radar.getQuadrant("NW").name).toBe("platforms");
-      expect(radar.getQuadrant("SW").name).toBe("tools");
-      expect(radar.getQuadrant("SE").name).toBe("languages-frameworks");
+      // Maps to positions: NW, NE, SE, SW (clockwise from top-left)
+      expect(radar.getQuadrant("NW").name).toBe("techniques");
+      expect(radar.getQuadrant("NE").name).toBe("platforms");
+      expect(radar.getQuadrant("SE").name).toBe("tools");
+      expect(radar.getQuadrant("SW").name).toBe("languages-frameworks");
     });
 
     it("should throw error if not exactly 4 quadrant names in blips", () => {

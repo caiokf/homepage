@@ -169,7 +169,8 @@
     PositionedBlip,
     QuadrantGeometryConfig,
   } from "../geometry/quadrant.geometry";
-  import { graphConfig, type QuadrantPosition } from "../config";
+import type { QuadrantPosition } from "../types";
+  import { graphConfig } from "../constants";
   import { RingGeometry } from "../geometry/ring.geometry";
   import { QuadrantGeometry } from "../geometry/quadrant.geometry";
   import { RadarGeometry } from "../geometry/radar.geometry";

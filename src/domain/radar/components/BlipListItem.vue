@@ -27,6 +27,7 @@
   import { ref, watch, nextTick } from "vue";
   import type { PositionedBlip } from "../geometry/quadrant.geometry";
   import BaseBadge from "../../../components/atoms/BaseBadge.vue";
+  import { STICKY_HEADER_HEIGHT, TRANSITION_DURATION_MS } from "../constants";
 
   const props = defineProps<{
     blip: PositionedBlip;
