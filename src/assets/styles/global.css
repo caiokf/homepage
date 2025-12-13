@@ -10,6 +10,16 @@
  */
 
 /* ==========================================================================
+   Custom Media Queries (Breakpoints)
+   ========================================================================== */
+
+@custom-media --xs (max-width: 480px);
+@custom-media --sm (max-width: 600px);
+@custom-media --md (max-width: 768px);
+@custom-media --lg (max-width: 1024px);
+@custom-media --xl (max-width: 1200px);
+
+/* ==========================================================================
    Design Tokens - Typography
    ========================================================================== */
 
@@ -60,6 +70,7 @@
 
   /* Layout */
   --content-max-width: 800px;
+  --radar-width: 1056px;
 
   /* Border Radius */
   --radius-sm: 4px;
@@ -412,7 +423,7 @@ svg {
   color: var(--color-primary);
 }
 
-@media (max-width: 768px) {
+@media (--md) {
   .page-title {
     font-size: var(--text-2xl);
   }

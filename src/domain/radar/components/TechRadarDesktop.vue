@@ -194,8 +194,8 @@ import type { QuadrantPosition } from "../types";
   const hoveredBlip = ref<PositionedBlip | null>(null);
   const mousePosition = ref({ x: 0, y: 0 });
 
-  const radarSize = computed(() => graphConfig.radarSize);
-  const quadrantSize = computed(() => graphConfig.quadrantSize);
+  const radarSize = RADAR_SIZE;
+  const quadrantSize = QUADRANT_SIZE;
 
   // SVG dimensions - responsive, fills container
   const svgWidth = "100%";
@@ -203,12 +203,12 @@ import type { QuadrantPosition } from "../types";
 
   const viewBox = computed(() => {
     // Always show the full radar - no zooming
-    return `0 0 ${radarSize.value} ${radarSize.value}`;
+    return `0 0 ${radarSize} ${radarSize}`;
   });
 
   // Compute ring radii
   const ringRadii = computed(() =>
-    RingGeometry.calculateRadii(quadrantSize.value)
+    RingGeometry.calculateRadii(quadrantSize)
   );
 
   // Get all quadrants from radar
@@ -221,7 +221,7 @@ import type { QuadrantPosition } from "../types";
     for (const quadrant of quadrants.value) {
       const geometry: QuadrantGeometryConfig = {
         startAngle: quadrant.startAngle,
-        quadrantSize: quadrantSize.value,
+        quadrantSize: quadrantSize,
         ringRadii: ringRadii.value,
         center: { x: 0, y: 0 },
       };
@@ -239,14 +239,14 @@ import type { QuadrantPosition } from "../types";
   }
 
   function getCenterTransform(): string {
-    const centerX = radarSize.value / 2;
-    const centerY = radarSize.value / 2;
+    const centerX = radarSize / 2;
+    const centerY = radarSize / 2;
     return `translate(${centerX}, ${centerY})`;
   }
 
   function getQuadrantTransform(position: QuadrantPosition): string {
-    const centerX = radarSize.value / 2;
-    const centerY = radarSize.value / 2;
+    const centerX = radarSize / 2;
+    const centerY = radarSize / 2;
 
     // If this quadrant is selected and it's a bottom quadrant, move it to the top
     if (props.selectedQuadrant === position) {

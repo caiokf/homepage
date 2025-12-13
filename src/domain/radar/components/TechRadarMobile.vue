@@ -244,7 +244,7 @@ import type { QuadrantPosition } from "../types";
   }
 
   /* Responsive */
-  @media (max-width: 480px) {
+  @media (--xs) {
     .quadrant-card {
       padding: var(--space-4) var(--space-3);
       min-height: 80px;

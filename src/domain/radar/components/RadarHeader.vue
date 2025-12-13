@@ -128,7 +128,7 @@
     color: var(--quadrant-SE);
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .radar-header {
       padding: var(--space-3) var(--space-4);
     }
@@ -139,7 +139,7 @@
     }
   }
 
-  @media (max-width: 480px) {
+  @media (--xs) {
     .radar-header__list {
       gap: var(--space-2);
     }

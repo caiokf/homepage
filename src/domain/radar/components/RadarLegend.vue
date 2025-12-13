@@ -65,7 +65,7 @@
     transition: color var(--transition-theme);
   }
 
-  @media (max-width: 600px) {
+  @media (--sm) {
     .radar-legend {
       flex-direction: column;
       align-items: flex-start;

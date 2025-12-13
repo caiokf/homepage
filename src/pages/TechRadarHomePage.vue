@@ -122,7 +122,7 @@
     color: var(--color-error, #ef4444);
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .tech-radar-home {
       padding: var(--space-6);
     }
