@@ -143,8 +143,18 @@ export function getRingRadiusAtIndex(
 /**
  * Calculate ring label positions on horizontal separator line.
  * Labels are placed at the midpoint of each ring, on both left and right sides.
+ * @param ringRadii Array of radii with at least RING_NAMES.length + 1 entries
+ * @throws Error if ringRadii has insufficient entries
  */
 export function getRingLabelsOnSeparators(ringRadii: number[]): RingLabel[] {
+  const requiredLength = RING_NAMES.length + 1;
+  if (ringRadii.length < requiredLength) {
+    throw new Error(
+      `getRingLabelsOnSeparators: ringRadii must have at least ${requiredLength} entries ` +
+        `(got ${ringRadii.length}) to calculate midpoints for ${RING_NAMES.length} rings`
+    );
+  }
+
   const labels: RingLabel[] = [];
 
   for (let i = 0; i < RING_NAMES.length; i++) {
