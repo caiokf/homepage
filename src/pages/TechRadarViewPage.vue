@@ -72,18 +72,6 @@
           @blip-toggle="handleBlipToggle"
         />
       </div>
-
-      <!-- Desktop: Blip list below radar when all quadrants visible -->
-      <div v-if="!isMobile && !selectedQuadrant" class="table-wrapper table-bottom">
-        <BlipList
-          :quadrants="allQuadrantsWithBlips"
-          :highlighted-blip-id="hoveredBlipId"
-          :selected-blip-id="selectedBlipId"
-          @blip-hover="handleTableBlipHover"
-          @blip-click="handleBlipSelected"
-          @blip-toggle="handleBlipToggle"
-        />
-      </div>
     </div>
 
     <div v-else class="loading">
