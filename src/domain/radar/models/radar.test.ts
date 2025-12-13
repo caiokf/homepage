@@ -1,19 +1,21 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Radar } from "./radar";
 
 describe("Radar", () => {
-  let radar: Radar;
+  const sampleData = {
+    title: "Test Radar",
+    blips: [
+      { name: "TypeScript", ring: "Adopt", quadrant: "Techniques", isNew: true },
+      { name: "AWS", ring: "Adopt", quadrant: "Platforms", isNew: false },
+      { name: "Vite", ring: "Trial", quadrant: "Tools", isNew: false },
+      { name: "Vue", ring: "Adopt", quadrant: "Languages", isNew: false },
+    ],
+    rings: ["Adopt", "Trial", "Assess", "Hold"],
+  };
 
-  beforeEach(() => {
-    radar = new Radar();
-  });
-
-  describe("constructor", () => {
-    it("should initialize with empty rings", () => {
-      expect(radar.rings).toEqual({});
-    });
-
+  describe("create", () => {
     it("should initialize with four quadrants", () => {
+      const radar = Radar.create(sampleData);
       const quadrants = radar.quadrants;
       expect(quadrants).toHaveLength(4);
       expect(quadrants[0].position).toBe("NE");
@@ -22,16 +24,8 @@ describe("Radar", () => {
       expect(quadrants[3].position).toBe("SE");
     });
 
-    it("should have default quadrant names", () => {
-      const quadrants = radar.quadrants;
-      // Order: NE, NW, SW, SE (from QUADRANT_POSITIONS)
-      expect(quadrants[0].name).toBe("Tools"); // NE
-      expect(quadrants[1].name).toBe("Techniques"); // NW
-      expect(quadrants[2].name).toBe("Platforms"); // SW
-      expect(quadrants[3].name).toBe("Languages & Frameworks"); // SE
-    });
-
     it("should have correct start angles for quadrants", () => {
+      const radar = Radar.create(sampleData);
       const quadrants = radar.quadrants;
       // Order: NE, NW, SW, SE (from QUADRANT_POSITIONS)
       // NE (top-right): 90, NW (top-left): 0, SW (bottom-left): -90, SE (bottom-right): -180
@@ -40,10 +34,9 @@ describe("Radar", () => {
       expect(quadrants[2].startAngle).toBe(-90); // SW
       expect(quadrants[3].startAngle).toBe(-180); // SE
     });
-  });
 
-  describe("getQuadrant", () => {
     it("should return quadrant by position", () => {
+      const radar = Radar.create(sampleData);
       const ne = radar.getQuadrant("NE");
       const nw = radar.getQuadrant("NW");
       const sw = radar.getQuadrant("SW");
@@ -54,9 +47,7 @@ describe("Radar", () => {
       expect(sw.position).toBe("SW");
       expect(se.position).toBe("SE");
     });
-  });
 
-  describe("create", () => {
     it("should create a radar from TechRadarData with alphabetical ordering", () => {
       const data = {
         title: "Test Radar",

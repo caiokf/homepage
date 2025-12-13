@@ -18,16 +18,11 @@ describe("Quadrant", () => {
       expect(quadrant.name).toBe("Techniques");
     });
 
-    it("should use default name if not provided", () => {
-      const defaultQuadrant = new Quadrant("NW");
-      expect(defaultQuadrant.name).toBe("Techniques");
-    });
-
     it("should set start angle based on position", () => {
-      const neQuadrant = new Quadrant("NE");
-      const nwQuadrant = new Quadrant("NW");
-      const swQuadrant = new Quadrant("SW");
-      const seQuadrant = new Quadrant("SE");
+      const neQuadrant = new Quadrant("NE", "Tools");
+      const nwQuadrant = new Quadrant("NW", "Techniques");
+      const swQuadrant = new Quadrant("SW", "Platforms");
+      const seQuadrant = new Quadrant("SE", "Languages");
 
       // Position labels match visual location:
       // NW (top-left): startAngle 0
