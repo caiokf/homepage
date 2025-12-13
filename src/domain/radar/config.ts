@@ -15,41 +15,8 @@ export const RADAR_SHEET_ID = extractSheetId(RADAR_SHEET_URL);
 // Google Sheets API key (for public sheets)
 export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as string | undefined;
 
-/**
-/**
- * Adopt
- * Trial
- * Assess
- * Hold
- * 
- * -- Alternative meaning scheme:
- * Proven (things I am experienced with and comfortably use in production)
- * Experimental (used in smaller features or places with low risk/easy change)
- * Learning (currently exploring or skill-building)
- * Avoid (known not to suit our context)
- */
-export const RING_NAMES = ["Adopt", "Trial", "Assess", "Hold"] as const;
+export const RING_NAMES = ["proven", "experimental", "learning", "avoid"] as const;
 export type RingName = (typeof RING_NAMES)[number];
-
-/**
- * "Techniques",
- * "Platforms",
- * "Tools",
- * "Languages & Frameworks",
- *
- * -- Alternative:
- * Techniques:
- * Tools:
- * Tech Stack:
- * AI:
- */
-export const QUADRANT_NAMES = [
-  "Techniques",
-  "Platforms",
-  "Tools",
-  "Languages & Frameworks",
-] as const;
-export type QuadrantName = (typeof QUADRANT_NAMES)[number];
 
 // Quadrant positions using compass directions
 export type QuadrantPosition = "NE" | "NW" | "SE" | "SW";
