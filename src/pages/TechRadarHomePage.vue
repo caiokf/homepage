@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import { GoogleSheetsProvider } from "../domain/radar/data/providers/google-sheets-provider";
-  import { SampleDataProvider } from "../domain/radar/data/providers/sample-data-provider";
+  import { GoogleSheetsProvider } from "../domain/radar/data-providers/google-sheets-provider";
+  import { SampleDataProvider } from "../domain/radar/data-providers/sample-data-provider";
   import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data/tech-radar-data-provider";
   import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/config";
 

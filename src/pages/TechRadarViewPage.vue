@@ -103,8 +103,8 @@
   import RadarHeader from "../domain/radar/components/RadarHeader.vue";
   import SpotlightLoader from "../components/atoms/BaseSpotlightLoader.vue";
   import { Radar } from "../domain/radar/models/radar";
-  import { SampleDataProvider } from "../domain/radar/data/providers/sample-data-provider";
-  import { GoogleSheetsProvider } from "../domain/radar/data/providers/google-sheets-provider";
+  import { SampleDataProvider } from "../domain/radar/data-providers/sample-data-provider";
+  import { GoogleSheetsProvider } from "../domain/radar/data-providers/google-sheets-provider";
   import type { TechRadarDataProvider } from "../domain/radar/data/tech-radar-data-provider";
   import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
   import {
