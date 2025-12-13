@@ -14,18 +14,9 @@ export type RingName = (typeof RING_NAMES)[number];
 // DATA SOURCE
 // -----------------------------------------------------------------------------
 
-export const RADAR_SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1B-ojvUlqVMigLGGs8egpn-0YaVTDmqe1Vb6EL2ji-aM/edit?gid=0#gid=0";
-
 export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as string | undefined;
 
-/** Extract sheet ID from Google Sheets URL */
-export function extractSheetId(url: string): string | null {
-  const match = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : null;
-}
-
-export const RADAR_SHEET_ID = extractSheetId(RADAR_SHEET_URL);
+export const RADAR_SHEET_ID = "1B-ojvUlqVMigLGGs8egpn-0YaVTDmqe1Vb6EL2ji-aM";
 
 // -----------------------------------------------------------------------------
 // RINGS
