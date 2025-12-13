@@ -1,4 +1,4 @@
-import type { QuadrantPosition, QuadrantAngle } from "./types";
+import type { QuadrantPosition } from "./types";
 
 // -----------------------------------------------------------------------------
 // DATA SOURCE
@@ -26,29 +26,18 @@ export const RING_RATIOS = [0.11, 0.406, 0.652, 0.832, 1] as const;
 // -----------------------------------------------------------------------------
 
 /**
- * Quadrant angles by position.
+ * Quadrant start angles by position (in degrees).
  * Position labels match visual location on screen (NW = top-left, etc.)
  */
-export const QUADRANT_ANGLES: Record<QuadrantPosition, QuadrantAngle> = {
-  NW: { startAngle: 0 },
-  SW: { startAngle: -90 },
-  NE: { startAngle: 90 },
-  SE: { startAngle: -180 },
-} as const;
+export const QUADRANT_ANGLES: Readonly<Record<QuadrantPosition, number>> = {
+  NW: 0,
+  SW: -90,
+  NE: 90,
+  SE: -180,
+};
 
 /** Ordered list of quadrant positions (clockwise from top-left: NW, NE, SE, SW) */
-export const QUADRANT_POSITIONS: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
-
-/**
- * Quadrant CSS custom property names.
- * Use getComputedStyle(document.documentElement).getPropertyValue('--quadrant-NE') to access
- */
-export const QUADRANT_CSS_VARS: Record<QuadrantPosition, string> = {
-  NE: "--quadrant-NE",
-  NW: "--quadrant-NW",
-  SW: "--quadrant-SW",
-  SE: "--quadrant-SE",
-} as const;
+export const QUADRANT_POSITIONS: readonly QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
 
 // -----------------------------------------------------------------------------
 // GRAPH DIMENSIONS
@@ -65,18 +54,6 @@ export const EFFECTIVE_QUADRANT_SIZE = QUADRANT_SIZE + QUADRANTS_GAP / 2;
 
 /** Total radar size (2 quadrants + gap) */
 export const RADAR_SIZE = QUADRANT_SIZE * 2 + QUADRANTS_GAP;
-
-/** @deprecated Use individual constants instead. Kept for backward compatibility. */
-export const graphConfig = {
-  quadrantSize: QUADRANT_SIZE,
-  quadrantsGap: QUADRANTS_GAP,
-  get effectiveQuadrantSize() {
-    return EFFECTIVE_QUADRANT_SIZE;
-  },
-  get radarSize() {
-    return RADAR_SIZE;
-  },
-};
 
 // -----------------------------------------------------------------------------
 // BLIP DIMENSIONS
@@ -114,29 +91,12 @@ export const GROUP_BLIP_ANGLES = [30, 35, 60, 80] as const;
 /** Height of the sticky quadrant title header in pixels */
 export const STICKY_HEADER_HEIGHT = 56;
 
-export const uiConfig = {
-  subnavHeight: 60,
-  bannerHeight: 200,
-  tabletBannerHeight: 300,
-  headerHeight: 80,
-  legendsHeight: 42,
-  stickyHeaderHeight: STICKY_HEADER_HEIGHT,
-} as const;
-
 // -----------------------------------------------------------------------------
 // RESPONSIVE BREAKPOINTS
 // -----------------------------------------------------------------------------
 
 /** Breakpoint for switching to mobile radar view */
-export const MOBILE_BREAKPOINT = 1000;
-
-export const breakpoints = {
-  mobile: 768,
-  tablet: 1280,
-  desktop: 1800,
-  wide: 2560,
-  radarMobile: MOBILE_BREAKPOINT,
-} as const;
+export const MOBILE_BREAKPOINT = 1024;
 
 // -----------------------------------------------------------------------------
 // ANIMATION TIMING
@@ -145,9 +105,5 @@ export const breakpoints = {
 /** Duration to wait for DOM transitions before scrolling (matches --transition-slow) */
 export const TRANSITION_DURATION_MS = 300;
 
-export const animationConfig = {
-  transitionDuration: 1000,
-  transitionSlow: TRANSITION_DURATION_MS,
-  tooltipDelay: 100,
-  scrollDelay: 1500,
-} as const;
+/** Minimum loading duration for smooth animation */
+export const MIN_LOADING_DURATION_MS = 1500;

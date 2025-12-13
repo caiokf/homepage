@@ -170,7 +170,7 @@
     QuadrantGeometryConfig,
   } from "../geometry/quadrant.geometry";
 import type { QuadrantPosition } from "../types";
-  import { graphConfig } from "../constants";
+  import { RADAR_SIZE, QUADRANT_SIZE } from "../constants";
   import { RingGeometry } from "../geometry/ring.geometry";
   import { QuadrantGeometry } from "../geometry/quadrant.geometry";
   import { RadarGeometry } from "../geometry/radar.geometry";
