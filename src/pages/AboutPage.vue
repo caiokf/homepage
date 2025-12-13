@@ -182,7 +182,7 @@
     margin: 0;
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .about-page {
       padding: var(--space-6);
     }

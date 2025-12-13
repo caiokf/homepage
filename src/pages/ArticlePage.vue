@@ -137,7 +137,7 @@
     margin-bottom: var(--space-6);
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .article-page {
       padding: var(--space-6);
     }

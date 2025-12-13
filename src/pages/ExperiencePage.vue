@@ -490,13 +490,13 @@
     display: block;
   }
 
-  @media (max-width: 1024px) {
+  @media (--lg) {
     .sidebar {
       width: 180px;
     }
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .experience-page {
       padding: var(--space-6);
     }

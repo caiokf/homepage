@@ -78,7 +78,7 @@
     box-shadow: oklch(0 0 0 / 0.1) 0px 0.5px 0px 0px, oklch(1 0 0 / 0.5) 0px 0.5px 0px 0px inset;
   }
 
-  @media (max-width: 768px) {
+  @media (--md) {
     .header-content {
       padding: 0 var(--space-4);
     }

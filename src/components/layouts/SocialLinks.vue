@@ -196,7 +196,7 @@
   }
 
   /* Mobile adjustments */
-  @media (max-width: 800px) {
+  @media (--md) {
     .social-links-container {
       margin-left: var(--space-4);
       padding-left: var(--space-4);

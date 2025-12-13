@@ -118,8 +118,6 @@
     quadrantName: string;
   };
 
-  const MOBILE_BREAKPOINT = 1000;
-
   const route = useRoute();
 
   // Data provider - use Google Sheets if configured, otherwise fallback to sample data
@@ -127,8 +125,6 @@
     RADAR_SHEET_ID && GOOGLE_API_KEY
       ? new DataProviderGoogleSheets({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
       : new DataProviderSample();
-
-  const MIN_LOADING_DURATION = 1500;
 
   const radar = shallowRef<Radar | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
@@ -148,8 +144,8 @@
 
     // Ensure minimum loading duration for smooth animation
     const elapsed = Date.now() - startTime;
-    if (elapsed < MIN_LOADING_DURATION) {
-      await new Promise((resolve) => setTimeout(resolve, MIN_LOADING_DURATION - elapsed));
+    if (elapsed < MIN_LOADING_DURATION_MS) {
+      await new Promise((resolve) => setTimeout(resolve, MIN_LOADING_DURATION_MS - elapsed));
     }
 
     radar.value = Radar.create(data);
@@ -189,10 +185,10 @@
   const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
     if (!selectedQuadrantObj.value) return [];
 
-    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
+    const ringRadii = RingGeometry.calculateRadii(QUADRANT_SIZE);
     const geometry: QuadrantGeometryConfig = {
       startAngle: selectedQuadrantObj.value.startAngle,
-      quadrantSize: graphConfig.quadrantSize,
+      quadrantSize: QUADRANT_SIZE,
       ringRadii,
       center: { x: 0, y: 0 },
     };
@@ -206,12 +202,12 @@
   const allQuadrantsWithBlips = computed(() => {
     if (!radar.value) return [];
 
-    const ringRadii = RingGeometry.calculateRadii(graphConfig.quadrantSize);
+    const ringRadii = RingGeometry.calculateRadii(QUADRANT_SIZE);
 
     const quadrantsWithBlips = radar.value.quadrants.map((quadrant) => {
       const geometry: QuadrantGeometryConfig = {
         startAngle: quadrant.startAngle,
-        quadrantSize: graphConfig.quadrantSize,
+        quadrantSize: QUADRANT_SIZE,
         ringRadii,
         center: { x: 0, y: 0 },
       };
@@ -312,7 +308,7 @@
 
   .radar-wrapper {
     position: relative;
-    width: 1056px;
+    width: var(--radar-width);
     flex-shrink: 0;
     box-sizing: border-box;
   }
@@ -355,7 +351,7 @@
 
   /* Bottom table (when all quadrants visible) */
   .table-wrapper.table-bottom {
-    width: 1056px;
+    width: var(--radar-width);
     margin: var(--space-8) auto 0;
   }
 
@@ -368,10 +364,10 @@
   }
 
   /* Responsive Styles */
-  @media (max-width: 1200px) {
+  @media (--xl) {
     .radar-wrapper {
       width: 100%;
-      max-width: 1056px;
+      max-width: var(--radar-width);
     }
 
     .table-wrapper.table-bottom {
@@ -379,7 +375,7 @@
     }
   }
 
-  @media (max-width: 1000px) {
+  @media (--lg) {
     .main-content {
       padding: var(--space-4);
     }

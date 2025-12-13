@@ -107,7 +107,7 @@
   }
 
   /* Mobile/small screens: show short labels */
-  @media (max-width: 800px) {
+  @media (--md) {
     .footer-nav {
       gap: var(--space-4);
       padding: 0 0;
