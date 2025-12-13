@@ -114,7 +114,10 @@ export function getSeparatorLines(outerRadius: number): SeparatorLine[] {
 
 /**
  * Calculate all ring radii based on max radius and ratios.
- * Returns array of radii from center (0) to outer edge.
+ * Returns array of radii from inner buffer to outer edge.
+ * Each radius = ratio * maxRadius, where ratios are relative to maxRadius.
+ * The first ratio (default ~0.11) provides an inner buffer to prevent
+ * blips from overlapping the center; it is not 0.
  */
 export function calculateRingRadii(
   maxRadius: number,
