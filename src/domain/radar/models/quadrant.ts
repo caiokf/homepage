@@ -10,7 +10,7 @@ export class Quadrant {
 
   constructor(position: QuadrantPosition, name: string) {
     this._position = position;
-    this._startAngle = QUADRANT_ANGLES[position].startAngle;
+    this._startAngle = QUADRANT_ANGLES[position];
     this._name = name;
   }
 
