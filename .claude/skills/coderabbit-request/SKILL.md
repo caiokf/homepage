@@ -1,5 +1,5 @@
 ---
-name: coderabbit:request
+name: coderabbit-request
 description: Dispatch a CodeRabbit reviewer subagent to analyze code changes. Returns structured issue list with severity levels. Use when completing a feature and wanting autonomous code review before fixing.
 ---
 
@@ -77,7 +77,7 @@ Subagent returns issues in structured format. Verify:
 
 ### Step 5: Return Results
 
-Pass structured issue list to next skill (`coderabbit:triage`).
+Pass structured issue list to next skill (`coderabbit-triage`).
 
 ## Example Output
 
@@ -146,12 +146,12 @@ Pass structured issue list to next skill (`coderabbit:triage`).
 
 ## Integration Points
 
-This skill feeds directly into `coderabbit:triage`:
+This skill feeds directly into `coderabbit-triage`:
 
 ```
-coderabbit:request
+coderabbit-request
         ↓ (outputs JSON)
-coderabbit:triage
+coderabbit-triage
         ↓ (outputs task plan)
-coderabbit:fix (parallel or sequential)
+coderabbit-fix (parallel or sequential)
 ```

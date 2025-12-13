@@ -1,5 +1,5 @@
 ---
-name: coderabbit:triage
+name: coderabbit-triage
 description: Analyze code review findings and create execution plan. Decides parallel vs sequential fixing based on issue severity and independence. Returns structured task list with clear fixer instructions.
 ---
 
@@ -9,7 +9,7 @@ description: Analyze code review findings and create execution plan. Decides par
 
 This skill transforms CodeRabbit's raw findings into an executable task plan. It analyzes issues by severity, checks for dependencies, and decides the optimal execution strategy (parallel fixers vs sequential).
 
-**Input**: JSON from `coderabbit:request`
+**Input**: JSON from `coderabbit-request`
 
 **Output**: Structured task dispatch plan with fixer instructions
 
@@ -223,7 +223,7 @@ For each issue, create a fixer task:
     "verification": {
       "after_all_fixes": [
         "Run full test suite: npm test",
-        "Re-run CodeRabbit: coderabbit --prompt-only --type uncommitted",
+        "Re-run coderabbit- coderabbit --prompt-only --type uncommitted",
         "Verify zero issues remain"
       ]
     }
@@ -289,11 +289,11 @@ Before returning plan, verify:
 ## Integration Points
 
 ```
-coderabbit:request
+coderabbit-request
         ↓ (outputs JSON)
-coderabbit:triage
+coderabbit-triage
         ↓ (outputs task plan)
-coderabbit:fix (dispatched per task)
+coderabbit-fix (dispatched per task)
 ```
 
 Return structured task plan. Main agent will dispatch fixer subagents based on strategy and parallelization groups.
