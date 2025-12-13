@@ -75,6 +75,7 @@
   }
 
   // Scroll the header to the top (just below sticky header) when selected
+  // Using immediate: true ensures this runs on mount if already selected
   watch(
     () => props.isSelected,
     async (selected) => {
@@ -100,7 +101,8 @@
         top: Math.max(0, targetScrollTop),
         behavior: "smooth",
       });
-    }
+    },
+    { immediate: true }
   );
 
   function toggleExpand() {
