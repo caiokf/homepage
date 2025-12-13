@@ -3,7 +3,7 @@ import type {
   RadarVersion,
 } from "./data-provider";
 import type { TechRadarData } from "./types";
-import { RING_NAMES } from "../config";
+import { RING_NAMES } from "../constants";
 
 const DEFAULT_VERSION: RadarVersion = { id: "default", name: "Default" };
 

@@ -35,7 +35,7 @@
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
   import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data-providers/data-provider";
-  import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/config";
+  import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/constants";
 
   const versions = ref<RadarVersion[]>([]);
   const loading = ref(true);
