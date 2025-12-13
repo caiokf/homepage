@@ -59,7 +59,6 @@ JOB_ID=$(gob add make build)
 gob await $JOB_ID
 
 # If it passed, dispatch next
-gob add npm test
 JOB_ID_2=$(gob add npm test)
 gob await $JOB_ID_2
 
