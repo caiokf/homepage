@@ -26,9 +26,8 @@
   import TechRadarMobile from "./TechRadarMobile.vue";
   import type { Radar } from "../models/radar";
   import type { PositionedBlip } from "../geometry/quadrant.geometry";
-  import type { QuadrantPosition } from "../config";
-
-  const MOBILE_BREAKPOINT = 1000;
+import type { QuadrantPosition } from "../types";
+  import { MOBILE_BREAKPOINT } from "../constants";
 
   defineProps<{
     radar: Radar;

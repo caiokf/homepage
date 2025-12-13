@@ -1,11 +1,8 @@
 import { Quadrant } from "./quadrant";
 import { Ring } from "./ring";
 import { Blip, type BlipStatus } from "./blip";
-import {
-  RING_NAMES,
-  QUADRANT_POSITIONS,
-  type QuadrantPosition,
-} from "../config";
+import type { QuadrantPosition } from "../types";
+import { RING_NAMES, QUADRANT_POSITIONS } from "../constants";
 import type { TechRadarData } from "../data-providers/types";
 
 export type RingsMap = Record<string, Ring>;

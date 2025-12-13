@@ -20,7 +20,8 @@
   import { computed } from "vue";
   import BlipListByRing from "./BlipListByRing.vue";
   import type { PositionedBlip } from "../geometry/quadrant.geometry";
-  import { RING_NAMES, type QuadrantPosition } from "../config";
+import type { QuadrantPosition } from "../types";
+  import { RING_NAMES } from "../constants";
 
   const props = defineProps<{
     quadrantName: string;
