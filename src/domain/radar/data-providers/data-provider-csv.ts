@@ -1,9 +1,9 @@
 import type {
   TechRadarDataProvider,
   RadarVersion,
-} from "../tech-radar-data-provider";
-import type { TechRadarData, TechRadarBlipData } from "../tech-radar-data";
-import type { BlipStatus } from "../../models/blip";
+} from "./data-provider";
+import type { TechRadarData, TechRadarBlipData } from "./types";
+import type { BlipStatus } from "../models/blip";
 
 export type CsvProviderConfig = {
   url: string;
@@ -18,7 +18,7 @@ type CsvRow = {
   description: string;
 };
 
-export class CsvProvider implements TechRadarDataProvider {
+export class DataProviderCsv implements TechRadarDataProvider {
   private url: string;
 
   constructor(config: CsvProviderConfig) {

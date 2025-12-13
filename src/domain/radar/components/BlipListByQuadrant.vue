@@ -8,7 +8,7 @@
       :ring-name="ring.name"
       :blips="ring.blips"
       :highlighted-blip-id="highlightedBlipId"
-      :expanded-blip-id="expandedBlipId"
+      :selected-blip-id="selectedBlipId"
       @blip-hover="$emit('blip-hover', $event)"
       @blip-click="$emit('blip-click', $event)"
       @blip-toggle="$emit('blip-toggle', $event)"
@@ -27,7 +27,7 @@
     quadrantPosition: QuadrantPosition;
     blips: PositionedBlip[];
     highlightedBlipId: number | null;
-    expandedBlipId: number | null;
+    selectedBlipId: number | null;
   }>();
 
   defineEmits<{

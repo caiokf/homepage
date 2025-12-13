@@ -7,7 +7,7 @@
         :key="blip.id"
         :blip="blip"
         :is-highlighted="highlightedBlipId === blip.id"
-        :is-expanded="expandedBlipId === blip.id"
+        :is-selected="selectedBlipId === blip.id"
         @hover="$emit('blip-hover', $event)"
         @click="$emit('blip-click', $event)"
         @toggle="$emit('blip-toggle', $event)"
@@ -25,7 +25,7 @@
     ringName: string;
     blips: PositionedBlip[];
     highlightedBlipId: number | null;
-    expandedBlipId: number | null;
+    selectedBlipId: number | null;
   }>();
 
   defineEmits<{

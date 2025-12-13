@@ -32,9 +32,9 @@
 
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import { GoogleSheetsProvider } from "../domain/radar/data/providers/google-sheets-provider";
-  import { SampleDataProvider } from "../domain/radar/data/providers/sample-data-provider";
-  import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data/tech-radar-data-provider";
+  import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
+  import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
+  import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data-providers/data-provider";
   import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/config";
 
   const versions = ref<RadarVersion[]>([]);
@@ -44,8 +44,8 @@
   // Create data provider
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
-      ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
-      : new SampleDataProvider();
+      ? new DataProviderGoogleSheets({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
+      : new DataProviderSample();
 
   onMounted(async () => {
     try {

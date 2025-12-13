@@ -1,9 +1,9 @@
 import type {
   TechRadarDataProvider,
   RadarVersion,
-} from "../tech-radar-data-provider";
-import type { TechRadarData, TechRadarBlipData } from "../tech-radar-data";
-import type { BlipStatus } from "../../models/blip";
+} from "./data-provider";
+import type { TechRadarData, TechRadarBlipData } from "./types";
+import type { BlipStatus } from "../models/blip";
 
 export type GoogleSheetsConfig = {
   sheetId: string;
@@ -37,7 +37,7 @@ type SheetRow = {
 
 const GOOGLE_SHEETS_API_BASE = "https://sheets.googleapis.com/v4/spreadsheets";
 
-export class GoogleSheetsProvider implements TechRadarDataProvider {
+export class DataProviderGoogleSheets implements TechRadarDataProvider {
   private metadata: SheetMetadata | null = null;
   private sheetId: string;
   private apiKey: string;

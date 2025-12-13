@@ -7,7 +7,7 @@
       :quadrant-position="quadrant.position"
       :blips="getQuadrantBlips(quadrant.position)"
       :highlighted-blip-id="highlightedBlipId"
-      :expanded-blip-id="expandedBlipId"
+      :selected-blip-id="selectedBlipId"
       @blip-hover="$emit('blip-hover', $event)"
       @blip-click="$emit('blip-click', $event)"
       @blip-toggle="$emit('blip-toggle', $event)"
@@ -29,7 +29,7 @@
   const props = defineProps<{
     quadrants: QuadrantInfo[];
     highlightedBlipId: number | null;
-    expandedBlipId: number | null;
+    selectedBlipId: number | null;
   }>();
 
   defineEmits<{

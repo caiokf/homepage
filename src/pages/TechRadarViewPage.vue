@@ -29,6 +29,7 @@
           <!-- Overlay blip list when a quadrant is selected (desktop only) -->
           <div
             v-if="!isMobile && selectedQuadrant && selectedQuadrantObj"
+            :key="selectedQuadrant"
             class="table-overlay"
             :class="tableOverlayPosition"
           >
@@ -37,7 +38,7 @@
               :quadrant-position="selectedQuadrant"
               :blips="selectedQuadrantBlips"
               :highlighted-blip-id="hoveredBlipId"
-              :expanded-blip-id="expandedBlipId"
+              :selected-blip-id="selectedBlipId"
               @blip-hover="handleTableBlipHover"
               @blip-click="handleBlipSelected"
               @blip-toggle="handleBlipToggle"
@@ -53,7 +54,7 @@
           :quadrant-position="selectedQuadrant"
           :blips="selectedQuadrantBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -65,7 +66,7 @@
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -77,7 +78,7 @@
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -102,9 +103,9 @@
   import RadarHeader from "../domain/radar/components/RadarHeader.vue";
   import SpotlightLoader from "../components/atoms/BaseSpotlightLoader.vue";
   import { Radar } from "../domain/radar/models/radar";
-  import { SampleDataProvider } from "../domain/radar/data/providers/sample-data-provider";
-  import { GoogleSheetsProvider } from "../domain/radar/data/providers/google-sheets-provider";
-  import type { TechRadarDataProvider } from "../domain/radar/data/tech-radar-data-provider";
+  import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
+  import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
+  import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
   import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
   import {
     type QuadrantPosition,
@@ -128,15 +129,15 @@
   // Data provider - use Google Sheets if configured, otherwise fallback to sample data
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
-      ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
-      : new SampleDataProvider();
+      ? new DataProviderGoogleSheets({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
+      : new DataProviderSample();
 
   const MIN_LOADING_DURATION = 1500;
 
   const radar = shallowRef<Radar | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
   const hoveredBlipId = ref<number | null>(null);
-  const expandedBlipId = ref<number | null>(null);
+  const selectedBlipId = ref<number | null>(null);
   const isMobile = ref(false);
 
   function checkMobile() {
@@ -253,11 +254,11 @@
   }
 
   function handleBlipSelected(blip: PositionedBlip, quadrant?: QuadrantPosition) {
-    // Select the quadrant and expand the blip in the list
+    // Select the quadrant and select the blip in the list
     if (quadrant) {
       selectedQuadrant.value = quadrant;
     }
-    expandedBlipId.value = blip.id;
+    selectedBlipId.value = blip.id;
   }
 
   function handleBlipHovered(blip: PositionedBlip | null) {
@@ -269,14 +270,14 @@
   }
 
   function handleSearchSelect(result: SearchResult) {
-    // Zoom to the quadrant and expand the blip (same as clicking)
+    // Zoom to the quadrant and select the blip (same as clicking)
     selectedQuadrant.value = result.quadrant;
-    expandedBlipId.value = result.blip.id;
+    selectedBlipId.value = result.blip.id;
   }
 
   function handleBlipToggle(blipId: number) {
     // Toggle: if clicking the same blip, close it; otherwise open the new one
-    expandedBlipId.value = expandedBlipId.value === blipId ? null : blipId;
+    selectedBlipId.value = selectedBlipId.value === blipId ? null : blipId;
   }
 </script>
 

@@ -1,4 +1,4 @@
-import type { TechRadarData } from "./tech-radar-data";
+import type { TechRadarData } from "./types";
 
 export type RadarVersion = {
   id: string;
