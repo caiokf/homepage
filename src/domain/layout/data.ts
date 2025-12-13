@@ -1,4 +1,4 @@
-export type Socials = {
+export type Social = {
   network: string;
   username: string;
   url: string;
@@ -6,7 +6,7 @@ export type Socials = {
   iconColor: string;
 };
 
-export const socialsConfig: Socials[] = [
+export const socialsConfig: Social[] = [
   {
     network: "Email",
     username: "caiokf@gmail.com",
