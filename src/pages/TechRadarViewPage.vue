@@ -103,8 +103,8 @@
   import RadarHeader from "../domain/radar/components/RadarHeader.vue";
   import SpotlightLoader from "../components/atoms/BaseSpotlightLoader.vue";
   import { Radar } from "../domain/radar/models/radar";
-  import { SampleDataProvider } from "../domain/radar/data-providers/sample-data-provider";
-  import { GoogleSheetsProvider } from "../domain/radar/data-providers/google-sheets-provider";
+  import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
+  import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
   import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
   import {
@@ -129,8 +129,8 @@
   // Data provider - use Google Sheets if configured, otherwise fallback to sample data
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
-      ? new GoogleSheetsProvider({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
-      : new SampleDataProvider();
+      ? new DataProviderGoogleSheets({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
+      : new DataProviderSample();
 
   const MIN_LOADING_DURATION = 1500;
 
