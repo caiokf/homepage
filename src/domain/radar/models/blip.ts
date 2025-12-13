@@ -1,6 +1,6 @@
 import { Ring } from "./ring";
 import { BLIP_WIDTH } from "../constants";
-import { BlipGeometry } from "../geometry/blip.geometry";
+import { BlipGeometry } from "../geometry/blip-rendering.geometry";
 
 export type BlipStatus = "new" | "moved in" | "moved out" | "no change";
 

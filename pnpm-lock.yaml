@@ -27,6 +27,9 @@ importers:
         specifier: ^4.6.3
         version: 4.6.3(vue@3.5.25(typescript@5.9.3))
     devDependencies:
+      '@csstools/postcss-global-data':
+        specifier: ^3.1.0
+        version: 3.1.0(postcss@8.5.6)
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
@@ -97,6 +100,12 @@ packages:
     peerDependencies:
       '@csstools/css-parser-algorithms': ^3.0.5
       '@csstools/css-tokenizer': ^3.0.4
+
+  '@csstools/postcss-global-data@3.1.0':
+    resolution: {integrity: sha512-qfS0bUxBukuyxEyxTTZG+px2xwAQPf7Qk6B7lFdjWnovb/O6h0t3sxrVY81nJLh7z0KvEMhjxTURNtEmOrADpQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      postcss: ^8.4
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1045,6 +1054,10 @@ snapshots:
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
+
+  '@csstools/postcss-global-data@3.1.0(postcss@8.5.6)':
+    dependencies:
+      postcss: 8.5.6
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
