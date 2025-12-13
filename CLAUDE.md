@@ -65,9 +65,10 @@ src/
 
   // Incorrect
   class Example {
-    private value: number;  // Missing underscore prefix
+    private value: number; // Missing underscore prefix
   }
   ```
+
 - **Array copying** via `.slice(0)` to prevent external mutations
 - **Vue 3 Composition API** with `<script setup>` syntax
 - **D3 integration:** Imperative DOM manipulation within Vue lifecycle hooks, separate from Vue reactivity
@@ -112,7 +113,3 @@ describe("ClassName", () => {
   });
 });
 ```
-
-## Legacy Code
-
-`src/legacy/` contains original JavaScript implementation not currently in use. The project is being modernized to TypeScript with component-based Vue 3 architecture.
