@@ -1,6 +1,6 @@
 ---
 name: coderabbit-request
-description: Use after completing ANY file changes - code, skills, documentation, config. Dispatches CodeRabbit reviewer subagent to analyze uncommitted changes. Returns structured issue list. ALWAYS request review before considering work complete.
+description: Use after completing file changes - strongest for source code (AST-aware linting, security, tests), lighter support for markdown/config. Dispatches CodeRabbit reviewer subagent. ALWAYS request review before considering work complete.
 ---
 
 # Requesting Review
@@ -13,15 +13,15 @@ This skill dispatches a CodeRabbit reviewer subagent to analyze your uncommitted
 
 ## CRITICAL: Always Request Review
 
-After completing changes to ANY file type, invoke this skill:
+After completing changes, invoke this skill:
 
-- ✅ Code files (.ts, .vue, .js, etc.)
-- ✅ Skill files (SKILL.md)
-- ✅ Documentation (.md files)
-- ✅ Configuration files
-- ✅ Test files
+- ✅ Code files (.ts, .vue, .js, etc.) - **strongest support** (AST-aware linting, security, auto-tests)
+- ✅ Test files - **strongest support**
+- ✅ Skill files (SKILL.md) - lighter support (markdownlint)
+- ✅ Documentation (.md files) - lighter support (markdownlint)
+- ✅ Configuration files - lighter support (generic config linting)
 
-**Do NOT skip review** because "it's just documentation" or "it's a small change". CodeRabbit catches issues in all file types.
+**Do NOT skip review** because "it's just documentation" or "it's a small change". Even lighter analysis catches issues.
 
 **Outputs**: Structured JSON with categorized issues (Critical/Important/Minor).
 
