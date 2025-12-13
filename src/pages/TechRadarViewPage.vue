@@ -29,6 +29,7 @@
           <!-- Overlay blip list when a quadrant is selected (desktop only) -->
           <div
             v-if="!isMobile && selectedQuadrant && selectedQuadrantObj"
+            :key="selectedQuadrant"
             class="table-overlay"
             :class="tableOverlayPosition"
           >
