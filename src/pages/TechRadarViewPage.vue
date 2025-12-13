@@ -309,6 +309,7 @@
   .radar-wrapper {
     position: relative;
     width: var(--radar-width);
+    max-width: 100%;
     flex-shrink: 0;
     box-sizing: border-box;
   }
@@ -378,6 +379,10 @@
   @media (--lg) {
     .main-content {
       padding: var(--space-4);
+    }
+
+    .radar-wrapper {
+      width: 100%;
     }
   }
 </style>
