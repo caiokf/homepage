@@ -17,7 +17,7 @@ This skill dispatches a CodeRabbit reviewer subagent to analyze your uncommitted
 
 ### Step 1: Prepare Context
 
-Ensure all changes are staged and documented:
+Stage all changes before review. The `--type uncommitted` flag analyzes both staged and unstaged changes, but staging ensures nothing is missed:
 
 ```bash
 # Stage all changes
@@ -33,7 +33,7 @@ Document in your mind what was just implemented. This context helps the reviewer
 
 Spawn subagent with clear instructions:
 
-```
+```text
 You are a code review specialist using CodeRabbit CLI.
 
 Your task: Analyze the uncommitted changes and identify issues.
@@ -45,6 +45,9 @@ Let it run to completion. The --prompt-only flag makes output succinct and token
 This analysis is from the perspective of code quality, security, performance, and best practices.
 
 When complete, return issues in this JSON structure:
+```
+
+```json
 {
   "critical": [
     {"file": "...", "line": NNN, "issue": "...", "suggestion": "..."}
@@ -52,7 +55,9 @@ When complete, return issues in this JSON structure:
   "important": [...],
   "minor": [...]
 }
+```
 
+```text
 Include only genuine issues CodeRabbit found. Do not invent.
 ```
 
@@ -60,7 +65,7 @@ Include only genuine issues CodeRabbit found. Do not invent.
 
 While subagent runs, check progress if needed:
 
-```
+```text
 Is CodeRabbit still running? Has it completed?
 ```
 
