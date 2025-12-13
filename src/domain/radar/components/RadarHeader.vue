@@ -37,7 +37,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import type { Radar } from "../models/radar";
-import type { QuadrantPosition } from "../types";
+  import type { QuadrantPosition } from "../types";
   import { QUADRANT_POSITIONS } from "../constants";
   import BaseBracketLink from "../../../components/atoms/BaseBracketLink.vue";
 
