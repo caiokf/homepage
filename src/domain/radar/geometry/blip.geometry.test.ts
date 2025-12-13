@@ -1,33 +1,33 @@
 import { describe, it, expect } from "vitest";
+import { BlipGeometry } from "./blip.geometry";
 import {
-  BlipGeometry,
-  IDEAL_BLIP_WIDTH,
-  NEW_GROUP_BLIP_WIDTH,
-  EXISTING_GROUP_BLIP_WIDTH,
-} from "./blip.geometry";
+  BLIP_WIDTH,
+  BLIP_NEW_GROUP_WIDTH,
+  BLIP_EXISTING_GROUP_WIDTH,
+} from "../constants";
 
 describe("BlipGeometry", () => {
   describe("constants", () => {
-    it("should export IDEAL_BLIP_WIDTH as 22", () => {
-      expect(IDEAL_BLIP_WIDTH).toBe(22);
+    it("should have BLIP_WIDTH as 22", () => {
+      expect(BLIP_WIDTH).toBe(22);
     });
 
-    it("should export NEW_GROUP_BLIP_WIDTH as 88", () => {
-      expect(NEW_GROUP_BLIP_WIDTH).toBe(88);
+    it("should have BLIP_NEW_GROUP_WIDTH as 88", () => {
+      expect(BLIP_NEW_GROUP_WIDTH).toBe(88);
     });
 
-    it("should export EXISTING_GROUP_BLIP_WIDTH as 124", () => {
-      expect(EXISTING_GROUP_BLIP_WIDTH).toBe(124);
+    it("should have BLIP_EXISTING_GROUP_WIDTH as 124", () => {
+      expect(BLIP_EXISTING_GROUP_WIDTH).toBe(124);
     });
   });
 
   describe("getGroupWidth", () => {
-    it("should return NEW_GROUP_BLIP_WIDTH when isNew is true", () => {
-      expect(BlipGeometry.getGroupWidth(true)).toBe(NEW_GROUP_BLIP_WIDTH);
+    it("should return BLIP_NEW_GROUP_WIDTH when isNew is true", () => {
+      expect(BlipGeometry.getGroupWidth(true)).toBe(BLIP_NEW_GROUP_WIDTH);
     });
 
-    it("should return EXISTING_GROUP_BLIP_WIDTH when isNew is false", () => {
-      expect(BlipGeometry.getGroupWidth(false)).toBe(EXISTING_GROUP_BLIP_WIDTH);
+    it("should return BLIP_EXISTING_GROUP_WIDTH when isNew is false", () => {
+      expect(BlipGeometry.getGroupWidth(false)).toBe(BLIP_EXISTING_GROUP_WIDTH);
     });
   });
 

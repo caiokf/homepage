@@ -37,10 +37,8 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import type { Radar } from "../models/radar";
-  import type { QuadrantPosition } from "../config";
+  import { type QuadrantPosition, QUADRANT_DISPLAY_ORDER } from "../constants";
   import BaseBracketLink from "../../../components/atoms/BaseBracketLink.vue";
-
-  const QUADRANT_ORDER: QuadrantPosition[] = ["NW", "NE", "SE", "SW"];
 
   const props = defineProps<{
     radar: Radar;
@@ -53,7 +51,7 @@
 
   const quadrants = computed(() =>
     [...props.radar.quadrants].sort(
-      (a, b) => QUADRANT_ORDER.indexOf(a.position) - QUADRANT_ORDER.indexOf(b.position)
+      (a, b) => QUADRANT_DISPLAY_ORDER.indexOf(a.position) - QUADRANT_DISPLAY_ORDER.indexOf(b.position)
     )
   );
 </script>

@@ -1,104 +1,54 @@
-// Radar Configuration
-// Configurable ring and quadrant names, dimensions, and colors
+// Re-export all constants for backward compatibility
+// New code should import directly from ./constants
+export {
+  // Types
+  type QuadrantPosition,
+  type RingName,
 
-export const RADAR_SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1B-ojvUlqVMigLGGs8egpn-0YaVTDmqe1Vb6EL2ji-aM/edit?gid=0#gid=0";
+  // Data source
+  RADAR_SHEET_URL,
+  RADAR_SHEET_ID,
+  GOOGLE_API_KEY,
+  extractSheetId,
 
-// Extract sheet ID from Google Sheets URL
-export function extractSheetId(url: string): string | null {
-  const match = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : null;
-}
+  // Rings
+  RING_NAMES,
+  RING_RATIOS,
 
-export const RADAR_SHEET_ID = extractSheetId(RADAR_SHEET_URL);
+  // Quadrants
+  QUADRANT_CONFIG,
+  QUADRANT_POSITIONS,
+  QUADRANT_DISPLAY_ORDER,
+  QUADRANT_CSS_VARS,
 
-// Google Sheets API key (for public sheets)
-export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as string | undefined;
+  // Graph dimensions
+  QUADRANT_SIZE,
+  QUADRANTS_GAP,
+  EFFECTIVE_QUADRANT_SIZE,
+  RADAR_SIZE,
+  graphConfig,
 
-export const RING_NAMES = ["proven", "experimental", "learning", "avoid"] as const;
-export type RingName = (typeof RING_NAMES)[number];
+  // Blip dimensions
+  BLIP_WIDTH,
+  BLIP_MIN_WIDTH,
+  BLIP_GROUP_HEIGHT,
+  BLIP_NEW_GROUP_WIDTH,
+  BLIP_EXISTING_GROUP_WIDTH,
+  blipConfig,
 
-// Quadrant positions using compass directions
-export type QuadrantPosition = "NE" | "NW" | "SE" | "SW";
+  // Blip layout
+  MAX_BLIPS_PER_RING,
+  GROUP_BLIP_ANGLES,
 
-// Quadrant configuration with position, angle, and default name
-// Position labels match visual location on screen (NW = top-left, etc.)
-export const QUADRANT_CONFIG: Record<
-  QuadrantPosition,
-  { startAngle: number; defaultName: string }
-> = {
-  NW: { startAngle: 0, defaultName: "Techniques" },
-  SW: { startAngle: -90, defaultName: "Platforms" },
-  NE: { startAngle: 90, defaultName: "Tools" },
-  SE: { startAngle: -180, defaultName: "Languages & Frameworks" },
-} as const;
+  // UI dimensions
+  STICKY_HEADER_HEIGHT,
+  uiConfig,
 
-// Ordered list of positions for iteration
-export const QUADRANT_POSITIONS: QuadrantPosition[] = ["NE", "NW", "SW", "SE"];
+  // Responsive breakpoints
+  MOBILE_BREAKPOINT,
+  breakpoints,
 
-// Graph dimensions
-export const graphConfig = {
-  quadrantSize: 512,
-  quadrantsGap: 32,
-
-  get effectiveQuadrantSize() {
-    return this.quadrantSize + this.quadrantsGap / 2;
-  },
-
-  get radarSize() {
-    return this.quadrantSize * 2 + this.quadrantsGap;
-  },
-};
-
-// Blip dimensions
-export const blipConfig = {
-  idealWidth: 22,
-  minWidth: 12,
-  groupHeight: 24,
-  newGroupWidth: 88,
-  existingGroupWidth: 124,
-};
-
-// Ring ratios for proportional spacing (0 = center, 1 = edge)
-// First ratio includes buffer to prevent blips from being cut off at center
-// Buffer accounts for: quadrantsGap/2 (16px) + blipWidth (22px) + spacing margin
-export const RING_RATIOS = [0.11, 0.406, 0.652, 0.832, 1] as const;
-
-// Max blips per ring before grouping
-export const MAX_BLIPS_PER_RING = [8, 22, 17, 18] as const;
-
-// Group blip angles per ring
-export const GROUP_BLIP_ANGLES = [30, 35, 60, 80] as const;
-
-// Quadrant colors - these reference CSS custom properties from style.css
-// Use getComputedStyle(document.documentElement).getPropertyValue('--quadrant-NE') to access
-export const QUADRANT_CSS_VARS: Record<QuadrantPosition, string> = {
-  NE: "--quadrant-NE",
-  NW: "--quadrant-NW",
-  SW: "--quadrant-SW",
-  SE: "--quadrant-SE",
-} as const;
-
-// Animation timing
-export const animationConfig = {
-  transitionDuration: 1000, // ms
-  tooltipDelay: 100,
-  scrollDelay: 1500,
-} as const;
-
-// UI dimensions
-export const uiConfig = {
-  subnavHeight: 60,
-  bannerHeight: 200,
-  tabletBannerHeight: 300,
-  headerHeight: 80,
-  legendsHeight: 42,
-} as const;
-
-// Responsive breakpoints
-export const breakpoints = {
-  mobile: 768,
-  tablet: 1280,
-  desktop: 1800,
-  wide: 2560,
-} as const;
+  // Animation timing
+  TRANSITION_DURATION_MS,
+  animationConfig,
+} from "./constants";

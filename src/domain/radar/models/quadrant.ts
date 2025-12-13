@@ -1,6 +1,5 @@
 import { Blip } from "./blip";
-import type { QuadrantPosition } from "../config";
-import { QUADRANT_CONFIG } from "../config";
+import { type QuadrantPosition, QUADRANT_CONFIG } from "../constants";
 
 export class Quadrant {
   private _blips: Blip[] = [];

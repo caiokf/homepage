@@ -1,4 +1,4 @@
-import type { QuadrantPosition } from "../config";
+import type { QuadrantPosition } from "../constants";
 
 export type SeparatorLine = {
   angle: number;

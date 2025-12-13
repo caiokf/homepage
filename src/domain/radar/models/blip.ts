@@ -1,5 +1,6 @@
 import { Ring } from "./ring";
-import { IDEAL_BLIP_WIDTH, BlipGeometry } from "../geometry/blip.geometry";
+import { BlipGeometry } from "../geometry/blip.geometry";
+import { BLIP_WIDTH } from "../constants";
 
 export type BlipStatus = "new" | "moved in" | "moved out" | "no change";
 
@@ -8,7 +9,7 @@ export class Blip {
   private _isGroup: boolean = false;
   private _id: number = -1;
   private _groupIdInGraph: string = "";
-  public readonly width: number = IDEAL_BLIP_WIDTH;
+  public readonly width: number = BLIP_WIDTH;
 
   constructor(
     private _name: string,

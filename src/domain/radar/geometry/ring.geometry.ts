@@ -1,4 +1,4 @@
-import { RING_RATIOS, RING_NAMES } from "../config";
+import { RING_RATIOS, RING_NAMES } from "../constants";
 
 export type RingLabel = {
   x: number;
