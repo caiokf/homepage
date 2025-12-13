@@ -7,9 +7,9 @@ description: Apply when finishing work session
 
 When a major project step, meaningful fix or feature development has been completed and needs to be reviewed against the original plan and coding standard, use the skill coderabbit-request to start a workflow like below:
 
-coderabbit:review
+coderabbit-review
 ↓ (outputs JSON)
-coderabbit:triage
+coderabbit-triage
 ↓ (outputs task plan)
 coderabbit-fix (parallel or sequential)
 

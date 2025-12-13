@@ -1,5 +1,5 @@
 ---
-name: coderabbit:fix
+name: coderabbit-fix
 description: Implement fixes for specific CodeRabbit review issues. Runs in isolated subagent context with focused task. Verifies fixes with tests before returning. Use one per issue from triage task list.
 ---
 
@@ -9,7 +9,7 @@ description: Implement fixes for specific CodeRabbit review issues. Runs in isol
 
 This skill implements a single, focused fix from a CodeRabbit issue. It runs in an isolated subagent context with clear constraints to prevent scope creep. Each subagent fixes exactly one issue and nothing more.
 
-**Input**: Task object from `coderabbit:triage` (task_id, file, line, issue, instructions, constraints)
+**Input**: Task object from `coderabbit-triage` (task_id, file, line, issue, instructions, constraints)
 
 **Output**: Fixed code + detailed summary of changes and verification
 
@@ -301,13 +301,13 @@ Return summary in this format:
 ## Integration Points
 
 ```
-coderabbit:triage
+coderabbit-triage
          ↓
-[dispatch multiple coderabbit:fix instances]
+[dispatch multiple coderabbit-fix instances]
          ↓
-coderabbit:fix #1 (parallel)
-coderabbit:fix #2 (parallel)
-coderabbit:fix #3 (parallel)
+coderabbit-fix #1 (parallel)
+coderabbit-fix #2 (parallel)
+coderabbit-fix #3 (parallel)
          ↓
 Main agent collects summaries
          ↓
