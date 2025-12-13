@@ -1,9 +1,17 @@
 ---
 name: finishing-work
-description: Apply when finishing work session. Explains GitButler hook integration - do NOT manually commit.
+description: Apply when finishing work session
 ---
 
 # Finishing Work
+
+When a major project step, meaningful fix or feature development has been completed and needs to be reviewed against the original plan and coding standard, use the skill coderabbit-request to start a workflow like below:
+
+coderabbit:review
+↓ (outputs JSON)
+coderabbit:triage
+↓ (outputs task plan)
+coderabbit-fix (parallel or sequential)
 
 ## GitButler Integration
 
