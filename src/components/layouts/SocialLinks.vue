@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from "vue";
-  import { socialsConfig } from "../../config/socials-config";
+  import { socialsConfig } from "../../domain/layout/data";
   import BaseBracketLink from "../atoms/BaseBracketLink.vue";
 
   const containerRef = ref<HTMLElement | null>(null);
