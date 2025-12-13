@@ -1,13 +1,13 @@
 <template>
   <li
-    :class="['blip-item', { expanded: isExpanded, highlighted: isHighlighted }]"
+    :class="['blip-item', { selected: isSelected, highlighted: isHighlighted }]"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
   >
     <button
       ref="headerRef"
       class="blip-header"
-      :aria-expanded="isExpanded"
+      :aria-expanded="isSelected"
       @click="toggleExpand"
     >
       <span class="blip-number">{{ blip.blipText }}.</span>
@@ -15,9 +15,9 @@
       <BaseBadge v-if="blip.isNew" variant="success">NEW</BaseBadge>
       <BaseBadge v-else-if="blip.status === 'moved in'" variant="warning">IN</BaseBadge>
       <BaseBadge v-else-if="blip.status === 'moved out'" variant="warning">OUT</BaseBadge>
-      <span class="expand-arrow" :class="{ rotated: isExpanded }">&#9660;</span>
+      <span class="expand-arrow" :class="{ rotated: isSelected }">&#9660;</span>
     </button>
-    <div class="blip-description" :class="{ visible: isExpanded }">
+    <div class="blip-description" :class="{ visible: isSelected }">
       <div v-html="blip.description || 'No description available.'"></div>
     </div>
   </li>
@@ -31,7 +31,7 @@
   const props = defineProps<{
     blip: PositionedBlip;
     isHighlighted: boolean;
-    isExpanded: boolean;
+    isSelected: boolean;
   }>();
 
   const emit = defineEmits<{
@@ -42,7 +42,8 @@
 
   const headerRef = ref<HTMLButtonElement | null>(null);
 
-  const STICKY_OFFSET_PX = 56;
+  // Height of the sticky quadrant title header (padding + font-size + padding = 16 + ~24 + 16 = 56px)
+  const STICKY_HEADER_HEIGHT_PX = 56;
 
   // Find the closest scrollable ancestor
   function getScrollableParent(element: HTMLElement | null): HTMLElement | null {
@@ -66,11 +67,11 @@
     return (document.scrollingElement as HTMLElement | null) ?? null;
   }
 
-  // Scroll the header into view when expanded
+  // Scroll the header into view when selected
   watch(
-    () => props.isExpanded,
-    async (expanded) => {
-      if (!expanded) return;
+    () => props.isSelected,
+    async (selected) => {
+      if (!selected) return;
       await nextTick();
       const header = headerRef.value;
       if (!header) return;
@@ -81,7 +82,7 @@
       const headerRect = header.getBoundingClientRect();
       const containerRect = scrollContainer.getBoundingClientRect();
 
-      const visibleTop = containerRect.top + STICKY_OFFSET_PX;
+      const visibleTop = containerRect.top + STICKY_HEADER_HEIGHT_PX;
       const visibleBottom = containerRect.bottom;
 
       const isAbove = headerRect.top < visibleTop;
@@ -89,7 +90,7 @@
       if (!isAbove && !isBelow) return;
 
       const targetScrollTop =
-        scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_OFFSET_PX;
+        scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_HEADER_HEIGHT_PX;
 
       scrollContainer.scrollTo({
         top: Math.max(0, targetScrollTop),

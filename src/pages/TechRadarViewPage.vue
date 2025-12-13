@@ -37,7 +37,7 @@
               :quadrant-position="selectedQuadrant"
               :blips="selectedQuadrantBlips"
               :highlighted-blip-id="hoveredBlipId"
-              :expanded-blip-id="expandedBlipId"
+              :selected-blip-id="selectedBlipId"
               @blip-hover="handleTableBlipHover"
               @blip-click="handleBlipSelected"
               @blip-toggle="handleBlipToggle"
@@ -53,7 +53,7 @@
           :quadrant-position="selectedQuadrant"
           :blips="selectedQuadrantBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -65,7 +65,7 @@
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -77,7 +77,7 @@
         <BlipList
           :quadrants="allQuadrantsWithBlips"
           :highlighted-blip-id="hoveredBlipId"
-          :expanded-blip-id="expandedBlipId"
+          :selected-blip-id="selectedBlipId"
           @blip-hover="handleTableBlipHover"
           @blip-click="handleBlipSelected"
           @blip-toggle="handleBlipToggle"
@@ -136,7 +136,7 @@
   const radar = shallowRef<Radar | null>(null);
   const selectedQuadrant = ref<QuadrantPosition | null>(null);
   const hoveredBlipId = ref<number | null>(null);
-  const expandedBlipId = ref<number | null>(null);
+  const selectedBlipId = ref<number | null>(null);
   const isMobile = ref(false);
 
   function checkMobile() {
@@ -253,11 +253,11 @@
   }
 
   function handleBlipSelected(blip: PositionedBlip, quadrant?: QuadrantPosition) {
-    // Select the quadrant and expand the blip in the list
+    // Select the quadrant and select the blip in the list
     if (quadrant) {
       selectedQuadrant.value = quadrant;
     }
-    expandedBlipId.value = blip.id;
+    selectedBlipId.value = blip.id;
   }
 
   function handleBlipHovered(blip: PositionedBlip | null) {
@@ -269,14 +269,14 @@
   }
 
   function handleSearchSelect(result: SearchResult) {
-    // Zoom to the quadrant and expand the blip (same as clicking)
+    // Zoom to the quadrant and select the blip (same as clicking)
     selectedQuadrant.value = result.quadrant;
-    expandedBlipId.value = result.blip.id;
+    selectedBlipId.value = result.blip.id;
   }
 
   function handleBlipToggle(blipId: number) {
     // Toggle: if clicking the same blip, close it; otherwise open the new one
-    expandedBlipId.value = expandedBlipId.value === blipId ? null : blipId;
+    selectedBlipId.value = selectedBlipId.value === blipId ? null : blipId;
   }
 </script>
 
