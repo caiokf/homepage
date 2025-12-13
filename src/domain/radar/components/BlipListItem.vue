@@ -42,12 +42,6 @@
 
   const headerRef = ref<HTMLButtonElement | null>(null);
 
-  // Height of the sticky quadrant title header (padding + font-size + padding = 16 + ~24 + 16 = 56px)
-  const STICKY_HEADER_HEIGHT_PX = 56;
-
-  // Duration to wait for DOM transitions before scrolling (matches --transition-slow)
-  const TRANSITION_DURATION_MS = 300;
-
   function delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -95,7 +89,7 @@
       const containerRect = scrollContainer.getBoundingClientRect();
 
       const targetScrollTop =
-        scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_HEADER_HEIGHT_PX;
+        scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_HEADER_HEIGHT;
 
       scrollContainer.scrollTo({
         top: Math.max(0, targetScrollTop),
