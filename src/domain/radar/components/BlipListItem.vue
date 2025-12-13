@@ -74,7 +74,7 @@
     return (document.scrollingElement as HTMLElement | null) ?? null;
   }
 
-  // Scroll the header into view when selected
+  // Scroll the header to the top (just below sticky header) when selected
   watch(
     () => props.isSelected,
     async (selected) => {
@@ -92,13 +92,6 @@
 
       const headerRect = header.getBoundingClientRect();
       const containerRect = scrollContainer.getBoundingClientRect();
-
-      const visibleTop = containerRect.top + STICKY_HEADER_HEIGHT_PX;
-      const visibleBottom = containerRect.bottom;
-
-      const isAbove = headerRect.top < visibleTop;
-      const isBelow = headerRect.bottom > visibleBottom;
-      if (!isAbove && !isBelow) return;
 
       const targetScrollTop =
         scrollContainer.scrollTop + headerRect.top - containerRect.top - STICKY_HEADER_HEIGHT_PX;
