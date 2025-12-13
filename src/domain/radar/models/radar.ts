@@ -26,15 +26,8 @@ function toKebabCase(str: string): string {
 
 export class Radar {
   private _blipNumber: number = 0;
-  private _quadrants: Map<QuadrantPosition, Quadrant>;
+  private _quadrants: Map<QuadrantPosition, Quadrant> = new Map();
   private _rings: RingsMap = {};
-
-  constructor() {
-    // Always create 4 quadrants upfront
-    this._quadrants = new Map<QuadrantPosition, Quadrant>(
-      QUADRANT_POSITIONS.map((position) => [position, new Quadrant(position)])
-    );
-  }
 
   static create(data: TechRadarData): Radar {
     const radar = new Radar();

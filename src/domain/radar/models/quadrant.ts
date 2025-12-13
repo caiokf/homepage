@@ -8,10 +8,10 @@ export class Quadrant {
   private _position: QuadrantPosition;
   private _startAngle: number;
 
-  constructor(position: QuadrantPosition, name?: string) {
+  constructor(position: QuadrantPosition, name: string) {
     this._position = position;
-    this._startAngle = QUADRANT_CONFIG[position].startAngle;
-    this._name = name ?? QUADRANT_CONFIG[position].defaultName;
+    this._startAngle = QUADRANT_ANGLES[position].startAngle;
+    this._name = name;
   }
 
   get name(): string {

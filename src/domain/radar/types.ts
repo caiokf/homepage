@@ -7,7 +7,6 @@ export type QuadrantPosition = "NE" | "NW" | "SE" | "SW";
 
 export type RingName = "proven" | "experimental" | "learning" | "avoid";
 
-export type QuadrantConfig = {
+export type QuadrantAngle = {
   startAngle: number;
-  defaultName: string;
 };
