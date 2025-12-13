@@ -34,7 +34,7 @@ Before implementing, fully understand the problem:
 
 Don't blindly follow CodeRabbit's suggestion. Verify it:
 
-```
+```text
 CodeRabbit suggests: "Add HMAC-SHA256 signature verification"
 
 Questions to ask:
@@ -181,7 +181,7 @@ If CodeRabbit reports the issue still exists:
 
 Return summary in this format:
 
-```json
+```jsonc
 {
   "task_id": 1,
   "status": "✅ FIXED",
@@ -300,7 +300,7 @@ Return summary in this format:
 
 ## Integration Points
 
-```
+```text
 coderabbit-triage
          ↓
 [dispatch multiple coderabbit-fix instances]
