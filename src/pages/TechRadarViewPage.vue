@@ -230,6 +230,10 @@
 
   function handleQuadrantSelected(position: QuadrantPosition | null) {
     selectedQuadrant.value = position;
+    // Clear selected blip when viewing all quadrants to prevent auto-scroll on mobile
+    if (position === null) {
+      selectedBlipId.value = null;
+    }
   }
 
   function handleBlipSelected(blip: PositionedBlip, quadrant?: QuadrantPosition) {
