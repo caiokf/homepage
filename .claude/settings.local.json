@@ -45,7 +45,10 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nrefactor(src): restructure to feature-based organization\n\nMove from flat directory structure to domain-driven organization:\n- domain/radar/: components, models, geometry, data, config\n- domain/articles/: content markdown files and data functions\n- domain/experience/: experience data\n- domain/about/: skills data\n- assets/styles/: global CSS\n\nAll imports updated, tests passing, build verified.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Skill(coderabbit-request)",
-      "Bash(coderabbit --prompt-only --type uncommitted:*)"
+      "Bash(coderabbit --prompt-only --type uncommitted:*)",
+      "Bash(npx markdownlint-cli:*)",
+      "Bash(npx markdownlint:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
