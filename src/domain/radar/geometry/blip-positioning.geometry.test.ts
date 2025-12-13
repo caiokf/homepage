@@ -1,4 +1,3 @@
-import { describe, it, expect } from "vitest";
 import { QuadrantGeometry } from "./blip-positioning.geometry";
 import { Blip } from "../models/blip";
 import { Ring } from "../models/ring";

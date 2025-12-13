@@ -1,4 +1,3 @@
-import { describe, it, expect } from "vitest";
 import { RadarGeometry } from "./svg-layout.geometry";
 
 describe("RadarGeometry", () => {

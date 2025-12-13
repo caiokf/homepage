@@ -1,4 +1,3 @@
-import { describe, it, expect } from "vitest";
 import { RingGeometry } from "./svg-layout.geometry";
 import { RING_RATIOS, RING_NAMES } from "../constants";
 
