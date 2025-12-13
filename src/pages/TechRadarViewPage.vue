@@ -107,12 +107,8 @@
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
   import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
-  import {
-    type QuadrantPosition,
-    graphConfig,
-    RADAR_SHEET_ID,
-    GOOGLE_API_KEY,
-  } from "../domain/radar/config";
+  import type { QuadrantPosition } from "../domain/radar/types";
+  import { graphConfig, RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/config";
   import { RingGeometry } from "../domain/radar/geometry/ring.geometry";
   import { QuadrantGeometry } from "../domain/radar/geometry/quadrant.geometry";
 
