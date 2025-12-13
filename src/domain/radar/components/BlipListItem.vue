@@ -45,6 +45,13 @@
   // Height of the sticky quadrant title header (padding + font-size + padding = 16 + ~24 + 16 = 56px)
   const STICKY_HEADER_HEIGHT_PX = 56;
 
+  // Duration to wait for DOM transitions before scrolling (matches --transition-slow)
+  const TRANSITION_DURATION_MS = 300;
+
+  function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   // Find the closest scrollable ancestor
   function getScrollableParent(element: HTMLElement | null): HTMLElement | null {
     if (!element) return null;
@@ -72,7 +79,11 @@
     () => props.isSelected,
     async (selected) => {
       if (!selected) return;
+
+      // Wait for DOM update and transition to complete before calculating scroll position
       await nextTick();
+      await delay(TRANSITION_DURATION_MS);
+
       const header = headerRef.value;
       if (!header) return;
 
