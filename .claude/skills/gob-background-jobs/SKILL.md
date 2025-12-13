@@ -1,17 +1,39 @@
 ---
 name: gob-background-jobs
-description: Use `gob` to manage background processes efficiently. Master sequential and parallel job execution patterns. Essential for long-running tasks (builds, tests, etc) that block context.
+description: Use when user requests "parallel" commands, running multiple builds/tests simultaneously, or long-running tasks. Use `gob add` instead of parallel Bash tool calls - gob provides job management, output capture, and proper process control.
 ---
 
 # Managing Background Jobs with `gob`
 
 ## Overview
 
-This skill teaches you how to use `gob` (Background Job Manager) to run tasks asynchronously while keeping Claude Code's context free for continued work. `gob` is essential for managing builds, tests, development servers, and any long-running commands that would otherwise block your workflow.
+`gob` (Background Job Manager) runs tasks asynchronously while keeping context free. Essential for builds, tests, dev servers, and any long-running commands.
 
-**When to use**: Anytime you need to run a command and continue working, or when running multiple independent commands in parallel.
+**When to use**:
+- User explicitly asks for "parallel" or "simultaneous" commands → use `gob add` for each
+- Long-running command that would block context → use `gob add`
+- Multiple independent commands to run at once → use `gob add` for each
 
-**Why it matters**: Without `gob`, long-running commands block Claude Code. With `gob`, you dispatch work, continue context, and collect results when ready.
+**Why gob over parallel Bash tool calls**: `gob` provides job IDs, output capture, status monitoring, and proper process control. Parallel Bash calls just fire and forget.
+
+## CRITICAL: Parallel Command Requests
+
+When user says "run X and Y in parallel" or "run two parallel builds":
+
+```bash
+# ✅ CORRECT: Use gob add for each command
+gob add pnpm build
+gob add pnpm build
+
+# Then await results
+gob await-any
+gob await-any
+
+# ❌ WRONG: Do NOT use parallel Bash tool calls
+# Bash(pnpm build) + Bash(pnpm build) in same message
+```
+
+**Why this matters**: Parallel Bash tool calls work but provide no job management. `gob` gives you job IDs, status checks, output streaming, and the ability to stop/restart jobs.
 
 ## Core Concepts
 

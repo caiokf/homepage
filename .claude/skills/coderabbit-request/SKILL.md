@@ -1,15 +1,27 @@
 ---
 name: coderabbit-request
-description: Dispatch a CodeRabbit reviewer subagent to analyze code changes. Returns structured issue list with severity levels. Use when completing a feature and wanting autonomous code review before fixing.
+description: Use after completing file changes - strongest for source code (AST-aware linting, security, tests), lighter support for markdown/config. Dispatches CodeRabbit reviewer subagent. ALWAYS request review before considering work complete.
 ---
 
 # Requesting Review
 
 ## Overview
 
-This skill dispatches a CodeRabbit reviewer subagent to analyze your uncommitted code changes and return a structured list of issues. It's the first step in the code → review → triage → fix pipeline.
+This skill dispatches a CodeRabbit reviewer subagent to analyze your uncommitted changes and return a structured list of issues. It's the first step in the change → review → triage → fix pipeline.
 
-**When to use**: After implementing a feature, before moving to the triage/fixing phase.
+**When to use**: After making ANY file changes (code, skills, documentation, config), before considering work complete.
+
+## CRITICAL: Always Request Review
+
+After completing changes, invoke this skill:
+
+- ✅ Code files (.ts, .vue, .js, etc.) - **strongest support** (AST-aware linting, security, auto-tests)
+- ✅ Test files - **strongest support**
+- ✅ Skill files (SKILL.md) - lighter support (markdownlint)
+- ✅ Documentation (.md files) - lighter support (markdownlint)
+- ✅ Configuration files - lighter support (generic config linting)
+
+**Do NOT skip review** because "it's just documentation" or "it's a small change". Even lighter analysis catches issues.
 
 **Outputs**: Structured JSON with categorized issues (Critical/Important/Minor).
 
@@ -29,23 +41,23 @@ git diff --cached --stat
 
 Document in your mind what was just implemented. This context helps the reviewer subagent understand scope.
 
-### Step 2: Dispatch CodeRabbit Reviewer Subagent
+### Step 2: Run CodeRabbit via gob
 
-Spawn subagent with clear instructions:
+**CRITICAL: Always use `gob add` for CodeRabbit commands** - they take 1-3 minutes.
 
-```text
-You are a code review specialist using CodeRabbit CLI.
+```bash
+# Start CodeRabbit in background
+gob add coderabbit --prompt-only --type uncommitted
 
-Your task: Analyze the uncommitted changes and identify issues.
-
-Run this command:
-coderabbit --prompt-only --type uncommitted
-
-Let it run to completion. The --prompt-only flag makes output succinct and token-efficient.
-This analysis is from the perspective of code quality, security, performance, and best practices.
-
-When complete, return issues in this JSON structure:
+# Continue working or wait for results
+gob await-any
 ```
+
+The `--prompt-only` flag makes output succinct and token-efficient.
+
+### Step 3: Parse Results
+
+When CodeRabbit completes, parse the output into this JSON structure:
 
 ```json
 {
@@ -57,30 +69,15 @@ When complete, return issues in this JSON structure:
 }
 ```
 
-```text
 Include only genuine issues CodeRabbit found. Do not invent.
-```
 
-### Step 3: Monitor Execution
-
-While subagent runs, check progress if needed:
-
-```text
-Is CodeRabbit still running? Has it completed?
-```
-
-CodeRabbit typically takes 1-3 minutes depending on code volume.
-
-### Step 4: Parse Results
-
-Subagent returns issues in structured format. Verify:
-
+Verify:
 - All issues have `file`, `line`, `issue`, and `suggestion`
 - Issues are correctly categorized by severity
 - No invented issues
 - CodeRabbit's exact wording preserved
 
-### Step 5: Return Results
+### Step 4: Return Results
 
 Pass structured issue list to next skill (`coderabbit-triage`).
 
