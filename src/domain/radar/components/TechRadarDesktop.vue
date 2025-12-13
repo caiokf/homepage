@@ -189,8 +189,6 @@ import type { QuadrantPosition } from "../types";
     "blip-hovered": [blip: PositionedBlip | null];
   }>();
 
-  const svgRef = ref<SVGSVGElement | null>(null);
-  const tooltipRef = ref<HTMLDivElement | null>(null);
   const hoveredBlip = ref<PositionedBlip | null>(null);
   const mousePosition = ref({ x: 0, y: 0 });
 
