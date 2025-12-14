@@ -55,21 +55,37 @@
       </div>
 
       <div class="hero-content">
-        <div class="code-block">
-          <span class="code-keyword">const</span>
-          <span class="code-var"> engineer</span>
-          <span class="code-punct"> = {</span>
-        </div>
-        <h1 class="name">caio kinzel filho</h1>
-        <p class="tagline">location: "Sunshine Coast, Australia"</p>
-        <p class="bio">
-          since: 2005,<br />
-          focus: "turning complex problems into scalable, elegant solutions",<br />
-          specialties: ["architecture", "event-driven systems", "engineering teams"],<br />
-          offline: ["trails", "beach", "sim racing"]
-        </p>
-        <div class="code-block">
-          <span class="code-punct">};</span>
+        <div class="hero-code">
+          <div class="hero-line">
+            <code><span class="code-keyword">const</span> <span class="code-var">engineer</span> <span class="code-punct">= {</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-1"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="hero-name">"caio kinzel filho"</span><span class="code-punct">,</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-1"><span class="code-prop">location</span><span class="code-punct">:</span> <span class="hero-location">"Sunshine Coast, Australia"</span><span class="code-punct">,</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-1"><span class="code-prop">specialties</span><span class="code-punct">: [</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-2"><span class="code-muted">"architecture"</span><span class="code-punct">,</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-2"><span class="code-muted">"event-driven systems"</span><span class="code-punct">,</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-2"><span class="code-muted">"engineering teams"</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-1"><span class="code-punct">],</span></code>
+          </div>
+          <div class="hero-line">
+            <code class="indent-1"><span class="code-prop">offline</span><span class="code-punct">:</span> <span class="code-muted">["trails", "beach", "sim racing"]</span></code>
+          </div>
+          <div class="hero-line">
+            <code><span class="code-punct">};</span></code>
+          </div>
         </div>
       </div>
     </section>
@@ -272,10 +288,22 @@
     max-width: 480px;
   }
 
-  .code-block {
+  .hero-code {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
-    margin-bottom: var(--space-2);
+    line-height: 1.8;
+  }
+
+  .hero-line code {
+    white-space: pre-wrap;
+  }
+
+  .hero-line code.indent-1 {
+    padding-left: 1.5ch;
+  }
+
+  .hero-line code.indent-2 {
+    padding-left: 3ch;
   }
 
   .code-keyword {
@@ -286,52 +314,33 @@
     color: var(--quadrant-NE);
   }
 
-  .code-func {
-    color: var(--quadrant-NW);
-  }
-
   .code-punct {
     color: var(--color-text-muted);
   }
 
-  .name {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xl);
-    font-weight: var(--font-semibold);
+  .code-prop {
+    color: var(--quadrant-NE);
+  }
+
+  .code-string {
+    color: var(--color-green);
+  }
+
+  .code-muted {
+    color: var(--color-text-muted);
+  }
+
+  .hero-name {
     color: var(--color-text-primary);
-    margin: 0 0 var(--space-2) 0;
-    padding-left: var(--space-4);
+    font-size: 26px;
+    font-weight: var(--font-semibold);
   }
 
-  .name::before {
-    content: 'name: "';
-    color: var(--color-text-muted);
-    font-weight: var(--font-normal);
-    font-size: var(--text-lg);
-  }
-
-  .name::after {
-    content: '",';
-    color: var(--color-text-muted);
-    font-weight: var(--font-normal);
-    font-size: var(--text-lg);
-  }
-
-  .tagline {
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
+  .hero-location {
     color: var(--color-primary);
-    margin: 0 0 var(--space-3) 0;
-    padding-left: var(--space-4);
-  }
-
-  .bio {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
-    margin: 0;
-    padding-left: var(--space-4);
+    font-size: 16px;
+    font-weight: var(--font-semibold);
+    text-transform: lowercase;
   }
 
   /* Skills Section - Code Editor */
@@ -442,14 +451,6 @@
     flex-shrink: 0;
   }
 
-  .code-prop {
-    color: var(--quadrant-NE);
-  }
-
-  .code-string {
-    color: var(--color-green);
-  }
-
   .code-desc {
     color: var(--color-text-muted);
   }
@@ -489,18 +490,16 @@
       height: 110px;
     }
 
-    .hero-content {
-      text-align: center;
+    .hero-code {
+      font-size: var(--text-xs);
     }
 
-    .name {
-      font-size: var(--text-xl);
+    .hero-name {
+      font-size: 22px;
     }
 
-    .code-block,
-    .tagline,
-    .bio {
-      padding-left: 0;
+    .hero-location {
+      font-size: 14px;
     }
 
     .editor-content {
