@@ -76,37 +76,69 @@
 
     <!-- Skills Section with Code Aesthetic -->
     <section class="skills-section">
-      <div class="section-header">
-        <span class="code-keyword">function</span>
-        <span class="code-func"> capabilities</span>
-        <span class="code-punct">() {</span>
-      </div>
-
-      <div class="skills-list">
-        <article
-          v-for="(skill, index) in skillsConfig"
-          :key="skill.title"
-          class="skill-block"
-        >
-          <span class="line-number">{{ String(index + 1).padStart(2, '0') }}</span>
-          <div class="skill-icon-wrapper">
-            <img
-              v-if="skill.iconPath"
-              :src="skill.iconPath"
-              :alt="skill.title"
-              class="skill-icon"
-            />
-            <div v-else class="skill-icon-placeholder"></div>
+      <div class="code-editor">
+        <!-- Window controls + Tab bar -->
+        <div class="editor-header">
+          <div class="window-controls">
+            <span class="control close"></span>
+            <span class="control minimize"></span>
+            <span class="control maximize"></span>
           </div>
-          <div class="skill-content">
-            <h3 class="skill-title">{{ skill.title }}</h3>
-            <p class="skill-description">{{ skill.description }}</p>
+          <div class="editor-tabs">
+            <span class="tab active">capabilities.ts</span>
           </div>
-        </article>
-      </div>
+        </div>
 
-      <div class="section-footer">
-        <span class="code-punct">}</span>
+        <!-- Code content -->
+        <div class="editor-content">
+          <div class="line">
+            <span class="line-number">1</span>
+            <span class="code-keyword">export const</span>
+            <span class="code-var"> capabilities</span>
+            <span class="code-punct"> = [</span>
+          </div>
+
+          <article
+            v-for="(skill, index) in skillsConfig"
+            :key="skill.title"
+            class="skill-block"
+          >
+            <div class="line">
+              <span class="line-number">{{ index * 4 + 2 }}</span>
+              <span class="code-indent"></span>
+              <span class="code-punct">{</span>
+            </div>
+            <div class="line skill-name-line">
+              <span class="line-number">{{ index * 4 + 3 }}</span>
+              <span class="code-indent-2"></span>
+              <span class="code-prop">name</span>
+              <span class="code-punct">:</span>
+              <span class="code-string">"{{ skill.title }}"</span>
+              <span class="code-punct">,</span>
+              <img
+                v-if="skill.iconPath"
+                :src="skill.iconPath"
+                :alt="skill.title"
+                class="skill-icon"
+              />
+            </div>
+            <div class="line description-line">
+              <span class="line-number">{{ index * 4 + 4 }}</span>
+              <span class="code-indent-2"></span>
+              <span class="code-comment">// {{ skill.description }}</span>
+            </div>
+            <div class="line">
+              <span class="line-number">{{ index * 4 + 5 }}</span>
+              <span class="code-indent"></span>
+              <span class="code-punct">}{{ index < skillsConfig.length - 1 ? ',' : '' }}</span>
+            </div>
+          </article>
+
+          <div class="line">
+            <span class="line-number">{{ skillsConfig.length * 4 + 2 }}</span>
+            <span class="code-punct">];</span>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -317,71 +349,146 @@
     padding-left: var(--space-4);
   }
 
-  /* Skills Section */
+  /* Skills Section - Code Editor */
   .skills-section {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    background: var(--color-surface);
+  }
+
+  .code-editor {
+    background: var(--color-background-elevated);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--space-6);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
   }
 
-  .section-header,
-  .section-footer {
+  .editor-header {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+  }
+
+  .control.close {
+    background: #ff5f57;
+  }
+
+  .control.minimize {
+    background: #febc2e;
+  }
+
+  .control.maximize {
+    background: #28c840;
+  }
+
+  .editor-tabs {
+    display: flex;
+    flex: 1;
+  }
+
+  .tab {
     font-family: var(--font-mono);
-    font-size: var(--text-md);
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text-secondary);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
   }
 
-  .section-header {
-    margin-bottom: var(--space-6);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--color-border-subtle);
+  .tab.active {
+    color: var(--color-text-primary);
+    background: var(--color-background-elevated);
+    border-bottom-color: var(--color-primary);
   }
 
-  .section-footer {
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-border-subtle);
-    color: var(--color-text-muted);
+  .editor-content {
+    padding: var(--space-4) 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    overflow-x: auto;
   }
 
-  .skills-list {
+  .line {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+    align-items: flex-start;
+    padding: 0 var(--space-4);
+    min-height: 1.7em;
   }
 
-  .skill-block {
-    display: flex;
-    gap: var(--space-4);
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition-fast);
-  }
-
-  .skill-block:hover {
+  .line:hover {
     background: var(--color-surface-hover);
   }
 
   .line-number {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
     color: var(--color-text-muted);
     opacity: 0.5;
-    min-width: 24px;
+    min-width: 32px;
+    text-align: right;
+    padding-right: var(--space-4);
+    user-select: none;
     flex-shrink: 0;
-    padding-top: 2px;
   }
 
-  .skill-icon-wrapper {
+  .code-indent {
+    width: var(--space-4);
     flex-shrink: 0;
+  }
+
+  .code-indent-2 {
+    width: var(--space-8);
+    flex-shrink: 0;
+  }
+
+  .code-prop {
+    color: var(--quadrant-NE);
+  }
+
+  .code-string {
+    color: var(--color-green);
+    margin-left: var(--space-2);
+  }
+
+  .code-comment {
+    color: var(--color-text-muted);
+    font-style: italic;
+    word-break: break-word;
+  }
+
+  .skill-block {
+    margin: var(--space-3) 0;
+    transition: background-color var(--transition-fast);
+    border-radius: var(--radius-sm);
+  }
+
+  .skill-block:hover .line {
+    background: var(--color-surface-hover);
+  }
+
+  .skill-name-line {
+    align-items: center;
+    gap: var(--space-2);
   }
 
   .skill-icon {
-    width: 36px;
-    height: 36px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
+    margin-left: var(--space-3);
     filter: invert(45%) sepia(50%) saturate(500%) hue-rotate(140deg) brightness(95%) contrast(95%);
   }
 
@@ -389,37 +496,13 @@
     filter: invert(55%) sepia(40%) saturate(400%) hue-rotate(140deg) brightness(110%) contrast(90%);
   }
 
-  .skill-icon-placeholder {
-    width: 36px;
-    height: 36px;
-    background: var(--color-primary-light);
-    border-radius: var(--radius-md);
+  .description-line {
+    padding-top: var(--space-1);
+    padding-bottom: var(--space-1);
   }
 
-  .skill-content {
-    flex: 1;
-  }
-
-  .skill-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
-    font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-2) 0;
-  }
-
-  .skill-title::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
-  .skill-description {
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
+  .description-line .code-comment {
     line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
-    margin: 0;
   }
 
   /* Responsive */
@@ -457,36 +540,26 @@
       padding-left: 0;
     }
 
-    .skills-section {
-      padding: var(--space-4);
-    }
-
-    .section-header,
-    .section-footer {
-      font-size: var(--text-sm);
-    }
-
-    .skill-block {
-      padding: var(--space-3);
-      flex-wrap: wrap;
+    .editor-content {
+      font-size: var(--text-xs);
     }
 
     .line-number {
-      display: none;
+      min-width: 24px;
+      padding-right: var(--space-2);
     }
 
-    .skill-icon,
-    .skill-icon-placeholder {
-      width: 28px;
-      height: 28px;
+    .code-indent {
+      width: var(--space-2);
     }
 
-    .skill-title {
-      font-size: var(--text-base);
+    .code-indent-2 {
+      width: var(--space-4);
     }
 
-    .skill-description {
-      font-size: var(--text-sm);
+    .skill-icon {
+      width: 16px;
+      height: 16px;
     }
   }
 
