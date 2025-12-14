@@ -13,9 +13,33 @@
       </p>
     </section>
 
-    <!-- Mini Radar Visualization -->
-    <section class="radar-visual">
-      <div class="radar-container">
+    <!-- Radar Overview - 2 Column Layout -->
+    <section class="radar-overview">
+      <!-- Quadrants Column -->
+      <div class="quadrants-column">
+        <h2 class="column-title">quadrants</h2>
+        <div class="quadrants-list">
+          <article class="quadrant-item quadrant-ai">
+            <span class="quadrant-name">ai</span>
+            <span class="quadrant-desc">LLMs, ML frameworks, AI-assisted development</span>
+          </article>
+          <article class="quadrant-item quadrant-techniques">
+            <span class="quadrant-name">techniques</span>
+            <span class="quadrant-desc">Patterns, architecture, testing strategies</span>
+          </article>
+          <article class="quadrant-item quadrant-tools">
+            <span class="quadrant-name">tools</span>
+            <span class="quadrant-desc">IDEs, CLI utilities, productivity enhancers</span>
+          </article>
+          <article class="quadrant-item quadrant-techstack">
+            <span class="quadrant-name">tech-stack</span>
+            <span class="quadrant-desc">Languages, frameworks, libraries, platforms</span>
+          </article>
+        </div>
+      </div>
+
+      <!-- Radar Visualization -->
+      <div class="radar-visual">
         <svg class="radar-svg" viewBox="0 0 400 400" aria-label="Tech Radar visualization">
           <!-- Rings -->
           <circle cx="200" cy="200" r="190" class="ring ring-avoid" />
@@ -32,12 +56,6 @@
           <text x="280" y="105" class="quadrant-label label-ne">techniques</text>
           <text x="105" y="310" class="quadrant-label label-sw">tools</text>
           <text x="270" y="310" class="quadrant-label label-se">tech-stack</text>
-
-          <!-- Ring labels (on right side) -->
-          <text x="200" y="175" class="ring-label">proven</text>
-          <text x="200" y="130" class="ring-label">experimental</text>
-          <text x="200" y="85" class="ring-label">learning</text>
-          <text x="200" y="35" class="ring-label">avoid</text>
 
           <!-- Decorative blips -->
           <circle cx="180" cy="185" r="4" class="blip blip-nw" />
@@ -61,140 +79,40 @@
           <circle cx="310" cy="320" r="4" class="blip blip-se" />
         </svg>
       </div>
-    </section>
 
-    <!-- Quadrants Section -->
-    <section class="quadrants-section">
-      <h2 class="section-title">the quadrants</h2>
-      <p class="section-intro">
-        Technologies are organized into four quadrants based on their nature and purpose.
-      </p>
-
-      <div class="quadrants-grid">
-        <article class="quadrant-card quadrant-ai">
-          <div class="quadrant-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z" />
-              <circle cx="8" cy="14" r="1" fill="currentColor" />
-              <circle cx="16" cy="14" r="1" fill="currentColor" />
-            </svg>
-          </div>
-          <h3 class="quadrant-title">ai</h3>
-          <p class="quadrant-description">
-            Artificial intelligence tools, LLMs, machine learning frameworks, and AI-assisted development.
-            From code assistants to autonomous agents.
-          </p>
-        </article>
-
-        <article class="quadrant-card quadrant-techniques">
-          <div class="quadrant-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-            </svg>
-          </div>
-          <h3 class="quadrant-title">techniques</h3>
-          <p class="quadrant-description">
-            Methodologies, patterns, and practices for building software. Architecture decisions,
-            testing strategies, and development workflows.
-          </p>
-        </article>
-
-        <article class="quadrant-card quadrant-tools">
-          <div class="quadrant-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <path d="M8 21h8" />
-              <path d="M12 17v4" />
-              <path d="M7 8l3 3-3 3" />
-              <path d="M13 14h4" />
-            </svg>
-          </div>
-          <h3 class="quadrant-title">tools</h3>
-          <p class="quadrant-description">
-            Developer tools, IDEs, CLI utilities, and productivity enhancers. The software that
-            helps build better software.
-          </p>
-        </article>
-
-        <article class="quadrant-card quadrant-techstack">
-          <div class="quadrant-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <h3 class="quadrant-title">tech-stack</h3>
-          <p class="quadrant-description">
-            Languages, frameworks, libraries, and platforms. The building blocks that form
-            the foundation of applications.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <!-- Rings Section -->
-    <section class="rings-section">
-      <h2 class="section-title">the rings</h2>
-      <p class="section-intro">
-        Each technology is placed on a ring that reflects my confidence and recommendation level.
-      </p>
-
-      <div class="rings-list">
-        <article class="ring-card ring-proven">
-          <div class="ring-indicator">
+      <!-- Rings Column -->
+      <div class="rings-column">
+        <h2 class="column-title">rings</h2>
+        <div class="rings-list">
+          <article class="ring-item ring-proven">
             <span class="ring-dot"></span>
-          </div>
-          <div class="ring-content">
-            <h3 class="ring-title">proven</h3>
-            <p class="ring-description">
-              Battle-tested in production. These are technologies I've used extensively in real-world
-              applications and can confidently recommend. I know their strengths, edge cases, and
-              how to make them work at scale.
-            </p>
-          </div>
-        </article>
-
-        <article class="ring-card ring-experimental">
-          <div class="ring-indicator">
+            <div class="ring-text">
+              <span class="ring-name">proven</span>
+              <span class="ring-desc">Battle-tested in production, confident recommendations</span>
+            </div>
+          </article>
+          <article class="ring-item ring-experimental">
             <span class="ring-dot"></span>
-          </div>
-          <div class="ring-content">
-            <h3 class="ring-title">experimental</h3>
-            <p class="ring-description">
-              Testing the waters. Running in production for smaller features and non-mission-critical
-              systems. Promising enough to invest in, but still gathering evidence before full commitment.
-            </p>
-          </div>
-        </article>
-
-        <article class="ring-card ring-learning">
-          <div class="ring-indicator">
+            <div class="ring-text">
+              <span class="ring-name">experimental</span>
+              <span class="ring-desc">Testing in production for smaller, non-critical features</span>
+            </div>
+          </article>
+          <article class="ring-item ring-learning">
             <span class="ring-dot"></span>
-          </div>
-          <div class="ring-content">
-            <h3 class="ring-title">learning</h3>
-            <p class="ring-description">
-              Personal projects and exploration. Technologies I'm actively studying and testing to
-              understand their potential. Not yet ready for production, but showing promise to be
-              more effective than my current tools.
-            </p>
-          </div>
-        </article>
-
-        <article class="ring-card ring-avoid">
-          <div class="ring-indicator">
+            <div class="ring-text">
+              <span class="ring-name">learning</span>
+              <span class="ring-desc">Personal projects and exploration, not production-ready</span>
+            </div>
+          </article>
+          <article class="ring-item ring-avoid">
             <span class="ring-dot"></span>
-          </div>
-          <div class="ring-content">
-            <h3 class="ring-title">avoid</h3>
-            <p class="ring-description">
-              Proceed with caution. Technologies I've seen fail, accelerate project failures, or
-              simply don't align with how I work. Some are personal preference; others are hard-learned
-              lessons from real experience.
-            </p>
-          </div>
-        </article>
+            <div class="ring-text">
+              <span class="ring-name">avoid</span>
+              <span class="ring-desc">Seen fail or don't align with how I work</span>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -265,7 +183,7 @@
   /* Hero Section */
   .hero {
     max-width: var(--content-max-width);
-    margin: 0 auto var(--space-10) auto;
+    margin: 0 auto var(--space-8) auto;
     text-align: center;
   }
 
@@ -278,7 +196,7 @@
     font-size: var(--text-lg);
     color: var(--color-primary);
     text-transform: lowercase;
-    margin: 0 0 var(--space-6) 0;
+    margin: 0 0 var(--space-4) 0;
   }
 
   .hero-description {
@@ -295,15 +213,82 @@
     text-underline-offset: 2px;
   }
 
-  /* Radar Visualization */
-  .radar-visual {
-    max-width: 400px;
-    margin: 0 auto var(--space-12) auto;
+  /* Radar Overview - 3 Column Layout */
+  .radar-overview {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-6);
+    max-width: 1100px;
+    margin: 0 auto var(--space-8) auto;
+    align-items: center;
   }
 
-  .radar-container {
+  .column-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    text-transform: lowercase;
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .column-title::before {
+    content: "// ";
+    color: var(--color-primary);
+  }
+
+  /* Quadrants Column */
+  .quadrants-column {
+    justify-self: end;
+  }
+
+  .quadrants-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .quadrant-item {
+    text-align: right;
+  }
+
+  .quadrant-name {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    text-transform: lowercase;
+  }
+
+  .quadrant-ai .quadrant-name {
+    color: var(--quadrant-NW);
+  }
+
+  .quadrant-techniques .quadrant-name {
+    color: var(--quadrant-NE);
+  }
+
+  .quadrant-tools .quadrant-name {
+    color: var(--quadrant-SW);
+  }
+
+  .quadrant-techstack .quadrant-name {
+    color: var(--quadrant-SE);
+  }
+
+  .quadrant-desc {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+  }
+
+  /* Radar Visualization */
+  .radar-visual {
+    width: 320px;
     aspect-ratio: 1;
-    position: relative;
+    flex-shrink: 0;
   }
 
   .radar-svg {
@@ -340,7 +325,7 @@
 
   .quadrant-label {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: var(--font-semibold);
     text-transform: lowercase;
     text-anchor: middle;
@@ -362,14 +347,6 @@
     fill: var(--quadrant-SE);
   }
 
-  .ring-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    fill: var(--color-text-muted);
-    text-anchor: middle;
-    text-transform: lowercase;
-  }
-
   .blip {
     opacity: 0.8;
   }
@@ -388,6 +365,72 @@
 
   .blip-se {
     fill: var(--quadrant-SE);
+  }
+
+  /* Rings Column */
+  .rings-column {
+    justify-self: start;
+  }
+
+  .rings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ring-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .ring-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    border: 2px solid;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .ring-proven .ring-dot {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+  }
+
+  .ring-experimental .ring-dot {
+    border-color: var(--color-primary);
+    background: transparent;
+  }
+
+  .ring-learning .ring-dot {
+    border-color: var(--color-text-muted);
+    background: transparent;
+  }
+
+  .ring-avoid .ring-dot {
+    border-color: var(--color-error);
+    background: transparent;
+  }
+
+  .ring-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ring-name {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    text-transform: lowercase;
+  }
+
+  .ring-desc {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
   }
 
   /* Section Styles */
@@ -412,179 +455,7 @@
     color: var(--color-text-secondary);
     text-align: center;
     max-width: 600px;
-    margin: 0 auto var(--space-8) auto;
-  }
-
-  /* Quadrants Section */
-  .quadrants-section {
-    max-width: 900px;
-    margin: 0 auto var(--space-12) auto;
-  }
-
-  .quadrants-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-  }
-
-  .quadrant-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-    transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast);
-  }
-
-  .quadrant-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .quadrant-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: var(--space-3);
-  }
-
-  .quadrant-icon svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .quadrant-ai .quadrant-icon {
-    color: var(--quadrant-NW);
-  }
-
-  .quadrant-techniques .quadrant-icon {
-    color: var(--quadrant-NE);
-  }
-
-  .quadrant-tools .quadrant-icon {
-    color: var(--quadrant-SW);
-  }
-
-  .quadrant-techstack .quadrant-icon {
-    color: var(--quadrant-SE);
-  }
-
-  .quadrant-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-2) 0;
-  }
-
-  .quadrant-ai .quadrant-title {
-    color: var(--quadrant-NW);
-  }
-
-  .quadrant-techniques .quadrant-title {
-    color: var(--quadrant-NE);
-  }
-
-  .quadrant-tools .quadrant-title {
-    color: var(--quadrant-SW);
-  }
-
-  .quadrant-techstack .quadrant-title {
-    color: var(--quadrant-SE);
-  }
-
-  .quadrant-description {
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-
-  /* Rings Section */
-  .rings-section {
-    max-width: var(--content-max-width);
-    margin: 0 auto var(--space-12) auto;
-  }
-
-  .rings-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .ring-card {
-    display: flex;
-    gap: var(--space-4);
-    padding: var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    transition: box-shadow var(--transition-fast);
-  }
-
-  .ring-card:hover {
-    box-shadow: var(--shadow-sm);
-  }
-
-  .ring-indicator {
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-    padding-top: var(--space-1);
-  }
-
-  .ring-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: var(--radius-full);
-    border: 3px solid;
-  }
-
-  .ring-proven .ring-dot {
-    border-color: var(--color-primary);
-    background: var(--color-primary);
-  }
-
-  .ring-experimental .ring-dot {
-    border-color: var(--color-primary);
-    background: transparent;
-  }
-
-  .ring-learning .ring-dot {
-    border-color: var(--color-text-muted);
-    background: transparent;
-  }
-
-  .ring-avoid .ring-dot {
-    border-color: var(--color-error);
-    background: transparent;
-  }
-
-  .ring-content {
-    flex: 1;
-  }
-
-  .ring-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
-    font-weight: var(--font-semibold);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-2) 0;
-    color: var(--color-text-primary);
-  }
-
-  .ring-title::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
-  .ring-description {
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
-    margin: 0;
+    margin: 0 auto var(--space-6) auto;
   }
 
   /* Explore Section */
@@ -675,14 +546,58 @@
     color: var(--color-error);
   }
 
-  /* Responsive */
+  /* Responsive - Tablet */
+  @media (--lg) {
+    .radar-overview {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      max-width: 500px;
+    }
+
+    .quadrants-column {
+      justify-self: center;
+      order: 2;
+    }
+
+    .quadrants-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .quadrant-item {
+      text-align: center;
+    }
+
+    .radar-visual {
+      order: 1;
+      justify-self: center;
+    }
+
+    .rings-column {
+      justify-self: center;
+      order: 3;
+    }
+
+    .rings-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .column-title {
+      text-align: center;
+    }
+  }
+
+  /* Responsive - Mobile */
   @media (--md) {
     .tech-radar-home {
       padding: var(--space-6);
     }
 
     .hero {
-      margin-bottom: var(--space-8);
+      margin-bottom: var(--space-6);
     }
 
     .hero-tagline {
@@ -693,9 +608,12 @@
       font-size: var(--text-base);
     }
 
+    .radar-overview {
+      gap: var(--space-6);
+    }
+
     .radar-visual {
-      max-width: 300px;
-      margin-bottom: var(--space-10);
+      width: 280px;
     }
 
     .section-title {
@@ -706,52 +624,24 @@
       font-size: var(--text-base);
     }
 
-    .quadrants-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .quadrant-card {
-      padding: var(--space-4);
-    }
-
-    .quadrant-icon {
-      width: 32px;
-      height: 32px;
-    }
-
-    .quadrant-title {
-      font-size: var(--text-md);
-    }
-
-    .quadrant-description {
-      font-size: var(--text-sm);
-    }
-
-    .ring-card {
-      padding: var(--space-3);
-    }
-
-    .ring-title {
-      font-size: var(--text-base);
-    }
-
-    .ring-description {
-      font-size: var(--text-sm);
-    }
-
     .radar-link {
       font-size: var(--text-md);
       padding: var(--space-2) var(--space-4);
     }
   }
 
-  @media (--xs) {
-    .quadrant-label {
-      font-size: 11px;
+  @media (--sm) {
+    .quadrants-list,
+    .rings-list {
+      grid-template-columns: 1fr;
     }
 
-    .ring-label {
-      font-size: 7px;
+    .radar-visual {
+      width: 240px;
+    }
+
+    .quadrant-label {
+      font-size: 10px;
     }
   }
 </style>
