@@ -5,8 +5,8 @@
       <h1 class="page-title">tech radar</h1>
       <p class="hero-description">
         Inspired by
-        <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener">ThoughtWorks</a>,
-        this is my personal assessment of technologies based on hands-on experience—what works,
+        <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener">ThoughtWorks</a
+        >, this is my personal assessment of technologies based on hands-on experience—what works,
         what I'm testing, and what to avoid.
       </p>
 
@@ -25,7 +25,13 @@
           >
             <span class="cta-text">explore the radar</span>
             <span class="cta-version">{{ versions[0].name }}</span>
-            <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              class="cta-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </router-link>
@@ -67,22 +73,23 @@
     <section class="radar-overview">
       <!-- Quadrants Column -->
       <div class="quadrants-column">
+        <h2 class="column-title">quadrants</h2>
         <div class="quadrants-list">
           <article class="quadrant-item quadrant-ai">
             <span class="quadrant-name">ai</span>
-            <span class="quadrant-desc">LLMs, ML frameworks, AI-assisted development</span>
+            <span class="quadrant-desc">llms, ml frameworks, ai-assisted development</span>
           </article>
           <article class="quadrant-item quadrant-techniques">
             <span class="quadrant-name">techniques</span>
-            <span class="quadrant-desc">Patterns, architecture, testing strategies</span>
+            <span class="quadrant-desc">patterns, architecture, testing strategies</span>
           </article>
           <article class="quadrant-item quadrant-tools">
             <span class="quadrant-name">tools</span>
-            <span class="quadrant-desc">IDEs, CLI utilities, productivity enhancers</span>
+            <span class="quadrant-desc">ide, cli utilities, productivity enhancers</span>
           </article>
           <article class="quadrant-item quadrant-techstack">
             <span class="quadrant-name">tech-stack</span>
-            <span class="quadrant-desc">Languages, frameworks, libraries, platforms</span>
+            <span class="quadrant-desc">languages, frameworks, libraries, platforms</span>
           </article>
         </div>
       </div>
@@ -136,33 +143,36 @@
 
       <!-- Rings Column -->
       <div class="rings-column">
+        <h2 class="column-title">rings</h2>
         <div class="rings-list">
           <article class="ring-item ring-proven">
             <span class="ring-dot"></span>
             <div class="ring-text">
               <span class="ring-name">proven</span>
-              <span class="ring-desc">Battle-tested in production, confident recommendations</span>
+              <span class="ring-desc">battle-tested in production, confident recommendations</span>
             </div>
           </article>
           <article class="ring-item ring-experimental">
             <span class="ring-dot"></span>
             <div class="ring-text">
               <span class="ring-name">experimental</span>
-              <span class="ring-desc">Testing in production for smaller, non-critical features</span>
+              <span class="ring-desc"
+                >testing in production for smaller, non-critical features</span
+              >
             </div>
           </article>
           <article class="ring-item ring-learning">
             <span class="ring-dot"></span>
             <div class="ring-text">
               <span class="ring-name">learning</span>
-              <span class="ring-desc">Personal projects and exploration, not production-ready</span>
+              <span class="ring-desc">personal projects and exploration, not production-ready</span>
             </div>
           </article>
           <article class="ring-item ring-avoid">
             <span class="ring-dot"></span>
             <div class="ring-text">
               <span class="ring-name">avoid</span>
-              <span class="ring-desc">Seen fail or don't align with how I work</span>
+              <span class="ring-desc">seen fail or don't not personal preference</span>
             </div>
           </article>
         </div>
@@ -175,7 +185,10 @@
   import { ref, onMounted } from "vue";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
-  import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data-providers/data-provider";
+  import type {
+    TechRadarDataProvider,
+    RadarVersion,
+  } from "../domain/radar/data-providers/data-provider";
   import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/constants";
 
   const versions = ref<RadarVersion[]>([]);
@@ -247,6 +260,10 @@
     margin: 0 auto var(--space-8) auto;
     align-items: center;
     position: relative;
+  }
+
+  .column-title {
+    display: none;
   }
 
   /* Quadrants Column */
@@ -459,9 +476,7 @@
     color: var(--color-text-inverse);
     text-decoration: none;
     border-radius: var(--radius-md);
-    transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast),
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast),
       background-color var(--transition-fast);
   }
 
@@ -546,9 +561,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     margin-left: var(--space-1);
-    transition:
-      background var(--transition-fast),
-      border-color var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast);
   }
 
   .version-link:hover {
@@ -629,6 +642,22 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-4);
+    }
+
+    .column-title {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: var(--text-md);
+      font-weight: var(--font-semibold);
+      color: var(--color-text-primary);
+      text-transform: lowercase;
+      text-align: center;
+      margin: 0 0 var(--space-4) 0;
+    }
+
+    .column-title::before {
+      content: "// ";
+      color: var(--color-primary);
     }
   }
 
