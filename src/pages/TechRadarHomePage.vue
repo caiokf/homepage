@@ -101,26 +101,37 @@
           <line x1="200" y1="10" x2="200" y2="390" class="divider" />
           <line x1="10" y1="200" x2="390" y2="200" class="divider" />
 
-          <!-- Decorative blips -->
-          <circle cx="180" cy="185" r="4" class="blip blip-nw" />
-          <circle cx="165" cy="160" r="4" class="blip blip-nw" />
-          <circle cx="140" cy="130" r="4" class="blip blip-nw" />
-          <circle cx="120" cy="100" r="4" class="blip blip-nw" />
+          <!-- Decorative blips - NW quadrant (ai) -->
+          <circle cx="175" cy="168" r="4" class="blip blip-nw" />
+          <circle cx="152" cy="185" r="4" class="blip blip-nw" />
+          <circle cx="118" cy="142" r="4" class="blip blip-nw" />
+          <circle cx="165" cy="115" r="4" class="blip blip-nw" />
+          <circle cx="72" cy="168" r="4" class="blip blip-nw" />
+          <circle cx="98" cy="92" r="4" class="blip blip-nw" />
 
-          <circle cx="225" cy="180" r="4" class="blip blip-ne" />
-          <circle cx="250" cy="155" r="4" class="blip blip-ne" />
-          <circle cx="270" cy="120" r="4" class="blip blip-ne" />
-          <circle cx="300" cy="85" r="4" class="blip blip-ne" />
+          <!-- Decorative blips - NE quadrant (techniques) -->
+          <circle cx="232" cy="175" r="4" class="blip blip-ne" />
+          <circle cx="218" cy="142" r="4" class="blip blip-ne" />
+          <circle cx="268" cy="162" r="4" class="blip blip-ne" />
+          <circle cx="242" cy="98" r="4" class="blip blip-ne" />
+          <circle cx="312" cy="118" r="4" class="blip blip-ne" />
+          <circle cx="285" cy="72" r="4" class="blip blip-ne" />
 
-          <circle cx="175" cy="220" r="4" class="blip blip-sw" />
-          <circle cx="150" cy="250" r="4" class="blip blip-sw" />
-          <circle cx="125" cy="280" r="4" class="blip blip-sw" />
-          <circle cx="100" cy="310" r="4" class="blip blip-sw" />
+          <!-- Decorative blips - SW quadrant (tools) -->
+          <circle cx="168" cy="232" r="4" class="blip blip-sw" />
+          <circle cx="185" cy="258" r="4" class="blip blip-sw" />
+          <circle cx="132" cy="218" r="4" class="blip blip-sw" />
+          <circle cx="115" cy="272" r="4" class="blip blip-sw" />
+          <circle cx="78" cy="235" r="4" class="blip blip-sw" />
+          <circle cx="52" cy="298" r="4" class="blip blip-sw" />
 
-          <circle cx="220" cy="225" r="4" class="blip blip-se" />
-          <circle cx="245" cy="255" r="4" class="blip blip-se" />
-          <circle cx="275" cy="285" r="4" class="blip blip-se" />
-          <circle cx="310" cy="320" r="4" class="blip blip-se" />
+          <!-- Decorative blips - SE quadrant (tech-stack) -->
+          <circle cx="228" cy="218" r="4" class="blip blip-se" />
+          <circle cx="255" cy="242" r="4" class="blip blip-se" />
+          <circle cx="218" cy="268" r="4" class="blip blip-se" />
+          <circle cx="295" cy="215" r="4" class="blip blip-se" />
+          <circle cx="272" cy="298" r="4" class="blip blip-se" />
+          <circle cx="332" cy="255" r="4" class="blip blip-se" />
         </svg>
       </div>
 
