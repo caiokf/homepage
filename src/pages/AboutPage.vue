@@ -391,15 +391,15 @@
   }
 
   .control.close {
-    background: #ff5f57;
+    background: var(--control-close, #ff5f57);
   }
 
   .control.minimize {
-    background: #febc2e;
+    background: var(--control-minimize, #febc2e);
   }
 
   .control.maximize {
-    background: #28c840;
+    background: var(--control-maximize, #28c840);
   }
 
   .editor-tabs {
