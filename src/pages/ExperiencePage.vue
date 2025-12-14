@@ -1,98 +1,260 @@
 <template>
-  <div class="experience-page">
-    <h1 class="page-title">experience</h1>
+  <div class="github-profile">
+    <!-- Profile Header -->
+    <div class="profile-container">
+      <aside class="profile-sidebar">
+        <div class="avatar-container">
+          <img :src="avatarImage" alt="Profile" class="profile-avatar" />
+          <span class="status-indicator">💼</span>
+        </div>
+        <h1 class="profile-name">caio kinzel filho</h1>
+        <p class="profile-username">@caiokf</p>
+        <p class="profile-bio">
+          engineering leader & architect building scalable systems and high-performing teams
+        </p>
 
-    <div class="page-layout">
-      <aside class="sidebar">
-        <h3 class="sidebar-title">technologies</h3>
-        <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
-        <BadgeGroup :items="recentTechnologies" variant="muted" gap="xs" />
-      </aside>
-
-      <div class="content">
-        <div class="timeline">
-          <article
-            v-for="(experience, index) in visibleExperiences"
-            :key="index"
-            class="experience-card"
-          >
-            <header class="experience-header">
-              <div class="logos-wrapper">
-                <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
-                  <img
-                    :src="getCompanyLogo(experience)"
-                    :alt="experience.company"
-                    class="company-logo"
-                  />
-                </div>
-                <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
-                  <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
-                </div>
-              </div>
-              <div class="experience-title">
-                <h2 class="company-name">
-                  <a
-                    v-if="experience.website"
-                    :href="experience.website"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="company-link"
-                  >
-                    {{ experience.company }}
-                  </a>
-                  <span v-else>{{ experience.company }}</span>
-                </h2>
-                <span class="position">
-                  {{ experience.position }}
-                  <span class="via-text" v-if="experience.via"
-                    >&bull; via {{ getViaName(experience.via) }}</span
-                  >
-                </span>
-              </div>
-              <div class="experience-meta">
-                <div class="date-info">
-                  <span class="date-range">{{ formatDateRange(experience) }}</span>
-                  <span class="duration">{{ calculateDuration(experience) }}</span>
-                </div>
-                <BadgeGroup :items="experience.tags" align="end" gap="xs" />
-              </div>
-            </header>
-
-            <ul class="highlights">
-              <li
-                v-for="(highlight, hIndex) in experience.highlights"
-                :key="hIndex"
-                class="highlight-item"
-              >
-                {{ highlight }}
-              </li>
-            </ul>
-
-            <footer class="experience-footer">
-              <BadgeGroup
-                :items="parseTechnologies(experience.technologies)"
-                variant="muted"
-                size="md"
-              />
-            </footer>
-          </article>
-
-          <div v-if="!showAll" class="show-more-container">
-            <button @click="showAll = true" class="show-more-button">
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a
-                lot</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>there's more where that came from</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>archaeologists, click here</span
-              >
-            </button>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-icon">📦</span>
+            <span class="stat-value">{{ totalProjects }}</span>
+            <span class="stat-label">projects</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">🏢</span>
+            <span class="stat-value">{{ totalCompanies }}</span>
+            <span class="stat-label">companies</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">📅</span>
+            <span class="stat-value">{{ yearsOfExperience }}</span>
+            <span class="stat-label">years</span>
           </div>
         </div>
-      </div>
+
+        <div class="profile-details">
+          <div class="detail-item">
+            <span class="detail-icon">📍</span>
+            <span>Sunshine Coast, Australia</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">🔗</span>
+            <a href="https://caiokf.dev" class="detail-link">caiokf.dev</a>
+          </div>
+        </div>
+
+        <!-- Technologies as "Languages" -->
+        <div class="languages-section">
+          <h3 class="section-title">Top Technologies</h3>
+          <div class="language-bars">
+            <div
+              v-for="tech in topTechnologies"
+              :key="tech.name"
+              class="language-item"
+            >
+              <div class="language-header">
+                <span
+                  class="language-dot"
+                  :style="{ background: tech.color }"
+                ></span>
+                <span class="language-name">{{ tech.name }}</span>
+                <span class="language-percent">{{ tech.percent }}%</span>
+              </div>
+              <div class="language-bar">
+                <div
+                  class="language-fill"
+                  :style="{ width: tech.percent + '%', background: tech.color }"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="profile-main">
+        <!-- README Section -->
+        <section class="readme-section">
+          <div class="readme-header">
+            <span class="readme-icon">📄</span>
+            <span class="readme-filename">README.md</span>
+          </div>
+          <div class="readme-content">
+            <h2 class="readme-title">Hi there 👋</h2>
+            <p class="readme-text">
+              I'm a <strong>software engineering leader</strong> with
+              {{ yearsOfExperience }}+ years of experience building distributed
+              systems, leading engineering teams, and delivering impactful
+              products across multiple industries.
+            </p>
+            <div class="readme-badges">
+              <span class="badge architecture">🏗️ Architecture</span>
+              <span class="badge events">⚡ Event-Driven</span>
+              <span class="badge teams">👥 Engineering Teams</span>
+              <span class="badge data">📊 Data Systems</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contribution Graph -->
+        <section class="contribution-section">
+          <h2 class="section-header">
+            <span class="header-icon">📊</span>
+            {{ totalContributions }} contributions in the last {{ yearsOfExperience }} years
+          </h2>
+          <div class="contribution-graph">
+            <div class="graph-labels">
+              <span v-for="year in contributionYears" :key="year" class="year-label">
+                {{ year }}
+              </span>
+            </div>
+            <div class="graph-grid">
+              <div
+                v-for="(month, index) in contributionData"
+                :key="index"
+                class="contribution-cell"
+                :class="getCellClass(month.level)"
+                :title="`${month.label}: ${month.projects} projects`"
+              ></div>
+            </div>
+            <div class="graph-legend">
+              <span class="legend-label">Less</span>
+              <span class="legend-cell level-0"></span>
+              <span class="legend-cell level-1"></span>
+              <span class="legend-cell level-2"></span>
+              <span class="legend-cell level-3"></span>
+              <span class="legend-cell level-4"></span>
+              <span class="legend-label">More</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pinned Repositories (Featured Experiences) -->
+        <section class="pinned-section">
+          <h2 class="section-header">
+            <span class="header-icon">📌</span>
+            Pinned
+          </h2>
+          <div class="pinned-grid">
+            <article
+              v-for="exp in pinnedExperiences"
+              :key="exp.slug"
+              class="repo-card"
+            >
+              <div class="repo-header">
+                <span class="repo-icon">📁</span>
+                <a
+                  v-if="exp.website"
+                  :href="exp.website"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="repo-name"
+                >
+                  {{ formatRepoName(exp.company) }}
+                </a>
+                <span v-else class="repo-name">{{ formatRepoName(exp.company) }}</span>
+                <span class="repo-visibility">{{ exp.tags[0] || 'Public' }}</span>
+              </div>
+              <p class="repo-description">
+                {{ exp.position }} • {{ formatDateRange(exp) }}
+              </p>
+              <div class="repo-highlights">
+                <span
+                  v-for="(highlight, hIdx) in exp.highlights.slice(0, 2)"
+                  :key="hIdx"
+                  class="highlight-badge"
+                >
+                  {{ truncateHighlight(highlight) }}
+                </span>
+              </div>
+              <div class="repo-footer">
+                <div class="repo-tech">
+                  <span
+                    class="tech-dot"
+                    :style="{ background: getTechColor(exp.technologies.split(',')[0]) }"
+                  ></span>
+                  <span class="tech-name">{{ exp.technologies.split(',')[0].trim() }}</span>
+                </div>
+                <div class="repo-stats">
+                  <span class="stat-item">
+                    ⭐ {{ calculateMonths(exp) }}
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- All Repositories (Experience List) -->
+        <section class="repos-section">
+          <div class="repos-header">
+            <h2 class="section-header">
+              <span class="header-icon">📚</span>
+              Repositories
+              <span class="repo-count">{{ visibleExperiences.length }}</span>
+            </h2>
+            <div class="repos-filter">
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Find a repository..."
+                class="search-input"
+              />
+            </div>
+          </div>
+
+          <div class="repos-list">
+            <article
+              v-for="exp in filteredExperiences"
+              :key="exp.slug"
+              class="repo-item"
+            >
+              <div class="repo-item-main">
+                <div class="repo-item-header">
+                  <a
+                    v-if="exp.website"
+                    :href="exp.website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="repo-item-name"
+                  >
+                    {{ formatRepoName(exp.company) }}
+                  </a>
+                  <span v-else class="repo-item-name">{{ formatRepoName(exp.company) }}</span>
+                  <span class="repo-item-visibility">{{ exp.tags[0] || 'Public' }}</span>
+                </div>
+                <p class="repo-item-description">{{ exp.position }}</p>
+                <div class="repo-item-meta">
+                  <span class="meta-tech">
+                    <span
+                      class="tech-dot"
+                      :style="{ background: getTechColor(exp.technologies.split(',')[0]) }"
+                    ></span>
+                    {{ exp.technologies.split(',')[0].trim() }}
+                  </span>
+                  <span class="meta-date">Updated {{ formatRelativeDate(exp) }}</span>
+                </div>
+              </div>
+              <div class="repo-item-graph">
+                <svg class="mini-graph" viewBox="0 0 155 30">
+                  <path
+                    :d="generateMiniGraph(exp)"
+                    fill="none"
+                    stroke="var(--color-success)"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+            </article>
+          </div>
+
+          <button
+            v-if="!showAll && experiencesConfig.length > INITIAL_VISIBLE_COUNT"
+            @click="showAll = true"
+            class="show-more-btn"
+          >
+            Show {{ experiencesConfig.length - INITIAL_VISIBLE_COUNT }} more repositories
+          </button>
+        </section>
+      </main>
     </div>
   </div>
 </template>
@@ -100,47 +262,13 @@
 <script setup lang="ts">
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
-  import BadgeGroup from "../components/molecules/BadgeGroup.vue";
-
-  // Dynamically import all logos from assets/logos
-  const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
-    eager: true,
-    import: "default",
-  });
-
-  // Build a map from slug to logo URL
-  const companyLogos: Record<string, string> = {};
-  for (const path in logoModules) {
-    const slug = path.replace("../assets/logos/", "").replace(".jpeg", "");
-    companyLogos[slug] = logoModules[path] as string;
-  }
-
-  function getCompanyLogo(experience: Experience): string | undefined {
-    return companyLogos[experience.slug];
-  }
-
-  // Via company logos and names mapping
-  const viaLogos: Record<string, string> = {
-    toptal: companyLogos["toptal"],
-    tw: companyLogos["thoughtworks"],
-  };
-
-  const viaNames: Record<string, string> = {
-    toptal: "Toptal",
-    tw: "ThoughtWorks",
-  };
-
-  function getViaLogo(via: string): string | undefined {
-    return viaLogos[via];
-  }
-
-  function getViaName(via: string): string {
-    return viaNames[via] || via;
-  }
+  import avatarImage from "../assets/images/avatar.png";
 
   const INITIAL_VISIBLE_COUNT = 6;
   const showAll = ref(false);
+  const searchQuery = ref("");
 
+  // Stats calculations
   const yearsOfExperience = computed(() => {
     const oldestStartDate = experiencesConfig
       .map((exp) => new Date(exp.startDate).getTime())
@@ -150,6 +278,21 @@
     return currentYear - startYear;
   });
 
+  const totalCompanies = computed(() => {
+    const companies = new Set(experiencesConfig.map((exp) => exp.company));
+    return companies.size;
+  });
+
+  const totalProjects = computed(() => experiencesConfig.length);
+
+  const totalContributions = computed(() => {
+    return experiencesConfig.reduce((sum, exp) => sum + calculateMonths(exp), 0);
+  });
+
+  // Pinned experiences (most recent 6)
+  const pinnedExperiences = computed(() => experiencesConfig.slice(0, 6));
+
+  // Visible experiences for the list
   const visibleExperiences = computed(() => {
     if (showAll.value) {
       return experiencesConfig;
@@ -157,395 +300,881 @@
     return experiencesConfig.slice(0, INITIAL_VISIBLE_COUNT);
   });
 
-  const RECENT_YEARS = 5;
-
-  const recentTechnologies = computed(() => {
-    const cutoffDate = new Date();
-    cutoffDate.setFullYear(cutoffDate.getFullYear() - RECENT_YEARS);
-
-    const techSet = new Set<string>();
-
-    experiencesConfig.forEach((exp) => {
-      const endDate = exp.endDate ? new Date(exp.endDate) : new Date();
-      if (endDate >= cutoffDate) {
-        parseTechnologies(exp.technologies).forEach((tech) => techSet.add(tech));
-      }
-    });
-
-    return Array.from(techSet).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  // Filtered experiences based on search
+  const filteredExperiences = computed(() => {
+    if (!searchQuery.value) {
+      return visibleExperiences.value;
+    }
+    const query = searchQuery.value.toLowerCase();
+    return visibleExperiences.value.filter(
+      (exp) =>
+        exp.company.toLowerCase().includes(query) ||
+        exp.position.toLowerCase().includes(query) ||
+        exp.technologies.toLowerCase().includes(query)
+    );
   });
 
-  function formatDateRange(experience: Experience): string {
-    const startDate = new Date(experience.startDate);
-    const startStr = formatMonth(startDate);
+  // Top technologies with colors
+  const topTechnologies = computed(() => {
+    const techCount: Record<string, number> = {};
+    experiencesConfig.forEach((exp) => {
+      exp.technologies.split(",").forEach((tech) => {
+        const t = tech.trim();
+        techCount[t] = (techCount[t] || 0) + 1;
+      });
+    });
 
-    if (!experience.endDate) {
-      return `${startStr} - present`;
+    const sorted = Object.entries(techCount)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5);
+
+    const total = sorted.reduce((sum, [, count]) => sum + count, 0);
+    const colors = ["#3178c6", "#f1e05a", "#e34c26", "#563d7c", "#41b883"];
+
+    return sorted.map(([name, count], index) => ({
+      name,
+      percent: Math.round((count / total) * 100),
+      color: colors[index % colors.length],
+    }));
+  });
+
+  // Contribution data for the graph
+  const contributionYears = computed(() => {
+    const years: number[] = [];
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear - 10; y <= currentYear; y++) {
+      years.push(y);
+    }
+    return years;
+  });
+
+  const contributionData = computed(() => {
+    const data: { label: string; level: number; projects: number }[] = [];
+    const currentYear = new Date().getFullYear();
+
+    // Generate 12 months * 11 years of data
+    for (let y = currentYear - 10; y <= currentYear; y++) {
+      for (let m = 0; m < 12; m++) {
+        const date = new Date(y, m, 1);
+        const monthLabel = date.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        });
+
+        // Count active projects in this month
+        const activeProjects = experiencesConfig.filter((exp) => {
+          const start = new Date(exp.startDate);
+          const end = exp.endDate ? new Date(exp.endDate) : new Date();
+          return start <= date && end >= date;
+        }).length;
+
+        let level = 0;
+        if (activeProjects > 0) level = 1;
+        if (activeProjects > 1) level = 2;
+        if (activeProjects > 2) level = 3;
+        if (activeProjects > 3) level = 4;
+
+        data.push({ label: monthLabel, level, projects: activeProjects });
+      }
     }
 
-    const endDate = new Date(experience.endDate);
-    const endStr = formatMonth(endDate);
+    return data;
+  });
+
+  function getCellClass(level: number): string {
+    return `level-${level}`;
+  }
+
+  function formatRepoName(company: string): string {
+    return company.toLowerCase().replace(/\s+/g, "-");
+  }
+
+  function formatDateRange(exp: Experience): string {
+    const start = new Date(exp.startDate);
+    const end = exp.endDate ? new Date(exp.endDate) : new Date();
+    const startStr = start.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+    const endStr = exp.endDate
+      ? end.toLocaleDateString("en-US", { month: "short", year: "numeric" })
+      : "Present";
     return `${startStr} - ${endStr}`;
   }
 
-  function formatMonth(date: Date): string {
-    const months = [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec",
-    ];
-    return `${months[date.getMonth()]}/${date.getFullYear()}`;
+  function formatRelativeDate(exp: Experience): string {
+    const end = exp.endDate ? new Date(exp.endDate) : new Date();
+    const now = new Date();
+    const diffMonths =
+      (now.getFullYear() - end.getFullYear()) * 12 +
+      (now.getMonth() - end.getMonth());
+
+    if (diffMonths === 0) return "this month";
+    if (diffMonths === 1) return "last month";
+    if (diffMonths < 12) return `${diffMonths} months ago`;
+    const years = Math.floor(diffMonths / 12);
+    return `${years} year${years > 1 ? "s" : ""} ago`;
   }
 
-  function calculateDuration(experience: Experience): string {
-    const startDate = new Date(experience.startDate);
-    const endDate = experience.endDate ? new Date(experience.endDate) : new Date();
-
-    let months =
-      (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-      (endDate.getMonth() - startDate.getMonth());
-
-    const years = Math.floor(months / 12);
-    const remainingMonths = months % 12;
-
-    let duration = "";
-    if (years > 0) {
-      duration += `${years} ${years === 1 ? "year" : "years"}`;
-    }
-    if (remainingMonths > 0) {
-      if (duration) duration += ", ";
-      duration += `${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`;
-    }
-    if (!duration) {
-      duration = "< 1 month";
-    }
-
-    if (!experience.endDate) {
-      duration += " (and counting)";
-    }
-
-    return duration;
+  function calculateMonths(exp: Experience): number {
+    const start = new Date(exp.startDate);
+    const end = exp.endDate ? new Date(exp.endDate) : new Date();
+    return Math.max(
+      1,
+      (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth())
+    );
   }
 
-  function parseTechnologies(technologies: string): string[] {
-    return technologies.split(",").map((tech) => tech.trim());
+  function truncateHighlight(text: string): string {
+    return text.length > 50 ? text.substring(0, 47) + "..." : text;
+  }
+
+  function getTechColor(tech: string): string {
+    const colors: Record<string, string> = {
+      TypeScript: "#3178c6",
+      JavaScript: "#f1e05a",
+      Python: "#3572A5",
+      Java: "#b07219",
+      "C#": "#178600",
+      Ruby: "#701516",
+      Go: "#00ADD8",
+      Rust: "#dea584",
+      Vue: "#41b883",
+      React: "#61dafb",
+      Angular: "#dd0031",
+      Node: "#339933",
+      ".NET": "#512bd4",
+      AWS: "#FF9900",
+      Azure: "#0089D6",
+      Kubernetes: "#326ce5",
+      Docker: "#2496ED",
+    };
+    const normalizedTech = tech.trim();
+    for (const [key, color] of Object.entries(colors)) {
+      if (normalizedTech.toLowerCase().includes(key.toLowerCase())) {
+        return color;
+      }
+    }
+    return "#6e7681";
+  }
+
+  function generateMiniGraph(exp: Experience): string {
+    const points: string[] = [];
+    const width = 155;
+    const height = 30;
+
+    // Generate a simple activity pattern
+    for (let i = 0; i <= 10; i++) {
+      const x = (i / 10) * width;
+      const seed = exp.slug.charCodeAt(i % exp.slug.length) || 50;
+      const variation = Math.sin(i + seed) * 8;
+      const y = height / 2 + variation;
+      points.push(`${i === 0 ? "M" : "L"}${x},${y}`);
+    }
+
+    return points.join(" ");
   }
 </script>
 
 <style scoped>
-  .experience-page {
+  .github-profile {
     min-height: calc(100vh - 112px);
-    padding: var(--space-8);
+    padding: var(--space-6);
+    background: var(--color-background);
   }
 
-  .page-layout {
+  .profile-container {
     display: flex;
     gap: var(--space-8);
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
   }
 
-  .sidebar {
-    position: sticky;
-    top: calc(56px + var(--space-8));
-    width: 220px;
+  /* Sidebar */
+  .profile-sidebar {
+    width: 296px;
     flex-shrink: 0;
-    height: fit-content;
   }
 
-  .sidebar-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-1) 0;
-  }
-
-  .sidebar-title::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
-  .sidebar-subtitle {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    margin: 0 0 var(--space-4) 0;
-  }
-
-  .content {
-    flex: 1;
-    max-width: var(--content-max-width);
-  }
-
-  .page-title {
-    margin-bottom: var(--space-8);
-    text-align: center;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-  }
-
-  .experience-card {
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
-  }
-
-  .experience-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-4);
+  .avatar-container {
+    position: relative;
+    width: 296px;
     margin-bottom: var(--space-4);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--color-border);
   }
 
-  .logos-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-shrink: 0;
-  }
-
-  .company-logo-wrapper {
-    flex-shrink: 0;
-  }
-
-  .company-logo {
-    width: 58px;
-    height: 58px;
-    border-radius: var(--radius-md);
+  .profile-avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
     object-fit: cover;
   }
 
-  .via-logo-wrapper {
-    flex-shrink: 0;
+  .status-indicator {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 28px;
+    background: var(--color-surface);
+    border-radius: var(--radius-full);
+    padding: var(--space-1);
+    border: 2px solid var(--color-background);
   }
 
-  .via-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    object-fit: cover;
-    opacity: 0.8;
-  }
-
-  .experience-title {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    flex: 1;
-  }
-
-  .company-name {
-    font-family: var(--font-mono);
+  .profile-name {
     font-size: var(--text-xl);
     font-weight: var(--font-semibold);
-    margin: 0;
     color: var(--color-text-primary);
+    margin: 0;
     text-transform: lowercase;
-  }
-
-  .company-name::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
-  .company-link {
-    color: inherit;
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-
-  .company-link:hover {
-    color: var(--color-primary);
-  }
-
-  .position {
-    font-family: var(--font-mono);
-    font-size: var(--text-base);
-    color: var(--color-primary);
-    text-transform: lowercase;
-    font-weight: var(--font-semibold);
-  }
-
-  .via-text {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-  }
-
-  .experience-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-    text-align: right;
-  }
-
-  .date-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-  }
-
-  .date-range {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    text-transform: lowercase;
-  }
-
-  .duration {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-  }
-
-  .highlights {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-4) 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .highlight-item {
     font-family: var(--font-sans);
+  }
+
+  .profile-username {
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-4) 0;
+    font-family: var(--font-mono);
+  }
+
+  .profile-bio {
     font-size: var(--text-base);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
-    padding-left: var(--space-4);
-    position: relative;
+    margin: 0 0 var(--space-4) 0;
   }
 
-  .highlight-item::before {
-    content: ">";
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-family: var(--font-mono);
-    font-weight: var(--font-bold);
-  }
-
-  .experience-footer {
-    padding-top: var(--space-4);
+  .profile-stats {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) 0;
     border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .show-more-container {
+  .stat {
     display: flex;
-    justify-content: center;
-    padding: var(--space-6) 0;
-  }
-
-  .show-more-button {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-1);
-    font-family: var(--font-mono);
     font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: var(--space-4);
-    text-transform: lowercase;
-    transition: color var(--transition-fast);
   }
 
-  .show-more-button:hover {
+  .stat-icon {
+    font-size: var(--text-sm);
+  }
+
+  .stat-value {
+    font-weight: var(--font-semibold);
     color: var(--color-text-primary);
   }
 
-  .show-more-button .comment-prefix {
-    color: var(--color-primary);
+  .stat-label {
+    color: var(--color-text-muted);
   }
 
-  .show-more-line {
-    display: block;
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
   }
 
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .detail-icon {
+    width: 16px;
+  }
+
+  .detail-link {
+    color: var(--color-link);
+  }
+
+  .detail-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Languages/Tech section */
+  .languages-section {
+    margin-top: var(--space-6);
+  }
+
+  .section-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .language-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .language-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .language-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .language-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-full);
+  }
+
+  .language-name {
+    color: var(--color-text-primary);
+    flex: 1;
+  }
+
+  .language-percent {
+    color: var(--color-text-muted);
+  }
+
+  .language-bar {
+    height: 8px;
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .language-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width var(--transition-slow);
+  }
+
+  /* Main content */
+  .profile-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* README section */
+  .readme-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+  }
+
+  .readme-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-background-subtle);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .readme-icon {
+    font-size: var(--text-base);
+  }
+
+  .readme-filename {
+    font-family: var(--font-mono);
+  }
+
+  .readme-content {
+    padding: var(--space-6);
+  }
+
+  .readme-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--space-3) 0;
+    color: var(--color-text-primary);
+  }
+
+  .readme-text {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .readme-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+  }
+
+  .badge.architecture {
+    background: var(--color-teal);
+    color: white;
+  }
+
+  .badge.events {
+    background: var(--color-orange);
+    color: white;
+  }
+
+  .badge.teams {
+    background: var(--color-green);
+    color: white;
+  }
+
+  .badge.data {
+    background: var(--color-purple);
+    color: white;
+  }
+
+  /* Contribution Graph */
+  .contribution-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-base);
+    font-weight: var(--font-normal);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .header-icon {
+    font-size: var(--text-base);
+  }
+
+  .contribution-graph {
+    overflow-x: auto;
+  }
+
+  .graph-labels {
+    display: flex;
+    gap: 48px;
+    margin-bottom: var(--space-2);
+    padding-left: var(--space-2);
+  }
+
+  .year-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .graph-grid {
+    display: grid;
+    grid-template-columns: repeat(132, 10px);
+    grid-template-rows: repeat(7, 10px);
+    gap: 3px;
+    grid-auto-flow: column;
+  }
+
+  .contribution-cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    transition: transform var(--transition-fast);
+  }
+
+  .contribution-cell:hover {
+    transform: scale(1.3);
+  }
+
+  .level-0 {
+    background: var(--color-border);
+  }
+
+  .level-1 {
+    background: #9be9a8;
+  }
+
+  .level-2 {
+    background: #40c463;
+  }
+
+  .level-3 {
+    background: #30a14e;
+  }
+
+  .level-4 {
+    background: #216e39;
+  }
+
+  [data-theme="dark"] .level-1 {
+    background: #0e4429;
+  }
+
+  [data-theme="dark"] .level-2 {
+    background: #006d32;
+  }
+
+  [data-theme="dark"] .level-3 {
+    background: #26a641;
+  }
+
+  [data-theme="dark"] .level-4 {
+    background: #39d353;
+  }
+
+  .graph-legend {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    justify-content: flex-end;
+    margin-top: var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .legend-cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .legend-label {
+    margin: 0 var(--space-1);
+  }
+
+  /* Pinned Section */
+  .pinned-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .pinned-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .repo-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transition: border-color var(--transition-fast);
+  }
+
+  .repo-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .repo-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .repo-icon {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+  }
+
+  .repo-name {
+    font-weight: var(--font-semibold);
+    color: var(--color-link);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .repo-name:hover {
+    text-decoration: underline;
+  }
+
+  .repo-visibility {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    margin-left: auto;
+  }
+
+  .repo-description {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: var(--leading-normal);
+  }
+
+  .repo-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .highlight-badge {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    background: var(--color-background-subtle);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .repo-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  .repo-tech {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .tech-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+  }
+
+  .repo-stats {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  /* Repos List Section */
+  .repos-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .repos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .repo-count {
+    background: var(--color-background-subtle);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    margin-left: var(--space-2);
+  }
+
+  .repos-filter {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .search-input {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    width: 200px;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+  }
+
+  .repos-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .repo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-fast);
+  }
+
+  .repo-item:hover {
+    background: var(--color-background-subtle);
+  }
+
+  .repo-item:last-child {
+    border-bottom: none;
+  }
+
+  .repo-item-main {
+    flex: 1;
+  }
+
+  .repo-item-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+  }
+
+  .repo-item-name {
+    font-weight: var(--font-semibold);
+    color: var(--color-link);
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    text-decoration: none;
+  }
+
+  .repo-item-name:hover {
+    text-decoration: underline;
+  }
+
+  .repo-item-visibility {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    padding: 2px var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+  }
+
+  .repo-item-description {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .repo-item-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .meta-tech {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .repo-item-graph {
+    width: 155px;
+    height: 30px;
+    opacity: 0.7;
+  }
+
+  .mini-graph {
+    width: 100%;
+    height: 100%;
+  }
+
+  .show-more-btn {
+    width: 100%;
+    padding: var(--space-3);
+    background: var(--color-background-subtle);
+    color: var(--color-link);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+
+  .show-more-btn:hover {
+    background: var(--color-surface-hover);
+  }
+
+  /* Responsive */
   @media (--lg) {
-    .sidebar {
-      width: 180px;
+    .pinned-grid {
+      grid-template-columns: 1fr;
     }
   }
 
   @media (--md) {
-    .experience-page {
-      padding: var(--space-6);
-    }
-
-    .page-layout {
+    .profile-container {
       flex-direction: column;
     }
 
-    .sidebar {
-      position: static;
+    .profile-sidebar {
       width: 100%;
     }
 
-    .experience-header {
-      flex-wrap: wrap;
+    .avatar-container {
+      width: 200px;
+      margin: 0 auto var(--space-4) auto;
+    }
+
+    .profile-stats {
+      justify-content: center;
+    }
+
+    .graph-grid {
+      grid-template-columns: repeat(52, 10px);
+    }
+
+    .repos-header {
+      flex-direction: column;
       gap: var(--space-3);
-    }
-
-    .company-logo {
-      width: 50px;
-      height: 50px;
-    }
-
-    .via-logo {
-      width: 26px;
-      height: 26px;
-    }
-
-    .experience-meta {
       align-items: flex-start;
-      text-align: left;
     }
 
-    .date-info {
-      flex-direction: row;
-      align-items: baseline;
-      gap: var(--space-3);
+    .search-input {
+      width: 100%;
     }
 
-    .duration::before {
-      content: "• ";
+    .repo-item-graph {
+      display: none;
     }
+  }
 
-    .company-name {
-      font-size: var(--text-lg);
-    }
-
-    .experience-card {
+  @media (--sm) {
+    .github-profile {
       padding: var(--space-4);
+    }
+
+    .readme-badges {
+      gap: var(--space-1);
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 2px var(--space-2);
     }
   }
 </style>
