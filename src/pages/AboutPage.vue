@@ -263,10 +263,8 @@
     text-anchor: middle;
     animation: orbit-counter-rotate 60s linear infinite;
     will-change: transform;
-  }
-
-  .node-label-small {
-    font-size: 8px;
+    transform-box: fill-box;
+    transform-origin: center;
   }
 
   @keyframes orbit-counter-rotate {
@@ -277,6 +275,11 @@
       transform: rotate(-360deg);
     }
   }
+
+  .node-label-small {
+    font-size: 8px;
+  }
+
 
   .avatar-wrapper {
     position: absolute;
