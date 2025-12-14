@@ -10,86 +10,180 @@
       </aside>
 
       <div class="content">
-        <div class="timeline">
-          <article
-            v-for="(experience, index) in visibleExperiences"
-            :key="index"
-            class="experience-card"
-          >
-            <header class="experience-header">
-              <div class="logos-wrapper">
-                <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
-                  <img
-                    :src="getCompanyLogo(experience)"
-                    :alt="experience.company"
-                    class="company-logo"
-                  />
-                </div>
-                <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
-                  <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
-                </div>
+        <div class="terminal">
+          <!-- Terminal header -->
+          <div class="terminal-header">
+            <div class="window-controls">
+              <span class="control close"></span>
+              <span class="control minimize"></span>
+              <span class="control maximize"></span>
+            </div>
+            <div class="terminal-title">caio@career ~ % career --list --verbose</div>
+          </div>
+
+          <!-- Terminal content -->
+          <div class="terminal-body">
+            <!-- Command prompt -->
+            <div class="prompt-line">
+              <span class="prompt">$</span>
+              <span class="command">career --list --verbose</span>
+            </div>
+
+            <!-- Output header -->
+            <div class="output-line blank"></div>
+            <div class="output-line">
+              <span class="output-accent">Career Summary</span>
+            </div>
+            <div class="output-line">
+              <span class="output-dim">══════════════════════════════════════════════════════════</span>
+            </div>
+            <div class="output-line">
+              <span class="output-label">Total Experience:</span>
+              <span class="output-value">{{ yearsOfExperience }} years</span>
+            </div>
+            <div class="output-line">
+              <span class="output-label">Companies:</span>
+              <span class="output-value">{{ totalCompanies }}</span>
+            </div>
+            <div class="output-line">
+              <span class="output-label">Current Status:</span>
+              <span class="output-success">● EMPLOYED</span>
+            </div>
+            <div class="output-line blank"></div>
+
+            <!-- Experience entries -->
+            <div
+              v-for="(experience, index) in visibleExperiences"
+              :key="`exp-${experience.slug}-${index}`"
+              class="experience-block"
+            >
+              <!-- ASCII timeline connector -->
+              <div class="timeline-connector">
+                <span v-if="index === 0" class="connector-char">┌</span>
+                <span v-else class="connector-char">├</span>
+                <span class="connector-line">────</span>
+                <span class="connector-node" :class="{ current: !experience.endDate }">{{
+                  !experience.endDate ? "◉" : "○"
+                }}</span>
+                <span class="connector-line">──</span>
               </div>
-              <div class="experience-title">
-                <h2 class="company-name">
+
+              <!-- Experience header -->
+              <div class="exp-header">
+                <span class="exp-index">[{{ String(index + 1).padStart(2, "0") }}]</span>
+                <span class="exp-company">{{ experience.company }}</span>
+                <span v-if="!experience.endDate" class="exp-current">(current)</span>
+              </div>
+
+              <!-- Experience details -->
+              <div class="exp-details">
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                  <span class="detail-label">Role:</span>
+                  <span class="detail-value role">{{ experience.position }}</span>
+                  <span v-if="experience.via" class="detail-via"
+                    >via {{ getViaName(experience.via) }}</span
+                  >
+                </div>
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                  <span class="detail-label">Period:</span>
+                  <span class="detail-value">{{ formatDateRange(experience) }}</span>
+                  <span class="detail-duration">({{ calculateDuration(experience) }})</span>
+                </div>
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                  <span class="detail-label">Tags:</span>
+                  <span class="detail-tags">
+                    <span
+                      v-for="tag in experience.tags"
+                      :key="tag"
+                      class="tag"
+                      :class="getTagClass(tag)"
+                      >[{{ tag }}]</span
+                    >
+                  </span>
+                </div>
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                </div>
+
+                <!-- Highlights as bullet points -->
+                <div
+                  v-for="(highlight, hIndex) in experience.highlights"
+                  :key="`highlight-${hIndex}`"
+                  class="detail-line highlight-line"
+                >
+                  <span class="detail-connector">│</span>
+                  <span class="highlight-bullet">→</span>
+                  <span class="highlight-text">{{ highlight }}</span>
+                </div>
+
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                </div>
+
+                <!-- Tech stack -->
+                <div class="detail-line tech-line">
+                  <span class="detail-connector">│</span>
+                  <span class="detail-label">Stack:</span>
+                  <span class="tech-list">{{
+                    parseTechnologies(experience.technologies).join(", ")
+                  }}</span>
+                </div>
+
+                <!-- Website -->
+                <div v-if="experience.website" class="detail-line">
+                  <span class="detail-connector">│</span>
+                  <span class="detail-label">URL:</span>
                   <a
-                    v-if="experience.website"
                     :href="experience.website"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="company-link"
+                    class="detail-link"
+                    >{{ experience.website }}</a
                   >
-                    {{ experience.company }}
-                  </a>
-                  <span v-else>{{ experience.company }}</span>
-                </h2>
-                <span class="position">
-                  {{ experience.position }}
-                  <span class="via-text" v-if="experience.via"
-                    >&bull; via {{ getViaName(experience.via) }}</span
-                  >
-                </span>
-              </div>
-              <div class="experience-meta">
-                <div class="date-info">
-                  <span class="date-range">{{ formatDateRange(experience) }}</span>
-                  <span class="duration">{{ calculateDuration(experience) }}</span>
                 </div>
-                <BadgeGroup :items="experience.tags" align="end" gap="xs" />
+
+                <!-- Separator -->
+                <div class="detail-line">
+                  <span class="detail-connector">│</span>
+                </div>
               </div>
-            </header>
+            </div>
 
-            <ul class="highlights">
-              <li
-                v-for="(highlight, hIndex) in experience.highlights"
-                :key="hIndex"
-                class="highlight-item"
-              >
-                {{ highlight }}
-              </li>
-            </ul>
+            <!-- Show more -->
+            <div v-if="!showAll" class="show-more-block">
+              <div class="timeline-connector">
+                <span class="connector-char">│</span>
+              </div>
+              <div class="output-line">
+                <span class="output-dim">... {{ remainingCount }} more entries hidden ...</span>
+              </div>
+              <div class="output-line blank"></div>
+              <div class="prompt-line">
+                <span class="prompt">$</span>
+                <button @click="showAll = true" class="show-more-cmd">
+                  career --list --all
+                  <span class="cursor">▋</span>
+                </button>
+              </div>
+            </div>
 
-            <footer class="experience-footer">
-              <BadgeGroup
-                :items="parseTechnologies(experience.technologies)"
-                variant="muted"
-                size="md"
-              />
-            </footer>
-          </article>
-
-          <div v-if="!showAll" class="show-more-container">
-            <button @click="showAll = true" class="show-more-button">
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a
-                lot</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>there's more where that came from</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>archaeologists, click here</span
-              >
-            </button>
+            <!-- End of output -->
+            <template v-else>
+              <div class="timeline-connector">
+                <span class="connector-char">└</span>
+                <span class="connector-line">────</span>
+                <span class="connector-end">■</span>
+                <span class="end-label">END OF CAREER LOG</span>
+              </div>
+              <div class="output-line blank"></div>
+              <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="cursor">▋</span>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -102,37 +196,10 @@
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
-  // Dynamically import all logos from assets/logos
-  const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
-    eager: true,
-    import: "default",
-  });
-
-  // Build a map from slug to logo URL
-  const companyLogos: Record<string, string> = {};
-  for (const path in logoModules) {
-    const slug = path.replace("../assets/logos/", "").replace(".jpeg", "");
-    companyLogos[slug] = logoModules[path] as string;
-  }
-
-  function getCompanyLogo(experience: Experience): string | undefined {
-    return companyLogos[experience.slug];
-  }
-
-  // Via company logos and names mapping
-  const viaLogos: Record<string, string> = {
-    toptal: companyLogos["toptal"],
-    tw: companyLogos["thoughtworks"],
-  };
-
   const viaNames: Record<string, string> = {
     toptal: "Toptal",
     tw: "ThoughtWorks",
   };
-
-  function getViaLogo(via: string): string | undefined {
-    return viaLogos[via];
-  }
 
   function getViaName(via: string): string {
     return viaNames[via] || via;
@@ -148,6 +215,15 @@
     const startYear = new Date(oldestStartDate).getFullYear();
     const currentYear = new Date().getFullYear();
     return currentYear - startYear;
+  });
+
+  const totalCompanies = computed(() => {
+    const companies = new Set(experiencesConfig.map((exp) => exp.company));
+    return companies.size;
+  });
+
+  const remainingCount = computed(() => {
+    return experiencesConfig.length - INITIAL_VISIBLE_COUNT;
   });
 
   const visibleExperiences = computed(() => {
@@ -172,7 +248,9 @@
       }
     });
 
-    return Array.from(techSet).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    return Array.from(techSet).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    );
   });
 
   function formatDateRange(experience: Experience): string {
@@ -180,37 +258,37 @@
     const startStr = formatMonth(startDate);
 
     if (!experience.endDate) {
-      return `${startStr} - present`;
+      return `${startStr} → present`;
     }
 
     const endDate = new Date(experience.endDate);
     const endStr = formatMonth(endDate);
-    return `${startStr} - ${endStr}`;
+    return `${startStr} → ${endStr}`;
   }
 
   function formatMonth(date: Date): string {
     const months = [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
-    return `${months[date.getMonth()]}/${date.getFullYear()}`;
+    return `${months[date.getMonth()]} ${date.getFullYear()}`;
   }
 
   function calculateDuration(experience: Experience): string {
     const startDate = new Date(experience.startDate);
     const endDate = experience.endDate ? new Date(experience.endDate) : new Date();
 
-    let months =
+    const months =
       (endDate.getFullYear() - startDate.getFullYear()) * 12 +
       (endDate.getMonth() - startDate.getMonth());
 
@@ -219,18 +297,14 @@
 
     let duration = "";
     if (years > 0) {
-      duration += `${years} ${years === 1 ? "year" : "years"}`;
+      duration += `${years}y`;
     }
     if (remainingMonths > 0) {
-      if (duration) duration += ", ";
-      duration += `${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`;
+      if (duration) duration += " ";
+      duration += `${remainingMonths}m`;
     }
     if (!duration) {
-      duration = "< 1 month";
-    }
-
-    if (!experience.endDate) {
-      duration += " (and counting)";
+      duration = "<1m";
     }
 
     return duration;
@@ -238,6 +312,18 @@
 
   function parseTechnologies(technologies: string): string[] {
     return technologies.split(",").map((tech) => tech.trim());
+  }
+
+  function getTagClass(tag: string): string {
+    const classes: Record<string, string> = {
+      remote: "tag-remote",
+      "on-site": "tag-onsite",
+      fintech: "tag-fintech",
+      startup: "tag-startup",
+      contract: "tag-contract",
+      enterprise: "tag-enterprise",
+    };
+    return classes[tag] || "";
   }
 </script>
 
@@ -254,10 +340,19 @@
     margin: 0 auto;
   }
 
+  .page-title {
+    margin-bottom: var(--space-8);
+    text-align: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Sidebar */
   .sidebar {
     position: sticky;
     top: calc(56px + var(--space-8));
-    width: 220px;
+    width: 200px;
     flex-shrink: 0;
     height: fit-content;
   }
@@ -283,213 +378,327 @@
     margin: 0 0 var(--space-4) 0;
   }
 
+  /* Terminal */
   .content {
     flex: 1;
-    max-width: var(--content-max-width);
+    min-width: 0;
   }
 
-  .page-title {
-    margin-bottom: var(--space-8);
-    text-align: center;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-  }
-
-  .experience-card {
-    background: var(--color-surface);
+  .terminal {
+    background: #1a1a1a;
     border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid #333;
   }
 
-  .experience-header {
+  .terminal-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-4);
-    margin-bottom: var(--space-4);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-4);
+    background: #2d2d2d;
+    border-bottom: 1px solid #333;
   }
 
-  .logos-wrapper {
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+  }
+
+  .control.close {
+    background: #ff5f57;
+  }
+
+  .control.minimize {
+    background: #febc2e;
+  }
+
+  .control.maximize {
+    background: #28c840;
+  }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: #888;
+  }
+
+  .terminal-body {
+    padding: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: #e0e0e0;
+    overflow-x: auto;
+  }
+
+  /* Prompt and output lines */
+  .prompt-line {
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    flex-shrink: 0;
   }
 
-  .company-logo-wrapper {
-    flex-shrink: 0;
-  }
-
-  .company-logo {
-    width: 58px;
-    height: 58px;
-    border-radius: var(--radius-md);
-    object-fit: cover;
-  }
-
-  .via-logo-wrapper {
-    flex-shrink: 0;
-  }
-
-  .via-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    object-fit: cover;
-    opacity: 0.8;
-  }
-
-  .experience-title {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    flex: 1;
-  }
-
-  .company-name {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    font-weight: var(--font-semibold);
-    margin: 0;
-    color: var(--color-text-primary);
-    text-transform: lowercase;
-  }
-
-  .company-name::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
-  .company-link {
-    color: inherit;
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-
-  .company-link:hover {
-    color: var(--color-primary);
-  }
-
-  .position {
-    font-family: var(--font-mono);
-    font-size: var(--text-base);
-    color: var(--color-primary);
-    text-transform: lowercase;
-    font-weight: var(--font-semibold);
-  }
-
-  .via-text {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-  }
-
-  .experience-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-    text-align: right;
-  }
-
-  .date-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-  }
-
-  .date-range {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    text-transform: lowercase;
-  }
-
-  .duration {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-  }
-
-  .highlights {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-4) 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .highlight-item {
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: var(--leading-relaxed);
-    padding-left: var(--space-4);
-    position: relative;
-  }
-
-  .highlight-item::before {
-    content: ">";
-    position: absolute;
-    left: 0;
-    color: var(--color-primary);
-    font-family: var(--font-mono);
+  .prompt {
+    color: #50fa7b;
     font-weight: var(--font-bold);
   }
 
-  .experience-footer {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-border);
+  .command {
+    color: #f8f8f2;
   }
 
-  .show-more-container {
-    display: flex;
-    justify-content: center;
-    padding: var(--space-6) 0;
+  .output-line {
+    padding: 2px 0;
   }
 
-  .show-more-button {
+  .output-line.blank {
+    height: 1.6em;
+  }
+
+  .output-accent {
+    color: #8be9fd;
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .output-dim {
+    color: #6272a4;
+  }
+
+  .output-label {
+    color: #bd93f9;
+    margin-right: var(--space-2);
+  }
+
+  .output-value {
+    color: #f8f8f2;
+  }
+
+  .output-success {
+    color: #50fa7b;
+  }
+
+  /* Experience block */
+  .experience-block {
+    margin: var(--space-2) 0;
+  }
+
+  /* Timeline connector */
+  .timeline-connector {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    color: #6272a4;
+    margin-bottom: 4px;
+  }
+
+  .connector-char {
+    color: #6272a4;
+  }
+
+  .connector-line {
+    color: #6272a4;
+  }
+
+  .connector-node {
+    color: #6272a4;
+    margin: 0 2px;
+  }
+
+  .connector-node.current {
+    color: #50fa7b;
+  }
+
+  .connector-end {
+    color: #ff79c6;
+    margin: 0 var(--space-2);
+  }
+
+  .end-label {
+    color: #6272a4;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Experience header */
+  .exp-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-left: var(--space-2);
+  }
+
+  .exp-index {
+    color: #ffb86c;
+  }
+
+  .exp-company {
+    color: #ff79c6;
+    font-weight: var(--font-bold);
+  }
+
+  .exp-current {
+    color: #50fa7b;
+    font-size: var(--text-xs);
+  }
+
+  /* Experience details */
+  .exp-details {
+    padding-left: var(--space-2);
+  }
+
+  .detail-line {
+    display: flex;
     align-items: flex-start;
+    gap: var(--space-2);
+    padding: 2px 0;
+  }
+
+  .detail-connector {
+    color: #6272a4;
+    flex-shrink: 0;
+    width: 1ch;
+  }
+
+  .detail-label {
+    color: #bd93f9;
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+
+  .detail-value {
+    color: #f8f8f2;
+  }
+
+  .detail-value.role {
+    color: #8be9fd;
+  }
+
+  .detail-via {
+    color: #6272a4;
+    font-size: var(--text-xs);
+    margin-left: var(--space-2);
+  }
+
+  .detail-duration {
+    color: #6272a4;
+    margin-left: var(--space-2);
+  }
+
+  .detail-tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-1);
+  }
+
+  .tag {
+    color: #6272a4;
+    font-size: var(--text-xs);
+  }
+
+  .tag.tag-remote {
+    color: #8be9fd;
+  }
+
+  .tag.tag-onsite {
+    color: #ffb86c;
+  }
+
+  .tag.tag-fintech {
+    color: #50fa7b;
+  }
+
+  .tag.tag-startup {
+    color: #ff79c6;
+  }
+
+  .tag.tag-contract {
+    color: #bd93f9;
+  }
+
+  .tag.tag-enterprise {
+    color: #f1fa8c;
+  }
+
+  .highlight-line {
+    padding-left: 0;
+  }
+
+  .highlight-bullet {
+    color: #50fa7b;
+    flex-shrink: 0;
+  }
+
+  .highlight-text {
+    color: #f8f8f2;
+    opacity: 0.9;
+  }
+
+  .tech-line {
+    flex-wrap: wrap;
+  }
+
+  .tech-list {
+    color: #f1fa8c;
+    opacity: 0.8;
+  }
+
+  .detail-link {
+    color: #8be9fd;
+    text-decoration: none;
+  }
+
+  .detail-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Show more */
+  .show-more-block {
+    margin-top: var(--space-4);
+  }
+
+  .show-more-cmd {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    color: #f8f8f2;
     background: none;
     border: none;
     cursor: pointer;
-    padding: var(--space-4);
-    text-transform: lowercase;
-    transition: color var(--transition-fast);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
   }
 
-  .show-more-button:hover {
-    color: var(--color-text-primary);
+  .show-more-cmd:hover {
+    color: #8be9fd;
   }
 
-  .show-more-button .comment-prefix {
-    color: var(--color-primary);
+  .cursor {
+    color: #50fa7b;
+    animation: blink 1s step-end infinite;
   }
 
-  .show-more-line {
-    display: block;
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
+  /* Responsive */
   @media (--lg) {
     .sidebar {
       width: 180px;
@@ -510,42 +719,37 @@
       width: 100%;
     }
 
-    .experience-header {
+    .terminal-header {
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .terminal-title {
+      font-size: var(--text-xs);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .terminal-body {
+      padding: var(--space-3);
+      font-size: var(--text-xs);
+    }
+
+    .detail-label {
+      min-width: 50px;
+    }
+
+    .exp-header {
       flex-wrap: wrap;
-      gap: var(--space-3);
     }
+  }
 
-    .company-logo {
-      width: 50px;
-      height: 50px;
-    }
+  /* Dark theme adjustments - terminal always dark */
+  [data-theme="light"] .terminal {
+    background: #1a1a1a;
+  }
 
-    .via-logo {
-      width: 26px;
-      height: 26px;
-    }
-
-    .experience-meta {
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    .date-info {
-      flex-direction: row;
-      align-items: baseline;
-      gap: var(--space-3);
-    }
-
-    .duration::before {
-      content: "• ";
-    }
-
-    .company-name {
-      font-size: var(--text-lg);
-    }
-
-    .experience-card {
-      padding: var(--space-4);
-    }
+  [data-theme="light"] .terminal-header {
+    background: #2d2d2d;
   }
 </style>
