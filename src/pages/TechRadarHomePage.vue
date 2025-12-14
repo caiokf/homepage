@@ -388,32 +388,29 @@
   }
 
   .ring-dot {
-    width: 12px;
-    height: 12px;
+    width: 20px;
+    height: 20px;
     border-radius: var(--radius-full);
-    border: 2px solid;
+    border: 5px solid;
     flex-shrink: 0;
-    margin-top: 3px;
+    background: transparent;
   }
 
   .ring-proven .ring-dot {
-    border-color: var(--color-primary);
-    background: var(--color-primary);
+    border-color: var(--ring-0);
+    background: var(--ring-0);
   }
 
   .ring-experimental .ring-dot {
-    border-color: var(--color-primary);
-    background: transparent;
+    border-color: var(--ring-1);
   }
 
   .ring-learning .ring-dot {
-    border-color: var(--color-text-muted);
-    background: transparent;
+    border-color: var(--ring-2);
   }
 
   .ring-avoid .ring-dot {
-    border-color: var(--color-error);
-    background: transparent;
+    border-color: var(--ring-3);
   }
 
   .ring-text {
