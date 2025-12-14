@@ -16,79 +16,97 @@
             :key="index"
             class="experience-card"
           >
-            <header class="experience-header">
-              <div class="logos-wrapper">
-                <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
-                  <img
-                    :src="getCompanyLogo(experience)"
-                    :alt="experience.company"
-                    class="company-logo"
-                  />
-                </div>
-                <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
-                  <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
-                </div>
+            <!-- App Window Header -->
+            <header class="card-header">
+              <div class="window-controls">
+                <span class="control close"></span>
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
               </div>
-              <div class="experience-title">
-                <h2 class="company-name">
-                  <a
-                    v-if="experience.website"
-                    :href="experience.website"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="company-link"
-                  >
-                    {{ experience.company }}
-                  </a>
-                  <span v-else>{{ experience.company }}</span>
-                </h2>
-                <span class="position">
-                  {{ experience.position }}
-                  <span class="via-text" v-if="experience.via"
-                    >&bull; via {{ getViaName(experience.via) }}</span
-                  >
-                </span>
-              </div>
-              <div class="experience-meta">
-                <div class="date-info">
-                  <span class="date-range">{{ formatDateRange(experience) }}</span>
-                  <span class="duration">{{ calculateDuration(experience) }}</span>
-                </div>
-                <BadgeGroup :items="experience.tags" align="end" gap="xs" />
+              <div class="card-meta">
+                <span class="meta-date">{{ formatDateRange(experience) }}</span>
+                <span class="meta-duration">{{ calculateDuration(experience) }}</span>
               </div>
             </header>
 
-            <ul class="highlights">
-              <li
-                v-for="(highlight, hIndex) in experience.highlights"
-                :key="hIndex"
-                class="highlight-item"
-              >
-                {{ highlight }}
-              </li>
-            </ul>
+            <!-- Card Content -->
+            <div class="card-content">
+              <!-- Company Info Section -->
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="logos-wrapper">
+                    <div class="company-logo-wrapper" v-if="getCompanyLogo(experience)">
+                      <img
+                        :src="getCompanyLogo(experience)"
+                        :alt="experience.company"
+                        class="company-logo"
+                      />
+                    </div>
+                    <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
+                      <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
+                    </div>
+                  </div>
+                  <div class="company-info">
+                    <h2 class="company-name">
+                      <a
+                        v-if="experience.website"
+                        :href="experience.website"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="company-link"
+                      >
+                        {{ experience.company }}
+                      </a>
+                      <span v-else>{{ experience.company }}</span>
+                    </h2>
+                    <div class="position-row">
+                      <span class="position">{{ experience.position }}</span>
+                      <span class="via-text" v-if="experience.via">
+                        via {{ getViaName(experience.via) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tags-wrapper">
+                    <BadgeGroup :items="experience.tags" gap="xs" align="end" />
+                  </div>
+                </div>
+              </div>
 
-            <footer class="experience-footer">
-              <BadgeGroup
-                :items="parseTechnologies(experience.technologies)"
-                variant="muted"
-                size="md"
-              />
-            </footer>
+              <!-- Highlights -->
+              <div class="highlights-section">
+                <ul class="highlights">
+                  <li
+                    v-for="(highlight, hIndex) in experience.highlights"
+                    :key="hIndex"
+                    class="highlight-item"
+                  >
+                    {{ highlight }}
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Technologies -->
+              <div class="tech-section">
+                <BadgeGroup
+                  :items="parseTechnologies(experience.technologies)"
+                  variant="muted"
+                  size="md"
+                />
+              </div>
+            </div>
           </article>
 
           <div v-if="!showAll" class="show-more-container">
             <button @click="showAll = true" class="show-more-button">
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a
-                lot</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>there's more where that came from</span
-              >
-              <span class="show-more-line"
-                ><span class="comment-prefix"></span>archaeologists, click here</span
-              >
+              <span class="show-more-line">
+                <span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a lot
+              </span>
+              <span class="show-more-line">
+                <span class="comment-prefix"></span>there's more where that came from
+              </span>
+              <span class="show-more-line">
+                <span class="comment-prefix"></span>archaeologists, click here
+              </span>
             </button>
           </div>
         </div>
@@ -217,23 +235,14 @@
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
 
-    let duration = "";
-    if (years > 0) {
-      duration += `${years} ${years === 1 ? "year" : "years"}`;
+    if (years > 0 && remainingMonths > 0) {
+      return `${years}y ${remainingMonths}m`;
+    } else if (years > 0) {
+      return `${years}y`;
+    } else if (remainingMonths > 0) {
+      return `${remainingMonths}m`;
     }
-    if (remainingMonths > 0) {
-      if (duration) duration += ", ";
-      duration += `${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`;
-    }
-    if (!duration) {
-      duration = "< 1 month";
-    }
-
-    if (!experience.endDate) {
-      duration += " (and counting)";
-    }
-
-    return duration;
+    return "< 1m";
   }
 
   function parseTechnologies(technologies: string): string[] {
@@ -299,25 +308,98 @@
   .timeline {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
+  /* App Window Card Styling */
   .experience-card {
-    background: var(--color-surface);
+    background: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
     transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
   }
 
-  .experience-header {
+  .experience-card:hover {
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Card Header - Window Chrome */
+  .card-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+  }
+
+  .control.close {
+    background: #ff5f57;
+  }
+
+  .control.minimize {
+    background: #febc2e;
+  }
+
+  .control.maximize {
+    background: #28c840;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .meta-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .meta-duration {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Card Content */
+  .card-content {
+    padding: var(--space-5);
+  }
+
+  /* Info Section */
+  .info-section {
     margin-bottom: var(--space-4);
     padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--color-border);
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
   }
 
   .logos-wrapper {
@@ -332,10 +414,11 @@
   }
 
   .company-logo {
-    width: 58px;
-    height: 58px;
+    width: 52px;
+    height: 52px;
     border-radius: var(--radius-md);
     object-fit: cover;
+    border: 2px solid var(--color-border);
   }
 
   .via-logo-wrapper {
@@ -343,32 +426,26 @@
   }
 
   .via-logo {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: var(--radius-sm);
     object-fit: cover;
     opacity: 0.8;
+    border: 1px solid var(--color-border);
   }
 
-  .experience-title {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
+  .company-info {
     flex: 1;
+    min-width: 0;
   }
 
   .company-name {
     font-family: var(--font-mono);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     font-weight: var(--font-semibold);
-    margin: 0;
+    margin: 0 0 var(--space-1) 0;
     color: var(--color-text-primary);
     text-transform: lowercase;
-  }
-
-  .company-name::before {
-    content: "// ";
-    color: var(--color-primary);
   }
 
   .company-link {
@@ -381,53 +458,46 @@
     color: var(--color-primary);
   }
 
+  .position-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
   .position {
     font-family: var(--font-mono);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     color: var(--color-primary);
     text-transform: lowercase;
-    font-weight: var(--font-semibold);
+    font-weight: var(--font-medium);
   }
 
   .via-text {
     font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-  }
-
-  .experience-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-    text-align: right;
-  }
-
-  .date-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-1);
-  }
-
-  .date-range {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    text-transform: lowercase;
-  }
-
-  .duration {
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
+    text-transform: lowercase;
+  }
+
+  .via-text::before {
+    content: "• ";
+  }
+
+  .tags-wrapper {
+    flex-shrink: 0;
+    max-width: 200px;
+  }
+
+  /* Highlights */
+  .highlights-section {
+    margin-bottom: var(--space-4);
   }
 
   .highlights {
     list-style: none;
     padding: 0;
-    margin: 0 0 var(--space-4) 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -438,24 +508,26 @@
     font-size: var(--text-base);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
-    padding-left: var(--space-4);
+    padding-left: var(--space-5);
     position: relative;
   }
 
   .highlight-item::before {
-    content: ">";
+    content: "//";
     position: absolute;
     left: 0;
     color: var(--color-primary);
     font-family: var(--font-mono);
-    font-weight: var(--font-bold);
+    font-weight: var(--font-normal);
   }
 
-  .experience-footer {
+  /* Tech Section */
+  .tech-section {
     padding-top: var(--space-4);
     border-top: 1px solid var(--color-border);
   }
 
+  /* Show More Button */
   .show-more-container {
     display: flex;
     justify-content: center;
@@ -470,16 +542,19 @@
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
-    background: none;
-    border: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    padding: var(--space-4);
+    padding: var(--space-4) var(--space-5);
     text-transform: lowercase;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
   }
 
   .show-more-button:hover {
     color: var(--color-text-primary);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
   }
 
   .show-more-button .comment-prefix {
@@ -490,6 +565,7 @@
     display: block;
   }
 
+  /* Responsive */
   @media (--lg) {
     .sidebar {
       width: 180px;
@@ -510,42 +586,52 @@
       width: 100%;
     }
 
-    .experience-header {
+    .info-row {
       flex-wrap: wrap;
-      gap: var(--space-3);
     }
 
     .company-logo {
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
     }
 
     .via-logo {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
     }
 
-    .experience-meta {
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    .date-info {
-      flex-direction: row;
-      align-items: baseline;
-      gap: var(--space-3);
-    }
-
-    .duration::before {
-      content: "• ";
+    .tags-wrapper {
+      order: 1;
+      width: 100%;
+      max-width: none;
+      margin-top: var(--space-2);
     }
 
     .company-name {
-      font-size: var(--text-lg);
+      font-size: var(--text-base);
     }
 
-    .experience-card {
+    .card-content {
       padding: var(--space-4);
+    }
+  }
+
+  @media (--sm) {
+    .window-controls {
+      display: none;
+    }
+
+    .card-meta {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .info-row {
+      gap: var(--space-3);
+    }
+
+    .logos-wrapper {
+      gap: var(--space-1);
     }
   }
 </style>
