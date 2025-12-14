@@ -112,25 +112,25 @@
             class="skill-block"
           >
             <div class="line">
-              <span class="line-number">{{ index * 4 + 2 }}</span>
+              <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
               <code class="indent-1"><span class="code-punct">{</span></code>
             </div>
             <div class="line">
-              <span class="line-number">{{ index * 4 + 3 }}</span>
+              <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
               <code class="indent-2"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code>
             </div>
             <div class="line description-line">
-              <span class="line-number">{{ index * 4 + 4 }}</span>
+              <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
               <code class="indent-2"><span class="code-prop">desc</span><span class="code-punct">:</span> <span class="code-desc">"{{ skill.description }}"</span></code>
             </div>
             <div class="line">
-              <span class="line-number">{{ index * 4 + 5 }}</span>
+              <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
               <code class="indent-1"><span class="code-punct">}{{ index < skillsConfig.length - 1 ? ',' : '' }}</span></code>
             </div>
           </article>
 
           <div class="line">
-            <span class="line-number">{{ skillsConfig.length * 4 + 2 }}</span>
+            <span class="line-number">{{ closingBracketLine }}</span>
             <code><span class="code-punct">];</span></code>
           </div>
         </div>
@@ -140,6 +140,7 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
 
@@ -149,6 +150,15 @@
     specialties: ["architecture", "event-driven systems", "engineering teams"],
     offline: ["trails", "beach", "sim racing"],
   };
+
+  // Line numbering for code editor aesthetic
+  // Structure: 1 (header) + n * LINES_PER_SKILL + 1 (closing bracket)
+  const LINES_PER_SKILL = 4; // { + name + desc + }
+
+  const getSkillLineNumber = (skillIndex: number, lineOffset: number) =>
+    skillIndex * LINES_PER_SKILL + lineOffset + 1; // +1 for header line
+
+  const closingBracketLine = computed(() => skillsConfig.length * LINES_PER_SKILL + 2);
 </script>
 
 <style scoped>
