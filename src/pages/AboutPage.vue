@@ -198,6 +198,7 @@
     width: 100%;
     height: 100%;
     animation: orbit-rotate 60s linear infinite;
+    will-change: transform;
   }
 
   @keyframes orbit-rotate {
@@ -261,6 +262,7 @@
     fill: var(--color-text-secondary);
     text-anchor: middle;
     animation: orbit-counter-rotate 60s linear infinite;
+    will-change: transform;
   }
 
   .node-label-small {
