@@ -93,9 +93,7 @@
         <div class="editor-content">
           <div class="line">
             <span class="line-number">1</span>
-            <span class="code-keyword">export const</span>
-            <span class="code-var"> capabilities</span>
-            <span class="code-punct"> = [</span>
+            <code><span class="code-keyword">export const</span> <span class="code-var">capabilities</span> <span class="code-punct">= [</span></code>
           </div>
 
           <article
@@ -105,38 +103,25 @@
           >
             <div class="line">
               <span class="line-number">{{ index * 4 + 2 }}</span>
-              <span class="code-indent"></span>
-              <span class="code-punct">{</span>
+              <code class="indent-1"><span class="code-punct">{</span></code>
             </div>
-            <div class="line skill-name-line">
+            <div class="line">
               <span class="line-number">{{ index * 4 + 3 }}</span>
-              <span class="code-indent-2"></span>
-              <span class="code-prop">name</span>
-              <span class="code-punct">:</span>
-              <span class="code-string">"{{ skill.title }}"</span>
-              <span class="code-punct">,</span>
-              <img
-                v-if="skill.iconPath"
-                :src="skill.iconPath"
-                :alt="skill.title"
-                class="skill-icon"
-              />
+              <code class="indent-2"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code>
             </div>
             <div class="line description-line">
               <span class="line-number">{{ index * 4 + 4 }}</span>
-              <span class="code-indent-2"></span>
-              <span class="code-comment">// {{ skill.description }}</span>
+              <code class="indent-2"><span class="code-prop">desc</span><span class="code-punct">:</span> <span class="code-desc">"{{ skill.description }}"</span></code>
             </div>
             <div class="line">
               <span class="line-number">{{ index * 4 + 5 }}</span>
-              <span class="code-indent"></span>
-              <span class="code-punct">}{{ index < skillsConfig.length - 1 ? ',' : '' }}</span>
+              <code class="indent-1"><span class="code-punct">}{{ index < skillsConfig.length - 1 ? ',' : '' }}</span></code>
             </div>
           </article>
 
           <div class="line">
             <span class="line-number">{{ skillsConfig.length * 4 + 2 }}</span>
-            <span class="code-punct">];</span>
+            <code><span class="code-punct">];</span></code>
           </div>
         </div>
       </div>
@@ -434,6 +419,19 @@
     background: var(--color-surface-hover);
   }
 
+  .line code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .line code.indent-1 {
+    padding-left: 1.5ch;
+  }
+
+  .line code.indent-2 {
+    padding-left: 3ch;
+  }
+
   .line-number {
     color: var(--color-text-muted);
     opacity: 0.5;
@@ -444,33 +442,20 @@
     flex-shrink: 0;
   }
 
-  .code-indent {
-    width: var(--space-4);
-    flex-shrink: 0;
-  }
-
-  .code-indent-2 {
-    width: var(--space-8);
-    flex-shrink: 0;
-  }
-
   .code-prop {
     color: var(--quadrant-NE);
   }
 
   .code-string {
     color: var(--color-green);
-    margin-left: var(--space-2);
   }
 
-  .code-comment {
+  .code-desc {
     color: var(--color-text-muted);
-    font-style: italic;
-    word-break: break-word;
   }
 
   .skill-block {
-    margin: var(--space-3) 0;
+    margin: var(--space-2) 0;
     transition: background-color var(--transition-fast);
     border-radius: var(--radius-sm);
   }
@@ -479,29 +464,7 @@
     background: var(--color-surface-hover);
   }
 
-  .skill-name-line {
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .skill-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-    margin-left: var(--space-3);
-    filter: invert(45%) sepia(50%) saturate(500%) hue-rotate(140deg) brightness(95%) contrast(95%);
-  }
-
-  [data-theme="dark"] .skill-icon {
-    filter: invert(55%) sepia(40%) saturate(400%) hue-rotate(140deg) brightness(110%) contrast(90%);
-  }
-
-  .description-line {
-    padding-top: var(--space-1);
-    padding-bottom: var(--space-1);
-  }
-
-  .description-line .code-comment {
+  .description-line code {
     line-height: var(--leading-relaxed);
   }
 
@@ -548,19 +511,6 @@
       min-width: 24px;
       padding-right: var(--space-2);
     }
-
-    .code-indent {
-      width: var(--space-2);
-    }
-
-    .code-indent-2 {
-      width: var(--space-4);
-    }
-
-    .skill-icon {
-      width: 16px;
-      height: 16px;
-    }
   }
 
   @media (--sm) {
@@ -577,6 +527,14 @@
     .node-label,
     .node-label-small {
       display: none;
+    }
+
+    .line-number {
+      display: none;
+    }
+
+    .line {
+      padding: 0 var(--space-2);
     }
   }
 </style>
