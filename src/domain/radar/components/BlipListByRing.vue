@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
   import BlipListItem from "./BlipListItem.vue";
-  import type { PositionedBlip } from "../geometry/quadrant.geometry";
+  import type { PositionedBlip } from "../types";
 
   defineProps<{
     ringName: string;

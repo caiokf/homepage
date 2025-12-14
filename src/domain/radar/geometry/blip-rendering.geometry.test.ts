@@ -1,5 +1,4 @@
-import { describe, it, expect } from "vitest";
-import { BlipGeometry } from "./blip.geometry";
+import { BlipGeometry } from "./blip-rendering.geometry";
 import {
   BLIP_WIDTH,
   BLIP_NEW_GROUP_WIDTH,

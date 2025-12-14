@@ -72,18 +72,6 @@
           @blip-toggle="handleBlipToggle"
         />
       </div>
-
-      <!-- Desktop: Blip list below radar when all quadrants visible -->
-      <div v-if="!isMobile && !selectedQuadrant" class="table-wrapper table-bottom">
-        <BlipList
-          :quadrants="allQuadrantsWithBlips"
-          :highlighted-blip-id="hoveredBlipId"
-          :selected-blip-id="selectedBlipId"
-          @blip-hover="handleTableBlipHover"
-          @blip-click="handleBlipSelected"
-          @blip-toggle="handleBlipToggle"
-        />
-      </div>
     </div>
 
     <div v-else class="loading">
@@ -106,11 +94,10 @@
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
-  import type { PositionedBlip, QuadrantGeometryConfig } from "../domain/radar/geometry/quadrant.geometry";
-  import type { QuadrantPosition } from "../domain/radar/types";
+  import type { PositionedBlip, QuadrantGeometryConfig, QuadrantPosition } from "../domain/radar/types";
   import { QUADRANT_SIZE, RADAR_SHEET_ID, GOOGLE_API_KEY, MOBILE_BREAKPOINT, MIN_LOADING_DURATION_MS } from "../domain/radar/constants";
-  import { RingGeometry } from "../domain/radar/geometry/ring.geometry";
-  import { QuadrantGeometry } from "../domain/radar/geometry/quadrant.geometry";
+  import { RingGeometry } from "../domain/radar/geometry/svg-layout.geometry";
+  import { QuadrantGeometry } from "../domain/radar/geometry/blip-positioning.geometry";
 
   type SearchResult = {
     blip: { id: number; name: string };
@@ -243,6 +230,10 @@
 
   function handleQuadrantSelected(position: QuadrantPosition | null) {
     selectedQuadrant.value = position;
+    // Clear selected blip when viewing all quadrants to prevent auto-scroll on mobile
+    if (position === null) {
+      selectedBlipId.value = null;
+    }
   }
 
   function handleBlipSelected(blip: PositionedBlip, quadrant?: QuadrantPosition) {

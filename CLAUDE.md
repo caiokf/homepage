@@ -47,7 +47,28 @@ src/
 ## Key Patterns
 
 - **Vue file formatting:** Indent content inside `<script>` and `<style>` tags (configured via `vueIndentScriptAndStyle: true` in `.prettierrc`)
-- **Private fields with underscore prefix** (`_fieldName`) with getter-only access
+- **Private fields with underscore prefix** (`_fieldName`) with getter-only access:
+
+  ```typescript
+  // Correct
+  class Example {
+    private _value: number;
+
+    constructor(value: number) {
+      this._value = value;
+    }
+
+    get value(): number {
+      return this._value;
+    }
+  }
+
+  // Incorrect
+  class Example {
+    private value: number; // Missing underscore prefix
+  }
+  ```
+
 - **Array copying** via `.slice(0)` to prevent external mutations
 - **Vue 3 Composition API** with `<script setup>` syntax
 - **D3 integration:** Imperative DOM manipulation within Vue lifecycle hooks, separate from Vue reactivity
@@ -92,7 +113,3 @@ describe("ClassName", () => {
   });
 });
 ```
-
-## Legacy Code
-
-`src/legacy/` contains original JavaScript implementation not currently in use. The project is being modernized to TypeScript with component-based Vue 3 architecture.

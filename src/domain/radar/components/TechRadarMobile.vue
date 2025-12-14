@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
   import type { Radar } from "../models/radar";
-import type { QuadrantPosition } from "../types";
+  import type { QuadrantPosition } from "../types";
 
   defineProps<{
     radar: Radar;

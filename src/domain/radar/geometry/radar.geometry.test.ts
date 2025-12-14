@@ -1,5 +1,4 @@
-import { describe, it, expect } from "vitest";
-import { RadarGeometry } from "./radar.geometry";
+import { RadarGeometry } from "./svg-layout.geometry";
 
 describe("RadarGeometry", () => {
   describe("getZoomedViewBoxOffset", () => {

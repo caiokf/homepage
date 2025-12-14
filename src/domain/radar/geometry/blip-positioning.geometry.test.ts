@@ -1,9 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { QuadrantGeometry } from "./quadrant.geometry";
+import { QuadrantGeometry } from "./blip-positioning.geometry";
 import { Blip } from "../models/blip";
 import { Ring } from "../models/ring";
-import { RingGeometry } from "./ring.geometry";
-import type { QuadrantGeometryConfig } from "./quadrant.geometry";
+import { RingGeometry } from "./svg-layout.geometry";
+import type { QuadrantGeometryConfig } from "../types";
 
 describe("QuadrantGeometry", () => {
   const createTestBlip = (name: string, ringOrder: number): Blip => {

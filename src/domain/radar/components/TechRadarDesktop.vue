@@ -168,13 +168,12 @@
   import type {
     PositionedBlip,
     QuadrantGeometryConfig,
-  } from "../geometry/quadrant.geometry";
-import type { QuadrantPosition } from "../types";
+    QuadrantPosition,
+  } from "../types";
   import { RADAR_SIZE, QUADRANT_SIZE } from "../constants";
-  import { RingGeometry } from "../geometry/ring.geometry";
-  import { QuadrantGeometry } from "../geometry/quadrant.geometry";
-  import { RadarGeometry } from "../geometry/radar.geometry";
-  import { BlipGeometry } from "../geometry/blip.geometry";
+  import { RingGeometry, RadarGeometry } from "../geometry/svg-layout.geometry";
+  import { QuadrantGeometry } from "../geometry/blip-positioning.geometry";
+  import { BlipGeometry } from "../geometry/blip-rendering.geometry";
 
   type Props = {
     radar: Radar;

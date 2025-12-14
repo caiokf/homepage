@@ -1,55 +1,6 @@
-import type { Blip, BlipStatus } from "../models/blip";
-
-/**
- * Positioned blip for rendering (after collision detection).
- */
-export type PositionedBlip = {
-  id: number;
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  ringIndex: number;
-  isNew: boolean;
-  status: BlipStatus | undefined;
-  description: string;
-  blipText: string;
-  isGroup: boolean;
-};
-
-/**
- * Quadrant geometry configuration for positioning calculations.
- */
-export type QuadrantGeometryConfig = {
-  startAngle: number;
-  quadrantSize: number;
-  ringRadii: number[];
-  center: { x: number; y: number };
-};
-
-/**
- * Seeded random number generator for reproducible blip positioning.
- */
-class SeededRandom {
-  private seed: number;
-
-  constructor(seed: number) {
-    this.seed = seed;
-  }
-
-  next(): number {
-    this.seed = (this.seed * 9301 + 49297) % 233280;
-    return this.seed / 233280;
-  }
-
-  float(min: number, max: number): number {
-    return min + this.next() * (max - min);
-  }
-
-  int(min: number, max: number): number {
-    return Math.floor(this.float(min, max + 1));
-  }
-}
+import type { Blip } from "../models/blip";
+import type { PositionedBlip, QuadrantGeometryConfig } from "../types";
+import { SeededRandom } from "../utils/seeded-random";
 
 type BlipCoordinate = {
   x: number;
@@ -58,9 +9,9 @@ type BlipCoordinate = {
 };
 
 /**
- * Static geometry calculations for Quadrant rendering.
+ * Static geometry calculations for blip positioning within quadrants.
  */
-export class QuadrantGeometry {
+export class BlipPositioning {
   /**
    * Calculate positioned blips with collision detection for rendering.
    * Uses seeded random for reproducible positions.
@@ -211,3 +162,6 @@ export class QuadrantGeometry {
     });
   }
 }
+
+// Legacy export for backwards compatibility
+export { BlipPositioning as QuadrantGeometry };

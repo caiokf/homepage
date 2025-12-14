@@ -52,7 +52,7 @@
   import { ref, computed } from "vue";
   import type { Radar } from "../models/radar";
   import type { Blip } from "../models/blip";
-import type { QuadrantPosition } from "../types";
+  import type { QuadrantPosition } from "../types";
 
   type SearchResult = {
     blip: Blip;
