@@ -172,7 +172,7 @@
             <span class="ring-dot"></span>
             <div class="ring-text">
               <span class="ring-name">avoid</span>
-              <span class="ring-desc">seen fail or don't not personal preference</span>
+              <span class="ring-desc">seen to fail or don't fit personal preference</span>
             </div>
           </article>
         </div>
