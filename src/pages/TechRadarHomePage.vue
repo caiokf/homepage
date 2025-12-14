@@ -101,12 +101,6 @@
           <line x1="200" y1="10" x2="200" y2="390" class="divider" />
           <line x1="10" y1="200" x2="390" y2="200" class="divider" />
 
-          <!-- Quadrant labels -->
-          <text x="105" y="105" class="quadrant-label label-nw">ai</text>
-          <text x="280" y="105" class="quadrant-label label-ne">techniques</text>
-          <text x="105" y="310" class="quadrant-label label-sw">tools</text>
-          <text x="270" y="310" class="quadrant-label label-se">tech-stack</text>
-
           <!-- Decorative blips -->
           <circle cx="180" cy="185" r="4" class="blip blip-nw" />
           <circle cx="165" cy="160" r="4" class="blip blip-nw" />
@@ -343,30 +337,6 @@
   .divider {
     stroke: var(--color-background);
     stroke-width: 4;
-  }
-
-  .quadrant-label {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: var(--font-semibold);
-    text-transform: lowercase;
-    text-anchor: middle;
-  }
-
-  .label-nw {
-    fill: var(--quadrant-NW);
-  }
-
-  .label-ne {
-    fill: var(--quadrant-NE);
-  }
-
-  .label-sw {
-    fill: var(--quadrant-SW);
-  }
-
-  .label-se {
-    fill: var(--quadrant-SE);
   }
 
   .blip {
@@ -735,10 +705,6 @@
 
     .radar-visual {
       width: 240px;
-    }
-
-    .quadrant-label {
-      font-size: 10px;
     }
   }
 </style>
