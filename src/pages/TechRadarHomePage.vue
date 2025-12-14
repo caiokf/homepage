@@ -67,7 +67,6 @@
     <section class="radar-overview">
       <!-- Quadrants Column -->
       <div class="quadrants-column">
-        <h2 class="column-title">quadrants</h2>
         <div class="quadrants-list">
           <article class="quadrant-item quadrant-ai">
             <span class="quadrant-name">ai</span>
@@ -137,7 +136,6 @@
 
       <!-- Rings Column -->
       <div class="rings-column">
-        <h2 class="column-title">rings</h2>
         <div class="rings-list">
           <article class="ring-item ring-proven">
             <span class="ring-dot"></span>
@@ -248,25 +246,14 @@
     max-width: 1100px;
     margin: 0 auto var(--space-8) auto;
     align-items: center;
-  }
-
-  .column-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
-    font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-4) 0;
-  }
-
-  .column-title::before {
-    content: "// ";
-    color: var(--color-primary);
+    position: relative;
   }
 
   /* Quadrants Column */
   .quadrants-column {
     justify-self: end;
+    position: relative;
+    z-index: 1;
   }
 
   .quadrants-list {
@@ -316,6 +303,8 @@
     width: 320px;
     aspect-ratio: 1;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .radar-svg {
@@ -373,6 +362,8 @@
   /* Rings Column */
   .rings-column {
     justify-self: start;
+    position: relative;
+    z-index: 1;
   }
 
   .rings-list {
@@ -638,10 +629,6 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-4);
-    }
-
-    .column-title {
-      text-align: center;
     }
   }
 
