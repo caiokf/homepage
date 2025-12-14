@@ -1,32 +1,183 @@
 <template>
   <div class="tech-radar-home">
-    <div class="content">
+    <!-- Hero + CTA Section -->
+    <section class="hero">
       <h1 class="page-title">tech radar</h1>
-      <p class="description">
-        The Tech Radar is a tool to visualize technology choices. It provides a snapshot of the
-        technologies, tools, languages, and frameworks that are relevant to our engineering work.
-      </p>
-      <p class="description">
-        Items are organized into quadrants (Techniques, Platforms, Tools, and Languages &
-        Frameworks) and rings (Adopt, Trial, Assess, and Hold) based on their current recommendation
-        status.
+      <p class="hero-description">
+        Inspired by
+        <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener">ThoughtWorks</a
+        >, this is my personal assessment of technologies based on hands-on experience—what works,
+        what I'm testing, and what to avoid.
       </p>
 
-      <div class="radar-links">
-        <div v-if="loading" class="loading-text">[loading versions...]</div>
-        <div v-else-if="error" class="error-text">[{{ error }}]</div>
-        <template v-else>
+      <div class="cta-wrapper">
+        <div v-if="loading" class="loading-state">
+          <span class="loading-dot"></span>
+          <span class="loading-text">loading...</span>
+        </div>
+        <div v-else-if="error" class="error-state">
+          <span class="error-text">{{ error }}</span>
+        </div>
+        <template v-else-if="versions.length > 0">
           <router-link
-            v-for="version in versions"
-            :key="version.id"
-            :to="`/tech-radar/${encodeURIComponent(version.id)}`"
-            class="radar-link"
+            :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
+            class="primary-cta"
           >
-            <span class="link-text">[{{ version.name }}]</span>
+            <span class="cta-text">explore the radar</span>
+            <span class="cta-version">{{ versions[0].name }}</span>
+            <svg
+              class="cta-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </router-link>
+          <span v-if="versions.length > 1" class="other-versions">
+            or view
+            <button
+              class="versions-toggle"
+              :aria-expanded="showOtherVersions"
+              @click="showOtherVersions = !showOtherVersions"
+            >
+              previous versions
+              <svg
+                class="toggle-icon"
+                :class="{ expanded: showOtherVersions }"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <span v-if="showOtherVersions" class="versions-list">
+              <router-link
+                v-for="version in versions.slice(1)"
+                :key="version.id"
+                :to="`/tech-radar/${encodeURIComponent(version.id)}`"
+                class="version-link"
+              >
+                {{ version.name }}
+              </router-link>
+            </span>
+          </span>
         </template>
       </div>
-    </div>
+    </section>
+
+    <!-- Radar Overview - 2 Column Layout -->
+    <section class="radar-overview">
+      <!-- Quadrants Column -->
+      <div class="quadrants-column">
+        <h2 class="column-title">quadrants</h2>
+        <div class="quadrants-list">
+          <article class="quadrant-item quadrant-ai">
+            <span class="quadrant-name">ai</span>
+            <span class="quadrant-desc">llms, ml frameworks, ai-assisted development</span>
+          </article>
+          <article class="quadrant-item quadrant-techniques">
+            <span class="quadrant-name">techniques</span>
+            <span class="quadrant-desc">patterns, architecture, testing strategies</span>
+          </article>
+          <article class="quadrant-item quadrant-tools">
+            <span class="quadrant-name">tools</span>
+            <span class="quadrant-desc">ide, cli utilities, productivity enhancers</span>
+          </article>
+          <article class="quadrant-item quadrant-techstack">
+            <span class="quadrant-name">tech-stack</span>
+            <span class="quadrant-desc">languages, frameworks, libraries, platforms</span>
+          </article>
+        </div>
+      </div>
+
+      <!-- Radar Visualization -->
+      <div class="radar-visual">
+        <svg class="radar-svg" viewBox="0 0 400 400" aria-label="Tech Radar visualization">
+          <!-- Rings -->
+          <circle cx="200" cy="200" r="190" class="ring ring-avoid" />
+          <circle cx="200" cy="200" r="145" class="ring ring-learning" />
+          <circle cx="200" cy="200" r="100" class="ring ring-experimental" />
+          <circle cx="200" cy="200" r="55" class="ring ring-proven" />
+
+          <!-- Quadrant dividers -->
+          <line x1="200" y1="10" x2="200" y2="390" class="divider" />
+          <line x1="10" y1="200" x2="390" y2="200" class="divider" />
+
+          <!-- Decorative blips - NW quadrant (ai) -->
+          <circle cx="175" cy="168" r="4" class="blip blip-nw" />
+          <circle cx="152" cy="185" r="4" class="blip blip-nw" />
+          <circle cx="118" cy="142" r="4" class="blip blip-nw" />
+          <circle cx="165" cy="115" r="4" class="blip blip-nw" />
+          <circle cx="72" cy="168" r="4" class="blip blip-nw" />
+          <circle cx="98" cy="92" r="4" class="blip blip-nw" />
+
+          <!-- Decorative blips - NE quadrant (techniques) -->
+          <circle cx="232" cy="175" r="4" class="blip blip-ne" />
+          <circle cx="218" cy="142" r="4" class="blip blip-ne" />
+          <circle cx="268" cy="162" r="4" class="blip blip-ne" />
+          <circle cx="242" cy="98" r="4" class="blip blip-ne" />
+          <circle cx="312" cy="118" r="4" class="blip blip-ne" />
+          <circle cx="285" cy="72" r="4" class="blip blip-ne" />
+
+          <!-- Decorative blips - SW quadrant (tools) -->
+          <circle cx="168" cy="232" r="4" class="blip blip-sw" />
+          <circle cx="185" cy="258" r="4" class="blip blip-sw" />
+          <circle cx="132" cy="218" r="4" class="blip blip-sw" />
+          <circle cx="115" cy="272" r="4" class="blip blip-sw" />
+          <circle cx="78" cy="235" r="4" class="blip blip-sw" />
+          <circle cx="52" cy="298" r="4" class="blip blip-sw" />
+
+          <!-- Decorative blips - SE quadrant (tech-stack) -->
+          <circle cx="228" cy="218" r="4" class="blip blip-se" />
+          <circle cx="255" cy="242" r="4" class="blip blip-se" />
+          <circle cx="218" cy="268" r="4" class="blip blip-se" />
+          <circle cx="295" cy="215" r="4" class="blip blip-se" />
+          <circle cx="272" cy="298" r="4" class="blip blip-se" />
+          <circle cx="332" cy="255" r="4" class="blip blip-se" />
+        </svg>
+      </div>
+
+      <!-- Rings Column -->
+      <div class="rings-column">
+        <h2 class="column-title">rings</h2>
+        <div class="rings-list">
+          <article class="ring-item ring-proven">
+            <span class="ring-dot"></span>
+            <div class="ring-text">
+              <span class="ring-name">proven</span>
+              <span class="ring-desc">battle-tested in production, confident recommendations</span>
+            </div>
+          </article>
+          <article class="ring-item ring-experimental">
+            <span class="ring-dot"></span>
+            <div class="ring-text">
+              <span class="ring-name">experimental</span>
+              <span class="ring-desc"
+                >testing in production for smaller, non-critical features</span
+              >
+            </div>
+          </article>
+          <article class="ring-item ring-learning">
+            <span class="ring-dot"></span>
+            <div class="ring-text">
+              <span class="ring-name">learning</span>
+              <span class="ring-desc">personal projects and exploration, not production-ready</span>
+            </div>
+          </article>
+          <article class="ring-item ring-avoid">
+            <span class="ring-dot"></span>
+            <div class="ring-text">
+              <span class="ring-name">avoid</span>
+              <span class="ring-desc">seen to fail or don't fit personal preference</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -34,14 +185,17 @@
   import { ref, onMounted } from "vue";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
-  import type { TechRadarDataProvider, RadarVersion } from "../domain/radar/data-providers/data-provider";
+  import type {
+    TechRadarDataProvider,
+    RadarVersion,
+  } from "../domain/radar/data-providers/data-provider";
   import { RADAR_SHEET_ID, GOOGLE_API_KEY } from "../domain/radar/constants";
 
   const versions = ref<RadarVersion[]>([]);
   const loading = ref(true);
   const error = ref<string | null>(null);
+  const showOtherVersions = ref(false);
 
-  // Create data provider
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
       ? new DataProviderGoogleSheets({ sheetId: RADAR_SHEET_ID, apiKey: GOOGLE_API_KEY })
@@ -61,80 +215,483 @@
 <style scoped>
   .tech-radar-home {
     min-height: calc(100vh - 112px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: var(--space-8);
   }
 
-  .content {
+  /* Hero Section */
+  .hero {
     max-width: var(--content-max-width);
+    margin: 0 auto var(--space-8) auto;
     text-align: center;
   }
 
   .page-title {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-2);
   }
 
-  .description {
+  .hero-description {
     font-family: var(--font-sans);
     font-size: var(--text-md);
     line-height: var(--leading-relaxed);
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-4);
+    margin: 0 0 var(--space-6) 0;
   }
 
-  .radar-links {
-    margin-top: var(--space-8);
+  .hero-description a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* CTA Wrapper */
+  .cta-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* Radar Overview - 3 Column Layout */
+  .radar-overview {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-6);
+    max-width: 1100px;
+    margin: 0 auto var(--space-8) auto;
+    align-items: center;
+    position: relative;
+  }
+
+  .column-title {
+    display: none;
+  }
+
+  /* Quadrants Column */
+  .quadrants-column {
+    justify-self: end;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quadrants-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    align-items: center;
   }
 
-  .radar-link {
-    display: inline-block;
+  .quadrant-item {
+    text-align: right;
+  }
+
+  .quadrant-name {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    text-transform: lowercase;
+  }
+
+  .quadrant-ai .quadrant-name {
+    color: var(--quadrant-NW);
+  }
+
+  .quadrant-techniques .quadrant-name {
+    color: var(--quadrant-NE);
+  }
+
+  .quadrant-tools .quadrant-name {
+    color: var(--quadrant-SW);
+  }
+
+  .quadrant-techstack .quadrant-name {
+    color: var(--quadrant-SE);
+  }
+
+  .quadrant-desc {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+  }
+
+  /* Radar Visualization */
+  .radar-visual {
+    width: 320px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .radar-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+
+  .ring-proven {
+    fill: var(--ring-0);
+  }
+
+  .ring-experimental {
+    fill: var(--ring-1);
+  }
+
+  .ring-learning {
+    fill: var(--ring-2);
+  }
+
+  .ring-avoid {
+    fill: var(--ring-3);
+  }
+
+  .divider {
+    stroke: var(--color-background);
+    stroke-width: 4;
+  }
+
+  .blip {
+    opacity: 0.8;
+  }
+
+  .blip-nw {
+    fill: var(--quadrant-NW);
+  }
+
+  .blip-ne {
+    fill: var(--quadrant-NE);
+  }
+
+  .blip-sw {
+    fill: var(--quadrant-SW);
+  }
+
+  .blip-se {
+    fill: var(--quadrant-SE);
+  }
+
+  /* Rings Column */
+  .rings-column {
+    justify-self: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  .rings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ring-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .ring-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    border: 5px solid;
+    flex-shrink: 0;
+    background: transparent;
+  }
+
+  .ring-proven .ring-dot {
+    border-color: var(--ring-0);
+    background: var(--ring-0);
+  }
+
+  .ring-experimental .ring-dot {
+    border-color: var(--ring-1);
+  }
+
+  .ring-learning .ring-dot {
+    border-color: var(--ring-2);
+  }
+
+  .ring-avoid .ring-dot {
+    border-color: var(--ring-3);
+  }
+
+  .ring-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ring-name {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    text-transform: lowercase;
+  }
+
+  .ring-desc {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+  }
+
+  /* Primary CTA */
+  .primary-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .primary-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: var(--color-primary-hover);
+    color: var(--color-text-inverse);
+  }
+
+  .cta-text {
     font-family: var(--font-mono);
     font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    text-transform: lowercase;
+  }
+
+  .cta-version {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    opacity: 0.85;
+    padding: 2px var(--space-2);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+  }
+
+  .cta-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform var(--transition-fast);
+  }
+
+  .primary-cta:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Other Versions - Inline */
+  .other-versions {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .versions-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--transition-fast);
+  }
+
+  .versions-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--transition-fast);
+  }
+
+  .toggle-icon.expanded {
+    transform: rotate(180deg);
+  }
+
+  .versions-list {
+    display: inline;
+    margin-left: var(--space-1);
+  }
+
+  .version-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     color: var(--color-primary);
     text-decoration: none;
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    margin-left: var(--space-1);
+    transition: background var(--transition-fast), border-color var(--transition-fast);
   }
 
-  .radar-link:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
+  .version-link:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-primary);
   }
 
-  .link-text {
-    text-transform: lowercase;
+  .loading-state {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .loading-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   .loading-text,
   .error-text {
     font-family: var(--font-mono);
-    font-size: var(--text-lg);
+    font-size: var(--text-md);
     color: var(--color-text-secondary);
     text-transform: lowercase;
   }
 
   .error-text {
-    color: var(--color-error, #ef4444);
+    color: var(--color-error);
   }
 
+  /* Responsive - Tablet */
+  @media (--lg) {
+    .radar-overview {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      max-width: 500px;
+    }
+
+    .quadrants-column {
+      justify-self: center;
+      order: 2;
+    }
+
+    .quadrants-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .quadrant-item {
+      text-align: center;
+    }
+
+    .radar-visual {
+      order: 1;
+      justify-self: center;
+    }
+
+    .rings-column {
+      justify-self: center;
+      order: 3;
+    }
+
+    .rings-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .column-title {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: var(--text-md);
+      font-weight: var(--font-semibold);
+      color: var(--color-text-primary);
+      text-transform: lowercase;
+      text-align: center;
+      margin: 0 0 var(--space-4) 0;
+    }
+
+    .column-title::before {
+      content: "// ";
+      color: var(--color-primary);
+    }
+  }
+
+  /* Responsive - Mobile */
   @media (--md) {
     .tech-radar-home {
       padding: var(--space-6);
     }
 
-    .description {
+    .hero {
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-description {
       font-size: var(--text-base);
     }
 
-    .radar-link,
-    .loading-text,
-    .error-text {
+    .radar-overview {
+      gap: var(--space-6);
+    }
+
+    .radar-visual {
+      width: 280px;
+    }
+
+    .primary-cta {
+      padding: var(--space-3) var(--space-5);
+    }
+
+    .cta-text {
       font-size: var(--text-md);
+    }
+
+    .other-versions {
+      display: block;
+      margin-top: var(--space-2);
+    }
+  }
+
+  @media (--sm) {
+    .primary-cta {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .cta-arrow {
+      display: none;
+    }
+
+    .cta-text {
+      font-size: var(--text-base);
+    }
+
+    .quadrants-list,
+    .rings-list {
+      grid-template-columns: 1fr;
+    }
+
+    .radar-visual {
+      width: 240px;
     }
   }
 </style>
