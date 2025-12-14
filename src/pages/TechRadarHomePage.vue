@@ -116,33 +116,58 @@
       </div>
     </section>
 
-    <!-- Explore Section -->
-    <section class="explore-section">
-      <h2 class="section-title">explore the radar</h2>
-      <p class="section-intro">
-        Dive into the detailed view to see specific technologies and their placement on my radar.
-      </p>
-
-      <div class="radar-links">
-        <div v-if="loading" class="loading-state">
-          <span class="loading-dot"></span>
-          <span class="loading-text">loading versions...</span>
-        </div>
-        <div v-else-if="error" class="error-state">
-          <span class="error-text">{{ error }}</span>
-        </div>
-        <template v-else>
-          <router-link
-            v-for="version in versions"
-            :key="version.id"
-            :to="`/tech-radar/${encodeURIComponent(version.id)}`"
-            class="radar-link"
-          >
-            <span class="link-arrow">-&gt;</span>
-            <span class="link-text">{{ version.name }}</span>
-          </router-link>
-        </template>
+    <!-- Primary CTA Section -->
+    <section class="cta-section">
+      <div v-if="loading" class="loading-state">
+        <span class="loading-dot"></span>
+        <span class="loading-text">loading radar...</span>
       </div>
+      <div v-else-if="error" class="error-state">
+        <span class="error-text">{{ error }}</span>
+      </div>
+      <template v-else-if="versions.length > 0">
+        <router-link
+          :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
+          class="primary-cta"
+        >
+          <span class="cta-text">explore the radar</span>
+          <span class="cta-version">{{ versions[0].name }}</span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </router-link>
+
+        <!-- Other versions (expandable) -->
+        <div v-if="versions.length > 1" class="other-versions">
+          <button
+            class="versions-toggle"
+            :aria-expanded="showOtherVersions"
+            @click="showOtherVersions = !showOtherVersions"
+          >
+            <span>previous versions</span>
+            <svg
+              class="toggle-icon"
+              :class="{ expanded: showOtherVersions }"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div v-if="showOtherVersions" class="versions-list">
+            <router-link
+              v-for="version in versions.slice(1)"
+              :key="version.id"
+              :to="`/tech-radar/${encodeURIComponent(version.id)}`"
+              class="version-link"
+            >
+              {{ version.name }}
+            </router-link>
+          </div>
+        </div>
+      </template>
     </section>
   </div>
 </template>
@@ -157,6 +182,7 @@
   const versions = ref<RadarVersion[]>([]);
   const loading = ref(true);
   const error = ref<string | null>(null);
+  const showOtherVersions = ref(false);
 
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
@@ -458,56 +484,124 @@
     margin: 0 auto var(--space-6) auto;
   }
 
-  /* Explore Section */
-  .explore-section {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .radar-links {
+  /* CTA Section */
+  .cta-section {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
     align-items: center;
+    gap: var(--space-4);
   }
 
-  .radar-link {
-    display: inline-flex;
+  .primary-cta {
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    color: var(--color-primary);
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-8);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
     text-decoration: none;
-    padding: var(--space-3) var(--space-5);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     transition:
       transform var(--transition-fast),
       box-shadow var(--transition-fast),
-      border-color var(--transition-fast);
+      background-color var(--transition-fast);
   }
 
-  .radar-link:hover {
+  .primary-cta:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
+    background: var(--color-primary-hover);
+    color: var(--color-text-inverse);
   }
 
-  .link-arrow {
-    color: var(--color-text-muted);
+  .cta-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    text-transform: lowercase;
+  }
+
+  .cta-version {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    opacity: 0.8;
+    padding: var(--space-1) var(--space-2);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-sm);
+  }
+
+  .cta-arrow {
+    width: 24px;
+    height: 24px;
     transition: transform var(--transition-fast);
   }
 
-  .radar-link:hover .link-arrow {
+  .primary-cta:hover .cta-arrow {
     transform: translateX(4px);
-    color: var(--color-primary);
   }
 
-  .link-text {
+  /* Other Versions */
+  .other-versions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--space-2);
+  }
+
+  .versions-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
     text-transform: lowercase;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast);
+  }
+
+  .versions-toggle:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-surface-hover);
+  }
+
+  .toggle-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-fast);
+  }
+
+  .toggle-icon.expanded {
+    transform: rotate(180deg);
+  }
+
+  .versions-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .version-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-primary);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+  }
+
+  .version-link:hover {
+    background: var(--color-surface-hover);
   }
 
   .loading-state {
@@ -624,13 +718,30 @@
       font-size: var(--text-base);
     }
 
-    .radar-link {
-      font-size: var(--text-md);
-      padding: var(--space-2) var(--space-4);
+    .primary-cta {
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .cta-text {
+      font-size: var(--text-lg);
     }
   }
 
   @media (--sm) {
+    .primary-cta {
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-5);
+      text-align: center;
+    }
+
+    .cta-arrow {
+      display: none;
+    }
+
+    .cta-text {
+      font-size: var(--text-md);
+    }
     .quadrants-list,
     .rings-list {
       grid-template-columns: 1fr;
