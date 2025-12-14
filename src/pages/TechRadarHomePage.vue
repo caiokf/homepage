@@ -441,31 +441,6 @@
     line-height: var(--leading-normal);
   }
 
-  /* Section Styles */
-  .section-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
-    text-transform: lowercase;
-    margin: 0 0 var(--space-3) 0;
-    text-align: center;
-  }
-
-  .section-title::before {
-    content: "## ";
-    color: var(--color-primary);
-  }
-
-  .section-intro {
-    font-family: var(--font-sans);
-    font-size: var(--text-md);
-    color: var(--color-text-secondary);
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto var(--space-6) auto;
-  }
-
   /* Primary CTA */
   .primary-cta {
     display: inline-flex;
@@ -671,10 +646,6 @@
       margin-bottom: var(--space-6);
     }
 
-    .hero-tagline {
-      font-size: var(--text-md);
-    }
-
     .hero-description {
       font-size: var(--text-base);
     }
@@ -685,14 +656,6 @@
 
     .radar-visual {
       width: 280px;
-    }
-
-    .section-title {
-      font-size: var(--text-lg);
-    }
-
-    .section-intro {
-      font-size: var(--text-base);
     }
 
     .primary-cta {
