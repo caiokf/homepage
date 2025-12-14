@@ -376,9 +376,9 @@
   .meta-duration {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    font-weight: var(--font-semibold);
-    color: var(--color-primary);
-    background: var(--color-primary-light);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    background: var(--color-background-subtle);
     padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-sm);
   }
@@ -505,15 +505,15 @@
 
   .highlight-item {
     font-family: var(--font-sans);
-    font-size: var(--text-base);
+    font-size: var(--text-md);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
-    padding-left: var(--space-5);
+    padding-left: var(--space-6);
     position: relative;
   }
 
   .highlight-item::before {
-    content: "//";
+    content: "// ";
     position: absolute;
     left: 0;
     color: var(--color-primary);
@@ -605,6 +605,10 @@
       width: 100%;
       max-width: none;
       margin-top: var(--space-2);
+    }
+
+    .tags-wrapper :deep(.badge-group) {
+      justify-content: flex-start;
     }
 
     .company-name {
