@@ -13,6 +13,60 @@
       </p>
     </section>
 
+    <!-- Primary CTA Section -->
+    <section class="cta-section">
+      <div v-if="loading" class="loading-state">
+        <span class="loading-dot"></span>
+        <span class="loading-text">loading radar...</span>
+      </div>
+      <div v-else-if="error" class="error-state">
+        <span class="error-text">{{ error }}</span>
+      </div>
+      <template v-else-if="versions.length > 0">
+        <router-link
+          :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
+          class="primary-cta"
+        >
+          <span class="cta-text">explore the radar</span>
+          <span class="cta-version">{{ versions[0].name }}</span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </router-link>
+
+        <!-- Other versions (expandable) -->
+        <div v-if="versions.length > 1" class="other-versions">
+          <button
+            class="versions-toggle"
+            :aria-expanded="showOtherVersions"
+            @click="showOtherVersions = !showOtherVersions"
+          >
+            <span>previous versions</span>
+            <svg
+              class="toggle-icon"
+              :class="{ expanded: showOtherVersions }"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div v-if="showOtherVersions" class="versions-list">
+            <router-link
+              v-for="version in versions.slice(1)"
+              :key="version.id"
+              :to="`/tech-radar/${encodeURIComponent(version.id)}`"
+              class="version-link"
+            >
+              {{ version.name }}
+            </router-link>
+          </div>
+        </div>
+      </template>
+    </section>
+
     <!-- Radar Overview - 2 Column Layout -->
     <section class="radar-overview">
       <!-- Quadrants Column -->
@@ -114,60 +168,6 @@
           </article>
         </div>
       </div>
-    </section>
-
-    <!-- Primary CTA Section -->
-    <section class="cta-section">
-      <div v-if="loading" class="loading-state">
-        <span class="loading-dot"></span>
-        <span class="loading-text">loading radar...</span>
-      </div>
-      <div v-else-if="error" class="error-state">
-        <span class="error-text">{{ error }}</span>
-      </div>
-      <template v-else-if="versions.length > 0">
-        <router-link
-          :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
-          class="primary-cta"
-        >
-          <span class="cta-text">explore the radar</span>
-          <span class="cta-version">{{ versions[0].name }}</span>
-          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </router-link>
-
-        <!-- Other versions (expandable) -->
-        <div v-if="versions.length > 1" class="other-versions">
-          <button
-            class="versions-toggle"
-            :aria-expanded="showOtherVersions"
-            @click="showOtherVersions = !showOtherVersions"
-          >
-            <span>previous versions</span>
-            <svg
-              class="toggle-icon"
-              :class="{ expanded: showOtherVersions }"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-          <div v-if="showOtherVersions" class="versions-list">
-            <router-link
-              v-for="version in versions.slice(1)"
-              :key="version.id"
-              :to="`/tech-radar/${encodeURIComponent(version.id)}`"
-              class="version-link"
-            >
-              {{ version.name }}
-            </router-link>
-          </div>
-        </div>
-      </template>
     </section>
   </div>
 </template>
@@ -490,6 +490,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-4);
+    margin-bottom: var(--space-10);
   }
 
   .primary-cta {
