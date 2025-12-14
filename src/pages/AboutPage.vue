@@ -279,7 +279,7 @@
     border-radius: var(--radius-full);
     object-fit: cover;
     border: 3px solid var(--color-primary);
-    box-shadow: 0 0 40px rgba(var(--color-primary), 0.2);
+    box-shadow: 0 0 40px #3d8a8a33;
   }
 
   /* Hero Content - Code Aesthetic */
