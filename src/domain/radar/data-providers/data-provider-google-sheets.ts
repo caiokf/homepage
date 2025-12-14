@@ -54,10 +54,12 @@ export class DataProviderGoogleSheets implements TechRadarDataProvider {
       return [];
     }
 
-    return this.metadata.sheets.map((sheet) => ({
-      id: sheet.properties.title,
-      name: sheet.properties.title,
-    }));
+    return this.metadata.sheets
+      .filter((sheet) => !sheet.properties.title.startsWith("_"))
+      .map((sheet) => ({
+        id: sheet.properties.title,
+        name: sheet.properties.title,
+      }));
   }
 
   async fetchVersion(versionId: string): Promise<TechRadarData> {
