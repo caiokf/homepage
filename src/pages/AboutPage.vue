@@ -60,28 +60,22 @@
             <code><span class="code-keyword">const</span> <span class="code-var">engineer</span> <span class="code-punct">= {</span></code>
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="hero-name">"caio kinzel filho"</span><span class="code-punct">,</span></code>
+            <code class="indent-1"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code>
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">location</span><span class="code-punct">:</span> <span class="hero-location">"Sunshine Coast, Australia"</span><span class="code-punct">,</span></code>
+            <code class="indent-1"><span class="code-prop">location</span><span class="code-punct">:</span> <span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code>
           </div>
           <div class="hero-line">
             <code class="indent-1"><span class="code-prop">specialties</span><span class="code-punct">: [</span></code>
           </div>
-          <div class="hero-line">
-            <code class="indent-2"><span class="code-muted">"architecture"</span><span class="code-punct">,</span></code>
-          </div>
-          <div class="hero-line">
-            <code class="indent-2"><span class="code-muted">"event-driven systems"</span><span class="code-punct">,</span></code>
-          </div>
-          <div class="hero-line">
-            <code class="indent-2"><span class="code-muted">"engineering teams"</span></code>
+          <div v-for="(specialty, index) in engineer.specialties" :key="specialty" class="hero-line">
+            <code class="indent-2"><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? ',' : '' }}</span></code>
           </div>
           <div class="hero-line">
             <code class="indent-1"><span class="code-punct">],</span></code>
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">offline</span><span class="code-punct">:</span> <span class="code-muted">["trails", "beach", "sim racing"]</span></code>
+            <code class="indent-1"><span class="code-prop">offline</span><span class="code-punct">:</span> <span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code>
           </div>
           <div class="hero-line">
             <code><span class="code-punct">};</span></code>
@@ -148,6 +142,13 @@
 <script setup lang="ts">
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
+
+  const engineer = {
+    name: "caio kinzel filho",
+    location: "Sunshine Coast, Australia",
+    specialties: ["architecture", "event-driven systems", "engineering teams"],
+    offline: ["trails", "beach", "sim racing"],
+  };
 </script>
 
 <style scoped>
