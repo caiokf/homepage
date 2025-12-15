@@ -231,61 +231,28 @@
     font-size: var(--text-sm);
   }
 
-  /* Code comment style for usage and description sections */
+  /* Usage section - primary "my take" */
   .blip-description :deep(.blip-content-usage) {
-    position: relative;
-    padding-left: var(--space-4);
     margin-bottom: var(--space-4);
-  }
-
-  .blip-description :deep(.blip-content-usage)::before {
-    content: "//";
-    position: absolute;
-    left: 0;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-weight: var(--font-semibold);
   }
 
   .blip-description :deep(.blip-content-usage p) {
     color: var(--color-text-primary);
     font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
   }
 
+  /* Description section - muted "official explanation" */
   .blip-description :deep(.blip-content-description) {
-    position: relative;
-    padding: var(--space-3) var(--space-4);
-    margin-top: var(--space-2);
-    background: var(--color-background-subtle);
-    border-radius: var(--radius-sm);
-    border-left: 2px solid var(--color-border);
-    transition: background-color var(--transition-theme),
-      border-color var(--transition-theme);
-  }
-
-  .blip-description :deep(.blip-content-description)::before {
-    content: "/*";
-    display: block;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-1);
-  }
-
-  .blip-description :deep(.blip-content-description)::after {
-    content: "*/";
-    display: block;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    margin-top: var(--space-1);
-    text-align: right;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border-subtle);
+    transition: border-color var(--transition-theme);
   }
 
   .blip-description :deep(.blip-content-description p) {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     font-style: italic;
-    margin: 0;
+    line-height: var(--leading-relaxed);
   }
 </style>
