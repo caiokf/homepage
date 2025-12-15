@@ -172,8 +172,8 @@
   );
 
   // Gravitational pull settings
-  const ATTRACTION_RADIUS = 80; // pixels - how close cursor needs to be
-  const MAX_PULL = 12; // max pixels to pull toward cursor
+  const ATTRACTION_RADIUS = 100; // pixels - how close cursor needs to be
+  const MAX_PULL = 16; // max pixels to pull toward cursor
   const PULL_STRENGTH = 0.4; // 0-1, how strong the pull is
 
   const handleMouseMove = (event: MouseEvent) => {
