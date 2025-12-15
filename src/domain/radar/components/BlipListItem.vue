@@ -1,6 +1,7 @@
 <template>
   <li
     :class="['blip-item', { selected: isSelected, highlighted: isHighlighted }]"
+    :style="{ '--stagger-delay': `${staggerIndex * 30}ms` }"
     @mouseenter="$emit('hover', blip)"
     @mouseleave="$emit('hover', null)"
   >
@@ -31,6 +32,7 @@
 
   const props = defineProps<{
     blip: PositionedBlip;
+    staggerIndex: number;
     isHighlighted: boolean;
     isSelected: boolean;
   }>();
@@ -106,10 +108,23 @@
 </script>
 
 <style scoped>
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
   .blip-item {
     list-style: none;
     border-bottom: 1px solid var(--color-border-subtle);
     transition: border-color var(--transition-theme);
+    animation: slideInFromRight 300ms ease-out backwards;
+    animation-delay: var(--stagger-delay, 0ms);
   }
 
   .blip-item.highlighted {

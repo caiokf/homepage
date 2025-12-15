@@ -3,9 +3,10 @@
     <h3 class="ring-title">{{ ringName }}</h3>
     <ul v-if="blips.length > 0" class="blip-list">
       <BlipListItem
-        v-for="blip in blips"
+        v-for="(blip, index) in blips"
         :key="blip.id"
         :blip="blip"
+        :stagger-index="baseIndex + index"
         :is-highlighted="highlightedBlipId === blip.id"
         :is-selected="selectedBlipId === blip.id"
         @hover="$emit('blip-hover', $event)"
@@ -24,6 +25,7 @@
   defineProps<{
     ringName: string;
     blips: PositionedBlip[];
+    baseIndex: number;
     highlightedBlipId: number | null;
     selectedBlipId: number | null;
   }>();

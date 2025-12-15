@@ -3,10 +3,11 @@
     <h2 class="quadrant-title">{{ quadrantName }}</h2>
 
     <BlipListByRing
-      v-for="ring in ringGroups"
+      v-for="(ring, ringIndex) in ringGroups"
       :key="ring.name"
       :ring-name="ring.name"
       :blips="ring.blips"
+      :base-index="getBaseIndex(ringIndex)"
       :highlighted-blip-id="highlightedBlipId"
       :selected-blip-id="selectedBlipId"
       @blip-hover="$emit('blip-hover', $event)"
@@ -42,6 +43,15 @@
       blips: props.blips.filter((b) => b.ringIndex === index),
     }));
   });
+
+  // Calculate base index for staggered animation (cumulative count of blips in previous rings)
+  function getBaseIndex(ringIndex: number): number {
+    let count = 0;
+    for (let i = 0; i < ringIndex; i++) {
+      count += ringGroups.value[i].blips.length;
+    }
+    return count;
+  }
 </script>
 
 <style scoped>
