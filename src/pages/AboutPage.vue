@@ -2,7 +2,12 @@
   <div class="about-page">
     <!-- Hero with Orbit Visualization -->
     <section class="hero">
-      <div class="hero-visual">
+      <div
+        ref="heroVisualRef"
+        class="hero-visual"
+        @mousemove="handleMouseMove"
+        @mouseleave="handleMouseLeave"
+      >
         <!-- Orbit SVG Background -->
         <svg class="orbit-svg" viewBox="0 0 400 400" aria-hidden="true">
           <!-- Orbit rings -->
@@ -12,37 +17,37 @@
 
           <!-- Skill nodes on orbits -->
           <!-- Outer orbit - larger concepts -->
-          <g class="orbit-node node-architecture">
+          <g class="orbit-node node-architecture" :style="{ transform: getNodeTransform('architecture') }">
             <circle cx="200" cy="20" r="8" />
             <text x="200" y="8" class="node-label">arch</text>
           </g>
-          <g class="orbit-node node-data">
+          <g class="orbit-node node-data" :style="{ transform: getNodeTransform('data') }">
             <circle cx="380" cy="200" r="8" />
             <text x="380" y="188" class="node-label">data</text>
           </g>
-          <g class="orbit-node node-teams">
+          <g class="orbit-node node-teams" :style="{ transform: getNodeTransform('teams') }">
             <circle cx="200" cy="380" r="8" />
             <text x="200" y="395" class="node-label">teams</text>
           </g>
-          <g class="orbit-node node-ai">
+          <g class="orbit-node node-ai" :style="{ transform: getNodeTransform('ai') }">
             <circle cx="20" cy="200" r="8" />
             <text x="20" y="188" class="node-label">ai</text>
           </g>
 
           <!-- Middle orbit - secondary skills -->
-          <g class="orbit-node node-events">
+          <g class="orbit-node node-events" :style="{ transform: getNodeTransform('events') }">
             <circle cx="292" cy="108" r="6" />
             <text x="305" y="100" class="node-label-small">events</text>
           </g>
-          <g class="orbit-node node-scale">
+          <g class="orbit-node node-scale" :style="{ transform: getNodeTransform('scale') }">
             <circle cx="292" cy="292" r="6" />
             <text x="305" y="300" class="node-label-small">scale</text>
           </g>
-          <g class="orbit-node node-dx">
+          <g class="orbit-node node-dx" :style="{ transform: getNodeTransform('dx') }">
             <circle cx="108" cy="292" r="6" />
             <text x="70" y="300" class="node-label-small">dx</text>
           </g>
-          <g class="orbit-node node-mentoring">
+          <g class="orbit-node node-mentoring" :style="{ transform: getNodeTransform('mentoring') }">
             <circle cx="108" cy="108" r="6" />
             <text x="70" y="100" class="node-label-small">mentor</text>
           </g>
@@ -141,9 +146,90 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, ref, reactive } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
+
+  // Orbit node configuration with their base positions
+  const orbitNodes = [
+    // Outer orbit (r=180)
+    { id: "architecture", cx: 200, cy: 20, r: 180, angle: -90 },
+    { id: "data", cx: 380, cy: 200, r: 180, angle: 0 },
+    { id: "teams", cx: 200, cy: 380, r: 180, angle: 90 },
+    { id: "ai", cx: 20, cy: 200, r: 180, angle: 180 },
+    // Middle orbit (r=130) - positioned at 45° angles
+    { id: "events", cx: 292, cy: 108, r: 130, angle: -45 },
+    { id: "scale", cx: 292, cy: 292, r: 130, angle: 45 },
+    { id: "dx", cx: 108, cy: 292, r: 130, angle: 135 },
+    { id: "mentoring", cx: 108, cy: 108, r: 130, angle: -135 },
+  ];
+
+  // Reactive state for mouse tracking
+  const heroVisualRef = ref<HTMLElement | null>(null);
+  const mousePos = reactive({ x: 0, y: 0, active: false });
+  const nodeOffsets = reactive<Record<string, { x: number; y: number }>>(
+    Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0 }]))
+  );
+
+  // Gravitational pull settings
+  const ATTRACTION_RADIUS = 80; // pixels - how close cursor needs to be
+  const MAX_PULL = 12; // max pixels to pull toward cursor
+  const PULL_STRENGTH = 0.4; // 0-1, how strong the pull is
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!heroVisualRef.value) return;
+
+    const rect = heroVisualRef.value.getBoundingClientRect();
+    // Convert to SVG coordinate space (400x400 viewBox)
+    const scaleX = 400 / rect.width;
+    const scaleY = 400 / rect.height;
+
+    mousePos.x = (event.clientX - rect.left) * scaleX;
+    mousePos.y = (event.clientY - rect.top) * scaleY;
+    mousePos.active = true;
+
+    updateNodeOffsets();
+  };
+
+  const handleMouseLeave = () => {
+    mousePos.active = false;
+    // Reset all offsets (CSS transition handles the snap back)
+    orbitNodes.forEach((node) => {
+      nodeOffsets[node.id] = { x: 0, y: 0 };
+    });
+  };
+
+  const updateNodeOffsets = () => {
+    if (!mousePos.active) return;
+
+    orbitNodes.forEach((node) => {
+      // Calculate distance from cursor to node center
+      const dx = mousePos.x - node.cx;
+      const dy = mousePos.y - node.cy;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < ATTRACTION_RADIUS && distance > 0) {
+        // Calculate pull strength (stronger when closer)
+        const pullFactor = (1 - distance / ATTRACTION_RADIUS) * PULL_STRENGTH;
+        const pull = Math.min(pullFactor * MAX_PULL, MAX_PULL);
+
+        // Normalize direction and apply pull
+        nodeOffsets[node.id] = {
+          x: (dx / distance) * pull,
+          y: (dy / distance) * pull,
+        };
+      } else {
+        nodeOffsets[node.id] = { x: 0, y: 0 };
+      }
+    });
+  };
+
+  // Get transform style for a node
+  const getNodeTransform = (nodeId: string) => {
+    const offset = nodeOffsets[nodeId];
+    if (!offset || (offset.x === 0 && offset.y === 0)) return undefined;
+    return `translate(${offset.x}px, ${offset.y}px)`;
+  };
 
   const engineer = {
     name: "caio kinzel filho",
@@ -223,9 +309,18 @@
     stroke-dasharray: 2 2;
   }
 
+  .orbit-node {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   .orbit-node circle {
     fill: var(--color-primary);
     opacity: 0.8;
+    transition: filter 0.2s ease;
+  }
+
+  .orbit-node:hover circle {
+    filter: drop-shadow(0 0 6px currentColor);
   }
 
   .node-architecture circle {
