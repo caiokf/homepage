@@ -39,7 +39,8 @@
     transition:
       background-color var(--transition-theme),
       border-color var(--transition-theme),
-      box-shadow var(--transition-theme);
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
   .card-header {
@@ -51,7 +52,22 @@
     border-bottom: 1px solid var(--color-border);
     transition:
       background-color var(--transition-theme),
-      border-color var(--transition-theme);
+      border-color var(--transition-theme),
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .card-header:hover {
+    background: var(--color-surface-hover);
+  }
+
+  .card-header:hover ~ .card-body {
+    transform: translateY(1px);
+  }
+
+  .app-card:has(.card-header:hover) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
   }
 
   .card-title {
