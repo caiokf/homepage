@@ -841,6 +841,17 @@
       border-color: var(--quadrant-SE);
     }
 
+    .ring-item {
+      padding-left: var(--space-3);
+    }
+
+    .ring-dot {
+      width: 12px;
+      height: 12px;
+      border-width: 3px;
+      margin-top: 4px;
+    }
+
     .column-title {
       display: block;
       font-family: var(--font-mono);
