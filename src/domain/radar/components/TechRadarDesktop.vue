@@ -40,58 +40,63 @@
 
         <!-- Blips -->
         <g
-          v-for="blip in getPositionedBlips(index)"
+          v-for="(blip, blipIndex) in getPositionedBlips(index)"
           :key="`blip-${blip.id}`"
-          :class="[
-            'blip',
-            quadrant.position,
-            { 'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id },
-          ]"
           :transform="`translate(${blip.x - 18}, ${blip.y - 18})`"
-          @mouseenter="handleBlipHover(blip)"
-          @mouseleave="handleBlipLeave()"
-          @click.stop="handleBlipClick(blip, quadrant.position)"
         >
-          <!-- Main circle (36x36 coordinate space, circle at cx=18, cy=18, r=12) -->
-          <circle
-            cx="18"
-            cy="18"
-            r="12"
-            :class="['blip-circle', quadrant.position]"
-          />
-
-          <!-- Indicator based on status -->
-          <path
-            v-if="blip.isNew"
-            :d="BlipGeometry.getNewIndicatorPath()"
-            :class="['blip-indicator', quadrant.position]"
-            opacity="1"
-          />
-          <path
-            v-else-if="blip.status === 'moved in'"
-            :d="BlipGeometry.getMovedInIndicatorPath(quadrant.position)"
-            :class="['blip-indicator', quadrant.position]"
-            opacity="1"
-          />
-          <path
-            v-else-if="blip.status === 'moved out'"
-            :d="BlipGeometry.getMovedOutIndicatorPath(quadrant.position)"
-            :class="['blip-indicator', quadrant.position]"
-            opacity="1"
-          />
-
-          <!-- Blip number -->
-          <text
-            x="18"
-            y="19"
-            class="blip-text"
-            text-anchor="middle"
-            dominant-baseline="central"
-            font-size="10px"
-            font-weight="bold"
+          <!-- Inner wrapper for animation (separate from positioning transform) -->
+          <g
+            :class="[
+              'blip',
+              quadrant.position,
+              { 'blip-faded': hoveredBlip && hoveredBlip.id !== blip.id },
+            ]"
+            :style="getBlipEntranceStyle(blip, blipIndex)"
+            @mouseenter="handleBlipHover(blip)"
+            @mouseleave="handleBlipLeave()"
+            @click.stop="handleBlipClick(blip, quadrant.position)"
           >
-            {{ blip.blipText }}
-          </text>
+            <!-- Main circle (36x36 coordinate space, circle at cx=18, cy=18, r=12) -->
+            <circle
+              cx="18"
+              cy="18"
+              r="12"
+              :class="['blip-circle', quadrant.position]"
+            />
+
+            <!-- Indicator based on status -->
+            <path
+              v-if="blip.isNew"
+              :d="BlipGeometry.getNewIndicatorPath()"
+              :class="['blip-indicator', quadrant.position]"
+              opacity="1"
+            />
+            <path
+              v-else-if="blip.status === 'moved in'"
+              :d="BlipGeometry.getMovedInIndicatorPath(quadrant.position)"
+              :class="['blip-indicator', quadrant.position]"
+              opacity="1"
+            />
+            <path
+              v-else-if="blip.status === 'moved out'"
+              :d="BlipGeometry.getMovedOutIndicatorPath(quadrant.position)"
+              :class="['blip-indicator', quadrant.position]"
+              opacity="1"
+            />
+
+            <!-- Blip number -->
+            <text
+              x="18"
+              y="19"
+              class="blip-text"
+              text-anchor="middle"
+              dominant-baseline="central"
+              font-size="10px"
+              font-weight="bold"
+            >
+              {{ blip.blipText }}
+            </text>
+          </g>
         </g>
 
         <!-- Quadrant name -->
@@ -345,6 +350,22 @@
     emit("blip-selected", blip, quadrant);
   }
 
+  // Blip entrance animation - stagger by ring (inner rings first) then by index
+  function getBlipEntranceStyle(
+    blip: PositionedBlip,
+    blipIndex: number
+  ): CSSProperties {
+    // Ring index determines base delay (inner = 0, outer = 3)
+    const ringDelay = blip.ringIndex * 50; // 50ms per ring for ripple effect
+    // Small additional stagger within each ring
+    const indexDelay = blipIndex * 20; // 20ms per blip within ring
+    const totalDelay = ringDelay + indexDelay;
+
+    return {
+      "--entrance-delay": `${totalDelay}ms`,
+    } as CSSProperties;
+  }
+
   // Track mouse position for tooltip
   function handleMouseMove(e: MouseEvent) {
     mousePosition.value = { x: e.clientX, y: e.clientY };
@@ -474,10 +495,29 @@
     fill: var(--color-text-inverse);
   }
 
+  /* Blip entrance animation */
+  @keyframes blipEnter {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
   /* Blip hover effects */
   .blip {
     cursor: pointer;
     transition: opacity var(--transition-normal);
+    transform-origin: 18px 18px;
+    animation: blipEnter 400ms ease-out backwards;
+    animation-delay: var(--entrance-delay, 0ms);
   }
 
   .blip-faded {
