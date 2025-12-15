@@ -282,6 +282,24 @@
   }
 
 
+  @keyframes avatarEntrance {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+      filter: drop-shadow(0 0 0 rgba(61, 138, 138, 0));
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 20px rgba(61, 138, 138, 0.6));
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: drop-shadow(0 0 12px rgba(61, 138, 138, 0.3));
+    }
+  }
+
   .avatar-wrapper {
     position: absolute;
     top: 50%;
@@ -297,6 +315,7 @@
     object-fit: cover;
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 40px #3d8a8a33;
+    animation: avatarEntrance 800ms ease-out;
   }
 
   /* Hero Content - Code Aesthetic */
