@@ -110,6 +110,7 @@
             v-for="(skill, index) in skillsConfig"
             :key="skill.title"
             class="skill-block"
+            :style="{ '--typing-delay': `${index * 150}ms` }"
           >
             <div class="line">
               <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
@@ -471,10 +472,24 @@
     color: var(--color-text-muted);
   }
 
+  /* Skill block typing entrance animation */
+  @keyframes skillTyping {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .skill-block {
     margin: var(--space-2) 0;
     transition: background-color var(--transition-fast);
     border-radius: var(--radius-sm);
+    animation: skillTyping 400ms ease-out backwards;
+    animation-delay: var(--typing-delay, 0ms);
   }
 
   .skill-block:hover .line {
