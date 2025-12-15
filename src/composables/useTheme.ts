@@ -77,7 +77,18 @@ export function useTheme() {
    * Toggle between light and dark themes
    */
   function toggleTheme() {
-    setTheme(currentTheme.value === "light" ? "dark" : "light");
+    const goingDark = currentTheme.value === "light";
+
+    // Add direction-specific transitioning class for animation
+    const transitionClass = goingDark ? "theme-to-dark" : "theme-to-light";
+    document.documentElement.classList.add("theme-transitioning", transitionClass);
+
+    setTheme(goingDark ? "dark" : "light");
+
+    // Remove classes after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning", transitionClass);
+    }, 600);
   }
 
   /**
