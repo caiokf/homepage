@@ -5,7 +5,10 @@
       v-if="radar"
       :radar="radar"
       :selected-quadrant="selectedQuadrant"
+      :view-mode="viewMode"
+      :show-view-toggle="!isMobile"
       @select="handleQuadrantSelected"
+      @view-mode-change="handleViewModeChange"
     />
 
     <div v-if="radar" class="main-content">
@@ -16,7 +19,7 @@
 
       <!-- Radar visualization (handles mobile/desktop switching internally) -->
       <div class="radar-section">
-        <div class="radar-wrapper">
+        <div class="radar-wrapper" :class="{ 'radar-hidden': !isMobile && viewMode === 'list' }">
           <TechRadar
             :radar="radar"
             :selected-quadrant="selectedQuadrant"
@@ -24,11 +27,11 @@
             @blip-selected="handleBlipSelected"
             @blip-hovered="handleBlipHovered"
           />
-          <RadarLegend v-if="!isMobile" />
+          <RadarLegend v-if="!isMobile && viewMode === 'radar'" />
 
           <!-- Overlay blip list when a quadrant is selected (desktop only) -->
           <div
-            v-if="!isMobile && selectedQuadrant && selectedQuadrantObj"
+            v-if="!isMobile && selectedQuadrant && selectedQuadrantObj && viewMode === 'radar'"
             :key="selectedQuadrant"
             class="table-overlay"
             :class="tableOverlayPosition"
@@ -45,6 +48,20 @@
             />
           </div>
         </div>
+
+        <!-- Desktop list view (when radar is hidden) -->
+        <Transition name="list-view">
+          <div v-if="!isMobile && viewMode === 'list'" class="list-view">
+            <BlipList
+              :quadrants="allQuadrantsWithBlips"
+              :highlighted-blip-id="hoveredBlipId"
+              :selected-blip-id="selectedBlipId"
+              @blip-hover="handleTableBlipHover"
+              @blip-click="handleBlipSelected"
+              @blip-toggle="handleBlipToggle"
+            />
+          </div>
+        </Transition>
       </div>
 
       <!-- Mobile: Blip list when a quadrant is selected -->
@@ -94,7 +111,7 @@
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
-  import type { PositionedBlip, QuadrantGeometryConfig, QuadrantPosition } from "../domain/radar/types";
+  import type { PositionedBlip, QuadrantGeometryConfig, QuadrantPosition, ViewMode } from "../domain/radar/types";
   import { QUADRANT_SIZE, RADAR_SHEET_ID, GOOGLE_API_KEY, MOBILE_BREAKPOINT, MIN_LOADING_DURATION_MS } from "../domain/radar/constants";
   import { RingGeometry } from "../domain/radar/geometry/svg-layout.geometry";
   import { QuadrantGeometry } from "../domain/radar/geometry/blip-positioning.geometry";
@@ -118,6 +135,7 @@
   const hoveredBlipId = ref<number | null>(null);
   const selectedBlipId = ref<number | null>(null);
   const isMobile = ref(false);
+  const viewMode = ref<ViewMode>("radar");
 
   function checkMobile() {
     isMobile.value = window.innerWidth < MOBILE_BREAKPOINT;
@@ -233,6 +251,14 @@
     // Clear selected blip when viewing all quadrants to prevent auto-scroll on mobile
     if (position === null) {
       selectedBlipId.value = null;
+    }
+  }
+
+  function handleViewModeChange(mode: ViewMode) {
+    viewMode.value = mode;
+    // Clear quadrant selection when switching to list view for cleaner transition
+    if (mode === "list") {
+      selectedQuadrant.value = null;
     }
   }
 
@@ -375,5 +401,52 @@
     .radar-wrapper {
       width: 100%;
     }
+  }
+
+  /* Radar hide animation */
+  .radar-wrapper {
+    transition:
+      opacity var(--transition-slow),
+      transform var(--transition-slow);
+  }
+
+  .radar-wrapper.radar-hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    position: absolute;
+    width: var(--radar-width);
+    max-width: 100%;
+  }
+
+  /* List view */
+  .list-view {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* List view transition */
+  .list-view-enter-active {
+    transition:
+      opacity var(--transition-slow),
+      transform var(--transition-slow);
+    transition-delay: 150ms;
+  }
+
+  .list-view-leave-active {
+    transition:
+      opacity var(--transition-normal),
+      transform var(--transition-normal);
+  }
+
+  .list-view-enter-from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .list-view-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
   }
 </style>

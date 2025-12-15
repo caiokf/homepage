@@ -31,23 +31,46 @@
         </BaseBracketLink>
       </li>
     </ul>
+
+    <!-- View mode toggle (desktop only) -->
+    <div v-if="showViewToggle" class="radar-header__view-toggle">
+      <BaseBracketLink
+        class="radar-header__button"
+        :class="{ 'active-item': viewMode === 'radar' }"
+        :aria-pressed="viewMode === 'radar'"
+        @click="$emit('view-mode-change', 'radar')"
+      >
+        radar
+      </BaseBracketLink>
+      <BaseBracketLink
+        class="radar-header__button"
+        :class="{ 'active-item': viewMode === 'list' }"
+        :aria-pressed="viewMode === 'list'"
+        @click="$emit('view-mode-change', 'list')"
+      >
+        list
+      </BaseBracketLink>
+    </div>
   </nav>
 </template>
 
 <script setup lang="ts">
   import { computed } from "vue";
   import type { Radar } from "../models/radar";
-  import type { QuadrantPosition } from "../types";
+  import type { QuadrantPosition, ViewMode } from "../types";
   import { QUADRANT_POSITIONS } from "../constants";
   import BaseBracketLink from "../../../components/atoms/BaseBracketLink.vue";
 
   const props = defineProps<{
     radar: Radar;
     selectedQuadrant: QuadrantPosition | null;
+    viewMode?: ViewMode;
+    showViewToggle?: boolean;
   }>();
 
   defineEmits<{
     (e: "select", position: QuadrantPosition | null): void;
+    (e: "view-mode-change", mode: ViewMode): void;
   }>();
 
   const quadrants = computed(() =>
@@ -146,6 +169,36 @@
 
     .radar-header__button {
       font-size: var(--text-xs);
+    }
+  }
+
+  /* View mode toggle */
+  .radar-header__view-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: auto;
+    padding-left: var(--space-6);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .radar-header__view-toggle .radar-header__button {
+    opacity: 0.5;
+  }
+
+  .radar-header__view-toggle .radar-header__button:hover {
+    opacity: 0.8;
+  }
+
+  .radar-header__view-toggle .radar-header__button.active-item {
+    opacity: 1;
+    font-weight: var(--font-semibold);
+    color: var(--color-primary);
+  }
+
+  @media (--md) {
+    .radar-header__view-toggle {
+      display: none;
     }
   }
 </style>
