@@ -99,15 +99,9 @@
 
           <div v-if="!showAll" class="show-more-container">
             <button @click="showAll = true" class="show-more-button">
-              <span class="show-more-line">
-                <span class="comment-prefix"></span>turns out {{ yearsOfExperience }} years is a lot
-              </span>
-              <span class="show-more-line">
-                <span class="comment-prefix"></span>there's more where that came from
-              </span>
-              <span class="show-more-line">
-                <span class="comment-prefix"></span>archaeologists, click here
-              </span>
+              <span class="show-more-line">turns out {{ yearsOfExperience }} years is a lot</span>
+              <span class="show-more-line">there's more where that came from</span>
+              <span class="show-more-line show-more-cta">show earlier roles</span>
             </button>
           </div>
         </div>
@@ -276,14 +270,9 @@
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
+    color: var(--color-text-muted);
     text-transform: lowercase;
     margin: 0 0 var(--space-1) 0;
-  }
-
-  .sidebar-title::before {
-    content: "// ";
-    color: var(--color-primary);
   }
 
   .sidebar-subtitle {
@@ -523,12 +512,12 @@
     font-size: var(--text-md);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
-    padding-left: var(--space-6);
+    padding-left: var(--space-5);
     position: relative;
   }
 
   .highlight-item::before {
-    content: "// ";
+    content: "→";
     position: absolute;
     left: 0;
     color: var(--color-primary);
@@ -572,12 +561,13 @@
     box-shadow: var(--shadow-md);
   }
 
-  .show-more-button .comment-prefix {
-    color: var(--color-primary);
-  }
-
   .show-more-line {
     display: block;
+  }
+
+  .show-more-cta {
+    color: var(--color-primary);
+    margin-top: var(--space-2);
   }
 
   /* Responsive */

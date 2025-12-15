@@ -78,11 +78,6 @@
     z-index: 10;
   }
 
-  .quadrant-title::before {
-    content: "// ";
-    opacity: 0.7;
-  }
-
   .quadrant-blip-list.NE .quadrant-title {
     background: var(--quadrant-NE);
   }

@@ -624,15 +624,10 @@
       font-family: var(--font-mono);
       font-size: var(--text-md);
       font-weight: var(--font-semibold);
-      color: var(--color-text-primary);
+      color: var(--color-text-muted);
       text-transform: lowercase;
       text-align: center;
       margin: 0 0 var(--space-4) 0;
-    }
-
-    .column-title::before {
-      content: "// ";
-      color: var(--color-primary);
     }
   }
 
