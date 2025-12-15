@@ -622,6 +622,9 @@
   .line-number {
     color: var(--color-text-muted);
     opacity: 0.5;
+    transition:
+      opacity var(--transition-fast),
+      color var(--transition-fast);
     min-width: 32px;
     text-align: right;
     padding-right: var(--space-4);
@@ -647,14 +650,36 @@
 
   .skill-block {
     margin: var(--space-2) 0;
-    transition: background-color var(--transition-fast);
     border-radius: var(--radius-sm);
     animation: skillTyping 400ms ease-out backwards;
     animation-delay: var(--typing-delay, 0ms);
+    position: relative;
+  }
+
+  /* VS Code-style line highlight on hover */
+  .skill-block::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--color-primary);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .skill-block:hover::before {
+    opacity: 1;
   }
 
   .skill-block:hover .line {
     background: var(--color-surface-hover);
+  }
+
+  .skill-block:hover .line-number {
+    opacity: 1;
+    color: var(--color-primary);
   }
 
   .description-line code {
