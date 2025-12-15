@@ -195,14 +195,9 @@
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
-    color: var(--color-text-primary);
+    color: var(--color-text-muted);
     text-transform: lowercase;
     margin: 0 0 var(--space-4) 0;
-  }
-
-  .sidebar-title::before {
-    content: "// ";
-    color: var(--color-primary);
   }
 
   .toc-nav {
@@ -355,11 +350,6 @@
     margin: 0 0 var(--space-3) 0;
     text-transform: lowercase;
     transition: color var(--transition-fast);
-  }
-
-  .article-title::before {
-    content: "// ";
-    color: var(--color-primary);
   }
 
   .article-card:hover .article-title {

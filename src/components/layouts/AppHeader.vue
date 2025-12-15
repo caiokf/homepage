@@ -64,11 +64,6 @@
     color: var(--color-primary);
   }
 
-  .logo-text::before {
-    content: "// ";
-    color: var(--color-primary);
-  }
-
   /* Light theme adjustments */
   :root:not([data-theme="dark"]) .app-header,
   [data-theme="light"] .app-header {
