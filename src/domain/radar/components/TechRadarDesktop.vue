@@ -574,7 +574,10 @@
   /* Blip hover effects */
   .blip {
     cursor: pointer;
-    transition: opacity var(--transition-normal);
+    transition:
+      opacity var(--transition-normal),
+      transform var(--transition-fast),
+      filter var(--transition-fast);
     transform-origin: 18px 18px;
     animation: blipEnter 400ms ease-out backwards;
     animation-delay: var(--entrance-delay, 0ms);
@@ -586,6 +589,24 @@
 
   .blip:hover {
     opacity: 1;
+    transform: scale(1.15);
+  }
+
+  /* Quadrant-specific glow on hover */
+  .blip.NE:hover {
+    filter: drop-shadow(0 0 6px var(--quadrant-NE));
+  }
+
+  .blip.NW:hover {
+    filter: drop-shadow(0 0 6px var(--quadrant-NW));
+  }
+
+  .blip.SW:hover {
+    filter: drop-shadow(0 0 6px var(--quadrant-SW));
+  }
+
+  .blip.SE:hover {
+    filter: drop-shadow(0 0 6px var(--quadrant-SE));
   }
 
   /* Ring names */
