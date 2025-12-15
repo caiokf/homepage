@@ -22,6 +22,7 @@
           <router-link
             :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
             class="primary-cta"
+            @click="createRipple"
           >
             <span class="cta-text">explore the radar</span>
             <span class="cta-version">{{ versions[0].name }}</span>
@@ -217,6 +218,29 @@
       loading.value = false;
     }
   });
+
+  // Radar-sweep ripple effect on click
+  const createRipple = (event: MouseEvent) => {
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+
+    // Calculate click position relative to button
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Create ripple element
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    button.appendChild(ripple);
+
+    // Remove ripple after animation completes
+    ripple.addEventListener("animationend", () => {
+      ripple.remove();
+    });
+  };
 </script>
 
 <style scoped>
@@ -458,8 +482,68 @@
     color: var(--color-text-inverse);
     text-decoration: none;
     border-radius: var(--radius-md);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
       background-color var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Radar-sweep ripple effect */
+  .primary-cta :deep(.ripple) {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    margin-left: -100px;
+    margin-top: -100px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: radarRipple 0.6s ease-out forwards;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(255, 255, 255, 0.4) 30deg,
+      transparent 90deg
+    );
+  }
+
+  .primary-cta :deep(.ripple)::before,
+  .primary-cta :deep(.ripple)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    animation: rippleRing 0.6s ease-out forwards;
+  }
+
+  .primary-cta :deep(.ripple)::after {
+    animation-delay: 0.1s;
+    border-width: 1px;
+    opacity: 0.5;
+  }
+
+  @keyframes radarRipple {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2) rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes rippleRing {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
   }
 
   .primary-cta:hover {
