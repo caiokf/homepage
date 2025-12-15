@@ -78,17 +78,20 @@ export function useTheme() {
    */
   function toggleTheme() {
     const goingDark = currentTheme.value === "light";
+    const newTheme = goingDark ? "dark" : "light";
 
-    // Add direction-specific transitioning class for animation
-    const transitionClass = goingDark ? "theme-to-dark" : "theme-to-light";
-    document.documentElement.classList.add("theme-transitioning", transitionClass);
+    // Add transition classes only in browser environment
+    if (typeof document !== "undefined") {
+      const transitionClass = goingDark ? "theme-to-dark" : "theme-to-light";
+      document.documentElement.classList.add("theme-transitioning", transitionClass);
 
-    setTheme(goingDark ? "dark" : "light");
+      // Remove classes after animation completes
+      setTimeout(() => {
+        document.documentElement.classList.remove("theme-transitioning", transitionClass);
+      }, 600);
+    }
 
-    // Remove classes after animation completes
-    setTimeout(() => {
-      document.documentElement.classList.remove("theme-transitioning", transitionClass);
-    }, 600);
+    setTheme(newTheme);
   }
 
   /**
