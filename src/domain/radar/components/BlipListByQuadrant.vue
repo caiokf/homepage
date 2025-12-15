@@ -74,6 +74,13 @@
     box-sizing: border-box;
   }
 
+  /* Make the card header sticky */
+  .quadrant-blip-list :deep(.card-header) {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
   .quadrant-title {
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);

@@ -88,8 +88,8 @@ export const GROUP_BLIP_ANGLES = [30, 35, 60, 80] as const;
 // UI DIMENSIONS
 // -----------------------------------------------------------------------------
 
-/** Height of the sticky quadrant title header in pixels */
-export const STICKY_HEADER_HEIGHT = 56;
+/** Height of the sticky quadrant title header in pixels (BaseCard header: 12px padding + ~20px text + 12px padding + 1px border) */
+export const STICKY_HEADER_HEIGHT = 45;
 
 // -----------------------------------------------------------------------------
 // RESPONSIVE BREAKPOINTS
