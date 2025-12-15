@@ -819,6 +819,16 @@
       gap: var(--space-4);
     }
 
+    .ring-item {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .ring-text {
+      align-items: center;
+    }
+
     .column-title {
       display: block;
       font-family: var(--font-mono);
