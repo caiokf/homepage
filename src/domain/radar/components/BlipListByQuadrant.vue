@@ -1,6 +1,14 @@
 <template>
-  <div class="quadrant-blip-list" :class="quadrantPosition">
-    <h2 class="quadrant-title">{{ quadrantName }}</h2>
+  <BaseCard
+    class="quadrant-blip-list"
+    :class="quadrantPosition"
+    :header-style="headerStyle"
+    :show-cursor="false"
+    no-padding
+  >
+    <template #title>
+      <span class="quadrant-title">{{ quadrantName }}</span>
+    </template>
 
     <BlipListByRing
       v-for="(ring, ringIndex) in ringGroups"
@@ -14,11 +22,12 @@
       @blip-click="$emit('blip-click', $event)"
       @blip-toggle="$emit('blip-toggle', $event)"
     />
-  </div>
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, type CSSProperties } from "vue";
+  import BaseCard from "../../../components/atoms/BaseCard.vue";
   import BlipListByRing from "./BlipListByRing.vue";
   import type { PositionedBlip, QuadrantPosition } from "../types";
   import { RING_NAMES } from "../constants";
@@ -36,6 +45,11 @@
     "blip-click": [blip: PositionedBlip];
     "blip-toggle": [blipId: number];
   }>();
+
+  const headerStyle = computed<CSSProperties>(() => ({
+    background: `var(--quadrant-${props.quadrantPosition})`,
+    borderBottom: "none",
+  }));
 
   const ringGroups = computed(() => {
     return RING_NAMES.map((ringName, index) => ({
@@ -56,46 +70,15 @@
 
 <style scoped>
   .quadrant-blip-list {
-    background: var(--color-surface);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
     width: 100%;
     box-sizing: border-box;
-    transition: background-color var(--transition-theme),
-      box-shadow var(--transition-theme);
   }
 
   .quadrant-title {
-    margin: 0;
-    padding: var(--space-4) var(--space-5);
-    font-size: var(--text-lg);
+    font-size: var(--text-sm);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
     color: var(--color-text-inverse);
     text-transform: lowercase;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .quadrant-title::before {
-    content: "// ";
-    opacity: 0.7;
-  }
-
-  .quadrant-blip-list.NE .quadrant-title {
-    background: var(--quadrant-NE);
-  }
-
-  .quadrant-blip-list.NW .quadrant-title {
-    background: var(--quadrant-NW);
-  }
-
-  .quadrant-blip-list.SW .quadrant-title {
-    background: var(--quadrant-SW);
-  }
-
-  .quadrant-blip-list.SE .quadrant-title {
-    background: var(--quadrant-SE);
   }
 </style>

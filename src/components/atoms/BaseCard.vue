@@ -1,14 +1,16 @@
 <template>
   <div class="app-card">
-    <div class="card-header">
+    <div class="card-header" :class="headerClass" :style="headerStyle">
       <div class="card-controls">
         <span class="control"></span>
         <span class="control"></span>
         <span class="control"></span>
       </div>
-      <span class="card-title">caiokf://{{ title }}</span>
+      <slot name="title">
+        <span class="card-title">caiokf://{{ title }}</span>
+      </slot>
     </div>
-    <div class="card-body">
+    <div class="card-body" :class="{ 'no-padding': noPadding }">
       <slot></slot>
       <span v-if="showCursor" class="cursor"></span>
     </div>
@@ -16,14 +18,20 @@
 </template>
 
 <script setup lang="ts">
+  import type { CSSProperties } from "vue";
+
   withDefaults(
     defineProps<{
       title?: string;
       showCursor?: boolean;
+      headerClass?: string;
+      headerStyle?: CSSProperties;
+      noPadding?: boolean;
     }>(),
     {
       title: "terminal",
       showCursor: true,
+      noPadding: false,
     }
   );
 </script>
@@ -91,6 +99,10 @@
     font-family: var(--font-mono);
     color: var(--color-text-primary);
     transition: color var(--transition-theme);
+  }
+
+  .card-body.no-padding {
+    padding: 0;
   }
 
   .cursor {
