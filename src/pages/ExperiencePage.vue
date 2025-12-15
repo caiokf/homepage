@@ -15,6 +15,7 @@
             v-for="(experience, index) in visibleExperiences"
             :key="index"
             class="experience-card"
+            :style="{ '--card-delay': `${index * 100}ms` }"
           >
             <!-- App Window Header -->
             <header class="card-header">
@@ -311,6 +312,18 @@
     gap: var(--space-6);
   }
 
+  /* Card entrance animation */
+  @keyframes cardSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* App Window Card Styling */
   .experience-card {
     background: var(--color-background-elevated);
@@ -319,6 +332,8 @@
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
+    animation: cardSlideUp 500ms ease-out backwards;
+    animation-delay: var(--card-delay, 0ms);
   }
 
   .experience-card:hover {
