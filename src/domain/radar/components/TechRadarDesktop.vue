@@ -265,13 +265,32 @@
   }
 
   function getQuadrantStyle(position: QuadrantPosition): CSSProperties {
+    const centerX = radarSize / 2;
+    const centerY = radarSize / 2;
+
+    // Calculate the translate values based on position and selection state
+    let translateX = centerX;
+    let translateY = centerY;
+
+    if (props.selectedQuadrant === position) {
+      // Selected quadrant may have different positioning
+      if (position === "SW" || position === "SE") {
+        translateY = 0; // Move to top
+      }
+    }
+
+    const baseStyle: CSSProperties = {
+      "--quadrant-translate-x": `${translateX}px`,
+      "--quadrant-translate-y": `${translateY}px`,
+    } as CSSProperties;
+
     if (!props.selectedQuadrant) {
-      return {};
+      return baseStyle;
     }
     if (props.selectedQuadrant === position) {
-      return {};
+      return baseStyle;
     }
-    return { opacity: 0, pointerEvents: "none" };
+    return { ...baseStyle, opacity: 0, pointerEvents: "none" };
   }
 
   function getRingPaths(quadrant: Quadrant): string[] {
@@ -400,9 +419,50 @@
       transform var(--transition-slow);
   }
 
+  /* Selected quadrant zooms in slightly */
+  .quadrant-zoomed {
+    animation: quadrantZoomIn 400ms ease-out forwards;
+  }
+
+  @keyframes quadrantZoomIn {
+    0% {
+      transform: translate(var(--quadrant-translate-x), var(--quadrant-translate-y))
+        scale(0.95);
+    }
+    50% {
+      transform: translate(var(--quadrant-translate-x), var(--quadrant-translate-y))
+        scale(1.02);
+    }
+    100% {
+      transform: translate(var(--quadrant-translate-x), var(--quadrant-translate-y))
+        scale(1);
+    }
+  }
+
+  /* Hidden quadrants slide outward and fade */
   .quadrant-hidden {
     opacity: 0;
     pointer-events: none;
+  }
+
+  .quadrant-hidden.NW {
+    transform: translate(calc(var(--quadrant-translate-x) - 40px), var(--quadrant-translate-y))
+      scale(0.9);
+  }
+
+  .quadrant-hidden.NE {
+    transform: translate(calc(var(--quadrant-translate-x) + 40px), var(--quadrant-translate-y))
+      scale(0.9);
+  }
+
+  .quadrant-hidden.SW {
+    transform: translate(calc(var(--quadrant-translate-x) - 40px), var(--quadrant-translate-y))
+      scale(0.9);
+  }
+
+  .quadrant-hidden.SE {
+    transform: translate(calc(var(--quadrant-translate-x) + 40px), var(--quadrant-translate-y))
+      scale(0.9);
   }
 
   .quadrant-background {
