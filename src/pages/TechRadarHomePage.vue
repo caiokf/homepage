@@ -819,14 +819,26 @@
       gap: var(--space-4);
     }
 
-    .ring-item {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+    .quadrant-item {
+      text-align: left;
+      padding-left: var(--space-3);
+      border-left: 3px solid;
     }
 
-    .ring-text {
-      align-items: center;
+    .quadrant-ai {
+      border-color: var(--quadrant-NW);
+    }
+
+    .quadrant-techniques {
+      border-color: var(--quadrant-NE);
+    }
+
+    .quadrant-tools {
+      border-color: var(--quadrant-SW);
+    }
+
+    .quadrant-techstack {
+      border-color: var(--quadrant-SE);
     }
 
     .column-title {
