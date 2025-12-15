@@ -40,7 +40,7 @@ export const experiencesConfig: Experience[] = [
   {
     slug: "flex",
     company: "Flex",
-    position: "Lead Frontend Developer",
+    position: "Lead Frontend Engineer",
     tags: ["remote", "fintech", "startup"],
     website: "https://www.getflex.com",
     startDate: "2020-05-22",
@@ -268,7 +268,7 @@ export const experiencesConfig: Experience[] = [
     tags: ["on-site", "saas"],
     website: "https://www.visioncritical.com",
     startDate: "2012-05-01",
-    endDate: "2014-11-01",
+    endDate: "2012-11-01",
     highlights: [
       "Built a platform for customized survey creation.",
       "Created a continuous delivery pipeline.",
