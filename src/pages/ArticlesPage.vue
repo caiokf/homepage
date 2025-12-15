@@ -22,26 +22,36 @@
       <div class="content">
         <div class="articles-list">
           <article
-            v-for="article in articles"
+            v-for="(article, index) in articles"
             :id="article.frontmatter.slug"
             :key="article.frontmatter.slug"
             class="article-card"
+            :style="{ '--card-delay': `${index * 100}ms` }"
           >
+            <!-- App Window Header -->
+            <header class="card-header">
+              <div class="window-controls">
+                <span class="control close"></span>
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
+              </div>
+              <div class="card-meta">
+                <span class="meta-date">{{ formatDate(article.frontmatter.date) }}</span>
+                <span class="meta-reading-time">{{ getReadingTime(article.content) }}</span>
+              </div>
+            </header>
+
+            <!-- Card Content -->
             <router-link :to="`/articles/${article.frontmatter.slug}`" class="article-link">
-              <header class="article-header">
+              <div class="card-content">
                 <h2 class="article-title">{{ article.frontmatter.title }}</h2>
-                <div class="article-meta">
-                  <span class="article-date">{{ formatDate(article.frontmatter.date) }}</span>
-                  <span class="article-author">by Caio Kinzel Filho</span>
-                </div>
-              </header>
+                <p class="article-excerpt">{{ getExcerpt(article.content) }}</p>
 
-              <p class="article-excerpt">{{ getExcerpt(article.content) }}</p>
-
-              <footer class="article-footer">
-                <BadgeGroup :items="article.frontmatter.tags" />
-                <span class="read-more-link" aria-hidden="true">read more</span>
-              </footer>
+                <footer class="article-footer">
+                  <BadgeGroup :items="article.frontmatter.tags" />
+                  <span class="read-more-link" aria-hidden="true">read more</span>
+                </footer>
+              </div>
             </router-link>
           </article>
         </div>
@@ -124,8 +134,13 @@
   }
 
   function getExcerpt(content: string, maxLength = 200): string {
-    // Remove markdown formatting and get first paragraph
-    const plainText = content
+    const plainText = getPlainText(content);
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substring(0, maxLength).trim() + "...";
+  }
+
+  function getPlainText(content: string): string {
+    return content
       .replace(/^---[\s\S]*?---/m, "") // Remove frontmatter if present
       .replace(/#{1,6}\s+/g, "") // Remove headers
       .replace(/\*\*|__/g, "") // Remove bold
@@ -134,9 +149,14 @@
       .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Remove links, keep text
       .replace(/\n+/g, " ") // Replace newlines with spaces
       .trim();
+  }
 
-    if (plainText.length <= maxLength) return plainText;
-    return plainText.substring(0, maxLength).trim() + "...";
+  function getReadingTime(content: string): string {
+    const plainText = getPlainText(content);
+    const wordsPerMinute = 200;
+    const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+    return `${minutes} min read`;
   }
 </script>
 
@@ -230,37 +250,109 @@
     gap: var(--space-6);
   }
 
+  /* Card entrance animation */
+  @keyframes cardSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* App Window Card Styling */
   .article-card {
-    background: var(--color-surface);
+    background: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-theme), box-shadow var(--transition-theme),
-      transform var(--transition-fast);
+    box-shadow: var(--shadow-lg);
+    transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
+    animation: cardSlideUp 500ms ease-out backwards;
+    animation-delay: var(--card-delay, 0ms);
   }
 
   .article-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-xl);
   }
 
+  /* Card Header - Window Chrome */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+  }
+
+  .control.close {
+    background: #ff5f57;
+  }
+
+  .control.minimize {
+    background: #febc2e;
+  }
+
+  .control.maximize {
+    background: #28c840;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .meta-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .meta-reading-time {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    background: var(--color-background-subtle);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Card Content */
   .article-link {
     display: block;
-    padding: var(--space-6);
     text-decoration: none;
     color: inherit;
   }
 
-  .article-header {
-    margin-bottom: var(--space-4);
+  .card-content {
+    padding: var(--space-5);
   }
 
   .article-title {
     font-family: var(--font-mono);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     font-weight: var(--font-semibold);
     color: var(--color-text-primary);
-    margin: 0 0 var(--space-2) 0;
+    margin: 0 0 var(--space-3) 0;
     text-transform: lowercase;
     transition: color var(--transition-fast);
   }
@@ -272,26 +364,6 @@
 
   .article-card:hover .article-title {
     color: var(--color-primary);
-  }
-
-  .article-meta {
-    display: flex;
-    gap: var(--space-3);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
-
-  .article-date {
-    text-transform: lowercase;
-  }
-
-  .article-author {
-    text-transform: lowercase;
-  }
-
-  .article-author::before {
-    content: "• ";
   }
 
   .article-excerpt {
@@ -375,21 +447,12 @@
       border-bottom-color: var(--color-primary);
     }
 
-    .article-link {
+    .card-content {
       padding: var(--space-4);
     }
 
     .article-title {
-      font-size: var(--text-lg);
-    }
-
-    .article-meta {
-      flex-direction: column;
-      gap: var(--space-1);
-    }
-
-    .article-author::before {
-      content: "";
+      font-size: var(--text-base);
     }
 
     .article-footer {
@@ -406,6 +469,15 @@
   @media (--sm) {
     .sidebar {
       display: none;
+    }
+
+    .window-controls {
+      display: none;
+    }
+
+    .card-meta {
+      width: 100%;
+      justify-content: center;
     }
   }
 </style>
