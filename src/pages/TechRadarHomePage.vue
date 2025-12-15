@@ -103,7 +103,13 @@
       </div>
 
       <!-- Radar Visualization -->
-      <div class="radar-visual">
+      <div
+        class="radar-visual"
+        :data-quadrant="hoveredQuadrant"
+        :data-ring="hoveredRing"
+        @mousemove="handleRadarHover"
+        @mouseleave="clearRadarHover"
+      >
         <svg class="radar-svg" viewBox="0 0 400 400" aria-label="Tech Radar visualization">
           <!-- Rings -->
           <circle cx="200" cy="200" r="190" class="ring ring-avoid" />
@@ -114,6 +120,7 @@
           <!-- Quadrant dividers -->
           <line x1="200" y1="10" x2="200" y2="390" class="divider" />
           <line x1="10" y1="200" x2="390" y2="200" class="divider" />
+
 
           <!-- Decorative blips - NW quadrant (ai) -->
           <circle cx="175" cy="168" r="4" class="blip blip-nw" />
@@ -147,6 +154,7 @@
           <circle cx="272" cy="298" r="4" class="blip blip-se" />
           <circle cx="332" cy="255" r="4" class="blip blip-se" />
         </svg>
+
       </div>
 
       <!-- Rings Column -->
@@ -218,6 +226,46 @@
       loading.value = false;
     }
   });
+
+  // Radar hover detection for quadrant/ring highlighting
+  const hoveredQuadrant = ref<string | null>(null);
+  const hoveredRing = ref<string | null>(null);
+
+  const handleRadarHover = (event: MouseEvent) => {
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+
+    // Convert to SVG coordinates (400x400 viewBox)
+    const x = ((event.clientX - rect.left) / rect.width) * 400;
+    const y = ((event.clientY - rect.top) / rect.height) * 400;
+
+    // Center is at (200, 200)
+    const dx = x - 200;
+    const dy = y - 200;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Determine quadrant
+    if (distance <= 190) {
+      if (dx <= 0 && dy <= 0) hoveredQuadrant.value = "nw";
+      else if (dx > 0 && dy <= 0) hoveredQuadrant.value = "ne";
+      else if (dx <= 0 && dy > 0) hoveredQuadrant.value = "sw";
+      else hoveredQuadrant.value = "se";
+    } else {
+      hoveredQuadrant.value = null;
+    }
+
+    // Determine ring
+    if (distance <= 55) hoveredRing.value = "proven";
+    else if (distance <= 100) hoveredRing.value = "experimental";
+    else if (distance <= 145) hoveredRing.value = "learning";
+    else if (distance <= 190) hoveredRing.value = "avoid";
+    else hoveredRing.value = null;
+  };
+
+  const clearRadarHover = () => {
+    hoveredQuadrant.value = null;
+    hoveredRing.value = null;
+  };
 
   // Radar-sweep ripple effect on click
   const createRipple = (event: MouseEvent) => {
@@ -389,6 +437,9 @@
 
   .blip {
     opacity: 0.8;
+    transition:
+      opacity 0.2s ease,
+      filter 0.2s ease;
   }
 
   .blip-nw {
@@ -405,6 +456,43 @@
 
   .blip-se {
     fill: var(--quadrant-SE);
+  }
+
+  /* Radar hover cursor */
+  .radar-visual {
+    cursor: pointer;
+  }
+
+  /* Highlight quadrant items in left column on radar hover */
+  .quadrant-item {
+    transition: opacity 0.2s ease;
+  }
+
+  .radar-overview:has([data-quadrant]) .quadrant-item {
+    opacity: 0.4;
+  }
+
+  .radar-overview:has([data-quadrant="nw"]) .quadrant-item.quadrant-ai,
+  .radar-overview:has([data-quadrant="ne"]) .quadrant-item.quadrant-techniques,
+  .radar-overview:has([data-quadrant="sw"]) .quadrant-item.quadrant-tools,
+  .radar-overview:has([data-quadrant="se"]) .quadrant-item.quadrant-techstack {
+    opacity: 1;
+  }
+
+  /* Highlight ring items in right column on radar hover */
+  .ring-item {
+    transition: opacity 0.2s ease;
+  }
+
+  .radar-overview:has([data-ring]) .ring-item {
+    opacity: 0.4;
+  }
+
+  .radar-overview:has([data-ring="proven"]) .ring-item.ring-proven,
+  .radar-overview:has([data-ring="experimental"]) .ring-item.ring-experimental,
+  .radar-overview:has([data-ring="learning"]) .ring-item.ring-learning,
+  .radar-overview:has([data-ring="avoid"]) .ring-item.ring-avoid {
+    opacity: 1;
   }
 
   /* Rings Column */
