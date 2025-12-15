@@ -25,14 +25,21 @@
           >
             <span class="cta-text">explore the radar</span>
             <span class="cta-version">{{ versions[0].name }}</span>
-            <svg
-              class="cta-arrow"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
+            <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <!-- Arrow (default state) -->
+              <path class="icon-arrow" d="M5 12h14M12 5l7 7-7 7" />
+              <!-- Radar sweep (hover state) -->
+              <g class="icon-radar">
+                <circle cx="12" cy="12" r="10" opacity="0.3" />
+                <circle cx="12" cy="12" r="6" opacity="0.5" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+                <path
+                  d="M12 12 L12 2 A10 10 0 0 1 22 12 Z"
+                  fill="currentColor"
+                  stroke="none"
+                  opacity="0.6"
+                />
+              </g>
             </svg>
           </router-link>
           <span v-if="versions.length > 1" class="other-versions">
@@ -478,14 +485,35 @@
     border-radius: var(--radius-sm);
   }
 
-  .cta-arrow {
-    width: 20px;
-    height: 20px;
-    transition: transform var(--transition-fast);
+  .cta-icon {
+    width: 24px;
+    height: 24px;
+    position: relative;
   }
 
-  .primary-cta:hover .cta-arrow {
-    transform: translateX(4px);
+  .icon-arrow {
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .icon-radar {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+    transform-origin: center;
+    transition:
+      opacity 0.3s ease,
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .primary-cta:hover .icon-arrow {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+
+  .primary-cta:hover .icon-radar {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 
   /* Other Versions - Inline */
@@ -677,7 +705,7 @@
       padding: var(--space-3) var(--space-4);
     }
 
-    .cta-arrow {
+    .cta-icon {
       display: none;
     }
 
