@@ -5,6 +5,7 @@
       <div
         ref="heroVisualRef"
         class="hero-visual"
+        :style="{ '--orbit-speed': `${orbitSpeed}s` }"
         @mousemove="handleMouseMove"
         @mouseleave="handleMouseLeave"
       >
@@ -146,9 +147,55 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, reactive } from "vue";
+  import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
+
+  // Scroll speed shift state
+  const orbitSpeed = ref(60); // Base: 60 seconds per rotation
+  const MIN_SPEED = 8; // Fastest rotation (8s per cycle)
+  const SPEED_RECOVERY = 0.92; // How quickly speed returns to normal (0-1)
+  const SCROLL_SENSITIVITY = 0.15; // How much scroll affects speed
+
+  let lastScrollY = 0;
+  let speedDecayFrame: number | null = null;
+
+  const handleScroll = () => {
+    const scrollDelta = Math.abs(window.scrollY - lastScrollY);
+    lastScrollY = window.scrollY;
+
+    // Reduce orbit duration based on scroll speed (faster scroll = shorter duration)
+    const speedBoost = scrollDelta * SCROLL_SENSITIVITY;
+    orbitSpeed.value = Math.max(MIN_SPEED, orbitSpeed.value - speedBoost);
+
+    // Start decay back to normal if not already running
+    if (!speedDecayFrame) {
+      decaySpeed();
+    }
+  };
+
+  const decaySpeed = () => {
+    if (orbitSpeed.value < 59.5) {
+      // Gradually return to base speed
+      orbitSpeed.value = orbitSpeed.value + (60 - orbitSpeed.value) * (1 - SPEED_RECOVERY);
+      speedDecayFrame = requestAnimationFrame(decaySpeed);
+    } else {
+      orbitSpeed.value = 60;
+      speedDecayFrame = null;
+    }
+  };
+
+  onMounted(() => {
+    lastScrollY = window.scrollY;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener("scroll", handleScroll);
+    if (speedDecayFrame) {
+      cancelAnimationFrame(speedDecayFrame);
+    }
+  });
 
   // Orbit node configuration with their base positions
   const orbitNodes = [
@@ -284,7 +331,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    animation: orbit-rotate 60s linear infinite;
+    animation: orbit-rotate var(--orbit-speed, 60s) linear infinite;
     will-change: transform;
   }
 
@@ -357,7 +404,7 @@
     font-size: 10px;
     fill: var(--color-text-secondary);
     text-anchor: middle;
-    animation: orbit-counter-rotate 60s linear infinite;
+    animation: orbit-counter-rotate var(--orbit-speed, 60s) linear infinite;
     will-change: transform;
     transform-box: fill-box;
     transform-origin: center;
