@@ -2,12 +2,29 @@
   <div class="articles-page">
     <h1 class="page-title">articles</h1>
 
+    <!-- Tag Filter Bar -->
+    <div class="tag-filter-bar">
+      <button
+        v-for="tag in allTags"
+        :key="tag.name"
+        class="tag-pill"
+        :class="{ active: activeTags.has(tag.name) }"
+        @click="toggleTag(tag.name)"
+      >
+        <span class="tag-name">{{ tag.name }}</span>
+        <span class="tag-count">{{ tag.count }}</span>
+      </button>
+      <button v-if="activeTags.size > 0" class="clear-filters" @click="clearFilters">
+        clear
+      </button>
+    </div>
+
     <div class="page-layout">
       <aside class="sidebar">
         <h3 class="sidebar-title">contents</h3>
         <nav class="toc-nav">
           <a
-            v-for="article in articles"
+            v-for="article in filteredArticles"
             :key="article.frontmatter.slug"
             :href="`#${article.frontmatter.slug}`"
             class="toc-link"
@@ -26,6 +43,7 @@
             :id="article.frontmatter.slug"
             :key="article.frontmatter.slug"
             class="article-card"
+            :class="{ dimmed: !matchesFilter(article) }"
             :style="{ '--card-delay': `${index * 100}ms` }"
           >
             <!-- App Window Header -->
@@ -63,12 +81,51 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from "vue";
-  import { getAllArticles } from "../domain/articles/data";
+  import { ref, computed, reactive, onMounted, onUnmounted } from "vue";
+  import { getAllArticles, type Article } from "../domain/articles/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const articles = getAllArticles();
   const activeSlug = ref(articles[0]?.frontmatter.slug ?? "");
+
+  // Tag filtering
+  type TagInfo = { name: string; count: number };
+
+  const activeTags = reactive(new Set<string>());
+
+  const allTags = computed<TagInfo[]>(() => {
+    const tagCounts = new Map<string, number>();
+    articles.forEach((article) => {
+      article.frontmatter.tags.forEach((tag) => {
+        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+      });
+    });
+    return Array.from(tagCounts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  function toggleTag(tag: string) {
+    if (activeTags.has(tag)) {
+      activeTags.delete(tag);
+    } else {
+      activeTags.add(tag);
+    }
+  }
+
+  function clearFilters() {
+    activeTags.clear();
+  }
+
+  function matchesFilter(article: Article): boolean {
+    if (activeTags.size === 0) return true;
+    return article.frontmatter.tags.some((tag) => activeTags.has(tag));
+  }
+
+  const filteredArticles = computed(() => {
+    if (activeTags.size === 0) return articles;
+    return articles.filter(matchesFilter);
+  });
 
   function scrollToArticle(slug: string) {
     const element = document.getElementById(slug);
@@ -167,11 +224,86 @@
   }
 
   .page-title {
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     text-align: center;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  /* Tag Filter Bar */
+  .tag-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    max-width: 1200px;
+    margin: 0 auto var(--space-6) auto;
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: lowercase;
+  }
+
+  .tag-pill:hover {
+    color: var(--color-text-secondary);
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-hover);
+  }
+
+  .tag-pill.active {
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+  }
+
+  .tag-name {
+    font-weight: var(--font-medium);
+  }
+
+  .tag-count {
+    font-size: var(--text-xs);
+    opacity: 0.7;
+    padding: 1px var(--space-1);
+    background: var(--color-background-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .tag-pill.active .tag-count {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .clear-filters {
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: lowercase;
+  }
+
+  .clear-filters:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    border-style: solid;
   }
 
   .page-layout {
@@ -267,7 +399,8 @@
     transition:
       background-color var(--transition-theme),
       box-shadow 0.2s ease,
-      transform 0.2s ease;
+      transform 0.2s ease,
+      opacity 0.3s ease;
     animation: cardSlideUp 500ms ease-out backwards;
     animation-delay: var(--card-delay, 0ms);
   }
@@ -276,7 +409,18 @@
     box-shadow: var(--shadow-xl);
   }
 
-  .article-card:has(.card-header:hover) {
+  .article-card.dimmed {
+    opacity: 0.35;
+    transform: scale(0.98);
+    pointer-events: auto;
+  }
+
+  .article-card.dimmed:hover {
+    opacity: 0.55;
+    transform: scale(0.99);
+  }
+
+  .article-card:not(.dimmed):has(.card-header:hover) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
   }
@@ -416,6 +560,16 @@
   @media (--md) {
     .articles-page {
       padding: var(--space-6);
+    }
+
+    .tag-filter-bar {
+      gap: var(--space-2);
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+
+    .tag-pill {
+      padding: var(--space-1) var(--space-2);
     }
 
     .page-layout {
