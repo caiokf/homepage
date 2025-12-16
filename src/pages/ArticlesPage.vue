@@ -264,12 +264,20 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    transition: background-color var(--transition-theme), box-shadow var(--transition-theme);
+    transition:
+      background-color var(--transition-theme),
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
     animation: cardSlideUp 500ms ease-out backwards;
     animation-delay: var(--card-delay, 0ms);
   }
 
   .article-card:hover {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .article-card:has(.card-header:hover) {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
   }
 
@@ -281,6 +289,11 @@
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
     padding: 0;
+    transition: background-color 0.2s ease;
+  }
+
+  .card-header:hover {
+    background: var(--color-surface-hover);
   }
 
   .window-controls {
