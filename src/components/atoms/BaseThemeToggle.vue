@@ -80,6 +80,11 @@
     transform: scale(0.95);
   }
 
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
   .theme-icon {
     width: 22px;
     height: 22px;

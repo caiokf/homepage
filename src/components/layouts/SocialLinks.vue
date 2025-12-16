@@ -117,6 +117,13 @@
     transform: translateY(-2px);
   }
 
+  .social-link:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
   .social-icon {
     width: 18px;
     height: 18px;

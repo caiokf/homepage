@@ -93,6 +93,13 @@
     color: var(--color-primary);
   }
 
+  .nav-item:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
   .nav-label-short {
     display: none;
   }
