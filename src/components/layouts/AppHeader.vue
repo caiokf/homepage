@@ -56,6 +56,12 @@
     opacity: 0.8;
   }
 
+  .header-logo:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
   .logo-text {
     font-size: var(--text-lg);
     font-weight: var(--font-semibold);

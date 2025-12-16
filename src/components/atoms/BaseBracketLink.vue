@@ -67,4 +67,10 @@
   .base-bracket-link:hover {
     opacity: 0.8;
   }
+
+  .base-bracket-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
 </style>
