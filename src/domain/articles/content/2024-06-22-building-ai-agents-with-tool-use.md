@@ -33,11 +33,29 @@ async function agentLoop(
       return response.content;
     }
 
-    const result = await tools
-      .find((t) => t.name === response.toolCall.name)
-      ?.execute(response.toolCall.params);
+    const tool = tools.find((t) => t.name === response.toolCall.name);
 
-    messages.push({ role: "tool", content: result });
+    if (!tool) {
+      messages.push({
+        role: "tool",
+        content: `Error: tool not found: ${response.toolCall.name}`,
+      });
+      continue;
+    }
+
+    try {
+      const result = await tool.execute(response.toolCall.params);
+      const content =
+        typeof result === "string" ? result : JSON.stringify(result);
+      messages.push({ role: "tool", content });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      messages.push({
+        role: "tool",
+        content: `Error executing ${tool.name}: ${errorMessage}`,
+      });
+    }
   }
 
   throw new Error("Max iterations reached");
