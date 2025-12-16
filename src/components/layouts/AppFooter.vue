@@ -5,6 +5,7 @@
         v-for="item in navItems"
         :key="item.path"
         :to="item.path"
+        tabindex="0"
         class="nav-item"
         :class="{ active: isActive(item.path) }"
       >
