@@ -27,7 +27,7 @@
             :key="article.frontmatter.slug"
             :href="`#${article.frontmatter.slug}`"
             class="toc-link"
-            :class="{ active: activeSlug === article.frontmatter.slug }"
+            :class="{ active: highlightedSlug === article.frontmatter.slug }"
             @click.prevent="scrollToArticle(article.frontmatter.slug)"
           >
             {{ article.frontmatter.title }}
@@ -37,40 +37,44 @@
 
       <div class="content">
         <div class="articles-list">
-          <article
+          <div
             v-for="(article, index) in articles"
-            :id="article.frontmatter.slug"
             :key="article.frontmatter.slug"
-            class="article-card"
-            :class="{ dimmed: !matchesFilter(article) }"
-            :style="{ '--card-delay': `${index * 100}ms` }"
+            class="article-wrapper"
+            :class="{ collapsed: !matchesFilter(article) }"
           >
-            <!-- App Window Header -->
-            <header class="card-header">
-              <div class="window-controls">
-                <span class="control close"></span>
-                <span class="control minimize"></span>
-                <span class="control maximize"></span>
-              </div>
-              <div class="card-meta">
-                <span class="meta-date">{{ formatDate(article.frontmatter.date) }}</span>
-                <span class="meta-reading-time">{{ getReadingTime(article.content) }}</span>
-              </div>
-            </header>
+            <article
+              :id="article.frontmatter.slug"
+              class="article-card"
+              :style="{ '--card-delay': `${index * 100}ms` }"
+            >
+              <!-- App Window Header -->
+              <header class="card-header">
+                <div class="window-controls">
+                  <span class="control close"></span>
+                  <span class="control minimize"></span>
+                  <span class="control maximize"></span>
+                </div>
+                <div class="card-meta">
+                  <span class="meta-date">{{ formatDate(article.frontmatter.date) }}</span>
+                  <span class="meta-reading-time">{{ getReadingTime(article.content) }}</span>
+                </div>
+              </header>
 
-            <!-- Card Content -->
-            <router-link :to="`/articles/${article.frontmatter.slug}`" class="article-link">
-              <div class="card-content">
-                <h2 class="article-title">{{ article.frontmatter.title }}</h2>
-                <p class="article-excerpt">{{ getExcerpt(article.content) }}</p>
+              <!-- Card Content -->
+              <router-link :to="`/articles/${article.frontmatter.slug}`" class="article-link">
+                <div class="card-content">
+                  <h2 class="article-title">{{ article.frontmatter.title }}</h2>
+                  <p class="article-excerpt">{{ getExcerpt(article.content) }}</p>
 
-                <footer class="article-footer">
-                  <BadgeGroup :items="article.frontmatter.tags" />
-                  <span class="read-more-link" aria-hidden="true">read more</span>
-                </footer>
-              </div>
-            </router-link>
-          </article>
+                  <footer class="article-footer">
+                    <BadgeGroup :items="article.frontmatter.tags" />
+                    <span class="read-more-link" aria-hidden="true">read more</span>
+                  </footer>
+                </div>
+              </router-link>
+            </article>
+          </div>
         </div>
 
         <p v-if="articles.length === 0" class="no-articles">No articles yet. Check back soon!</p>
@@ -126,7 +130,13 @@
     return articles.filter(matchesFilter);
   });
 
+  // Track if user clicked a TOC item (to prevent scroll from overriding immediately)
+  const selectedSlug = ref<string | null>(articles[0]?.frontmatter.slug ?? null);
+
   function scrollToArticle(slug: string) {
+    // Set selected slug immediately on click
+    selectedSlug.value = slug;
+
     const element = document.getElementById(slug);
     if (element) {
       const headerOffset = 80; // Account for sticky header
@@ -138,6 +148,11 @@
         behavior: "smooth",
       });
     }
+  }
+
+  // Clear selection when user manually scrolls (wheel or touch)
+  function handleUserScroll() {
+    selectedSlug.value = null;
   }
 
   // Intersection Observer to track which article is in view
@@ -164,11 +179,20 @@
         observer?.observe(element);
       }
     });
+
+    // Listen for manual user scroll to clear selection
+    window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchmove", handleUserScroll, { passive: true });
   });
 
   onUnmounted(() => {
     observer?.disconnect();
+    window.removeEventListener("wheel", handleUserScroll);
+    window.removeEventListener("touchmove", handleUserScroll);
   });
+
+  // Computed to determine which slug to highlight (selected takes precedence)
+  const highlightedSlug = computed(() => selectedSlug.value ?? activeSlug.value);
 
   function formatDate(dateStr: string): string {
     const date = new Date(dateStr);
@@ -359,7 +383,28 @@
   .articles-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+  }
+
+  /* Article wrapper for collapse animation */
+  .article-wrapper {
+    display: grid;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+    margin-bottom: var(--space-6);
+    transition:
+      grid-template-rows 0.4s ease,
+      opacity 0.3s ease,
+      margin-bottom 0.4s ease;
+  }
+
+  .article-wrapper:last-child {
+    margin-bottom: 0;
+  }
+
+  .article-wrapper.collapsed {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-bottom: 0;
   }
 
   /* Card entrance animation */
@@ -381,11 +426,11 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);
+    min-height: 0;
     transition:
       background-color var(--transition-theme),
       box-shadow 0.2s ease,
-      transform 0.2s ease,
-      opacity 0.3s ease;
+      transform 0.2s ease;
     animation: cardSlideUp 500ms ease-out backwards;
     animation-delay: var(--card-delay, 0ms);
   }
@@ -394,20 +439,15 @@
     box-shadow: var(--shadow-xl);
   }
 
-  .article-card.dimmed {
-    opacity: 0.35;
-    transform: scale(0.98);
-    pointer-events: auto;
-  }
-
-  .article-card.dimmed:hover {
-    opacity: 0.55;
-    transform: scale(0.99);
-  }
-
-  .article-card:not(.dimmed):has(.card-header:hover) {
+  .article-card:has(.card-header:hover) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
+  }
+
+  .article-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
   }
 
   /* Card Header - Window Chrome */
@@ -474,12 +514,6 @@
   }
 
   /* Card Content */
-  .article-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-
   .card-content {
     padding: var(--space-5);
   }
@@ -614,8 +648,15 @@
     }
 
     .card-meta {
-      width: 100%;
-      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .article-card.collapsed .header-title-link {
+      padding-left: var(--space-4);
+    }
+
+    .article-card.collapsed .card-meta {
+      padding-right: var(--space-4);
     }
   }
 </style>
