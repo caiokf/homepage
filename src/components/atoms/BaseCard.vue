@@ -106,7 +106,9 @@
     padding: var(--space-6);
     font-family: var(--font-mono);
     color: var(--color-text-primary);
-    transition: color var(--transition-theme);
+    transition:
+      color var(--transition-theme),
+      transform 0.2s ease;
   }
 
   .cursor {
