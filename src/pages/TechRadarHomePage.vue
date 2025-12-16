@@ -11,39 +11,38 @@
       </p>
 
       <div class="cta-wrapper">
-        <div v-if="loading" class="loading-state">
-          <span class="loading-dot"></span>
-          <span class="loading-text">loading...</span>
-        </div>
-        <div v-else-if="error" class="error-state">
+        <router-link
+          :to="latestVersionUrl"
+          class="primary-cta"
+          :class="{ 'is-loading': loading }"
+          @click="createRipple"
+        >
+          <span class="cta-text">explore the radar</span>
+          <span class="cta-version" :class="{ 'is-loading': loading }">
+            <template v-if="loading">&nbsp;&nbsp;&nbsp;&nbsp;</template>
+            <template v-else>{{ versions[0]?.name ?? '—' }}</template>
+          </span>
+          <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <!-- Arrow (default state) -->
+            <path class="icon-arrow" d="M5 12h14M12 5l7 7-7 7" />
+            <!-- Radar sweep (hover state) -->
+            <g class="icon-radar">
+              <circle cx="12" cy="12" r="10" opacity="0.3" />
+              <circle cx="12" cy="12" r="6" opacity="0.5" />
+              <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+              <path
+                d="M12 12 L12 2 A10 10 0 0 1 22 12 Z"
+                fill="currentColor"
+                stroke="none"
+                opacity="0.6"
+              />
+            </g>
+          </svg>
+        </router-link>
+        <div v-if="error" class="error-state">
           <span class="error-text">{{ error }}</span>
         </div>
-        <template v-else-if="versions.length > 0">
-          <router-link
-            :to="`/tech-radar/${encodeURIComponent(versions[0].id)}`"
-            class="primary-cta"
-            @click="createRipple"
-          >
-            <span class="cta-text">explore the radar</span>
-            <span class="cta-version">{{ versions[0].name }}</span>
-            <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <!-- Arrow (default state) -->
-              <path class="icon-arrow" d="M5 12h14M12 5l7 7-7 7" />
-              <!-- Radar sweep (hover state) -->
-              <g class="icon-radar">
-                <circle cx="12" cy="12" r="10" opacity="0.3" />
-                <circle cx="12" cy="12" r="6" opacity="0.5" />
-                <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-                <path
-                  d="M12 12 L12 2 A10 10 0 0 1 22 12 Z"
-                  fill="currentColor"
-                  stroke="none"
-                  opacity="0.6"
-                />
-              </g>
-            </svg>
-          </router-link>
-          <span v-if="versions.length > 1" class="other-versions">
+        <span v-if="!loading && versions.length > 1" class="other-versions">
             or view
             <button
               class="versions-toggle"
@@ -73,7 +72,6 @@
               </router-link>
             </span>
           </span>
-        </template>
       </div>
     </section>
 
@@ -198,7 +196,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import { ref, computed, onMounted } from "vue";
   import { DataProviderGoogleSheets } from "../domain/radar/data-providers/data-provider-google-sheets";
   import { DataProviderSample } from "../domain/radar/data-providers/data-provider-sample";
   import type {
@@ -211,6 +209,11 @@
   const loading = ref(true);
   const error = ref<string | null>(null);
   const showOtherVersions = ref(false);
+
+  const latestVersionUrl = computed(() => {
+    if (versions.value.length === 0) return "#";
+    return `/tech-radar/${encodeURIComponent(versions.value[0].id)}`;
+  });
 
   const dataProvider: TechRadarDataProvider =
     RADAR_SHEET_ID && GOOGLE_API_KEY
@@ -634,6 +637,10 @@
     }
   }
 
+  .primary-cta.is-loading {
+    pointer-events: none;
+  }
+
   .primary-cta:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
@@ -655,6 +662,11 @@
     padding: 2px var(--space-2);
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-sm);
+    transition: opacity 0.3s ease;
+  }
+
+  .cta-version.is-loading {
+    opacity: 0;
   }
 
   .cta-icon {
@@ -744,20 +756,6 @@
     border-color: var(--color-primary);
   }
 
-  .loading-state {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .loading-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--color-primary);
-    border-radius: var(--radius-full);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
   @keyframes pulse {
     0%,
     100% {
@@ -768,16 +766,15 @@
     }
   }
 
-  .loading-text,
-  .error-text {
-    font-family: var(--font-mono);
-    font-size: var(--text-md);
-    color: var(--color-text-secondary);
-    text-transform: lowercase;
+  .error-state {
+    margin-top: var(--space-2);
   }
 
   .error-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     color: var(--color-error);
+    text-transform: lowercase;
   }
 
   /* Responsive - Tablet */
