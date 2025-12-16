@@ -7,12 +7,11 @@
       <button
         v-for="tag in allTags"
         :key="tag.name"
-        class="tag-pill"
+        class="tag-filter"
         :class="{ active: activeTags.has(tag.name) }"
         @click="toggleTag(tag.name)"
       >
-        <span class="tag-name">{{ tag.name }}</span>
-        <span class="tag-count">{{ tag.count }}</span>
+        {{ tag.name }} <span class="tag-count">[{{ tag.count }}]</span>
       </button>
       <button v-if="activeTags.size > 0" class="clear-filters" @click="clearFilters">
         clear
@@ -243,58 +242,44 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  .tag-pill {
+  .tag-filter {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
+    padding: 2px 8px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    background: var(--color-background-subtle);
+    border: none;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
     text-transform: lowercase;
   }
 
-  .tag-pill:hover {
-    color: var(--color-text-secondary);
-    border-color: var(--color-border-strong);
+  .tag-filter:hover {
+    color: var(--color-text-primary);
     background: var(--color-surface-hover);
   }
 
-  .tag-pill.active {
+  .tag-filter.active {
     color: var(--color-primary);
     background: var(--color-primary-light);
-    border-color: var(--color-primary);
-  }
-
-  .tag-name {
-    font-weight: var(--font-medium);
   }
 
   .tag-count {
-    font-size: var(--text-xs);
-    opacity: 0.7;
-    padding: 1px var(--space-1);
-    background: var(--color-background-subtle);
-    border-radius: var(--radius-sm);
-  }
-
-  .tag-pill.active .tag-count {
-    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.6;
+    margin-left: 2px;
   }
 
   .clear-filters {
-    padding: var(--space-2) var(--space-3);
+    padding: 2px 8px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     background: transparent;
     border: 1px dashed var(--color-border);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
     text-transform: lowercase;
@@ -566,10 +551,6 @@
       gap: var(--space-2);
       padding-bottom: var(--space-4);
       margin-bottom: var(--space-4);
-    }
-
-    .tag-pill {
-      padding: var(--space-1) var(--space-2);
     }
 
     .page-layout {
