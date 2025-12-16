@@ -110,10 +110,11 @@
           </article>
 
           <div v-if="!showAll" class="show-more-container">
-            <button @click="showAll = true" class="show-more-button">
-              <span class="show-more-line">turns out {{ yearsOfExperience }} years is a lot</span>
-              <span class="show-more-line">there's more where that came from</span>
-              <span class="show-more-line show-more-cta">show earlier roles</span>
+            <button @click="showAll = true" class="terminal-button">
+              <span class="terminal-prompt">$</span>
+              <span class="terminal-command">history</span>
+              <span class="terminal-flag">--all</span>
+              <span class="terminal-cursor"></span>
             </button>
           </div>
         </div>
@@ -165,15 +166,6 @@
 
   const INITIAL_VISIBLE_COUNT = 6;
   const showAll = ref(false);
-
-  const yearsOfExperience = computed(() => {
-    const oldestStartDate = experiencesConfig
-      .map((exp) => new Date(exp.startDate).getTime())
-      .sort((a, b) => a - b)[0];
-    const startYear = new Date(oldestStartDate).getFullYear();
-    const currentYear = new Date().getFullYear();
-    return currentYear - startYear;
-  });
 
   const visibleExperiences = computed(() => {
     if (showAll.value) {
@@ -585,43 +577,70 @@
     border-top: 1px solid var(--color-border);
   }
 
-  /* Show More Button */
+  /* Terminal Button */
   .show-more-container {
     display: flex;
     justify-content: center;
     padding: var(--space-6) 0;
   }
 
-  .show-more-button {
+  .terminal-button {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-1);
+    align-items: center;
+    gap: var(--space-2);
     font-family: var(--font-mono);
     font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    background: var(--color-surface);
+    background: var(--color-background-elevated);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    padding: var(--space-4) var(--space-5);
-    text-transform: lowercase;
+    padding: var(--space-3) var(--space-4);
     transition: all var(--transition-fast);
   }
 
-  .show-more-button:hover {
-    color: var(--color-text-primary);
+  .terminal-button:hover {
     border-color: var(--color-primary);
     box-shadow: var(--shadow-md);
   }
 
-  .show-more-line {
-    display: block;
+  .terminal-button:hover .terminal-cursor {
+    opacity: 1;
   }
 
-  .show-more-cta {
+  .terminal-prompt {
     color: var(--color-primary);
-    margin-top: var(--space-2);
+    font-weight: var(--font-semibold);
+  }
+
+  .terminal-command {
+    color: var(--color-text-primary);
+  }
+
+  .terminal-flag {
+    color: var(--color-text-muted);
+  }
+
+  .terminal-cursor {
+    width: 8px;
+    height: 16px;
+    background: var(--color-primary);
+    opacity: 0;
+    animation: blink 1s step-end infinite;
+    transition: opacity var(--transition-fast);
+  }
+
+  @keyframes blink {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .terminal-button:hover .terminal-cursor {
+    animation: blink 0.8s step-end infinite;
+    opacity: 1;
   }
 
   /* Responsive */
