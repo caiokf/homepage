@@ -4,9 +4,21 @@
 
     <div class="page-layout">
       <aside class="sidebar">
-        <h3 class="sidebar-title">technologies</h3>
-        <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
-        <BadgeGroup :items="recentTechnologies" variant="muted" gap="xs" />
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">
+            companies<span class="sidebar-title-suffix"> (last {{ RECENT_YEARS }} years)</span>
+          </h3>
+          <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
+          <BadgeGroup :items="recentCompanyTags" gap="xs" />
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">
+            technologies<span class="sidebar-title-suffix"> (last {{ RECENT_YEARS }} years)</span>
+          </h3>
+          <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
+          <BadgeGroup :items="recentTechnologies" variant="muted" gap="xs" />
+        </div>
       </aside>
 
       <div class="content">
@@ -172,6 +184,22 @@
 
   const RECENT_YEARS = 5;
 
+  const recentCompanyTags = computed(() => {
+    const cutoffDate = new Date();
+    cutoffDate.setFullYear(cutoffDate.getFullYear() - RECENT_YEARS);
+
+    const tagSet = new Set<string>();
+
+    experiencesConfig.forEach((exp) => {
+      const endDate = exp.endDate ? new Date(exp.endDate) : new Date();
+      if (endDate >= cutoffDate) {
+        exp.tags.forEach((tag) => tagSet.add(tag));
+      }
+    });
+
+    return Array.from(tagSet).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  });
+
   const recentTechnologies = computed(() => {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - RECENT_YEARS);
@@ -280,6 +308,19 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     margin: 0 0 var(--space-4) 0;
+  }
+
+  .sidebar-title-suffix {
+    display: none;
+    font-weight: var(--font-normal);
+  }
+
+  .sidebar-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .sidebar-section:last-child {
+    margin-bottom: 0;
   }
 
   .content {
@@ -602,6 +643,14 @@
     .sidebar {
       position: static;
       width: 100%;
+    }
+
+    .sidebar-title-suffix {
+      display: inline;
+    }
+
+    .sidebar-subtitle {
+      display: none;
     }
 
     .info-row {
