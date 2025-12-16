@@ -7,6 +7,7 @@
     :target="isExternalLink ? '_blank' : undefined"
     :rel="isExternalLink ? 'noopener noreferrer' : undefined"
     class="base-bracket-link"
+    v-bind="$attrs"
   >
     <slot />
   </component>
@@ -15,6 +16,8 @@
 <script setup lang="ts">
   import { computed, watchEffect } from "vue";
   import { RouterLink, type RouteLocationRaw } from "vue-router";
+
+  defineOptions({ inheritAttrs: false });
 
   type Props = {
     to?: string | RouteLocationRaw;
