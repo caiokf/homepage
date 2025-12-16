@@ -8,6 +8,7 @@
     :rel="isExternalLink ? 'noopener noreferrer' : undefined"
     class="base-bracket-link"
     v-bind="$attrs"
+    @keydown.enter="handleEnter"
   >
     <slot />
   </component>
@@ -43,6 +44,11 @@
     if (props.href) return "a";
     return "button";
   });
+
+  function handleEnter(event: KeyboardEvent) {
+    const target = event.currentTarget as HTMLElement;
+    target.click();
+  }
 </script>
 
 <style>
