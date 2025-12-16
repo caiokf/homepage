@@ -15,6 +15,9 @@
           :to="latestVersionUrl"
           class="primary-cta"
           :class="{ 'is-loading': loading }"
+          :tabindex="loading ? -1 : 0"
+          :aria-busy="loading"
+          :aria-disabled="loading"
           @click="createRipple"
         >
           <span class="cta-text">explore the radar</span>
