@@ -1,15 +1,15 @@
 ---
-title: "Why AI Agents Fail: The Memory Gap Problem"
-date: 2024-12-18
+title: "Why AI Agents Fail"
+date: 2025-12-18
 tags: [ai, agents, architecture, memory, anthropic]
-slug: why-ai-agents-fail-memory-gap
+slug: why-ai-agents-fail
 ---
 
-The problem with AI agents isn't intelligence—it's memory. Despite major advances in model capabilities, agents consistently fail in production for a surprisingly simple reason: they lack domain-specific memory architecture.
+The problem with AI agents isn't intelligence, it's memory. Despite major advances in model capabilities, agents consistently fail in production for a surprisingly simple reason: they lack domain-specific memory architecture.
 
-## The Amnesiac with a Tool Belt
+## The Senior Amnesiac
 
-When builders create generalized agents, they typically end up with what amounts to an amnesiac walking around with a tool belt. These agents might attempt large tasks in one manic burst and fail, or wander around making partial progress while incorrectly reporting success.
+When builders create generalized agents, they typically end up with what amounts to a very experienced amnesiac. These agents might attempt large tasks in one manic burst and fail, or wander around making partial progress while incorrectly reporting success.
 
 Without persistent memory structures, every agent session starts with no grounded sense of where it is in the world. Even with powerful models like Opus 4.5 or GPT-5, housed in general-purpose harnesses with context compaction and planning capabilities, agents still fail at long-running tasks.
 
@@ -22,17 +22,20 @@ Domain memory isn't RAG. It's not vector database retrieval. It's a persistent, 
 A robust domain memory system needs:
 
 **Persistent Goals and Requirements**
+
 - Explicit task lists
 - Requirements and constraints
 - Structured representations of what needs to be accomplished
 
 **State Tracking**
+
 - What is passing vs. failing
 - What has been tried before
 - What broke and what was reverted
 - Historical context of all changes
 
 **Scaffolding**
+
 - How to run the system
 - How to test functionality
 - How to extend capabilities
@@ -41,17 +44,18 @@ These components can manifest as JSON blobs with feature lists (initially marked
 
 ## The Two-Agent Pattern
 
-Anthropic's solution implements a two-agent architecture that separates memory ownership from execution.
+Anthropic uses a two-agent architecture that separates memory ownership from execution.
 
 ### The Initializer Agent
 
 The initializer acts as a stage manager that:
+
 - Expands user prompts into detailed feature lists with structured JSON
 - Sets all features to initially failing status (until they pass unit tests)
 - Bootstraps domain memory from the user prompt
 - Establishes best practice rules of engagement
 
-The initializer doesn't need memory itself—it simply transforms the prompt into artifacts that serve as the setting for the coding agent.
+The initializer doesn't need memory itself. It simply transforms the prompt into artifacts that serve as the setting for the coding agent.
 
 ### The Coding Agent
 
@@ -84,7 +88,7 @@ async function codingAgentCycle(memory: DomainMemory): Promise<void> {
 }
 ```
 
-After this cycle, the agent disappears with no retained memory. This works because the agent becomes a policy that transforms one consistent memory state into another—the magic resides in the memory scaffold, not in the agent's intelligence.
+After this cycle, the agent disappears with no retained memory. This works because the agent becomes a policy that transforms one consistent memory state into another. The magic resides in the memory scaffold, not in the agent's intelligence.
 
 ## Why Stateless Agents Fail
 
@@ -100,28 +104,31 @@ Without domain memory infrastructure, several failure modes emerge:
 Different domains require different memory structures:
 
 **Coding Workflows**
+
 - Feature backlog with pass/fail status
 - Git commit history
 - Test results
 - Revert log
 
 **Research Workflows**
+
 - Hypothesis backlog
 - Experiment registry
 - Evidence log
 - Decision journal
 
 **Operations Workflows**
+
 - Runbook
 - Incident timeline
 - Ticket queue
 - SLAs
 
-Generalized agents are a meta-pattern that must be instantiated with domain-specific memory objects. The harness structure remains consistent, but you must design appropriate memory schemas for each domain.
+Generalized agents are a meta-pattern. You must instantiate them with domain-specific memory objects. The harness structure remains consistent, but you must design appropriate memory schemas for each domain.
 
 ## Design Principles for Production Agents
 
-Five core principles emerge:
+Five principles matter:
 
 **1. Externalize the Goal**
 Transform vague directives into machine-readable backlogs with specific pass/fail criteria.
@@ -140,9 +147,10 @@ Treat pass/fail test results as the source of truth for domain state.
 
 ## Where the Moat Lives
 
-This framework changes where competitive advantage exists. The moat isn't a smarter AI—it's your domain memory and harness design.
+This framework changes where competitive advantage exists. The moat isn't a smarter AI. It's your domain memory and harness design.
 
 As models improve and become interchangeable commodities, what won't commoditize quickly are:
+
 - The schemas you define for your work
 - The harnesses that turn LLM calls into durable progress
 - The testing loops that keep agents honest
@@ -151,4 +159,4 @@ The "universal agent for your enterprise" is a fantasy. Without opinionated sche
 
 ---
 
-*Based on insights from [Anthropic's research on AI agent architecture](https://www.youtube.com/watch?v=xNcEgqzlPqs)*
+_Based on insights from [Anthropic's research on AI agent architecture](https://www.youtube.com/watch?v=xNcEgqzlPqs)_
