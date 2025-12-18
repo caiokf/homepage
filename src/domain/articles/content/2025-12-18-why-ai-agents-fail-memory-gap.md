@@ -3,6 +3,7 @@ title: "Why AI Agents Fail"
 date: 2025-12-18
 tags: [ai, agents, architecture, memory, anthropic]
 slug: why-ai-agents-fail
+authors: caio kinzel filho, claude code
 ---
 
 The problem with AI agents isn't intelligence, it's memory. Despite major advances in model capabilities, agents consistently fail in production for a surprisingly simple reason: they lack domain-specific memory architecture.
