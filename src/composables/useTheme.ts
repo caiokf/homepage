@@ -1,4 +1,4 @@
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 export type Theme = "light" | "dark";
 
@@ -101,6 +101,10 @@ export function useTheme() {
     return currentTheme.value === "dark";
   }
 
+  // Store references for cleanup
+  let mediaQuery: MediaQueryList | null = null;
+  let handleChange: ((e: MediaQueryListEvent) => void) | null = null;
+
   // Initialize theme on mount
   onMounted(() => {
     const initialTheme = loadTheme();
@@ -108,14 +112,21 @@ export function useTheme() {
     applyTheme(initialTheme);
 
     // Listen for system preference changes
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => {
+    mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    handleChange = (e: MediaQueryListEvent) => {
       // Only auto-switch if user hasn't manually set a preference
       if (!localStorage.getItem(STORAGE_KEY)) {
         setTheme(e.matches ? "dark" : "light");
       }
     };
     mediaQuery.addEventListener("change", handleChange);
+  });
+
+  // Cleanup listener on unmount
+  onUnmounted(() => {
+    if (mediaQuery && handleChange) {
+      mediaQuery.removeEventListener("change", handleChange);
+    }
   });
 
   return {
