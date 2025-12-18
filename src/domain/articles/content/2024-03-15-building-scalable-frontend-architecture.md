@@ -3,6 +3,7 @@ title: Building Scalable Frontend Architecture
 date: 2024-03-15
 tags: [architecture, frontend, typescript, vue]
 slug: building-scalable-frontend-architecture
+authors: claude code
 ---
 
 When building modern web applications, having a solid frontend architecture is crucial for long-term maintainability and team productivity. In this article, I'll share some patterns and practices I've learned while working on large-scale applications.

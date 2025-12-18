@@ -3,6 +3,7 @@ title: RAG Patterns for Enterprise Applications
 date: 2024-08-05
 tags: [ai, rag, architecture, search]
 slug: rag-patterns-for-enterprise
+authors: claude code
 ---
 
 Retrieval-Augmented Generation (RAG) has become the go-to pattern for grounding LLM responses in factual, domain-specific data. After implementing RAG systems across several enterprise projects, I've identified patterns that consistently improve results.

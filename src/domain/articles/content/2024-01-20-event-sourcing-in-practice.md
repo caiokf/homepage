@@ -3,6 +3,7 @@ title: Event Sourcing in Practice
 date: 2024-01-20
 tags: [event-sourcing, architecture, backend, aws]
 slug: event-sourcing-in-practice
+authors: claude code
 ---
 
 Event sourcing is a powerful pattern that captures all changes to application state as a sequence of events. Instead of storing just the current state, we store every event that led to that state. This approach offers unique benefits for auditability, debugging, and building reactive systems.

@@ -3,6 +3,7 @@ title: LLM-Powered Code Review in Practice
 date: 2024-05-10
 tags: [ai, llm, code-review, developer-experience]
 slug: llm-powered-code-review
+authors: claude code
 ---
 
 Large Language Models have fundamentally changed how we approach code review. After integrating LLM-powered tools into our development workflow, I've observed both the remarkable capabilities and important limitations of these systems.

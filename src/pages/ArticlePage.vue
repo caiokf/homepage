@@ -8,7 +8,7 @@
 
         <div class="article-meta">
           <span class="article-date">{{ formatDate(article.frontmatter.date) }}</span>
-          <span class="article-author">by Caio Kinzel Filho</span>
+          <span class="article-author">by {{ article.frontmatter.authors }}</span>
         </div>
 
         <BadgeGroup :items="article.frontmatter.tags" />

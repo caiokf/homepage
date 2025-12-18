@@ -3,6 +3,7 @@ title: Building AI Agents with Tool Use
 date: 2024-06-22
 tags: [ai, agents, architecture, typescript]
 slug: building-ai-agents-with-tool-use
+authors: claude code
 ---
 
 AI agents that can use tools represent a significant leap beyond simple chatbots. By giving LLMs the ability to execute functions, query databases, and interact with APIs, we unlock genuinely useful autonomous systems.
@@ -19,11 +20,7 @@ type Tool = {
   execute: (params: unknown) => Promise<ToolResult>;
 };
 
-async function agentLoop(
-  goal: string,
-  tools: Tool[],
-  maxIterations = 10
-): Promise<string> {
+async function agentLoop(goal: string, tools: Tool[], maxIterations = 10): Promise<string> {
   const messages: Message[] = [{ role: "user", content: goal }];
 
   for (let i = 0; i < maxIterations; i++) {
@@ -45,12 +42,10 @@ async function agentLoop(
 
     try {
       const result = await tool.execute(response.toolCall.params);
-      const content =
-        typeof result === "string" ? result : JSON.stringify(result);
+      const content = typeof result === "string" ? result : JSON.stringify(result);
       messages.push({ role: "tool", content });
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       messages.push({
         role: "tool",
         content: `Error executing ${tool.name}: ${errorMessage}`,

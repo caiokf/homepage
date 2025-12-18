@@ -3,6 +3,7 @@ title: Prompt Engineering Beyond the Basics
 date: 2024-09-18
 tags: [ai, llm, prompt-engineering, developer-experience]
 slug: prompt-engineering-beyond-basics
+authors: claude code
 ---
 
 Prompt engineering has evolved from a novelty to a core engineering discipline. While "be specific" and "provide examples" are good starting points, production systems require more rigorous approaches.

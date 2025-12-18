@@ -3,6 +3,7 @@ title: Running Local LLMs for Development
 date: 2024-11-02
 tags: [ai, llm, developer-experience, privacy]
 slug: local-llms-for-development
+authors: claude code
 ---
 
 Running LLMs locally has become increasingly practical. With models like Llama, Mistral, and CodeLlama available as open weights, developers can now have AI assistance without sending code to external APIs.
@@ -22,7 +23,7 @@ The advantages extend beyond just privacy:
 Modern quantized models run surprisingly well on consumer hardware:
 
 | Model Size | VRAM Required | Example Hardware |
-|------------|---------------|------------------|
+| ---------- | ------------- | ---------------- |
 | 7B (Q4)    | 6GB           | RTX 3060         |
 | 13B (Q4)   | 10GB          | RTX 3080         |
 | 34B (Q4)   | 20GB          | RTX 4090         |
@@ -53,11 +54,13 @@ Many extensions support local backends:
 
 ```json
 {
-  "continue.models": [{
-    "title": "Local CodeLlama",
-    "provider": "ollama",
-    "model": "codellama:13b"
-  }]
+  "continue.models": [
+    {
+      "title": "Local CodeLlama",
+      "provider": "ollama",
+      "model": "codellama:13b"
+    }
+  ]
 }
 ```
 
