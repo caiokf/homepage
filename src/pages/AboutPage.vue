@@ -10,7 +10,12 @@
         @mouseleave="handleMouseLeave"
       >
         <!-- Orbit SVG Background -->
-        <svg class="orbit-svg" :class="{ 'pulse-active': isPulsing }" viewBox="0 0 400 400" aria-hidden="true">
+        <svg
+          class="orbit-svg"
+          :class="{ 'pulse-active': isPulsing }"
+          viewBox="0 0 400 400"
+          aria-hidden="true"
+        >
           <!-- Orbit rings -->
           <circle cx="200" cy="200" r="180" class="orbit-ring orbit-ring-outer" />
           <circle cx="200" cy="200" r="130" class="orbit-ring orbit-ring-middle" />
@@ -18,7 +23,10 @@
 
           <!-- Skill nodes on orbits -->
           <!-- Outer orbit - larger concepts -->
-          <g class="orbit-node node-architecture" :style="{ transform: getNodeTransform('architecture') }">
+          <g
+            class="orbit-node node-architecture"
+            :style="{ transform: getNodeTransform('architecture') }"
+          >
             <circle cx="200" cy="20" r="8" />
           </g>
           <g class="orbit-node node-data" :style="{ transform: getNodeTransform('data') }">
@@ -41,20 +49,21 @@
           <g class="orbit-node node-dx" :style="{ transform: getNodeTransform('dx') }">
             <circle cx="108" cy="292" r="6" />
           </g>
-          <g class="orbit-node node-mentoring" :style="{ transform: getNodeTransform('mentoring') }">
+          <g
+            class="orbit-node node-mentoring"
+            :style="{ transform: getNodeTransform('mentoring') }"
+          >
             <circle cx="108" cy="108" r="6" />
           </g>
         </svg>
 
         <!-- Avatar in center -->
-        <div class="avatar-wrapper" :class="{ 'pulse-active': isPulsing }" @click="triggerGravitationalPulse">
-          <img
-            :src="avatarImage"
-            alt="Caio Kinzel Filho"
-            class="avatar"
-            :class="{ 'avatar-entering': !hasEnteredAvatar }"
-            @animationend="hasEnteredAvatar = true"
-          />
+        <div
+          class="avatar-wrapper"
+          :class="{ 'pulse-active': isPulsing }"
+          @click="triggerGravitationalPulse"
+        >
+          <img :src="avatarImage" alt="Caio Kinzel Filho" class="avatar" />
           <div class="pulse-ring pulse-ring-1" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-2" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-3" :class="{ active: isPulsing }"></div>
@@ -64,25 +73,50 @@
       <div class="hero-content">
         <div class="hero-code">
           <div class="hero-line">
-            <code><span class="code-keyword">const</span> <span class="code-var">engineer</span> <span class="code-punct">= {</span></code>
+            <code
+              ><span class="code-keyword">const</span> <span class="code-var">engineer</span>
+              <span class="code-punct">= {</span></code
+            >
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code>
+            <code class="indent-1"
+              ><span class="code-prop">name</span><span class="code-punct">:</span>
+              <span class="hero-name">"{{ engineer.name }}"</span
+              ><span class="code-punct">,</span></code
+            >
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">location</span><span class="code-punct">:</span> <span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code>
+            <code class="indent-1"
+              ><span class="code-prop">location</span><span class="code-punct">:</span>
+              <span class="hero-location">"{{ engineer.location }}"</span
+              ><span class="code-punct">,</span></code
+            >
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">specialties</span><span class="code-punct">: [</span></code>
+            <code class="indent-1"
+              ><span class="code-prop">specialties</span><span class="code-punct">: [</span></code
+            >
           </div>
-          <div v-for="(specialty, index) in engineer.specialties" :key="specialty" class="hero-line">
-            <code class="indent-2"><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? ',' : '' }}</span></code>
+          <div
+            v-for="(specialty, index) in engineer.specialties"
+            :key="specialty"
+            class="hero-line"
+          >
+            <code class="indent-2"
+              ><span class="code-muted">"{{ specialty }}"</span
+              ><span class="code-punct">{{
+                index < engineer.specialties.length - 1 ? "," : ""
+              }}</span></code
+            >
           </div>
           <div class="hero-line">
             <code class="indent-1"><span class="code-punct">],</span></code>
           </div>
           <div class="hero-line">
-            <code class="indent-1"><span class="code-prop">offline</span><span class="code-punct">:</span> <span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code>
+            <code class="indent-1"
+              ><span class="code-prop">offline</span><span class="code-punct">:</span>
+              <span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
+            >
           </div>
           <div class="hero-line">
             <code><span class="code-punct">};</span></code>
@@ -110,7 +144,10 @@
         <div class="editor-content">
           <div class="line">
             <span class="line-number">1</span>
-            <code><span class="code-keyword">export const</span> <span class="code-var">capabilities</span> <span class="code-punct">= [</span></code>
+            <code
+              ><span class="code-keyword">export const</span>
+              <span class="code-var">capabilities</span> <span class="code-punct">= [</span></code
+            >
           </div>
 
           <article
@@ -125,21 +162,38 @@
             </div>
             <div class="line">
               <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-              <code class="indent-2"><span class="code-prop">name</span><span class="code-punct">:</span> <span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code>
+              <code class="indent-2"
+                ><span class="code-prop">name</span><span class="code-punct">:</span>
+                <span class="code-string">"{{ skill.title }}"</span
+                ><span class="code-punct">,</span></code
+              >
             </div>
             <div class="line description-line">
               <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-              <code class="indent-2"><span class="code-prop">desc</span><span class="code-punct">:</span> <span class="code-desc">"{{ skill.description }}"</span></code>
+              <code class="indent-2"
+                ><span class="code-prop">desc</span><span class="code-punct">:</span>
+                <span class="code-desc">"{{ skill.description }}"</span></code
+              >
             </div>
             <div class="line">
               <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-              <code class="indent-1"><span class="code-punct">}{{ index < skillsConfig.length - 1 ? ',' : '' }}</span></code>
+              <code class="indent-1"
+                ><span class="code-punct"
+                  >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
+                ></code
+              >
             </div>
           </article>
 
           <div class="line">
             <span class="line-number">{{ closingBracketLine }}</span>
-            <code><span class="code-punct">];</span><span class="cursor" :style="{ '--cursor-delay': `${skillsConfig.length * 150 + 400}ms` }"></span></code>
+            <code
+              ><span class="code-punct">];</span
+              ><span
+                class="cursor"
+                :style="{ '--cursor-delay': `${skillsConfig.length * 150 + 400}ms` }"
+              ></span
+            ></code>
           </div>
         </div>
       </div>
@@ -204,15 +258,15 @@
   // Orbit node configuration with their base positions
   const orbitNodes = [
     // Outer orbit (r=180)
-    { id: "architecture", cx: 200, cy: 20, r: 180, angle: -90 },
-    { id: "data", cx: 380, cy: 200, r: 180, angle: 0 },
-    { id: "teams", cx: 200, cy: 380, r: 180, angle: 90 },
-    { id: "ai", cx: 20, cy: 200, r: 180, angle: 180 },
+    { id: "1", cx: 200, cy: 20, r: 180, angle: -90 },
+    { id: "2", cx: 380, cy: 200, r: 180, angle: 0 },
+    { id: "3", cx: 200, cy: 380, r: 180, angle: 90 },
+    { id: "4", cx: 20, cy: 200, r: 180, angle: 180 },
     // Middle orbit (r=130) - positioned at 45° angles
-    { id: "events", cx: 292, cy: 108, r: 130, angle: -45 },
-    { id: "scale", cx: 292, cy: 292, r: 130, angle: 45 },
-    { id: "dx", cx: 108, cy: 292, r: 130, angle: 135 },
-    { id: "mentoring", cx: 108, cy: 108, r: 130, angle: -135 },
+    { id: "5", cx: 292, cy: 108, r: 130, angle: -45 },
+    { id: "6", cx: 292, cy: 292, r: 130, angle: 45 },
+    { id: "7", cx: 108, cy: 292, r: 130, angle: 135 },
+    { id: "8", cx: 108, cy: 108, r: 130, angle: -135 },
   ];
 
   // Reactive state for mouse tracking
@@ -222,14 +276,11 @@
     Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0 }]))
   );
 
-  // Avatar entrance tracking
-  const hasEnteredAvatar = ref(false);
-
   // Gravitational pulse state
   const isPulsing = ref(false);
-  const pulseNodeState = reactive<
-    Record<string, { x: number; y: number; vx: number; vy: number }>
-  >(Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0, vx: 0, vy: 0 }])));
+  const pulseNodeState = reactive<Record<string, { x: number; y: number; vx: number; vy: number }>>(
+    Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0, vx: 0, vy: 0 }]))
+  );
   let pulseAnimationFrame: number | null = null;
 
   // Spring physics constants
@@ -511,8 +562,6 @@
     opacity: 0.6;
   }
 
-
-
   @keyframes avatarEntrance {
     0% {
       opacity: 0;
@@ -546,12 +595,9 @@
     object-fit: cover;
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 40px #3d8a8a33;
+    animation: avatarEntrance 800ms ease-out;
     cursor: pointer;
     transition: transform 0.15s ease;
-  }
-
-  .avatar.avatar-entering {
-    animation: avatarEntrance 800ms ease-out forwards;
   }
 
   .avatar:hover {
@@ -786,9 +832,7 @@
   .line-number {
     color: var(--color-text-muted);
     opacity: 0.5;
-    transition:
-      opacity var(--transition-fast),
-      color var(--transition-fast);
+    transition: opacity var(--transition-fast), color var(--transition-fast);
     min-width: 32px;
     text-align: right;
     padding-right: var(--space-4);
@@ -859,9 +903,7 @@
     margin-left: 2px;
     vertical-align: text-bottom;
     opacity: 0;
-    animation:
-      cursorAppear 200ms ease-out forwards,
-      cursorBlink 1s step-end infinite;
+    animation: cursorAppear 200ms ease-out forwards, cursorBlink 1s step-end infinite;
     animation-delay: var(--cursor-delay, 0ms), var(--cursor-delay, 0ms);
   }
 
