@@ -170,25 +170,3 @@ export function getRingLabelsOnSeparators(ringRadii: number[]): RingLabel[] {
   return labels;
 }
 
-// =============================================================================
-// LEGACY CLASS EXPORTS (for backwards compatibility during migration)
-// =============================================================================
-
-/**
- * @deprecated Use standalone functions instead
- */
-export class RadarGeometry {
-  static getZoomedViewBoxOffset = getZoomedViewBoxOffset;
-  static getQuadrantLabelX = getQuadrantLabelX;
-  static getQuadrantLabelY = getQuadrantLabelY;
-  static getSeparatorLines = getSeparatorLines;
-}
-
-/**
- * @deprecated Use standalone functions instead
- */
-export class RingGeometry {
-  static calculateRadii = calculateRingRadii;
-  static getRadiusAtIndex = getRingRadiusAtIndex;
-  static getLabelsOnSeparators = getRingLabelsOnSeparators;
-}

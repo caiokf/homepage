@@ -162,6 +162,3 @@ export class BlipPositioning {
     });
   }
 }
-
-// Legacy export for backwards compatibility
-export { BlipPositioning as QuadrantGeometry };

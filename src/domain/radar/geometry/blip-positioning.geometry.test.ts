@@ -1,10 +1,10 @@
-import { QuadrantGeometry } from "./blip-positioning.geometry";
+import { BlipPositioning } from "./blip-positioning.geometry";
 import { Blip } from "../models/blip";
 import { Ring } from "../models/ring";
-import { RingGeometry } from "./svg-layout.geometry";
+import { calculateRingRadii } from "./svg-layout.geometry";
 import type { QuadrantGeometryConfig } from "../types";
 
-describe("QuadrantGeometry", () => {
+describe("BlipPositioning", () => {
   const createTestBlip = (name: string, ringOrder: number): Blip => {
     const ring = new Ring("Test Ring", ringOrder);
     const blip = new Blip(name, ring, false);
@@ -16,14 +16,14 @@ describe("QuadrantGeometry", () => {
   const createGeometry = (startAngle: number): QuadrantGeometryConfig => ({
     startAngle,
     quadrantSize: 512,
-    ringRadii: RingGeometry.calculateRadii(512),
+    ringRadii: calculateRingRadii(512),
     center: { x: 0, y: 0 },
   });
 
   describe("calculateBlipPositions", () => {
     it("should return empty array for empty blips", () => {
       const geometry = createGeometry(0);
-      const result = QuadrantGeometry.calculateBlipPositions([], geometry);
+      const result = BlipPositioning.calculateBlipPositions([], geometry);
       expect(result).toEqual([]);
     });
 
@@ -31,7 +31,7 @@ describe("QuadrantGeometry", () => {
       const blip = createTestBlip("Test Blip", 0);
       const geometry = createGeometry(0);
 
-      const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
+      const result = BlipPositioning.calculateBlipPositions([blip], geometry);
 
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe("Test Blip");
@@ -43,7 +43,7 @@ describe("QuadrantGeometry", () => {
       blip.blipText = "42";
       const geometry = createGeometry(0);
 
-      const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
+      const result = BlipPositioning.calculateBlipPositions([blip], geometry);
       const positioned = result[0];
 
       expect(positioned).toHaveProperty("id");
@@ -64,7 +64,7 @@ describe("QuadrantGeometry", () => {
       const geometry = createGeometry(0);
       const ringRadii = geometry.ringRadii;
 
-      const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
+      const result = BlipPositioning.calculateBlipPositions([blip], geometry);
       const positioned = result[0];
 
       // Calculate distance from center
@@ -85,7 +85,7 @@ describe("QuadrantGeometry", () => {
       ];
       const geometry = createGeometry(0);
 
-      const result = QuadrantGeometry.calculateBlipPositions(blips, geometry);
+      const result = BlipPositioning.calculateBlipPositions(blips, geometry);
 
       expect(result).toHaveLength(3);
 
@@ -103,8 +103,8 @@ describe("QuadrantGeometry", () => {
       ];
       const geometry = createGeometry(0);
 
-      const result1 = QuadrantGeometry.calculateBlipPositions(blips, geometry);
-      const result2 = QuadrantGeometry.calculateBlipPositions(blips, geometry);
+      const result1 = BlipPositioning.calculateBlipPositions(blips, geometry);
+      const result2 = BlipPositioning.calculateBlipPositions(blips, geometry);
 
       // Same geometry should produce same positions (seeded random)
       expect(result1[0].x).toBeCloseTo(result2[0].x, 5);
@@ -117,7 +117,7 @@ describe("QuadrantGeometry", () => {
       const blip = createTestBlip("Test Blip", 2);
       const geometryNE = createGeometry(0); // NE quadrant: startAngle 0
 
-      const result = QuadrantGeometry.calculateBlipPositions(
+      const result = BlipPositioning.calculateBlipPositions(
         [blip],
         geometryNE
       );
@@ -146,7 +146,7 @@ describe("QuadrantGeometry", () => {
 
       for (const { startAngle } of positions) {
         const geometry = createGeometry(startAngle);
-        const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
+        const result = BlipPositioning.calculateBlipPositions([blip], geometry);
         const positioned = result[0];
 
         // Verify blip is positioned (not at origin)
@@ -164,7 +164,7 @@ describe("QuadrantGeometry", () => {
       );
       const geometry = createGeometry(0);
 
-      const result = QuadrantGeometry.calculateBlipPositions(blips, geometry);
+      const result = BlipPositioning.calculateBlipPositions(blips, geometry);
 
       // Check that no two blips overlap (considering their width)
       for (let i = 0; i < result.length; i++) {
@@ -187,16 +187,16 @@ describe("QuadrantGeometry", () => {
       const geometryWithOffset: QuadrantGeometryConfig = {
         startAngle: 0,
         quadrantSize: 512,
-        ringRadii: RingGeometry.calculateRadii(512),
+        ringRadii: calculateRingRadii(512),
         center: { x: 100, y: 100 },
       };
       const geometryWithoutOffset = createGeometry(0);
 
-      const resultWithOffset = QuadrantGeometry.calculateBlipPositions(
+      const resultWithOffset = BlipPositioning.calculateBlipPositions(
         [blip],
         geometryWithOffset
       );
-      const resultWithoutOffset = QuadrantGeometry.calculateBlipPositions(
+      const resultWithoutOffset = BlipPositioning.calculateBlipPositions(
         [blip],
         geometryWithoutOffset
       );
@@ -220,7 +220,7 @@ describe("QuadrantGeometry", () => {
       blip.isGroup = true;
 
       const geometry = createGeometry(0);
-      const result = QuadrantGeometry.calculateBlipPositions([blip], geometry);
+      const result = BlipPositioning.calculateBlipPositions([blip], geometry);
       const positioned = result[0];
 
       expect(positioned.id).toBe(42);

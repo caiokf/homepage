@@ -96,8 +96,8 @@
     QuadrantPosition,
   } from "../types";
   import { RADAR_SIZE, QUADRANT_SIZE } from "../constants";
-  import { RingGeometry } from "../geometry/svg-layout.geometry";
-  import { QuadrantGeometry } from "../geometry/blip-positioning.geometry";
+  import { calculateRingRadii } from "../geometry/svg-layout.geometry";
+  import { BlipPositioning } from "../geometry/blip-positioning.geometry";
   import RadarBlip from "./RadarBlip.vue";
   import RadarSeparators from "./RadarSeparators.vue";
   import RadarTooltip from "./RadarTooltip.vue";
@@ -127,7 +127,7 @@
 
   const viewBox = computed(() => `0 0 ${radarSize} ${radarSize}`);
 
-  const ringRadii = computed(() => RingGeometry.calculateRadii(quadrantSize));
+  const ringRadii = computed(() => calculateRingRadii(quadrantSize));
 
   const outerRadius = computed(
     () => ringRadii.value[ringRadii.value.length - 1]
@@ -148,7 +148,7 @@
       };
 
       cache.push(
-        QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry)
+        BlipPositioning.calculateBlipPositions(quadrant.blips(), geometry)
       );
     }
 
