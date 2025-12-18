@@ -16,41 +16,46 @@
           viewBox="0 0 400 400"
           aria-hidden="true"
         >
-          <!-- Orbit rings -->
-          <circle cx="200" cy="200" r="180" class="orbit-ring orbit-ring-outer" />
-          <circle cx="200" cy="200" r="130" class="orbit-ring orbit-ring-middle" />
-          <circle cx="200" cy="200" r="80" class="orbit-ring orbit-ring-inner" />
-
-          <!-- Skill nodes on orbits -->
-          <!-- Outer orbit - 5 nodes at 72° intervals -->
-          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('0') }">
-            <circle cx="200" cy="20" r="8" />
-          </g>
-          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('1') }">
-            <circle cx="371" cy="144" r="8" />
-          </g>
-          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('2') }">
-            <circle cx="306" cy="346" r="8" />
-          </g>
-          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('3') }">
-            <circle cx="94" cy="346" r="8" />
-          </g>
-          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('4') }">
-            <circle cx="29" cy="144" r="8" />
+          <!-- Inner orbit ring (decorative, no nodes) -->
+          <g class="orbit-layer orbit-layer-inner">
+            <circle cx="200" cy="200" r="80" class="orbit-ring orbit-ring-inner" />
           </g>
 
-          <!-- Middle orbit - 4 nodes at 90° intervals -->
-          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('5') }">
-            <circle cx="292" cy="108" r="6" />
+          <!-- Middle orbit - ring + 4 nodes -->
+          <g class="orbit-layer orbit-layer-middle">
+            <circle cx="200" cy="200" r="130" class="orbit-ring orbit-ring-middle" />
+            <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('5') }">
+              <circle cx="292" cy="108" r="6" />
+            </g>
+            <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('6') }">
+              <circle cx="292" cy="292" r="6" />
+            </g>
+            <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('7') }">
+              <circle cx="108" cy="292" r="6" />
+            </g>
+            <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('8') }">
+              <circle cx="108" cy="108" r="6" />
+            </g>
           </g>
-          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('6') }">
-            <circle cx="292" cy="292" r="6" />
-          </g>
-          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('7') }">
-            <circle cx="108" cy="292" r="6" />
-          </g>
-          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('8') }">
-            <circle cx="108" cy="108" r="6" />
+
+          <!-- Outer orbit - ring + 5 nodes -->
+          <g class="orbit-layer orbit-layer-outer">
+            <circle cx="200" cy="200" r="180" class="orbit-ring orbit-ring-outer" />
+            <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('0') }">
+              <circle cx="200" cy="20" r="8" />
+            </g>
+            <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('1') }">
+              <circle cx="371" cy="144" r="8" />
+            </g>
+            <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('2') }">
+              <circle cx="306" cy="346" r="8" />
+            </g>
+            <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('3') }">
+              <circle cx="94" cy="346" r="8" />
+            </g>
+            <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('4') }">
+              <circle cx="29" cy="144" r="8" />
+            </g>
           </g>
         </svg>
 
@@ -471,8 +476,23 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    animation: orbit-rotate var(--orbit-speed, 60s) linear infinite;
+  }
+
+  .orbit-layer {
+    transform-origin: 200px 200px;
     will-change: transform;
+  }
+
+  .orbit-layer-outer {
+    animation: orbit-rotate var(--orbit-speed, 60s) linear infinite;
+  }
+
+  .orbit-layer-middle {
+    animation: orbit-rotate calc(var(--orbit-speed, 60s) * 0.7) linear infinite;
+  }
+
+  .orbit-layer-inner {
+    animation: orbit-rotate calc(var(--orbit-speed, 60s) * 0.4) linear infinite;
   }
 
   @keyframes orbit-rotate {
