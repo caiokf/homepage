@@ -22,37 +22,34 @@
           <circle cx="200" cy="200" r="80" class="orbit-ring orbit-ring-inner" />
 
           <!-- Skill nodes on orbits -->
-          <!-- Outer orbit - larger concepts -->
-          <g
-            class="orbit-node node-architecture"
-            :style="{ transform: getNodeTransform('architecture') }"
-          >
+          <!-- Outer orbit - 5 nodes at 72° intervals -->
+          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('0') }">
             <circle cx="200" cy="20" r="8" />
           </g>
-          <g class="orbit-node node-data" :style="{ transform: getNodeTransform('data') }">
-            <circle cx="380" cy="200" r="8" />
+          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('1') }">
+            <circle cx="371" cy="144" r="8" />
           </g>
-          <g class="orbit-node node-teams" :style="{ transform: getNodeTransform('teams') }">
-            <circle cx="200" cy="380" r="8" />
+          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('2') }">
+            <circle cx="306" cy="346" r="8" />
           </g>
-          <g class="orbit-node node-ai" :style="{ transform: getNodeTransform('ai') }">
-            <circle cx="20" cy="200" r="8" />
+          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('3') }">
+            <circle cx="94" cy="346" r="8" />
+          </g>
+          <g class="orbit-node orbit-outer" :style="{ transform: getNodeTransform('4') }">
+            <circle cx="29" cy="144" r="8" />
           </g>
 
-          <!-- Middle orbit - secondary skills -->
-          <g class="orbit-node node-events" :style="{ transform: getNodeTransform('events') }">
+          <!-- Middle orbit - 4 nodes at 90° intervals -->
+          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('5') }">
             <circle cx="292" cy="108" r="6" />
           </g>
-          <g class="orbit-node node-scale" :style="{ transform: getNodeTransform('scale') }">
+          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('6') }">
             <circle cx="292" cy="292" r="6" />
           </g>
-          <g class="orbit-node node-dx" :style="{ transform: getNodeTransform('dx') }">
+          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('7') }">
             <circle cx="108" cy="292" r="6" />
           </g>
-          <g
-            class="orbit-node node-mentoring"
-            :style="{ transform: getNodeTransform('mentoring') }"
-          >
+          <g class="orbit-node orbit-middle" :style="{ transform: getNodeTransform('8') }">
             <circle cx="108" cy="108" r="6" />
           </g>
         </svg>
@@ -257,12 +254,13 @@
 
   // Orbit node configuration with their base positions
   const orbitNodes = [
-    // Outer orbit (r=180)
-    { id: "1", cx: 200, cy: 20, r: 180, angle: -90 },
-    { id: "2", cx: 380, cy: 200, r: 180, angle: 0 },
-    { id: "3", cx: 200, cy: 380, r: 180, angle: 90 },
-    { id: "4", cx: 20, cy: 200, r: 180, angle: 180 },
-    // Middle orbit (r=130) - positioned at 45° angles
+    // Outer orbit (r=180) - 5 nodes at 72° intervals
+    { id: "0", cx: 200, cy: 20, r: 180, angle: -90 },
+    { id: "1", cx: 371, cy: 144, r: 180, angle: -18 },
+    { id: "2", cx: 306, cy: 346, r: 180, angle: 54 },
+    { id: "3", cx: 94, cy: 346, r: 180, angle: 126 },
+    { id: "4", cx: 29, cy: 144, r: 180, angle: 198 },
+    // Middle orbit (r=130) - 4 nodes at 90° intervals
     { id: "5", cx: 292, cy: 108, r: 130, angle: -45 },
     { id: "6", cx: 292, cy: 292, r: 130, angle: 45 },
     { id: "7", cx: 108, cy: 292, r: 130, angle: 135 },
@@ -534,31 +532,12 @@
     filter: drop-shadow(0 0 6px currentColor);
   }
 
-  .node-architecture circle {
-    fill: var(--quadrant-NE);
+  .orbit-outer circle {
+    fill: var(--color-primary);
   }
 
-  .node-data circle {
-    fill: var(--quadrant-NW);
-  }
-
-  .node-teams circle {
-    fill: var(--quadrant-SW);
-  }
-
-  .node-ai circle {
-    fill: var(--quadrant-SE);
-  }
-
-  .node-events circle,
-  .node-scale circle {
-    fill: var(--quadrant-NE);
-    opacity: 0.6;
-  }
-
-  .node-dx circle,
-  .node-mentoring circle {
-    fill: var(--quadrant-SW);
+  .orbit-middle circle {
+    fill: var(--color-primary);
     opacity: 0.6;
   }
 
