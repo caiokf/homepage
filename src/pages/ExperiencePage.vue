@@ -110,7 +110,7 @@
           </article>
 
           <div v-if="!showAll" class="show-more-container">
-            <button @click="showAll = true" class="terminal-button">
+            <button @click="showAll = true" class="terminal-button" aria-label="Show all experiences">
               <span class="terminal-prompt">$</span>
               <span class="terminal-command">history</span>
               <span class="terminal-flag">--all</span>
@@ -601,10 +601,6 @@
   .terminal-button:hover {
     border-color: var(--color-primary);
     box-shadow: var(--shadow-md);
-  }
-
-  .terminal-button:hover .terminal-cursor {
-    opacity: 1;
   }
 
   .terminal-prompt {
