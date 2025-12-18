@@ -10,7 +10,7 @@
         @mouseleave="handleMouseLeave"
       >
         <!-- Orbit SVG Background -->
-        <svg class="orbit-svg" viewBox="0 0 400 400" aria-hidden="true">
+        <svg class="orbit-svg" :class="{ 'pulse-active': isPulsing }" viewBox="0 0 400 400" aria-hidden="true">
           <!-- Orbit rings -->
           <circle cx="200" cy="200" r="180" class="orbit-ring orbit-ring-outer" />
           <circle cx="200" cy="200" r="130" class="orbit-ring orbit-ring-middle" />
@@ -55,8 +55,11 @@
         </svg>
 
         <!-- Avatar in center -->
-        <div class="avatar-wrapper">
+        <div class="avatar-wrapper" :class="{ 'pulse-active': isPulsing }" @click="triggerGravitationalPulse">
           <img :src="avatarImage" alt="Caio Kinzel Filho" class="avatar" />
+          <div class="pulse-ring pulse-ring-1" :class="{ active: isPulsing }"></div>
+          <div class="pulse-ring pulse-ring-2" :class="{ active: isPulsing }"></div>
+          <div class="pulse-ring pulse-ring-3" :class="{ active: isPulsing }"></div>
         </div>
       </div>
 
@@ -195,6 +198,9 @@
     if (speedDecayFrame) {
       cancelAnimationFrame(speedDecayFrame);
     }
+    if (pulseAnimationFrame) {
+      cancelAnimationFrame(pulseAnimationFrame);
+    }
   });
 
   // Orbit node configuration with their base positions
@@ -217,6 +223,90 @@
   const nodeOffsets = reactive<Record<string, { x: number; y: number }>>(
     Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0 }]))
   );
+
+  // Gravitational pulse state
+  const isPulsing = ref(false);
+  const pulseNodeState = reactive<
+    Record<string, { x: number; y: number; vx: number; vy: number }>
+  >(Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0, vx: 0, vy: 0 }])));
+  let pulseAnimationFrame: number | null = null;
+
+  // Spring physics constants
+  const SPRING_STIFFNESS = 0.08;
+  const SPRING_DAMPING = 0.85;
+  const INITIAL_PULL_STRENGTH = 0.7; // How much nodes are pulled toward center (0-1)
+
+  const triggerGravitationalPulse = () => {
+    if (isPulsing.value) return; // Prevent re-triggering while active
+
+    isPulsing.value = true;
+
+    // Initialize node velocities - pull toward center
+    orbitNodes.forEach((node) => {
+      // Calculate direction toward center (200, 200 in SVG coords)
+      const dx = 200 - node.cx;
+      const dy = 200 - node.cy;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Initial impulse toward center
+      const pullDistance = distance * INITIAL_PULL_STRENGTH;
+      pulseNodeState[node.id] = {
+        x: (dx / distance) * pullDistance,
+        y: (dy / distance) * pullDistance,
+        vx: 0,
+        vy: 0,
+      };
+    });
+
+    // Start spring animation
+    animatePulse();
+
+    // Reset pulse state after animation completes
+    setTimeout(() => {
+      isPulsing.value = false;
+    }, 600);
+  };
+
+  const animatePulse = () => {
+    let allSettled = true;
+
+    orbitNodes.forEach((node) => {
+      const state = pulseNodeState[node.id];
+
+      // Spring force pulling back to origin (0, 0)
+      const springForceX = -state.x * SPRING_STIFFNESS;
+      const springForceY = -state.y * SPRING_STIFFNESS;
+
+      // Apply spring force to velocity
+      state.vx = (state.vx + springForceX) * SPRING_DAMPING;
+      state.vy = (state.vy + springForceY) * SPRING_DAMPING;
+
+      // Update position
+      state.x += state.vx;
+      state.y += state.vy;
+
+      // Apply to visual offset
+      nodeOffsets[node.id] = { x: state.x, y: state.y };
+
+      // Check if still moving significantly
+      const velocity = Math.sqrt(state.vx * state.vx + state.vy * state.vy);
+      const displacement = Math.sqrt(state.x * state.x + state.y * state.y);
+      if (velocity > 0.1 || displacement > 0.5) {
+        allSettled = false;
+      }
+    });
+
+    if (!allSettled) {
+      pulseAnimationFrame = requestAnimationFrame(animatePulse);
+    } else {
+      // Reset to zero
+      orbitNodes.forEach((node) => {
+        nodeOffsets[node.id] = { x: 0, y: 0 };
+        pulseNodeState[node.id] = { x: 0, y: 0, vx: 0, vy: 0 };
+      });
+      pulseAnimationFrame = null;
+    }
+  };
 
   // Gravitational pull settings
   const ATTRACTION_RADIUS = 100; // pixels - how close cursor needs to be
@@ -360,6 +450,28 @@
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  /* Disable transition during spring physics animation */
+  .pulse-active .orbit-node {
+    transition: none;
+  }
+
+  /* Glow effect on nodes during pulse */
+  .pulse-active .orbit-node circle {
+    animation: nodeGlow 600ms ease-out;
+  }
+
+  @keyframes nodeGlow {
+    0% {
+      filter: drop-shadow(0 0 0 currentColor);
+    }
+    30% {
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+    100% {
+      filter: drop-shadow(0 0 0 currentColor);
+    }
+  }
+
   .orbit-node circle {
     fill: var(--color-primary);
     opacity: 0.8;
@@ -458,6 +570,78 @@
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 40px #3d8a8a33;
     animation: avatarEntrance 800ms ease-out;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .avatar:hover {
+    transform: scale(1.05);
+  }
+
+  .avatar:active {
+    transform: scale(0.95);
+  }
+
+  .pulse-active .avatar {
+    animation: avatarPulseClick 400ms ease-out;
+  }
+
+  @keyframes avatarPulseClick {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 40px #3d8a8a33;
+    }
+    15% {
+      transform: scale(0.92);
+      box-shadow: 0 0 20px #3d8a8a66;
+    }
+    40% {
+      transform: scale(1.08);
+      box-shadow: 0 0 60px #3d8a8a88;
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 40px #3d8a8a33;
+    }
+  }
+
+  /* Shockwave pulse rings */
+  .pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-primary);
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pulse-ring.active {
+    animation: pulseRingExpand 600ms ease-out forwards;
+  }
+
+  .pulse-ring-2.active {
+    animation-delay: 80ms;
+  }
+
+  .pulse-ring-3.active {
+    animation-delay: 160ms;
+  }
+
+  @keyframes pulseRingExpand {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.8;
+      border-width: 3px;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.8);
+      opacity: 0;
+      border-width: 1px;
+    }
   }
 
   /* Hero Content - Code Aesthetic */
