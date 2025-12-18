@@ -14,7 +14,10 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import type { QuadrantPosition } from "../types";
-  import { RadarGeometry } from "../geometry/svg-layout.geometry";
+  import {
+    getQuadrantLabelX,
+    getQuadrantLabelY,
+  } from "../geometry/svg-layout.geometry";
 
   type Props = {
     name: string;
@@ -25,11 +28,11 @@
   const props = defineProps<Props>();
 
   const labelX = computed(() =>
-    RadarGeometry.getQuadrantLabelX(props.position, props.outerRadius)
+    getQuadrantLabelX(props.position, props.outerRadius)
   );
 
   const labelY = computed(() =>
-    RadarGeometry.getQuadrantLabelY(props.position, props.outerRadius)
+    getQuadrantLabelY(props.position, props.outerRadius)
   );
 </script>
 

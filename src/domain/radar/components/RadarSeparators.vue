@@ -29,7 +29,10 @@
 
 <script setup lang="ts">
   import { computed } from "vue";
-  import { RingGeometry, RadarGeometry } from "../geometry/svg-layout.geometry";
+  import {
+    getSeparatorLines,
+    getRingLabelsOnSeparators,
+  } from "../geometry/svg-layout.geometry";
 
   type Props = {
     radarSize: number;
@@ -50,11 +53,11 @@
   );
 
   const separatorLines = computed(() =>
-    RadarGeometry.getSeparatorLines(outerRadius.value)
+    getSeparatorLines(outerRadius.value)
   );
 
   const ringLabels = computed(() =>
-    RingGeometry.getLabelsOnSeparators(props.ringRadii)
+    getRingLabelsOnSeparators(props.ringRadii)
   );
 </script>
 

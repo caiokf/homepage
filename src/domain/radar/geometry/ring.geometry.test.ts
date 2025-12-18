@@ -1,11 +1,15 @@
-import { RingGeometry } from "./svg-layout.geometry";
+import {
+  calculateRingRadii,
+  getRingRadiusAtIndex,
+  getRingLabelsOnSeparators,
+} from "./svg-layout.geometry";
 import { RING_RATIOS, RING_NAMES } from "../constants";
 
-describe("RingGeometry", () => {
-  describe("calculateRadii", () => {
+describe("Ring Geometry", () => {
+  describe("calculateRingRadii", () => {
     it("should calculate radii based on max radius and default ratios", () => {
       const maxRadius = 512;
-      const radii = RingGeometry.calculateRadii(maxRadius);
+      const radii = calculateRingRadii(maxRadius);
 
       expect(radii).toHaveLength(RING_RATIOS.length);
       expect(radii[0]).toBe(RING_RATIOS[0] * maxRadius); // Inner edge with buffer
@@ -13,8 +17,8 @@ describe("RingGeometry", () => {
     });
 
     it("should scale radii proportionally to max radius", () => {
-      const radii256 = RingGeometry.calculateRadii(256);
-      const radii512 = RingGeometry.calculateRadii(512);
+      const radii256 = calculateRingRadii(256);
+      const radii512 = calculateRingRadii(512);
 
       for (let i = 0; i < radii256.length; i++) {
         expect(radii512[i]).toBe(radii256[i] * 2);
@@ -24,14 +28,14 @@ describe("RingGeometry", () => {
     it("should use custom ratios when provided", () => {
       const maxRadius = 100;
       const customRatios = [0, 0.25, 0.5, 0.75, 1] as const;
-      const radii = RingGeometry.calculateRadii(maxRadius, customRatios);
+      const radii = calculateRingRadii(maxRadius, customRatios);
 
       expect(radii).toEqual([0, 25, 50, 75, 100]);
     });
 
     it("should return correct values for default RING_RATIOS", () => {
       const maxRadius = 512;
-      const radii = RingGeometry.calculateRadii(maxRadius);
+      const radii = calculateRingRadii(maxRadius);
 
       // Verify each radius matches the ratio * maxRadius
       RING_RATIOS.forEach((ratio, index) => {
@@ -40,61 +44,61 @@ describe("RingGeometry", () => {
     });
 
     it("should handle zero max radius", () => {
-      const radii = RingGeometry.calculateRadii(0);
+      const radii = calculateRingRadii(0);
       expect(radii.every((r) => r === 0)).toBe(true);
     });
   });
 
-  describe("getRadiusAtIndex", () => {
+  describe("getRingRadiusAtIndex", () => {
     const maxRadius = 512;
 
     it("should return correct radius for valid index", () => {
-      const radius = RingGeometry.getRadiusAtIndex(0, maxRadius);
+      const radius = getRingRadiusAtIndex(0, maxRadius);
       expect(radius).toBe(RING_RATIOS[0] * maxRadius); // Inner edge with buffer
 
       const lastIndex = RING_RATIOS.length - 1;
-      const outerRadius = RingGeometry.getRadiusAtIndex(lastIndex, maxRadius);
+      const outerRadius = getRingRadiusAtIndex(lastIndex, maxRadius);
       expect(outerRadius).toBe(maxRadius);
     });
 
     it("should return 0 for negative index", () => {
-      const radius = RingGeometry.getRadiusAtIndex(-1, maxRadius);
+      const radius = getRingRadiusAtIndex(-1, maxRadius);
       expect(radius).toBe(0);
     });
 
     it("should return 0 for index out of bounds", () => {
-      const radius = RingGeometry.getRadiusAtIndex(100, maxRadius);
+      const radius = getRingRadiusAtIndex(100, maxRadius);
       expect(radius).toBe(0);
     });
 
     it("should use custom ratios when provided", () => {
       const customRatios = [0, 0.5, 1] as const;
-      const radius = RingGeometry.getRadiusAtIndex(1, 100, customRatios);
+      const radius = getRingRadiusAtIndex(1, 100, customRatios);
       expect(radius).toBe(50);
     });
 
-    it("should match calculateRadii at same index", () => {
-      const radii = RingGeometry.calculateRadii(maxRadius);
+    it("should match calculateRingRadii at same index", () => {
+      const radii = calculateRingRadii(maxRadius);
 
       for (let i = 0; i < RING_RATIOS.length; i++) {
-        const singleRadius = RingGeometry.getRadiusAtIndex(i, maxRadius);
+        const singleRadius = getRingRadiusAtIndex(i, maxRadius);
         expect(singleRadius).toBe(radii[i]);
       }
     });
   });
 
-  describe("getLabelsOnSeparators", () => {
-    const ringRadii = RingGeometry.calculateRadii(512);
+  describe("getRingLabelsOnSeparators", () => {
+    const ringRadii = calculateRingRadii(512);
 
     it("should return labels for all rings on both separator lines", () => {
-      const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
+      const labels = getRingLabelsOnSeparators(ringRadii);
 
       // 4 rings * 2 separator lines (left and right)
       expect(labels).toHaveLength(RING_NAMES.length * 2);
     });
 
     it("should include all ring names", () => {
-      const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
+      const labels = getRingLabelsOnSeparators(ringRadii);
       const labelNames = labels.map((l) => l.name);
 
       for (const ringName of RING_NAMES) {
@@ -103,7 +107,7 @@ describe("RingGeometry", () => {
     });
 
     it("should have labels with x and name properties", () => {
-      const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
+      const labels = getRingLabelsOnSeparators(ringRadii);
 
       for (const label of labels) {
         expect(label).toHaveProperty("x");
@@ -114,7 +118,7 @@ describe("RingGeometry", () => {
     });
 
     it("should position labels at midpoint of each ring on horizontal line", () => {
-      const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
+      const labels = getRingLabelsOnSeparators(ringRadii);
 
       // Labels alternate: left (-x), right (+x) for each ring
       for (let i = 0; i < RING_NAMES.length; i++) {
@@ -131,7 +135,7 @@ describe("RingGeometry", () => {
     });
 
     it("should have symmetric labels on left and right", () => {
-      const labels = RingGeometry.getLabelsOnSeparators(ringRadii);
+      const labels = getRingLabelsOnSeparators(ringRadii);
 
       for (let i = 0; i < RING_NAMES.length; i++) {
         const leftLabel = labels[i * 2];

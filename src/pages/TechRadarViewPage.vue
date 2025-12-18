@@ -96,8 +96,8 @@
   import type { TechRadarDataProvider } from "../domain/radar/data-providers/data-provider";
   import type { PositionedBlip, QuadrantGeometryConfig, QuadrantPosition } from "../domain/radar/types";
   import { QUADRANT_SIZE, RADAR_SHEET_ID, GOOGLE_API_KEY, MOBILE_BREAKPOINT, MIN_LOADING_DURATION_MS } from "../domain/radar/constants";
-  import { RingGeometry } from "../domain/radar/geometry/svg-layout.geometry";
-  import { QuadrantGeometry } from "../domain/radar/geometry/blip-positioning.geometry";
+  import { calculateRingRadii } from "../domain/radar/geometry/svg-layout.geometry";
+  import { BlipPositioning } from "../domain/radar/geometry/blip-positioning.geometry";
 
   type SearchResult = {
     blip: { id: number; name: string };
@@ -172,7 +172,7 @@
   const selectedQuadrantBlips = computed<PositionedBlip[]>(() => {
     if (!selectedQuadrantObj.value) return [];
 
-    const ringRadii = RingGeometry.calculateRadii(QUADRANT_SIZE);
+    const ringRadii = calculateRingRadii(QUADRANT_SIZE);
     const geometry: QuadrantGeometryConfig = {
       startAngle: selectedQuadrantObj.value.startAngle,
       quadrantSize: QUADRANT_SIZE,
@@ -180,7 +180,7 @@
       center: { x: 0, y: 0 },
     };
 
-    return QuadrantGeometry.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
+    return BlipPositioning.calculateBlipPositions(selectedQuadrantObj.value.blips(), geometry);
   });
 
   // Get all quadrants with their positioned blips (for "all quadrants" view)
@@ -189,7 +189,7 @@
   const allQuadrantsWithBlips = computed(() => {
     if (!radar.value) return [];
 
-    const ringRadii = RingGeometry.calculateRadii(QUADRANT_SIZE);
+    const ringRadii = calculateRingRadii(QUADRANT_SIZE);
 
     const quadrantsWithBlips = radar.value.quadrants.map((quadrant) => {
       const geometry: QuadrantGeometryConfig = {
@@ -202,7 +202,7 @@
       return {
         position: quadrant.position,
         name: quadrant.name,
-        blips: QuadrantGeometry.calculateBlipPositions(quadrant.blips(), geometry),
+        blips: BlipPositioning.calculateBlipPositions(quadrant.blips(), geometry),
       };
     });
 
