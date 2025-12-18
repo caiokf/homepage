@@ -48,7 +48,13 @@
 
         <!-- Avatar in center -->
         <div class="avatar-wrapper" :class="{ 'pulse-active': isPulsing }" @click="triggerGravitationalPulse">
-          <img :src="avatarImage" alt="Caio Kinzel Filho" class="avatar" />
+          <img
+            :src="avatarImage"
+            alt="Caio Kinzel Filho"
+            class="avatar"
+            :class="{ 'avatar-entering': !hasEnteredAvatar }"
+            @animationend="hasEnteredAvatar = true"
+          />
           <div class="pulse-ring pulse-ring-1" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-2" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-3" :class="{ active: isPulsing }"></div>
@@ -215,6 +221,9 @@
   const nodeOffsets = reactive<Record<string, { x: number; y: number }>>(
     Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0 }]))
   );
+
+  // Avatar entrance tracking
+  const hasEnteredAvatar = ref(false);
 
   // Gravitational pulse state
   const isPulsing = ref(false);
@@ -537,9 +546,12 @@
     object-fit: cover;
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 40px #3d8a8a33;
-    animation: avatarEntrance 800ms ease-out;
     cursor: pointer;
     transition: transform 0.15s ease;
+  }
+
+  .avatar.avatar-entering {
+    animation: avatarEntrance 800ms ease-out forwards;
   }
 
   .avatar:hover {
