@@ -209,13 +209,15 @@
   let themeObserver: MutationObserver | null = null;
 
   onMounted(() => {
-    // Watch for theme-to-light class on html element
+    // Watch for theme transition classes on html element
     themeObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "class") {
           const html = document.documentElement;
           if (html.classList.contains("theme-to-light")) {
             showSunglasses.value = true;
+          } else if (html.classList.contains("theme-to-dark")) {
+            showSunglasses.value = false;
           }
         }
       });
