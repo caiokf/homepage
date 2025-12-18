@@ -38,9 +38,7 @@
     </ul>
 
     <div
-      v-else-if="
-        showResults && searchQuery.length >= 2 && filteredBlips.length === 0
-      "
+      v-else-if="showResults && searchQuery.length >= 2 && filteredBlips.length === 0"
       class="no-results"
     >
       No technologies found
@@ -95,11 +93,7 @@
 
     const query = searchQuery.value.toLowerCase();
 
-    return allBlips.value.filter(
-      (result) =>
-        result.blip.name.toLowerCase().includes(query) ||
-        result.blip.description.toLowerCase().includes(query)
-    );
+    return allBlips.value.filter((result) => result.blip.name.toLowerCase().includes(query));
   });
 
   function handleInput() {
@@ -159,9 +153,7 @@
     background: transparent;
     color: var(--color-text-primary);
     outline: none;
-    transition:
-      border-color var(--transition-fast),
-      background-color var(--transition-theme),
+    transition: border-color var(--transition-fast), background-color var(--transition-theme),
       color var(--transition-theme);
   }
 
@@ -211,18 +203,14 @@
     max-height: 300px;
     overflow-y: auto;
     z-index: 100;
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-theme), border-color var(--transition-theme);
   }
 
   .search-result {
     padding: var(--space-3) var(--space-4);
     cursor: pointer;
     border-bottom: 1px solid var(--color-border-subtle);
-    transition:
-      background-color var(--transition-fast),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-fast), border-color var(--transition-theme);
   }
 
   .search-result:last-child {
@@ -271,9 +259,7 @@
     font-family: var(--font-mono);
     text-transform: lowercase;
     z-index: 100;
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme),
+    transition: background-color var(--transition-theme), border-color var(--transition-theme),
       color var(--transition-theme);
   }
 </style>
