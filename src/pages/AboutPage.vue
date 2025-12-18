@@ -20,37 +20,29 @@
           <!-- Outer orbit - larger concepts -->
           <g class="orbit-node node-architecture" :style="{ transform: getNodeTransform('architecture') }">
             <circle cx="200" cy="20" r="8" />
-            <text x="200" y="8" class="node-label">arch</text>
           </g>
           <g class="orbit-node node-data" :style="{ transform: getNodeTransform('data') }">
             <circle cx="380" cy="200" r="8" />
-            <text x="380" y="188" class="node-label">data</text>
           </g>
           <g class="orbit-node node-teams" :style="{ transform: getNodeTransform('teams') }">
             <circle cx="200" cy="380" r="8" />
-            <text x="200" y="395" class="node-label">teams</text>
           </g>
           <g class="orbit-node node-ai" :style="{ transform: getNodeTransform('ai') }">
             <circle cx="20" cy="200" r="8" />
-            <text x="20" y="188" class="node-label">ai</text>
           </g>
 
           <!-- Middle orbit - secondary skills -->
           <g class="orbit-node node-events" :style="{ transform: getNodeTransform('events') }">
             <circle cx="292" cy="108" r="6" />
-            <text x="305" y="100" class="node-label-small">events</text>
           </g>
           <g class="orbit-node node-scale" :style="{ transform: getNodeTransform('scale') }">
             <circle cx="292" cy="292" r="6" />
-            <text x="305" y="300" class="node-label-small">scale</text>
           </g>
           <g class="orbit-node node-dx" :style="{ transform: getNodeTransform('dx') }">
             <circle cx="108" cy="292" r="6" />
-            <text x="70" y="300" class="node-label-small">dx</text>
           </g>
           <g class="orbit-node node-mentoring" :style="{ transform: getNodeTransform('mentoring') }">
             <circle cx="108" cy="108" r="6" />
-            <text x="70" y="100" class="node-label-small">mentor</text>
           </g>
         </svg>
 
@@ -510,30 +502,6 @@
     opacity: 0.6;
   }
 
-  .node-label,
-  .node-label-small {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    fill: var(--color-text-secondary);
-    text-anchor: middle;
-    animation: orbit-counter-rotate var(--orbit-speed, 60s) linear infinite;
-    will-change: transform;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-
-  @keyframes orbit-counter-rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(-360deg);
-    }
-  }
-
-  .node-label-small {
-    font-size: 8px;
-  }
 
 
   @keyframes avatarEntrance {
@@ -953,11 +921,6 @@
     .avatar {
       width: 90px;
       height: 90px;
-    }
-
-    .node-label,
-    .node-label-small {
-      display: none;
     }
 
     .line-number {
