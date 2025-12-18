@@ -65,7 +65,7 @@
           @click="triggerGravitationalPulse"
         >
           <img
-            :src="avatarImage"
+            :src="currentAvatarImage"
             alt="Caio Kinzel Filho"
             class="avatar"
             :class="{ 'avatar-entering': !hasEnteredAvatar }"
@@ -196,13 +196,39 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, reactive, onUnmounted } from "vue";
+  import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
+  import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
+
+  // Sunglasses avatar for dark-to-light transition
+  const showSunglasses = ref(false);
+  const currentAvatarImage = computed(() =>
+    showSunglasses.value ? avatarSunglassesImage : avatarImage
+  );
+  let themeObserver: MutationObserver | null = null;
+
+  onMounted(() => {
+    // Watch for theme-to-light class on html element
+    themeObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          const html = document.documentElement;
+          if (html.classList.contains("theme-to-light")) {
+            showSunglasses.value = true;
+          }
+        }
+      });
+    });
+    themeObserver.observe(document.documentElement, { attributes: true });
+  });
 
   onUnmounted(() => {
     if (pulseAnimationFrame) {
       cancelAnimationFrame(pulseAnimationFrame);
+    }
+    if (themeObserver) {
+      themeObserver.disconnect();
     }
   });
 
