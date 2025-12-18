@@ -5,7 +5,6 @@
       <div
         ref="heroVisualRef"
         class="hero-visual"
-        :style="{ '--orbit-speed': `${orbitSpeed}s` }"
         @mousemove="handleMouseMove"
         @mouseleave="handleMouseLeave"
       >
@@ -65,7 +64,13 @@
           :class="{ 'pulse-active': isPulsing }"
           @click="triggerGravitationalPulse"
         >
-          <img :src="avatarImage" alt="Caio Kinzel Filho" class="avatar" />
+          <img
+            :src="avatarImage"
+            alt="Caio Kinzel Filho"
+            class="avatar"
+            :class="{ 'avatar-entering': !hasEnteredAvatar }"
+            @animationend="onAvatarAnimationEnd"
+          />
           <div class="pulse-ring pulse-ring-1" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-2" :class="{ active: isPulsing }"></div>
           <div class="pulse-ring pulse-ring-3" :class="{ active: isPulsing }"></div>
@@ -76,22 +81,17 @@
         <div class="hero-code">
           <div class="hero-line">
             <code
-              ><span class="code-keyword">const</span> <span class="code-var">engineer</span>
-              <span class="code-punct">= {</span></code
+              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span>&nbsp;<span class="code-punct">= {</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>
-              <span class="hero-name">"{{ engineer.name }}"</span
-              ><span class="code-punct">,</span></code
+              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">location</span><span class="code-punct">:</span>
-              <span class="hero-location">"{{ engineer.location }}"</span
-              ><span class="code-punct">,</span></code
+              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
@@ -105,10 +105,7 @@
             class="hero-line"
           >
             <code class="indent-2"
-              ><span class="code-muted">"{{ specialty }}"</span
-              ><span class="code-punct">{{
-                index < engineer.specialties.length - 1 ? "," : ""
-              }}</span></code
+              ><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? "," : "" }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -116,8 +113,7 @@
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">offline</span><span class="code-punct">:</span>
-              <span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
+              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -147,8 +143,7 @@
           <div class="line">
             <span class="line-number">1</span>
             <code
-              ><span class="code-keyword">export const</span>
-              <span class="code-var">capabilities</span> <span class="code-punct">= [</span></code
+              ><span class="code-keyword">export const</span>&nbsp;<span class="code-var">capabilities</span>&nbsp;<span class="code-punct">= [</span></code
             >
           </div>
 
@@ -165,16 +160,13 @@
             <div class="line">
               <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
               <code class="indent-2"
-                ><span class="code-prop">name</span><span class="code-punct">:</span>
-                <span class="code-string">"{{ skill.title }}"</span
-                ><span class="code-punct">,</span></code
+                ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code
               >
             </div>
             <div class="line description-line">
               <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
               <code class="indent-2"
-                ><span class="code-prop">desc</span><span class="code-punct">:</span>
-                <span class="code-desc">"{{ skill.description }}"</span></code
+                ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span class="code-desc">"{{ skill.description }}"</span></code
               >
             </div>
             <div class="line">
@@ -204,54 +196,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
+  import { computed, ref, reactive, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import avatarImage from "../assets/images/avatar.png";
 
-  // Scroll speed shift state
-  const orbitSpeed = ref(60); // Base: 60 seconds per rotation
-  const MIN_SPEED = 8; // Fastest rotation (8s per cycle)
-  const SPEED_RECOVERY = 0.92; // How quickly speed returns to normal (0-1)
-  const SCROLL_SENSITIVITY = 0.15; // How much scroll affects speed
-
-  let lastScrollY = 0;
-  let speedDecayFrame: number | null = null;
-
-  const handleScroll = () => {
-    const scrollDelta = Math.abs(window.scrollY - lastScrollY);
-    lastScrollY = window.scrollY;
-
-    // Reduce orbit duration based on scroll speed (faster scroll = shorter duration)
-    const speedBoost = scrollDelta * SCROLL_SENSITIVITY;
-    orbitSpeed.value = Math.max(MIN_SPEED, orbitSpeed.value - speedBoost);
-
-    // Start decay back to normal if not already running
-    if (!speedDecayFrame) {
-      decaySpeed();
-    }
-  };
-
-  const decaySpeed = () => {
-    if (orbitSpeed.value < 59.5) {
-      // Gradually return to base speed
-      orbitSpeed.value = orbitSpeed.value + (60 - orbitSpeed.value) * (1 - SPEED_RECOVERY);
-      speedDecayFrame = requestAnimationFrame(decaySpeed);
-    } else {
-      orbitSpeed.value = 60;
-      speedDecayFrame = null;
-    }
-  };
-
-  onMounted(() => {
-    lastScrollY = window.scrollY;
-    window.addEventListener("scroll", handleScroll, { passive: true });
-  });
-
   onUnmounted(() => {
-    window.removeEventListener("scroll", handleScroll);
-    if (speedDecayFrame) {
-      cancelAnimationFrame(speedDecayFrame);
-    }
     if (pulseAnimationFrame) {
       cancelAnimationFrame(pulseAnimationFrame);
     }
@@ -278,6 +227,14 @@
   const nodeOffsets = reactive<Record<string, { x: number; y: number }>>(
     Object.fromEntries(orbitNodes.map((n) => [n.id, { x: 0, y: 0 }]))
   );
+
+  // Avatar entrance tracking (prevents re-triggering entrance animation after pulse)
+  const hasEnteredAvatar = ref(false);
+  const onAvatarAnimationEnd = (e: AnimationEvent) => {
+    if (e.animationName === "avatarEntrance") {
+      hasEnteredAvatar.value = true;
+    }
+  };
 
   // Gravitational pulse state
   const isPulsing = ref(false);
@@ -594,9 +551,12 @@
     object-fit: cover;
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 40px #3d8a8a33;
-    animation: avatarEntrance 800ms ease-out;
     cursor: pointer;
     transition: transform 0.15s ease;
+  }
+
+  .avatar.avatar-entering {
+    animation: avatarEntrance 800ms ease-out forwards;
   }
 
   .avatar:hover {
@@ -607,28 +567,6 @@
     transform: scale(0.95);
   }
 
-  .pulse-active .avatar {
-    animation: avatarPulseClick 400ms ease-out;
-  }
-
-  @keyframes avatarPulseClick {
-    0% {
-      transform: scale(1);
-      box-shadow: 0 0 40px #3d8a8a33;
-    }
-    15% {
-      transform: scale(0.92);
-      box-shadow: 0 0 20px #3d8a8a66;
-    }
-    40% {
-      transform: scale(1.08);
-      box-shadow: 0 0 60px #3d8a8a88;
-    }
-    100% {
-      transform: scale(1);
-      box-shadow: 0 0 40px #3d8a8a33;
-    }
-  }
 
   /* Shockwave pulse rings */
   .pulse-ring {
