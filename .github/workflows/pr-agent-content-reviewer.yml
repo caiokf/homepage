@@ -1,9 +1,14 @@
 name: Article Content Agent
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - "src/domain/articles/content/**"
+
+permissions:
+  contents: read
+  pull-requests: write # allow commenting on PRs
 
 jobs:
   article_agent:
@@ -29,10 +34,13 @@ jobs:
           # Main instructions for this agent run
           prompt: ${{ steps.load_prompt.outputs.prompt }}
 
+          # Tell Claude to act as a PR reviewer and comment
+          mode: "review"
+
           # Optional extra args (model, safety, turns, etc.)
           claude_args: |
             {
               "model": "claude-3-5-sonnet-latest",
               "max_turns": 12,
-              "append_system_prompt": "Only operate on files under src/domain/articles/content."
+              "append_system_prompt": "You are reviewing a pull request. Leave GitHub review comments on problematic lines, and a summary comment on the PR. Only operate on files under src/domain/articles/content. "
             }
