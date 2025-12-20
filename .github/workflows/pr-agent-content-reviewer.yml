@@ -1,0 +1,38 @@
+name: Article Content Agent
+
+on:
+  push:
+    paths:
+      - "src/domain/articles/content/**"
+
+jobs:
+  article_agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Load agent prompt from markdown
+        id: load_prompt
+        run: |
+          PROMPT_FILE="src/agents/agent-content-reviewer/prompt.md"
+          echo "prompt<<EOF" >> "$GITHUB_OUTPUT"
+          cat "$PROMPT_FILE" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY_CONTENT_REVIEWER }}
+
+          # Main instructions for this agent run
+          prompt: ${{ steps.load_prompt.outputs.prompt }}
+
+          # Optional extra args (model, safety, turns, etc.)
+          claude_args: |
+            {
+              "model": "claude-3-5-sonnet-latest",
+              "max_turns": 12,
+              "append_system_prompt": "Only operate on files under src/domain/articles/content."
+            }
