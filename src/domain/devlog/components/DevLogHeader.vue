@@ -59,6 +59,7 @@
   .header-content {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-6);
   }
 
