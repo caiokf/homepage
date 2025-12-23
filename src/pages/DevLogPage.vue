@@ -297,7 +297,7 @@
     overflow: hidden;
     padding: 0 var(--space-4) var(--space-4);
     font-family: var(--font-sans);
-    font-size: var(--text-base);
+    font-size: var(--text-md);
     line-height: var(--leading-relaxed);
     color: var(--color-text-secondary);
     border-top: 1px solid var(--color-border-subtle);
