@@ -71,10 +71,12 @@
       { name: "frontmatter.tags", weight: 1.5 },
       { name: "content", weight: 1 },
     ],
-    threshold: 0.4,
+    threshold: 0.2,
     ignoreLocation: true,
     includeScore: true,
     includeMatches: true,
+    useExtendedSearch: false,
+    minMatchCharLength: 2,
   });
 
   type MatchInfo = {
