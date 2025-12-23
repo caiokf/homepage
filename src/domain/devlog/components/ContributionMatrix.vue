@@ -20,23 +20,21 @@
         </span>
       </div>
 
-      <!-- Week cells -->
-      <div class="weeks-container">
-        <button
-          v-for="week in weeksInYear"
-          :key="week.key"
-          class="week-cell"
-          :class="{
-            [`intensity-${week.intensity}`]: true,
-            selected: isWeekSelected(week),
-            future: week.isFuture,
-          }"
-          :title="`${week.label}: ${week.count} ${week.count === 1 ? 'entry' : 'entries'}`"
-          :disabled="week.count === 0 && !isWeekSelected(week)"
-          @click="toggleWeek(week)"
-        >
-          <span class="sr-only">{{ week.label }}: {{ week.count }} entries</span>
-        </button>
+      <!-- Grid: 12 columns (months) × 5 rows (weeks per month) -->
+      <div class="weeks-grid">
+        <template v-for="month in 12" :key="month">
+          <button
+            v-for="weekInMonth in 5"
+            :key="`${month}-${weekInMonth}`"
+            class="week-cell"
+            :class="getCellClasses(month - 1, weekInMonth - 1)"
+            :title="getCellTitle(month - 1, weekInMonth - 1)"
+            :disabled="!getCellData(month - 1, weekInMonth - 1)?.count"
+            @click="handleCellClick(month - 1, weekInMonth - 1)"
+          >
+            <span class="sr-only">{{ getCellTitle(month - 1, weekInMonth - 1) }}</span>
+          </button>
+        </template>
       </div>
     </div>
 
@@ -58,7 +56,8 @@
   type WeekData = {
     key: string;
     year: number;
-    weekNumber: number;
+    month: number;
+    weekInMonth: number;
     startDate: Date;
     endDate: Date;
     count: number;
@@ -85,7 +84,7 @@
   // Extract available years from entry counts
   const availableYears = computed(() => {
     const years = new Set<number>();
-    years.add(currentYear); // Always include current year
+    years.add(currentYear);
 
     props.entryCounts.forEach((_, key) => {
       const year = parseInt(key.split("-")[0]);
@@ -95,7 +94,6 @@
     return Array.from(years).sort((a, b) => b - a);
   });
 
-  // Month labels for the selected year
   const monthLabels = computed(() => {
     const months = [
       "jan",
@@ -114,48 +112,105 @@
     return months.map((name, index) => ({ name, index }));
   });
 
-  // Generate all weeks for the selected year
-  const weeksInYear = computed((): WeekData[] => {
-    const weeks: WeekData[] = [];
+  // Build a grid map: [month][weekInMonth] -> WeekData
+  const weekGrid = computed(() => {
+    const grid: (WeekData | null)[][] = Array.from({ length: 12 }, () =>
+      Array.from({ length: 5 }, () => null)
+    );
+
     const year = selectedYear.value;
     const today = new Date();
 
-    // Start from first Monday of the year (or last Monday of previous year)
-    const jan1 = new Date(year, 0, 1);
-    const dayOfWeek = jan1.getDay();
-    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const firstMonday = new Date(year, 0, 1 + daysToMonday);
+    // Iterate through each month
+    for (let month = 0; month < 12; month++) {
+      // Find all Mondays in this month
+      const firstOfMonth = new Date(year, month, 1);
+      const lastOfMonth = new Date(year, month + 1, 0);
 
-    // Generate 52-53 weeks
-    for (let weekNum = 1; weekNum <= 53; weekNum++) {
-      const startDate = new Date(firstMonday);
-      startDate.setDate(firstMonday.getDate() + (weekNum - 1) * 7);
+      let weekInMonth = 0;
+      let current = new Date(firstOfMonth);
 
-      // Stop if we've gone into next year significantly
-      if (startDate.getFullYear() > year && weekNum > 1) break;
+      // Find first Monday on or after the 1st
+      while (current.getDay() !== 1) {
+        current.setDate(current.getDate() + 1);
+      }
 
-      const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
+      // If the first Monday is after the 7th, there's a partial week at start
+      if (current.getDate() > 7) {
+        // Start from the Monday before
+        current.setDate(current.getDate() - 7);
+      } else if (current.getDate() > 1) {
+        // There's a partial week at the start of the month
+        const partialStart = new Date(year, month, 1);
+        const partialEnd = new Date(current);
+        partialEnd.setDate(partialEnd.getDate() - 1);
 
-      const weekKey = `${year}-${String(weekNum).padStart(2, "0")}`;
-      const count = props.entryCounts.get(weekKey) || 0;
-      const isFuture = startDate > today;
+        if (partialStart.getMonth() === month) {
+          const weekKey = getWeekKeyForDate(partialStart);
+          const count = props.entryCounts.get(weekKey) || 0;
 
-      weeks.push({
-        key: weekKey,
-        year,
-        weekNumber: weekNum,
-        startDate,
-        endDate,
-        count,
-        intensity: getIntensity(count),
-        label: formatWeekLabel(startDate, endDate),
-        isFuture,
-      });
+          grid[month][weekInMonth] = {
+            key: weekKey,
+            year,
+            month,
+            weekInMonth,
+            startDate: partialStart,
+            endDate: partialEnd,
+            count,
+            intensity: getIntensity(count),
+            label: formatWeekLabel(partialStart, partialEnd),
+            isFuture: partialStart > today,
+          };
+          weekInMonth++;
+        }
+      }
+
+      // Process full weeks
+      while (current <= lastOfMonth && weekInMonth < 5) {
+        const weekStart = new Date(current);
+        const weekEnd = new Date(current);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        // Only include if the week starts in this month
+        if (weekStart.getMonth() === month || weekStart < firstOfMonth) {
+          const effectiveStart =
+            weekStart.getMonth() === month ? weekStart : firstOfMonth;
+          const weekKey = getWeekKeyForDate(effectiveStart);
+          const count = props.entryCounts.get(weekKey) || 0;
+
+          grid[month][weekInMonth] = {
+            key: weekKey,
+            year,
+            month,
+            weekInMonth,
+            startDate: effectiveStart,
+            endDate: weekEnd > lastOfMonth ? lastOfMonth : weekEnd,
+            count,
+            intensity: getIntensity(count),
+            label: formatWeekLabel(
+              effectiveStart,
+              weekEnd > lastOfMonth ? lastOfMonth : weekEnd
+            ),
+            isFuture: effectiveStart > today,
+          };
+          weekInMonth++;
+        }
+
+        current.setDate(current.getDate() + 7);
+      }
     }
 
-    return weeks;
+    return grid;
   });
+
+  function getWeekKeyForDate(date: Date): string {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+    return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
+  }
 
   function getIntensity(count: number): number {
     if (count === 0) return 0;
@@ -189,24 +244,42 @@
     return `${startMonth} ${start.getDate()} - ${endMonth} ${end.getDate()}`;
   }
 
-  function selectYear(year: number) {
-    selectedYear.value = year;
-    emit("select-week", null); // Clear selection when changing year
+  function getCellData(month: number, weekInMonth: number): WeekData | null {
+    return weekGrid.value[month]?.[weekInMonth] || null;
   }
 
-  function isWeekSelected(week: WeekData): boolean {
-    return props.selectedWeekKey === week.key;
+  function getCellClasses(month: number, weekInMonth: number): Record<string, boolean> {
+    const data = getCellData(month, weekInMonth);
+    return {
+      [`intensity-${data?.intensity ?? 0}`]: true,
+      selected: data?.key === props.selectedWeekKey,
+      future: data?.isFuture ?? false,
+      empty: !data,
+    };
   }
 
-  function toggleWeek(week: WeekData) {
-    if (isWeekSelected(week)) {
+  function getCellTitle(month: number, weekInMonth: number): string {
+    const data = getCellData(month, weekInMonth);
+    if (!data) return "";
+    return `${data.label}: ${data.count} ${data.count === 1 ? "entry" : "entries"}`;
+  }
+
+  function handleCellClick(month: number, weekInMonth: number) {
+    const data = getCellData(month, weekInMonth);
+    if (!data || data.count === 0) return;
+
+    if (data.key === props.selectedWeekKey) {
       emit("select-week", null);
-    } else if (week.count > 0) {
-      emit("select-week", week.key);
+    } else {
+      emit("select-week", data.key);
     }
   }
 
-  // Ensure selected year includes the selected week
+  function selectYear(year: number) {
+    selectedYear.value = year;
+    emit("select-week", null);
+  }
+
   watch(
     () => props.selectedWeekKey,
     (newKey) => {
@@ -261,8 +334,7 @@
   .month-labels {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 2px;
-    padding-left: 0;
+    gap: 3px;
   }
 
   .month-label {
@@ -270,38 +342,48 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-transform: lowercase;
+    text-align: center;
   }
 
-  .weeks-container {
+  .weeks-grid {
     display: grid;
-    grid-template-columns: repeat(53, 1fr);
-    gap: 2px;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-auto-flow: column;
+    gap: 3px;
   }
 
   .week-cell {
     aspect-ratio: 1;
-    min-width: 10px;
-    max-width: 16px;
-    border-radius: 2px;
+    width: 100%;
+    max-width: 20px;
+    border-radius: 3px;
     border: none;
     cursor: pointer;
     transition: all var(--transition-fast);
+    justify-self: center;
   }
 
   .week-cell:disabled {
     cursor: default;
   }
 
-  .week-cell:not(:disabled):hover {
-    transform: scale(1.2);
+  .week-cell.empty {
+    visibility: hidden;
+  }
+
+  .week-cell:not(:disabled):not(.empty):hover {
+    transform: scale(1.3);
     outline: 2px solid var(--color-text-muted);
     outline-offset: 1px;
+    z-index: 1;
   }
 
   .week-cell.selected {
     outline: 2px solid var(--color-primary);
     outline-offset: 1px;
-    transform: scale(1.1);
+    transform: scale(1.2);
+    z-index: 1;
   }
 
   .week-cell.future {
@@ -374,9 +456,9 @@
   }
 
   .legend-cell {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
   }
 
   .sr-only {
@@ -392,17 +474,22 @@
   }
 
   @media (--md) {
-    .weeks-container {
-      gap: 1px;
+    .weeks-grid {
+      gap: 2px;
     }
 
     .week-cell {
-      min-width: 6px;
-      max-width: 10px;
+      max-width: 14px;
+      border-radius: 2px;
     }
 
     .month-label {
       font-size: 10px;
+    }
+
+    .legend-cell {
+      width: 10px;
+      height: 10px;
     }
   }
 
@@ -413,6 +500,15 @@
 
     .matrix-header {
       justify-content: center;
+    }
+
+    .weeks-grid {
+      gap: 2px;
+    }
+
+    .week-cell {
+      max-width: 10px;
+      border-radius: 2px;
     }
   }
 </style>
