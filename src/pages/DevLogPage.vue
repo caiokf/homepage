@@ -13,6 +13,10 @@
       @clear-filters="clearFilters"
     />
 
+    <div class="search-container">
+      <DevLogSearch @search="handleSearch" />
+    </div>
+
     <!-- Entries list (flat, no week grouping) -->
     <div class="entries-container">
       <div v-if="filteredEntries.length === 0" class="no-entries">
@@ -53,6 +57,7 @@
   import { ref, computed, reactive } from "vue";
   import { getAllEntries, getEntryCounts } from "../domain/devlog/data";
   import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
+  import DevLogSearch from "../domain/devlog/components/DevLogSearch.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const entries = getAllEntries();
@@ -61,6 +66,7 @@
   // Selection state
   const selectedWeekKey = ref<string | null>(null);
   const expandedSlug = ref<string | null>(null);
+  const searchQuery = ref("");
 
   // Tag filtering
   type TagInfo = { name: string; count: number };
@@ -103,9 +109,20 @@
     return result;
   });
 
-  // Filter entries by tags and selected week
+  // Filter entries by tags, selected week, and search query
   const filteredEntries = computed(() => {
     let result = entries;
+
+    // Filter by search query
+    if (searchQuery.value.length >= 2) {
+      const query = searchQuery.value.toLowerCase();
+      result = result.filter(
+        (entry) =>
+          entry.frontmatter.title.toLowerCase().includes(query) ||
+          entry.content.toLowerCase().includes(query) ||
+          entry.frontmatter.tags.some((tag) => tag.toLowerCase().includes(query))
+      );
+    }
 
     // Filter by selected week
     if (selectedWeekKey.value) {
@@ -121,6 +138,10 @@
 
     return result;
   });
+
+  function handleSearch(query: string) {
+    searchQuery.value = query;
+  }
 
   function toggleTag(tag: string) {
     if (activeTags.has(tag)) {
@@ -179,6 +200,12 @@
   .page-title {
     margin-bottom: var(--space-4);
     text-align: center;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-4);
   }
 
   /* Entries Container */
