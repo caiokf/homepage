@@ -13,28 +13,36 @@
     </div>
 
     <div class="matrix-grid">
-      <!-- Month labels -->
+      <!-- Month labels aligned to columns -->
       <div class="month-labels">
-        <span v-for="month in monthLabels" :key="month.index" class="month-label">
-          {{ month.name }}
+        <span
+          v-for="label in monthPositions"
+          :key="label.month"
+          class="month-label"
+          :style="{ gridColumn: label.column }"
+        >
+          {{ label.name }}
         </span>
       </div>
 
-      <!-- Grid: 12 columns (months) × 5 rows (weeks per month) -->
+      <!-- Grid: 13 columns × 4 rows = 52 weeks -->
       <div class="weeks-grid">
-        <template v-for="month in 12" :key="month">
-          <button
-            v-for="weekInMonth in 5"
-            :key="`${month}-${weekInMonth}`"
-            class="week-cell"
-            :class="getCellClasses(month - 1, weekInMonth - 1)"
-            :title="getCellTitle(month - 1, weekInMonth - 1)"
-            :disabled="!getCellData(month - 1, weekInMonth - 1)?.count"
-            @click="handleCellClick(month - 1, weekInMonth - 1)"
-          >
-            <span class="sr-only">{{ getCellTitle(month - 1, weekInMonth - 1) }}</span>
-          </button>
-        </template>
+        <button
+          v-for="(week, index) in weeksInYear"
+          :key="week.key"
+          class="week-cell"
+          :class="{
+            [`intensity-${week.intensity}`]: true,
+            selected: week.key === selectedWeekKey,
+            future: week.isFuture,
+          }"
+          :style="{ '--cell-index': index }"
+          :title="`${week.label}: ${week.count} ${week.count === 1 ? 'entry' : 'entries'}`"
+          :disabled="week.count === 0 && week.key !== selectedWeekKey"
+          @click="toggleWeek(week)"
+        >
+          <span class="sr-only">{{ week.label }}: {{ week.count }} entries</span>
+        </button>
       </div>
     </div>
 
@@ -55,9 +63,7 @@
 
   type WeekData = {
     key: string;
-    year: number;
-    month: number;
-    weekInMonth: number;
+    weekNumber: number;
     startDate: Date;
     endDate: Date;
     count: number;
@@ -67,7 +73,7 @@
   };
 
   type Props = {
-    entryCounts: Map<string, number>; // "YYYY-WW" -> count
+    entryCounts: Map<string, number>;
     selectedWeekKey?: string | null;
   };
 
@@ -81,7 +87,6 @@
   const currentYear = new Date().getFullYear();
   const selectedYear = ref(currentYear);
 
-  // Extract available years from entry counts
   const availableYears = computed(() => {
     const years = new Set<number>();
     years.add(currentYear);
@@ -94,122 +99,71 @@
     return Array.from(years).sort((a, b) => b - a);
   });
 
-  const monthLabels = computed(() => {
-    const months = [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec",
-    ];
-    return months.map((name, index) => ({ name, index }));
-  });
-
-  // Build a grid map: [month][weekInMonth] -> WeekData
-  const weekGrid = computed(() => {
-    const grid: (WeekData | null)[][] = Array.from({ length: 12 }, () =>
-      Array.from({ length: 5 }, () => null)
-    );
-
+  // Calculate which column each month starts at
+  const monthPositions = computed(() => {
+    const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const positions: { month: number; name: string; column: number }[] = [];
     const year = selectedYear.value;
-    const today = new Date();
 
-    // Iterate through each month
     for (let month = 0; month < 12; month++) {
-      // Find all Mondays in this month
       const firstOfMonth = new Date(year, month, 1);
-      const lastOfMonth = new Date(year, month + 1, 0);
+      const weekNum = getISOWeekNumber(firstOfMonth);
+      const column = Math.ceil(weekNum / 4); // Which column (1-13)
 
-      let weekInMonth = 0;
-      let current = new Date(firstOfMonth);
-
-      // Find first Monday on or after the 1st
-      while (current.getDay() !== 1) {
-        current.setDate(current.getDate() + 1);
-      }
-
-      // If the first Monday is after the 7th, there's a partial week at start
-      if (current.getDate() > 7) {
-        // Start from the Monday before
-        current.setDate(current.getDate() - 7);
-      } else if (current.getDate() > 1) {
-        // There's a partial week at the start of the month
-        const partialStart = new Date(year, month, 1);
-        const partialEnd = new Date(current);
-        partialEnd.setDate(partialEnd.getDate() - 1);
-
-        if (partialStart.getMonth() === month) {
-          const weekKey = getWeekKeyForDate(partialStart);
-          const count = props.entryCounts.get(weekKey) || 0;
-
-          grid[month][weekInMonth] = {
-            key: weekKey,
-            year,
-            month,
-            weekInMonth,
-            startDate: partialStart,
-            endDate: partialEnd,
-            count,
-            intensity: getIntensity(count),
-            label: formatWeekLabel(partialStart, partialEnd),
-            isFuture: partialStart > today,
-          };
-          weekInMonth++;
-        }
-      }
-
-      // Process full weeks
-      while (current <= lastOfMonth && weekInMonth < 5) {
-        const weekStart = new Date(current);
-        const weekEnd = new Date(current);
-        weekEnd.setDate(weekEnd.getDate() + 6);
-
-        // Only include if the week starts in this month
-        if (weekStart.getMonth() === month || weekStart < firstOfMonth) {
-          const effectiveStart =
-            weekStart.getMonth() === month ? weekStart : firstOfMonth;
-          const weekKey = getWeekKeyForDate(effectiveStart);
-          const count = props.entryCounts.get(weekKey) || 0;
-
-          grid[month][weekInMonth] = {
-            key: weekKey,
-            year,
-            month,
-            weekInMonth,
-            startDate: effectiveStart,
-            endDate: weekEnd > lastOfMonth ? lastOfMonth : weekEnd,
-            count,
-            intensity: getIntensity(count),
-            label: formatWeekLabel(
-              effectiveStart,
-              weekEnd > lastOfMonth ? lastOfMonth : weekEnd
-            ),
-            isFuture: effectiveStart > today,
-          };
-          weekInMonth++;
-        }
-
-        current.setDate(current.getDate() + 7);
+      // Only add if this month starts in a new column
+      const existing = positions.find(p => p.column === column);
+      if (!existing) {
+        positions.push({ month, name: months[month], column });
       }
     }
 
-    return grid;
+    return positions;
   });
 
-  function getWeekKeyForDate(date: Date): string {
+  // Generate 52 weeks for the year (13 columns × 4 rows)
+  const weeksInYear = computed((): WeekData[] => {
+    const weeks: WeekData[] = [];
+    const year = selectedYear.value;
+    const today = new Date();
+
+    // Find the first Monday of week 1
+    const jan4 = new Date(year, 0, 4);
+    const dayOfWeek = jan4.getDay() || 7;
+    const firstMonday = new Date(jan4);
+    firstMonday.setDate(jan4.getDate() - dayOfWeek + 1);
+
+    for (let weekNum = 1; weekNum <= 52; weekNum++) {
+      const startDate = new Date(firstMonday);
+      startDate.setDate(firstMonday.getDate() + (weekNum - 1) * 7);
+
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+
+      const weekKey = `${year}-${String(weekNum).padStart(2, "0")}`;
+      const count = props.entryCounts.get(weekKey) || 0;
+      const isFuture = startDate > today;
+
+      weeks.push({
+        key: weekKey,
+        weekNumber: weekNum,
+        startDate,
+        endDate,
+        count,
+        intensity: getIntensity(count),
+        label: formatWeekLabel(startDate, endDate),
+        isFuture,
+      });
+    }
+
+    return weeks;
+  });
+
+  function getISOWeekNumber(date: Date): number {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-    return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   }
 
   function getIntensity(count: number): number {
@@ -221,20 +175,7 @@
   }
 
   function formatWeekLabel(start: Date, end: Date): string {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const startMonth = months[start.getMonth()];
     const endMonth = months[end.getMonth()];
 
@@ -244,34 +185,11 @@
     return `${startMonth} ${start.getDate()} - ${endMonth} ${end.getDate()}`;
   }
 
-  function getCellData(month: number, weekInMonth: number): WeekData | null {
-    return weekGrid.value[month]?.[weekInMonth] || null;
-  }
-
-  function getCellClasses(month: number, weekInMonth: number): Record<string, boolean> {
-    const data = getCellData(month, weekInMonth);
-    return {
-      [`intensity-${data?.intensity ?? 0}`]: true,
-      selected: data?.key === props.selectedWeekKey,
-      future: data?.isFuture ?? false,
-      empty: !data,
-    };
-  }
-
-  function getCellTitle(month: number, weekInMonth: number): string {
-    const data = getCellData(month, weekInMonth);
-    if (!data) return "";
-    return `${data.label}: ${data.count} ${data.count === 1 ? "entry" : "entries"}`;
-  }
-
-  function handleCellClick(month: number, weekInMonth: number) {
-    const data = getCellData(month, weekInMonth);
-    if (!data || data.count === 0) return;
-
-    if (data.key === props.selectedWeekKey) {
+  function toggleWeek(week: WeekData) {
+    if (week.key === props.selectedWeekKey) {
       emit("select-week", null);
-    } else {
-      emit("select-week", data.key);
+    } else if (week.count > 0) {
+      emit("select-week", week.key);
     }
   }
 
@@ -333,7 +251,7 @@
 
   .month-labels {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(13, 1fr);
     gap: 3px;
   }
 
@@ -342,13 +260,12 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-transform: lowercase;
-    text-align: center;
   }
 
   .weeks-grid {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(13, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     grid-auto-flow: column;
     gap: 3px;
   }
@@ -356,7 +273,7 @@
   .week-cell {
     aspect-ratio: 1;
     width: 100%;
-    max-width: 20px;
+    max-width: 18px;
     border-radius: 3px;
     border: none;
     cursor: pointer;
@@ -368,11 +285,7 @@
     cursor: default;
   }
 
-  .week-cell.empty {
-    visibility: hidden;
-  }
-
-  .week-cell:not(:disabled):not(.empty):hover {
+  .week-cell:not(:disabled):hover {
     transform: scale(1.3);
     outline: 2px solid var(--color-text-muted);
     outline-offset: 1px;
