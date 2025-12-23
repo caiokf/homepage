@@ -71,10 +71,10 @@
     maxTags: 5,
   });
 
-  const size = 140;
+  const size = 260;
   const center = size / 2;
-  const radius = 50;
-  const labelOffset = 18;
+  const radius = 60;
+  const labelOffset = 28;
 
   const displayTags = computed(() => props.tags.slice(0, props.maxTags));
 
@@ -134,8 +134,8 @@
 
 <style scoped>
   .tag-radar {
-    width: 140px;
-    height: 140px;
+    width: 260px;
+    height: 260px;
     flex-shrink: 0;
   }
 
@@ -183,15 +183,15 @@
 
   @media (--md) {
     .tag-radar {
-      width: 120px;
-      height: 120px;
+      width: 220px;
+      height: 220px;
     }
   }
 
   @media (--sm) {
     .tag-radar {
-      width: 100px;
-      height: 100px;
+      width: 200px;
+      height: 200px;
     }
 
     .radar-label {
