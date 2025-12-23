@@ -192,12 +192,7 @@
 
   @media (--sm) {
     .tag-radar {
-      width: 200px;
-      height: 120px;
-    }
-
-    .radar-label {
-      font-size: 8px;
+      display: none;
     }
   }
 </style>
