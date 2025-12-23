@@ -1,8 +1,11 @@
 .env
-.envrc 
+.envrc
 
 tasks.md
 todo.md
+
+# Trigger.dev
+.trigger
 
 # Logs
 logs
