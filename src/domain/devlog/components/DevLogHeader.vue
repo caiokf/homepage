@@ -5,8 +5,9 @@
         :entry-counts="entryCounts"
         :selected-week-key="selectedWeekKey"
         @select-week="$emit('select-week', $event)"
+        @select-year="selectedYear = $event"
       />
-      <TagRadar :tags="tagCounts" />
+      <TagRadar :tags="filteredTagCounts" />
     </div>
 
     <TagFilter
@@ -20,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, computed } from "vue";
   import ContributionMatrix from "./ContributionMatrix.vue";
   import TagRadar from "./TagRadar.vue";
   import TagFilter from "./TagFilter.vue";
@@ -32,17 +34,24 @@
   type Props = {
     entryCounts: Map<string, number>;
     tagCounts: TagCount[];
+    tagCountsByYear: Map<number, TagCount[]>;
     activeTags: Set<string>;
     selectedWeekKey: string | null;
   };
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
   defineEmits<{
     (e: "select-week", weekKey: string | null): void;
     (e: "toggle-tag", tag: string): void;
     (e: "clear-filters"): void;
   }>();
+
+  const selectedYear = ref(new Date().getFullYear());
+
+  const filteredTagCounts = computed(() => {
+    return props.tagCountsByYear.get(selectedYear.value) || [];
+  });
 </script>
 
 <style scoped>
