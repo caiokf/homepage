@@ -6,6 +6,7 @@
     <div class="matrix-section">
       <ContributionMatrix
         :entry-counts="entryCounts"
+        :tag-counts="allTags"
         :selected-week-key="selectedWeekKey"
         @select-week="handleWeekSelect"
       />
@@ -27,43 +28,39 @@
       </button>
     </div>
 
-    <!-- Entries grouped by week -->
+    <!-- Entries list (flat, no week grouping) -->
     <div class="entries-container">
-      <div v-if="filteredWeekGroups.length === 0" class="no-entries">
+      <div v-if="filteredEntries.length === 0" class="no-entries">
         <p>no entries yet. check back soon!</p>
       </div>
 
-      <div v-for="weekGroup in filteredWeekGroups" :key="weekGroup.key" class="week-group">
-        <h2 class="week-header">{{ weekGroup.label }}</h2>
-
-        <div class="entries-list">
-          <div
-            v-for="(entry, index) in weekGroup.entries"
-            :key="entry.frontmatter.slug"
-            class="entry-card"
-            :class="{ expanded: expandedSlug === entry.frontmatter.slug }"
-            :style="{ '--entry-delay': `${index * 50}ms` }"
-          >
-            <button class="entry-header" @click="toggleEntry(entry.frontmatter.slug)">
-              <div class="entry-title-row">
-                <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
-                <h3 class="entry-title">{{ entry.frontmatter.title }}</h3>
-              </div>
-              <div class="entry-meta">
-                <BadgeGroup :items="entry.frontmatter.tags" gap="xs" />
-                <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">
-                  ▼
-                </span>
-              </div>
-            </button>
-
-            <div class="entry-content-wrapper">
-              <div
-                v-if="expandedSlug === entry.frontmatter.slug"
-                class="entry-content"
-                v-html="entry.html"
-              ></div>
+      <div class="entries-list">
+        <div
+          v-for="(entry, index) in filteredEntries"
+          :key="entry.frontmatter.slug"
+          class="entry-card"
+          :class="{ expanded: expandedSlug === entry.frontmatter.slug }"
+          :style="{ '--entry-delay': `${index * 50}ms` }"
+        >
+          <button class="entry-header" @click="toggleEntry(entry.frontmatter.slug)">
+            <div class="entry-title-row">
+              <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
+              <h3 class="entry-title">{{ entry.frontmatter.title }}</h3>
             </div>
+            <div class="entry-meta">
+              <BadgeGroup :items="entry.frontmatter.tags" gap="xs" />
+              <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">
+                ▼
+              </span>
+            </div>
+          </button>
+
+          <div class="entry-content-wrapper">
+            <div
+              v-if="expandedSlug === entry.frontmatter.slug"
+              class="entry-content"
+              v-html="entry.html"
+            ></div>
           </div>
         </div>
       </div>
@@ -73,11 +70,7 @@
 
 <script setup lang="ts">
   import { ref, computed, reactive } from "vue";
-  import {
-    getAllEntries,
-    getEntryCounts,
-    getEntriesGroupedByWeek,
-  } from "../domain/devlog/data";
+  import { getAllEntries, getEntryCounts } from "../domain/devlog/data";
   import ContributionMatrix from "../domain/devlog/components/ContributionMatrix.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
@@ -123,11 +116,6 @@
     return result;
   });
 
-  // Group filtered entries by week
-  const filteredWeekGroups = computed(() => {
-    return getEntriesGroupedByWeek(filteredEntries.value);
-  });
-
   function toggleTag(tag: string) {
     if (activeTags.has(tag)) {
       activeTags.delete(tag);
@@ -143,7 +131,7 @@
 
   function handleWeekSelect(weekKey: string | null) {
     selectedWeekKey.value = weekKey;
-    expandedSlug.value = null; // Collapse any expanded entry
+    expandedSlug.value = null;
   }
 
   function toggleEntry(slug: string) {
@@ -260,7 +248,6 @@
   .entries-container {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
   }
 
   .no-entries {
@@ -268,23 +255,6 @@
     padding: var(--space-12);
     color: var(--color-text-muted);
     font-family: var(--font-mono);
-  }
-
-  /* Week Group */
-  .week-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .week-header {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-    padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--color-border-subtle);
   }
 
   .entries-list {
