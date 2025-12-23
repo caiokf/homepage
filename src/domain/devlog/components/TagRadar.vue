@@ -72,9 +72,9 @@
   });
 
   const width = 280;
-  const height = 200;
+  const height = 160;
   const centerX = width / 2;
-  const centerY = 80;
+  const centerY = height / 2;
   const radius = 50;
   const labelOffset = 12;
 
@@ -137,7 +137,7 @@
 <style scoped>
   .tag-radar {
     width: 280px;
-    height: 200px;
+    height: 160px;
     flex-shrink: 0;
   }
 
@@ -186,14 +186,14 @@
   @media (--md) {
     .tag-radar {
       width: 240px;
-      height: 170px;
+      height: 140px;
     }
   }
 
   @media (--sm) {
     .tag-radar {
       width: 200px;
-      height: 145px;
+      height: 120px;
     }
 
     .radar-label {
