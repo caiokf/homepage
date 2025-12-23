@@ -64,6 +64,7 @@
 
   type Emits = {
     (e: "select-week", weekKey: string | null): void;
+    (e: "select-year", year: number): void;
   };
 
   const props = defineProps<Props>();
@@ -71,6 +72,9 @@
 
   const currentYear = new Date().getFullYear();
   const selectedYear = ref(currentYear);
+
+  // Emit initial year on mount
+  emit("select-year", currentYear);
 
   const availableYears = computed(() => {
     const years = new Set<number>();
@@ -149,6 +153,7 @@
 
   function selectYear(year: number) {
     selectedYear.value = year;
+    emit("select-year", year);
     emit("select-week", null);
   }
 

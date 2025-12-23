@@ -5,6 +5,7 @@
     <DevLogHeader
       :entry-counts="entryCounts"
       :tag-counts="allTags"
+      :tag-counts-by-year="tagCountsByYear"
       :active-tags="activeTags"
       :selected-week-key="selectedWeekKey"
       @select-week="handleWeekSelect"
@@ -29,13 +30,13 @@
           <button class="entry-header" @click="toggleEntry(entry.frontmatter.slug)">
             <div class="entry-title-row">
               <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
-              <h3 class="entry-title">{{ entry.frontmatter.title }}</h3>
+              <h3 class="entry-title">
+                <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">›</span>
+                {{ entry.frontmatter.title }}
+              </h3>
             </div>
             <div class="entry-meta">
               <BadgeGroup :items="entry.frontmatter.tags" gap="xs" />
-              <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">
-                ▼
-              </span>
             </div>
           </button>
 
@@ -79,6 +80,31 @@
     return Array.from(tagCounts.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  const tagCountsByYear = computed<Map<number, TagInfo[]>>(() => {
+    const yearTagCounts = new Map<number, Map<string, number>>();
+
+    entries.forEach((entry) => {
+      const year = new Date(entry.frontmatter.date).getFullYear();
+      if (!yearTagCounts.has(year)) {
+        yearTagCounts.set(year, new Map());
+      }
+      const tagMap = yearTagCounts.get(year)!;
+      entry.frontmatter.tags.forEach((tag) => {
+        tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+      });
+    });
+
+    const result = new Map<number, TagInfo[]>();
+    yearTagCounts.forEach((tagMap, year) => {
+      const tags = Array.from(tagMap.entries())
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+      result.set(year, tags);
+    });
+
+    return result;
   });
 
   // Filter entries by tags and selected week
@@ -256,13 +282,15 @@
   }
 
   .expand-icon {
-    font-size: 10px;
+    display: inline-block;
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
     transition: transform var(--transition-fast);
+    margin-right: var(--space-1);
   }
 
   .expand-icon.rotated {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
   }
 
   /* Entry Content */
