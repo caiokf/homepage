@@ -29,14 +29,18 @@ const router = createRouter({
       component: () => import("../pages/ExperiencePage.vue"),
     },
     {
+      path: "/devlog",
+      name: "devlog",
+      component: () => import("../pages/DevLogPage.vue"),
+    },
+    // Legacy redirect for old article URLs
+    {
       path: "/articles",
-      name: "articles",
-      component: () => import("../pages/ArticlesPage.vue"),
+      redirect: "/devlog",
     },
     {
       path: "/articles/:slug",
-      name: "article",
-      component: () => import("../pages/ArticlePage.vue"),
+      redirect: "/devlog",
     },
     {
       path: "/:pathMatch(.*)*",
