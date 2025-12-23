@@ -252,6 +252,7 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     flex-shrink: 0;
+    width: 48px;
   }
 
   .entry-title {
