@@ -55,13 +55,26 @@
 
 <script setup lang="ts">
   import { ref, computed, reactive } from "vue";
-  import { getAllEntries, getEntryCounts } from "../domain/devlog/data";
+  import Fuse from "fuse.js";
+  import { getAllEntries, getEntryCounts, type Entry } from "../domain/devlog/data";
   import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
   import DevLogSearch from "../domain/devlog/components/DevLogSearch.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const entries = getAllEntries();
   const entryCounts = getEntryCounts();
+
+  // Fuse.js fuzzy search
+  const fuse = new Fuse<Entry>(entries, {
+    keys: [
+      { name: "frontmatter.title", weight: 2 },
+      { name: "frontmatter.tags", weight: 1.5 },
+      { name: "content", weight: 1 },
+    ],
+    threshold: 0.4,
+    ignoreLocation: true,
+    includeScore: true,
+  });
 
   // Selection state
   const selectedWeekKey = ref<string | null>(null);
@@ -111,17 +124,13 @@
 
   // Filter entries by tags, selected week, and search query
   const filteredEntries = computed(() => {
-    let result = entries;
+    let result: Entry[];
 
-    // Filter by search query
+    // Filter by search query using Fuse.js
     if (searchQuery.value.length >= 2) {
-      const query = searchQuery.value.toLowerCase();
-      result = result.filter(
-        (entry) =>
-          entry.frontmatter.title.toLowerCase().includes(query) ||
-          entry.content.toLowerCase().includes(query) ||
-          entry.frontmatter.tags.some((tag) => tag.toLowerCase().includes(query))
-      );
+      result = fuse.search(searchQuery.value).map((r) => r.item);
+    } else {
+      result = entries;
     }
 
     // Filter by selected week
