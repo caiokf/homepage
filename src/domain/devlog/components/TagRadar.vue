@@ -71,10 +71,10 @@
     maxTags: 5,
   });
 
-  const size = 260;
+  const size = 280;
   const center = size / 2;
-  const radius = 60;
-  const labelOffset = 28;
+  const radius = 50;
+  const labelOffset = 12;
 
   const displayTags = computed(() => props.tags.slice(0, props.maxTags));
 
@@ -134,8 +134,8 @@
 
 <style scoped>
   .tag-radar {
-    width: 260px;
-    height: 260px;
+    width: 280px;
+    height: 280px;
     flex-shrink: 0;
   }
 
