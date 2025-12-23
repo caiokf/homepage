@@ -28,16 +28,12 @@
           :style="{ '--entry-delay': `${index * 50}ms` }"
         >
           <button class="entry-header" @click="toggleEntry(entry.frontmatter.slug)">
-            <div class="entry-title-row">
-              <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
-              <h3 class="entry-title">
-                <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">›</span>
-                {{ entry.frontmatter.title }}
-              </h3>
-            </div>
-            <div class="entry-meta">
-              <BadgeGroup :items="entry.frontmatter.tags" gap="xs" />
-            </div>
+            <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
+            <h3 class="entry-title">
+              <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">›</span>
+              {{ entry.frontmatter.title }}
+            </h3>
+            <BadgeGroup :items="entry.frontmatter.tags" gap="xs" class="entry-tags" />
           </button>
 
           <div class="entry-content-wrapper">
@@ -239,8 +235,8 @@
   .entry-header {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
+    align-items: center;
+    gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     text-align: left;
     cursor: pointer;
@@ -249,12 +245,6 @@
 
   .entry-header:hover {
     background: var(--color-surface-hover);
-  }
-
-  .entry-title-row {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
   }
 
   .entry-date {
@@ -272,13 +262,11 @@
     text-transform: lowercase;
     margin: 0;
     line-height: var(--leading-tight);
+    flex: 1;
   }
 
-  .entry-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
+  .entry-tags {
+    flex-shrink: 0;
   }
 
   .expand-icon {
@@ -379,13 +367,13 @@
       padding: var(--space-6);
     }
 
-    .entry-title-row {
-      flex-direction: column;
-      gap: var(--space-1);
+    .entry-header {
+      flex-wrap: wrap;
     }
 
-    .entry-meta {
-      flex-wrap: wrap;
+    .entry-tags {
+      width: 100%;
+      margin-top: var(--space-1);
     }
   }
 
