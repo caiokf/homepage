@@ -50,10 +50,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
   }
 
   .header-content {
@@ -61,18 +57,14 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
   }
 
   @media (--md) {
     .header-content {
       flex-direction: column;
       gap: var(--space-4);
-    }
-  }
-
-  @media (--sm) {
-    .devlog-header {
-      padding: var(--space-3);
     }
   }
 </style>
