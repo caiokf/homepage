@@ -34,8 +34,8 @@
   const navItems: NavItem[] = [
     { path: "/about", labelLong: "about", labelShort: "abt" },
     { path: "/tech-radar", labelLong: "tech-radar", labelShort: "radar" },
-    { path: "/experience", labelLong: "experience", labelShort: "xp" },
     { path: "/devlog", labelLong: "dev-log", labelShort: "log" },
+    { path: "/experience", labelLong: "experience", labelShort: "xp" },
   ];
 
   function isActive(path: string): boolean {
