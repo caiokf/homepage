@@ -1,12 +1,12 @@
 <template>
   <div class="tag-radar">
-    <svg :viewBox="`0 0 ${size} ${size}`" class="radar-svg">
+    <svg :viewBox="`0 0 ${width} ${height}`" class="radar-svg">
       <!-- Background rings -->
       <circle
         v-for="ring in 4"
         :key="ring"
-        :cx="center"
-        :cy="center"
+        :cx="centerX"
+        :cy="centerY"
         :r="(radius / 4) * ring"
         class="radar-ring"
       />
@@ -15,8 +15,8 @@
       <line
         v-for="(tag, index) in displayTags"
         :key="`axis-${tag.name}`"
-        :x1="center"
-        :y1="center"
+        :x1="centerX"
+        :y1="centerY"
         :x2="getAxisPoint(index).x"
         :y2="getAxisPoint(index).y"
         class="radar-axis"
@@ -71,8 +71,10 @@
     maxTags: 5,
   });
 
-  const size = 280;
-  const center = size / 2;
+  const width = 280;
+  const height = 200;
+  const centerX = width / 2;
+  const centerY = 80;
   const radius = 50;
   const labelOffset = 12;
 
@@ -87,8 +89,8 @@
     const total = displayTags.value.length;
     const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
     return {
-      x: center + radius * Math.cos(angle),
-      y: center + radius * Math.sin(angle),
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle),
     };
   }
 
@@ -98,8 +100,8 @@
     const ratio = tag.count / maxCount.value;
     const r = radius * ratio;
     return {
-      x: center + r * Math.cos(angle),
-      y: center + r * Math.sin(angle),
+      x: centerX + r * Math.cos(angle),
+      y: centerY + r * Math.sin(angle),
     };
   }
 
@@ -108,8 +110,8 @@
     const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
     const r = radius + labelOffset;
     return {
-      x: center + r * Math.cos(angle),
-      y: center + r * Math.sin(angle),
+      x: centerX + r * Math.cos(angle),
+      y: centerY + r * Math.sin(angle),
     };
   }
 
@@ -135,7 +137,7 @@
 <style scoped>
   .tag-radar {
     width: 280px;
-    height: 280px;
+    height: 200px;
     flex-shrink: 0;
   }
 
@@ -183,15 +185,15 @@
 
   @media (--md) {
     .tag-radar {
-      width: 220px;
-      height: 220px;
+      width: 240px;
+      height: 170px;
     }
   }
 
   @media (--sm) {
     .tag-radar {
       width: 200px;
-      height: 200px;
+      height: 145px;
     }
 
     .radar-label {
