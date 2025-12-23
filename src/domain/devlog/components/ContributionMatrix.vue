@@ -206,14 +206,12 @@
   }
 
   .week-cell {
-    aspect-ratio: 1;
-    width: 100%;
-    max-width: 24px;
+    width: 24px;
+    height: 24px;
     border-radius: 3px;
     border: none;
     cursor: pointer;
     transition: all var(--transition-fast);
-    justify-self: center;
   }
 
   .week-cell:disabled {
@@ -322,7 +320,8 @@
 
   @media (--md) {
     .week-cell {
-      max-width: 20px;
+      width: 20px;
+      height: 20px;
     }
 
     .legend-cell {
@@ -337,7 +336,8 @@
     }
 
     .week-cell {
-      max-width: 14px;
+      width: 14px;
+      height: 14px;
     }
   }
 </style>
