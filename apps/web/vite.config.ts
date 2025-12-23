@@ -7,7 +7,7 @@ import { resolve } from 'path'
 const copy404Plugin = () => ({
   name: 'copy-404',
   closeBundle() {
-    const distPath = resolve(__dirname, 'dist')
+    const distPath = resolve(__dirname, '../../dist')
     const indexHtml = readFileSync(resolve(distPath, 'index.html'), 'utf-8')
     writeFileSync(resolve(distPath, '404.html'), indexHtml)
   }
@@ -17,5 +17,9 @@ const copy404Plugin = () => ({
 export default defineConfig({
   plugins: [vue(), copy404Plugin()],
   base: process.env.VITE_BASE_URL || '/homepage/',
+  build: {
+    outDir: '../../dist',
+    emptyOutDir: true,
+  },
 })
 

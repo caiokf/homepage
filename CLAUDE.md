@@ -12,6 +12,10 @@ Before starting any work:
 
 Personal homepage and portfolio application built with Vue 3, TypeScript, and D3.js. Features multiple sections including a Tech Radar visualization, devlog, experience timeline, and about page.
 
+**Monorepo Structure:**
+- `apps/web/` - Vue 3 frontend application
+- `packages/` - Shared packages (future: trigger.dev tasks)
+
 **Key Features:**
 
 - Tech Radar visualization with D3.js (desktop SVG + mobile list views)
@@ -22,12 +26,16 @@ Personal homepage and portfolio application built with Vue 3, TypeScript, and D3
 ## Commands
 
 ```bash
+# Root workspace commands (run from repo root)
 pnpm dev           # Start Vite dev server (localhost:5173)
 pnpm build         # Compile TypeScript + production build
 pnpm type-check    # Run vue-tsc TypeScript validation
 pnpm test          # Run Vitest unit tests
 pnpm test:ui       # Run tests with Vitest UI dashboard
 pnpm test:coverage # Generate test coverage reports
+
+# Run commands in specific workspace
+pnpm --filter @caiokf/web <command>
 ```
 
 Development environment uses pnpm 10.22.0 and Node.js 20.10.0 (configured via devbox.json).
@@ -35,7 +43,7 @@ Development environment uses pnpm 10.22.0 and Node.js 20.10.0 (configured via de
 ## Architecture
 
 ```
-src/
+apps/web/src/
 ├── main.ts                      # App initialization with router
 ├── App.vue                      # Root component (header, router-view, footer)
 ├── router/
@@ -135,7 +143,7 @@ src/
 
 ### Styling
 
-- **CSS Custom Properties** for theming (design tokens in `global.css`)
+- **CSS Custom Properties** for theming (design tokens in `apps/web/src/assets/styles/global.css`)
 - Light/dark theme support via `useTheme` composable
 - Layout constants: `--content-max-width: 800px`, `--radar-width: 1056px`
 - Typography scale: `--text-xs` through `--text-3xl`

@@ -1,0 +1,23 @@
+{
+  "name": "@caiokf/trigger",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "trigger dev",
+    "deploy": "trigger deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@trigger.dev/sdk": "^4.0.0"
+  },
+  "devDependencies": {
+    "@trigger.dev/build": "^4.0.0",
+    "trigger.dev": "^4.0.0",
+    "typescript": "^5.4.3"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./tasks": "./src/trigger/index.ts"
+  }
+}
