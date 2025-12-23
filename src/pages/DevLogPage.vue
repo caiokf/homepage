@@ -35,7 +35,7 @@
             <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
             <h3 class="entry-title">
               <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">›</span>
-              {{ entry.frontmatter.title }}
+              <span v-html="highlightTitle(entry.frontmatter.title, entry.frontmatter.slug)"></span>
             </h3>
             <BadgeGroup :items="entry.frontmatter.tags" gap="xs" class="entry-tags" />
           </button>
@@ -44,7 +44,7 @@
             <div
               v-if="expandedSlug === entry.frontmatter.slug"
               class="entry-content"
-              v-html="entry.html"
+              v-html="highlightContent(entry.html, entry.frontmatter.slug)"
             ></div>
           </div>
         </div>
@@ -74,7 +74,16 @@
     threshold: 0.4,
     ignoreLocation: true,
     includeScore: true,
+    includeMatches: true,
   });
+
+  type MatchInfo = {
+    titleIndices: readonly [number, number][];
+    contentIndices: readonly [number, number][];
+  };
+
+  // Store search match indices
+  const searchMatches = ref<Map<string, MatchInfo>>(new Map());
 
   // Selection state
   const selectedWeekKey = ref<string | null>(null);
@@ -128,8 +137,23 @@
 
     // Filter by search query using Fuse.js
     if (searchQuery.value.length >= 2) {
-      result = fuse.search(searchQuery.value).map((r) => r.item);
+      const searchResults = fuse.search(searchQuery.value);
+
+      // Build match indices map
+      const newMatches = new Map<string, MatchInfo>();
+      searchResults.forEach((r) => {
+        const titleMatch = r.matches?.find((m) => m.key === "frontmatter.title");
+        const contentMatch = r.matches?.find((m) => m.key === "content");
+        newMatches.set(r.item.frontmatter.slug, {
+          titleIndices: titleMatch?.indices || [],
+          contentIndices: contentMatch?.indices || [],
+        });
+      });
+      searchMatches.value = newMatches;
+
+      result = searchResults.map((r) => r.item);
     } else {
+      searchMatches.value = new Map();
       result = entries;
     }
 
@@ -147,6 +171,59 @@
 
     return result;
   });
+
+  // Highlight matching text in title
+  function highlightTitle(title: string, slug: string): string {
+    const matchInfo = searchMatches.value.get(slug);
+    if (!matchInfo || matchInfo.titleIndices.length === 0) {
+      return escapeHtml(title);
+    }
+
+    return highlightText(title, matchInfo.titleIndices);
+  }
+
+  // Highlight matching text in content (HTML)
+  function highlightContent(html: string, slug: string): string {
+    const matchInfo = searchMatches.value.get(slug);
+    if (!matchInfo || !searchQuery.value || searchQuery.value.length < 2) {
+      return html;
+    }
+
+    // Simple approach: highlight the search query in the HTML text
+    const query = searchQuery.value;
+    const regex = new RegExp(`(${escapeRegex(query)})`, "gi");
+    return html.replace(regex, '<mark class="search-highlight">$1</mark>');
+  }
+
+  function highlightText(text: string, indices: readonly [number, number][]): string {
+    if (indices.length === 0) return escapeHtml(text);
+
+    // Sort indices by start position
+    const sorted = [...indices].sort((a, b) => a[0] - b[0]);
+
+    let result = "";
+    let lastEnd = 0;
+
+    for (const [start, end] of sorted) {
+      result += escapeHtml(text.slice(lastEnd, start));
+      result += `<mark class="search-highlight">${escapeHtml(text.slice(start, end + 1))}</mark>`;
+      lastEnd = end + 1;
+    }
+
+    result += escapeHtml(text.slice(lastEnd));
+    return result;
+  }
+
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function escapeRegex(text: string): string {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
 
   function handleSearch(query: string) {
     searchQuery.value = query;
@@ -304,6 +381,20 @@
 
   .entry-tags {
     flex-shrink: 0;
+  }
+
+  .search-highlight,
+  .entry-content :deep(.search-highlight) {
+    background: oklch(0.85 0.15 90);
+    color: oklch(0.3 0.05 90);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  [data-theme="dark"] .search-highlight,
+  [data-theme="dark"] .entry-content :deep(.search-highlight) {
+    background: oklch(0.45 0.12 90);
+    color: oklch(0.95 0.02 90);
   }
 
   .expand-icon {
