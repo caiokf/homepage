@@ -2,31 +2,15 @@
   <div class="devlog-page">
     <h1 class="page-title">dev log</h1>
 
-    <!-- Contribution Matrix -->
-    <div class="matrix-section">
-      <ContributionMatrix
-        :entry-counts="entryCounts"
-        :tag-counts="allTags"
-        :selected-week-key="selectedWeekKey"
-        @select-week="handleWeekSelect"
-      />
-    </div>
-
-    <!-- Tag Filter Bar -->
-    <div class="tag-filter-bar">
-      <button
-        v-for="tag in allTags"
-        :key="tag.name"
-        class="tag-filter"
-        :class="{ active: activeTags.has(tag.name) }"
-        @click="toggleTag(tag.name)"
-      >
-        {{ tag.name }} <span class="tag-count">[{{ tag.count }}]</span>
-      </button>
-      <button v-if="activeTags.size > 0 || selectedWeekKey" class="clear-filters" @click="clearFilters">
-        clear
-      </button>
-    </div>
+    <DevLogHeader
+      :entry-counts="entryCounts"
+      :tag-counts="allTags"
+      :active-tags="activeTags"
+      :selected-week-key="selectedWeekKey"
+      @select-week="handleWeekSelect"
+      @toggle-tag="toggleTag"
+      @clear-filters="clearFilters"
+    />
 
     <!-- Entries list (flat, no week grouping) -->
     <div class="entries-container">
@@ -71,7 +55,7 @@
 <script setup lang="ts">
   import { ref, computed, reactive } from "vue";
   import { getAllEntries, getEntryCounts } from "../domain/devlog/data";
-  import ContributionMatrix from "../domain/devlog/components/ContributionMatrix.vue";
+  import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const entries = getAllEntries();
@@ -175,79 +159,11 @@
     text-align: center;
   }
 
-  /* Matrix Section */
-  .matrix-section {
-    margin-bottom: var(--space-6);
-    padding: var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-  }
-
-  /* Tag Filter Bar */
-  .tag-filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
-    padding-bottom: var(--space-6);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .tag-filter {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    background: var(--color-background-subtle);
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    text-transform: lowercase;
-  }
-
-  .tag-filter:hover {
-    color: var(--color-text-primary);
-    background: var(--color-surface-hover);
-  }
-
-  .tag-filter.active {
-    color: var(--color-primary);
-    background: var(--color-primary-light);
-  }
-
-  .tag-count {
-    opacity: 0.6;
-    margin-left: 2px;
-  }
-
-  .clear-filters {
-    padding: 2px 8px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    background: transparent;
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    text-transform: lowercase;
-  }
-
-  .clear-filters:hover {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    border-style: solid;
-  }
-
   /* Entries Container */
   .entries-container {
     display: flex;
     flex-direction: column;
+    margin-top: var(--space-6);
   }
 
   .no-entries {
@@ -448,10 +364,6 @@
   @media (--sm) {
     .devlog-page {
       padding: var(--space-4);
-    }
-
-    .matrix-section {
-      padding: var(--space-3);
     }
 
     .entry-header {

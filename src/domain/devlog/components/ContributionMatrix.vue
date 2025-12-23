@@ -12,81 +12,23 @@
       </button>
     </div>
 
-    <div class="matrix-content">
-      <!-- Weeks grid: 13 columns × 4 rows = 52 weeks -->
-      <div class="weeks-grid">
-        <button
-          v-for="(week, index) in weeksInYear"
-          :key="week.key"
-          class="week-cell"
-          :class="{
-            [`intensity-${week.intensity}`]: true,
-            selected: week.key === selectedWeekKey,
-            future: week.isFuture,
-          }"
-          :style="{ '--cell-index': index }"
-          :title="`${week.label}: ${week.count} ${week.count === 1 ? 'entry' : 'entries'}`"
-          :disabled="week.count === 0 && week.key !== selectedWeekKey"
-          @click="toggleWeek(week)"
-        >
-          <span class="sr-only">{{ week.label }}: {{ week.count }} entries</span>
-        </button>
-      </div>
-
-      <!-- Tag radar chart -->
-      <div class="tag-radar">
-        <svg :viewBox="`0 0 ${radarSize} ${radarSize}`" class="radar-svg">
-          <!-- Background rings -->
-          <circle
-            v-for="ring in 4"
-            :key="ring"
-            :cx="radarCenter"
-            :cy="radarCenter"
-            :r="(radarRadius / 4) * ring"
-            class="radar-ring"
-          />
-
-          <!-- Axis lines -->
-          <line
-            v-for="(tag, index) in topTags"
-            :key="`axis-${tag.name}`"
-            :x1="radarCenter"
-            :y1="radarCenter"
-            :x2="getAxisPoint(index, topTags.length).x"
-            :y2="getAxisPoint(index, topTags.length).y"
-            class="radar-axis"
-          />
-
-          <!-- Data polygon -->
-          <polygon
-            v-if="topTags.length > 0"
-            :points="radarPolygonPoints"
-            class="radar-polygon"
-          />
-
-          <!-- Data points -->
-          <circle
-            v-for="(tag, index) in topTags"
-            :key="`point-${tag.name}`"
-            :cx="getDataPoint(tag, index, topTags.length).x"
-            :cy="getDataPoint(tag, index, topTags.length).y"
-            r="4"
-            class="radar-point"
-          />
-
-          <!-- Labels -->
-          <text
-            v-for="(tag, index) in topTags"
-            :key="`label-${tag.name}`"
-            :x="getLabelPoint(index, topTags.length).x"
-            :y="getLabelPoint(index, topTags.length).y"
-            class="radar-label"
-            :text-anchor="getLabelAnchor(index, topTags.length)"
-          >
-            {{ tag.name }}
-          </text>
-        </svg>
-      </div>
+    <div class="weeks-grid">
+      <button
+        v-for="(week, index) in weeksInYear"
+        :key="week.key"
+        class="week-cell"
+        :class="{
+          [`intensity-${week.intensity}`]: true,
+          selected: week.key === selectedWeekKey,
+          future: week.isFuture,
+        }"
+        :style="{ '--cell-index': index }"
+        :title="`${week.label}: ${week.count} ${week.count === 1 ? 'entry' : 'entries'}`"
+        :disabled="week.count === 0 && week.key !== selectedWeekKey"
+        @click="toggleWeek(week)"
+      >
+        <span class="sr-only">{{ week.label }}: {{ week.count }} entries</span>
+      </button>
     </div>
 
     <div class="matrix-legend">
@@ -115,14 +57,8 @@
     isFuture: boolean;
   };
 
-  type TagCount = {
-    name: string;
-    count: number;
-  };
-
   type Props = {
     entryCounts: Map<string, number>;
-    tagCounts: TagCount[];
     selectedWeekKey?: string | null;
   };
 
@@ -148,73 +84,11 @@
     return Array.from(years).sort((a, b) => b - a);
   });
 
-  // Top 5 tags for radar chart
-  const topTags = computed(() => {
-    return props.tagCounts.slice(0, 5);
-  });
-
-  // Radar chart configuration
-  const radarSize = 140;
-  const radarCenter = radarSize / 2;
-  const radarRadius = 50;
-  const labelOffset = 18;
-
-  const maxTagCount = computed(() => {
-    if (topTags.value.length === 0) return 1;
-    return Math.max(...topTags.value.map(t => t.count));
-  });
-
-  function getAxisPoint(index: number, total: number): { x: number; y: number } {
-    const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-    return {
-      x: radarCenter + radarRadius * Math.cos(angle),
-      y: radarCenter + radarRadius * Math.sin(angle),
-    };
-  }
-
-  function getDataPoint(tag: TagCount, index: number, total: number): { x: number; y: number } {
-    const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-    const ratio = tag.count / maxTagCount.value;
-    const r = radarRadius * ratio;
-    return {
-      x: radarCenter + r * Math.cos(angle),
-      y: radarCenter + r * Math.sin(angle),
-    };
-  }
-
-  function getLabelPoint(index: number, total: number): { x: number; y: number } {
-    const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-    const r = radarRadius + labelOffset;
-    return {
-      x: radarCenter + r * Math.cos(angle),
-      y: radarCenter + r * Math.sin(angle),
-    };
-  }
-
-  function getLabelAnchor(index: number, total: number): string {
-    const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-    const x = Math.cos(angle);
-    if (x < -0.1) return "end";
-    if (x > 0.1) return "start";
-    return "middle";
-  }
-
-  const radarPolygonPoints = computed(() => {
-    return topTags.value
-      .map((tag, index) => {
-        const point = getDataPoint(tag, index, topTags.value.length);
-        return `${point.x},${point.y}`;
-      })
-      .join(" ");
-  });
-
-  // Generate 52 weeks for the year (13 columns × 4 rows)
   const weeksInYear = computed((): WeekData[] => {
     const weeks: WeekData[] = [];
     const year = selectedYear.value;
     const today = new Date();
 
-    // Find the first Monday of week 1
     const jan4 = new Date(year, 0, 4);
     const dayOfWeek = jan4.getDay() || 7;
     const firstMonday = new Date(jan4);
@@ -295,7 +169,7 @@
   .contribution-matrix {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .matrix-header {
@@ -323,19 +197,12 @@
     background: var(--color-primary-light);
   }
 
-  .matrix-content {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
-  }
-
   .weeks-grid {
     display: grid;
     grid-template-columns: repeat(13, 1fr);
     grid-template-rows: repeat(4, 1fr);
     grid-auto-flow: column;
     gap: 2px;
-    flex: 1;
   }
 
   .week-cell {
@@ -371,7 +238,7 @@
     opacity: 0.3;
   }
 
-  /* Intensity levels - GitHub-style green gradient */
+  /* Intensity levels */
   .week-cell.intensity-0,
   .legend-cell.intensity-0 {
     background: var(--color-border);
@@ -397,7 +264,7 @@
     background: oklch(0.4 0.12 145);
   }
 
-  /* Dark theme adjustments */
+  /* Dark theme */
   [data-theme="dark"] .week-cell.intensity-0,
   [data-theme="dark"] .legend-cell.intensity-0 {
     background: var(--color-border);
@@ -423,59 +290,9 @@
     background: oklch(0.65 0.14 145);
   }
 
-  /* Tag Radar Chart */
-  .tag-radar {
-    width: 140px;
-    height: 140px;
-    flex-shrink: 0;
-  }
-
-  .radar-svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .radar-ring {
-    fill: none;
-    stroke: var(--color-border);
-    stroke-width: 1;
-  }
-
-  .radar-axis {
-    stroke: var(--color-border);
-    stroke-width: 1;
-  }
-
-  .radar-polygon {
-    fill: oklch(0.55 0.12 145 / 0.3);
-    stroke: oklch(0.55 0.12 145);
-    stroke-width: 2;
-  }
-
-  [data-theme="dark"] .radar-polygon {
-    fill: oklch(0.55 0.12 145 / 0.2);
-    stroke: oklch(0.65 0.14 145);
-  }
-
-  .radar-point {
-    fill: oklch(0.5 0.14 145);
-  }
-
-  [data-theme="dark"] .radar-point {
-    fill: oklch(0.65 0.14 145);
-  }
-
-  .radar-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    fill: var(--color-text-muted);
-    dominant-baseline: middle;
-  }
-
   .matrix-legend {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 4px;
   }
 
@@ -504,22 +321,8 @@
   }
 
   @media (--md) {
-    .matrix-content {
-      flex-direction: column;
-      gap: var(--space-4);
-    }
-
-    .weeks-grid {
-      gap: 2px;
-    }
-
     .week-cell {
       max-width: 14px;
-    }
-
-    .tag-radar {
-      width: 120px;
-      height: 120px;
     }
 
     .legend-cell {
@@ -533,21 +336,8 @@
       justify-content: center;
     }
 
-    .weeks-grid {
-      gap: 2px;
-    }
-
     .week-cell {
       max-width: 10px;
-    }
-
-    .tag-radar {
-      width: 100px;
-      height: 100px;
-    }
-
-    .radar-label {
-      font-size: 8px;
     }
   }
 </style>
