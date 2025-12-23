@@ -185,13 +185,6 @@
 
   @media (--md) {
     .tag-radar {
-      width: 240px;
-      height: 140px;
-    }
-  }
-
-  @media (--sm) {
-    .tag-radar {
       display: none;
     }
   }
