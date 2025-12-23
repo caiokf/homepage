@@ -155,7 +155,7 @@
   }
 
   .page-title {
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
     text-align: center;
   }
 
