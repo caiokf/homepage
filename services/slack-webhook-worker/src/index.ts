@@ -3,8 +3,8 @@
  *
  * Handles:
  * 1. Slash commands (/devlog) - generates preview
- * 2. Interactive actions (buttons) - publish/cancel
- * 3. Modal submissions - edit and publish
+ * 2. Interactive actions (buttons) - publish/edit/cancel
+ * 3. Text input for feedback - regenerate with changes
  */
 
 type Env = {
@@ -33,8 +33,12 @@ type SlackInteractionPayload = {
   response_url?: string;
   actions?: Array<{
     action_id: string;
+    block_id?: string;
     value?: string;
   }>;
+  state?: {
+    values: Record<string, Record<string, { value: string }>>;
+  };
   view?: {
     callback_id: string;
     private_metadata: string;
@@ -50,6 +54,12 @@ type GeneratedDevlog = {
   tags: string[];
   content: string;
   date: string;
+};
+
+type EditContext = {
+  originalText: string;
+  currentDevlog: GeneratedDevlog;
+  feedbackHistory: string[];
 };
 
 type TriggerResponse = {
@@ -137,6 +147,42 @@ async function triggerGeneratePreview(
   return response.json();
 }
 
+async function triggerRegeneratePreview(
+  originalText: string,
+  currentDevlog: GeneratedDevlog,
+  feedback: string,
+  feedbackHistory: string[],
+  responseUrl: string,
+  secretKey: string
+): Promise<TriggerResponse> {
+  const response = await fetch(
+    "https://api.trigger.dev/api/v1/tasks/regenerate-devlog-preview/trigger",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${secretKey}`,
+      },
+      body: JSON.stringify({
+        payload: {
+          originalText,
+          currentDevlog,
+          feedback,
+          feedbackHistory,
+          responseUrl,
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Trigger.dev API error: ${response.status} - ${error}`);
+  }
+
+  return response.json();
+}
+
 async function triggerPublishDevlog(
   devlog: GeneratedDevlog,
   responseUrl: string,
@@ -183,86 +229,11 @@ async function sendSlackMessage(
   });
 }
 
-async function openModal(
-  triggerId: string,
-  view: Record<string, unknown>,
-  token: string
-): Promise<void> {
-  await fetch("https://slack.com/api/views.open", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      trigger_id: triggerId,
-      view,
-    }),
-  });
-}
-
-function buildEditModal(devlog: GeneratedDevlog, responseUrl: string): Record<string, unknown> {
-  return {
-    type: "modal",
-    callback_id: "edit_devlog",
-    private_metadata: JSON.stringify({ responseUrl }),
-    title: { type: "plain_text", text: "Edit Devlog Entry" },
-    submit: { type: "plain_text", text: "Publish" },
-    close: { type: "plain_text", text: "Cancel" },
-    blocks: [
-      {
-        type: "input",
-        block_id: "title_block",
-        label: { type: "plain_text", text: "Title" },
-        element: {
-          type: "plain_text_input",
-          action_id: "title",
-          initial_value: devlog.title,
-        },
-      },
-      {
-        type: "input",
-        block_id: "date_block",
-        label: { type: "plain_text", text: "Date (YYYY-MM-DD)" },
-        element: {
-          type: "plain_text_input",
-          action_id: "date",
-          initial_value: devlog.date,
-        },
-      },
-      {
-        type: "input",
-        block_id: "tags_block",
-        label: { type: "plain_text", text: "Tags (comma-separated)" },
-        element: {
-          type: "plain_text_input",
-          action_id: "tags",
-          initial_value: devlog.tags.join(", "),
-        },
-      },
-      {
-        type: "input",
-        block_id: "content_block",
-        label: { type: "plain_text", text: "Content" },
-        element: {
-          type: "plain_text_input",
-          action_id: "content",
-          multiline: true,
-          initial_value: devlog.content,
-        },
-      },
-    ],
-  };
-}
-
 // ============================================================================
 // Request Handlers
 // ============================================================================
 
-async function handleSlashCommand(
-  body: string,
-  env: Env
-): Promise<Response> {
+async function handleSlashCommand(body: string, env: Env): Promise<Response> {
   const params = new URLSearchParams(body);
   const payload: SlackSlashCommandPayload = {
     token: params.get("token") || "",
@@ -288,7 +259,6 @@ async function handleSlashCommand(
     );
   }
 
-  // Trigger the preview generation task
   try {
     await triggerGeneratePreview(
       payload.text,
@@ -317,10 +287,7 @@ async function handleSlashCommand(
   );
 }
 
-async function handleInteraction(
-  body: string,
-  env: Env
-): Promise<Response> {
+async function handleInteraction(body: string, env: Env): Promise<Response> {
   const params = new URLSearchParams(body);
   const payloadStr = params.get("payload");
 
@@ -329,14 +296,16 @@ async function handleInteraction(
   }
 
   const payload: SlackInteractionPayload = JSON.parse(payloadStr);
+  const responseUrl = payload.response_url;
 
   // Handle button clicks
   if (payload.type === "block_actions" && payload.actions) {
     const action = payload.actions[0];
-    const responseUrl = payload.response_url;
 
+    // Publish button
     if (action.action_id === "publish_devlog" && action.value) {
-      const devlog: GeneratedDevlog = JSON.parse(action.value);
+      const context: EditContext = JSON.parse(action.value);
+      const devlog = context.currentDevlog;
 
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
@@ -358,24 +327,49 @@ async function handleInteraction(
       return new Response("", { status: 200 });
     }
 
+    // Edit button - show feedback input
     if (action.action_id === "edit_devlog" && action.value) {
-      const devlog: GeneratedDevlog = JSON.parse(action.value);
+      const context: EditContext = JSON.parse(action.value);
+      const devlog = context.currentDevlog;
 
-      // We need a bot token to open modals - for now, show inline editing instructions
-      // TODO: Add SLACK_BOT_TOKEN to enable modal editing
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
-          text: "To edit, use the command again with your changes:\n`/devlog [your updated content]`\n\nOr publish the current version:",
           blocks: [
+            {
+              type: "header",
+              text: { type: "plain_text", text: "Edit Devlog" },
+            },
             {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: "*Current entry:*\n" +
+                text:
+                  `*Current Preview:*\n` +
                   `*Title:* ${devlog.title}\n` +
                   `*Date:* ${devlog.date}\n` +
                   `*Tags:* ${devlog.tags.join(", ")}\n\n` +
-                  `${devlog.content.substring(0, 500)}${devlog.content.length > 500 ? "..." : ""}`,
+                  `${devlog.content.substring(0, 1500)}${devlog.content.length > 1500 ? "..." : ""}`,
+              },
+            },
+            {
+              type: "divider",
+            },
+            {
+              type: "input",
+              block_id: "feedback_block",
+              dispatch_action: false,
+              label: {
+                type: "plain_text",
+                text: "What would you like to change?",
+              },
+              element: {
+                type: "plain_text_input",
+                action_id: "feedback_input",
+                placeholder: {
+                  type: "plain_text",
+                  text: 'e.g., "make the title shorter", "add more detail about X", "change the tone to be more casual"',
+                },
+                multiline: true,
               },
             },
             {
@@ -383,14 +377,21 @@ async function handleInteraction(
               elements: [
                 {
                   type: "button",
-                  text: { type: "plain_text", text: "Publish" },
+                  text: { type: "plain_text", text: "Regenerate" },
                   style: "primary",
+                  action_id: "regenerate_devlog",
+                  value: JSON.stringify(context),
+                },
+                {
+                  type: "button",
+                  text: { type: "plain_text", text: "Publish As-Is" },
                   action_id: "publish_devlog",
-                  value: JSON.stringify(devlog),
+                  value: JSON.stringify(context),
                 },
                 {
                   type: "button",
                   text: { type: "plain_text", text: "Cancel" },
+                  style: "danger",
                   action_id: "cancel_devlog",
                 },
               ],
@@ -402,6 +403,83 @@ async function handleInteraction(
       return new Response("", { status: 200 });
     }
 
+    // Regenerate button - get feedback and regenerate
+    if (action.action_id === "regenerate_devlog" && action.value) {
+      const context: EditContext = JSON.parse(action.value);
+
+      // Get feedback from the input field
+      const feedback =
+        payload.state?.values?.feedback_block?.feedback_input?.value || "";
+
+      if (!feedback.trim()) {
+        if (responseUrl) {
+          await sendSlackMessage(responseUrl, {
+            text: "Please provide feedback on what you'd like to change.",
+            blocks: [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: "Please provide feedback on what you'd like to change, then click Regenerate.",
+                },
+              },
+              {
+                type: "actions",
+                elements: [
+                  {
+                    type: "button",
+                    text: { type: "plain_text", text: "Try Again" },
+                    action_id: "edit_devlog",
+                    value: JSON.stringify(context),
+                  },
+                  {
+                    type: "button",
+                    text: { type: "plain_text", text: "Cancel" },
+                    style: "danger",
+                    action_id: "cancel_devlog",
+                  },
+                ],
+              },
+            ],
+          });
+        }
+        return new Response("", { status: 200 });
+      }
+
+      // Add feedback to history
+      const updatedContext: EditContext = {
+        ...context,
+        feedbackHistory: [...context.feedbackHistory, feedback],
+      };
+
+      if (responseUrl) {
+        await sendSlackMessage(responseUrl, {
+          text: `Regenerating with your feedback: "${feedback}"...`,
+        });
+      }
+
+      try {
+        await triggerRegeneratePreview(
+          context.originalText,
+          context.currentDevlog,
+          feedback,
+          context.feedbackHistory,
+          responseUrl || "",
+          env.TRIGGER_SECRET_KEY
+        );
+      } catch (error) {
+        console.error("Failed to regenerate:", error);
+        if (responseUrl) {
+          await sendSlackMessage(responseUrl, {
+            text: `Failed to regenerate: ${error instanceof Error ? error.message : "Unknown error"}`,
+          });
+        }
+      }
+
+      return new Response("", { status: 200 });
+    }
+
+    // Cancel button
     if (action.action_id === "cancel_devlog") {
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
@@ -410,31 +488,6 @@ async function handleInteraction(
       }
       return new Response("", { status: 200 });
     }
-  }
-
-  // Handle modal submissions (for future use with bot token)
-  if (payload.type === "view_submission" && payload.view) {
-    const metadata = JSON.parse(payload.view.private_metadata);
-    const values = payload.view.state.values;
-
-    const devlog: GeneratedDevlog = {
-      title: values.title_block.title.value,
-      date: values.date_block.date.value,
-      tags: values.tags_block.tags.value.split(",").map((t: string) => t.trim()),
-      content: values.content_block.content.value,
-      slug: values.title_block.title.value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, ""),
-    };
-
-    try {
-      await triggerPublishDevlog(devlog, metadata.responseUrl, env.TRIGGER_SECRET_KEY);
-    } catch (error) {
-      console.error("Failed to publish from modal:", error);
-    }
-
-    return new Response("", { status: 200 });
   }
 
   return new Response("", { status: 200 });
@@ -452,21 +505,15 @@ export default {
 
     const body = await request.text();
 
-    // Verify Slack signature
     const isValid = await verifySlackSignature(request, body, env.SLACK_SIGNING_SECRET);
     if (!isValid) {
       console.error("Invalid Slack signature");
       return new Response("Invalid signature", { status: 401 });
     }
 
-    // Determine request type based on content
-    const contentType = request.headers.get("content-type") || "";
-
     if (body.includes("payload=")) {
-      // Interactive component (button click, modal submission)
       return handleInteraction(body, env);
     } else if (body.includes("command=")) {
-      // Slash command
       return handleSlashCommand(body, env);
     }
 
