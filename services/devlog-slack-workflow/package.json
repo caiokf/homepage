@@ -11,10 +11,12 @@
     "@anthropic-ai/sdk": "^0.71.2",
     "@octokit/rest": "^22.0.1",
     "@trigger.dev/sdk": "^4.0.0",
-    "front-matter": "^4.0.2"
+    "front-matter": "^4.0.2",
+    "luxon": "^3.7.2"
   },
   "devDependencies": {
     "@trigger.dev/build": "^4.0.0",
+    "@types/luxon": "^3.7.1",
     "trigger.dev": "^4.0.0",
     "typescript": "^5.4.3"
   },
