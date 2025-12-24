@@ -11,12 +11,18 @@ export type GenerateDevlogPreviewPayload = {
   responseUrl: string;
 };
 
-type GeneratedDevlog = {
+export type GeneratedDevlog = {
   title: string;
   slug: string;
   tags: string[];
   content: string;
   date: string;
+};
+
+export type EditContext = {
+  originalText: string;
+  currentDevlog: GeneratedDevlog;
+  feedbackHistory: string[];
 };
 
 const SYSTEM_PROMPT = readFileSync(
@@ -27,11 +33,23 @@ const SYSTEM_PROMPT = readFileSync(
 /**
  * Send a preview message to Slack with action buttons
  */
-async function sendPreviewToSlack(
+export async function sendPreviewToSlack(
   responseUrl: string,
-  devlog: GeneratedDevlog
+  devlog: GeneratedDevlog,
+  originalText: string,
+  feedbackHistory: string[] = []
 ): Promise<void> {
-  const devlogJson = JSON.stringify(devlog);
+  const context: EditContext = {
+    originalText,
+    currentDevlog: devlog,
+    feedbackHistory,
+  };
+  const contextJson = JSON.stringify(context);
+
+  const iterationNote =
+    feedbackHistory.length > 0
+      ? `\n_Iteration ${feedbackHistory.length + 1} based on your feedback_`
+      : "";
 
   await fetch(responseUrl, {
     method: "POST",
@@ -46,6 +64,15 @@ async function sendPreviewToSlack(
             type: "plain_text",
             text: "Devlog Preview",
           },
+        },
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: `Preview of your devlog entry${iterationNote}`,
+            },
+          ],
         },
         {
           type: "section",
@@ -74,7 +101,7 @@ async function sendPreviewToSlack(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*Content:*\n${devlog.content.substring(0, 2900)}${devlog.content.length > 2900 ? "..." : ""}`,
+            text: `*Content:*\n${devlog.content.substring(0, 2500)}${devlog.content.length > 2500 ? "..." : ""}`,
           },
         },
         {
@@ -91,7 +118,7 @@ async function sendPreviewToSlack(
               },
               style: "primary",
               action_id: "publish_devlog",
-              value: devlogJson,
+              value: contextJson,
             },
             {
               type: "button",
@@ -100,7 +127,7 @@ async function sendPreviewToSlack(
                 text: "Edit",
               },
               action_id: "edit_devlog",
-              value: devlogJson,
+              value: contextJson,
             },
             {
               type: "button",
@@ -121,7 +148,7 @@ async function sendPreviewToSlack(
 /**
  * Send error message to Slack
  */
-async function sendErrorToSlack(responseUrl: string, message: string): Promise<void> {
+export async function sendErrorToSlack(responseUrl: string, message: string): Promise<void> {
   await fetch(responseUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -133,6 +160,55 @@ async function sendErrorToSlack(responseUrl: string, message: string): Promise<v
     }),
   });
 }
+
+/**
+ * Parse Claude's JSON response and extract devlog
+ */
+export function parseDevlogResponse(responseText: string): GeneratedDevlog {
+  let jsonText = responseText.trim();
+  if (jsonText.startsWith("```")) {
+    jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+  }
+
+  const parsed = JSON.parse(jsonText);
+
+  // Validate and parse date
+  let entryDate: string;
+  if (parsed.date) {
+    let dt = DateTime.fromISO(parsed.date, { zone: "utc" });
+
+    if (!dt.isValid) {
+      const formats = [
+        "yyyy/MM/dd",
+        "MM-dd-yyyy",
+        "dd-MM-yyyy",
+        "MMMM d, yyyy",
+        "MMM d, yyyy",
+        "MMMM d",
+        "MMM d",
+      ];
+
+      for (const fmt of formats) {
+        dt = DateTime.fromFormat(parsed.date, fmt, { zone: "utc" });
+        if (dt.isValid) break;
+      }
+    }
+
+    entryDate = dt.isValid ? dt.toISODate()! : DateTime.now().toISODate()!;
+  } else {
+    entryDate = DateTime.now().toISODate()!;
+  }
+
+  return {
+    title: parsed.title,
+    slug: parsed.slug,
+    tags: parsed.tags,
+    content: parsed.content.replace(/—/g, ", "),
+    date: entryDate,
+  };
+}
+
+export { SYSTEM_PROMPT };
 
 export const generateDevlogPreview = task({
   id: "generate-devlog-preview",
@@ -163,56 +239,15 @@ export const generateDevlogPreview = task({
 
       logger.info("Claude response", { response: responseText });
 
-      // Parse JSON response
-      let jsonText = responseText.trim();
-      if (jsonText.startsWith("```")) {
-        jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
-      }
-
-      const parsed = JSON.parse(jsonText);
-
-      // Validate and parse date
-      let entryDate: string;
-      if (parsed.date) {
-        let dt = DateTime.fromISO(parsed.date, { zone: "utc" });
-
-        if (!dt.isValid) {
-          const formats = [
-            "yyyy/MM/dd",
-            "MM-dd-yyyy",
-            "dd-MM-yyyy",
-            "MMMM d, yyyy",
-            "MMM d, yyyy",
-            "MMMM d",
-            "MMM d",
-          ];
-
-          for (const fmt of formats) {
-            dt = DateTime.fromFormat(parsed.date, fmt, { zone: "utc" });
-            if (dt.isValid) break;
-          }
-        }
-
-        entryDate = dt.isValid ? dt.toISODate()! : DateTime.now().toISODate()!;
-      } else {
-        entryDate = DateTime.now().toISODate()!;
-      }
-
-      const devlog: GeneratedDevlog = {
-        title: parsed.title,
-        slug: parsed.slug,
-        tags: parsed.tags,
-        content: parsed.content.replace(/—/g, ", "),
-        date: entryDate,
-      };
+      const devlog = parseDevlogResponse(responseText);
 
       logger.info("Generated devlog preview", {
         title: devlog.title,
         tags: devlog.tags,
       });
 
-      // Send preview to Slack
-      await sendPreviewToSlack(responseUrl, devlog);
+      // Send preview to Slack with context for editing
+      await sendPreviewToSlack(responseUrl, devlog, text, []);
 
       return {
         success: true,
