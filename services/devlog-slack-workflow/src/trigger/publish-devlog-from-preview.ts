@@ -126,7 +126,7 @@ ${content}
 
       const markdownPath = `${DEVLOG_PATH}/${filename}`;
       const indexPath = `${DEVLOG_PATH}/index.json`;
-      const commitMessage = `devlog: ${title}`;
+      const commitMessage = `devlog: ${slug}`;
 
       // Get latest commit SHA
       const { data: ref } = await octokit.git.getRef({
