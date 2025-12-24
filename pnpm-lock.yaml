@@ -10,6 +10,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@caiokf/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       d3:
         specifier: ^7.9.0
         version: 7.9.0
@@ -63,11 +66,16 @@ importers:
         specifier: ^2.0.6
         version: 2.2.12(typescript@5.9.3)
 
+  packages/shared: {}
+
   services/devlog-slack-workflow:
     dependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.71.2
         version: 0.71.2(zod@3.25.76)
+      '@caiokf/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@octokit/rest':
         specifier: ^22.0.1
         version: 22.0.1

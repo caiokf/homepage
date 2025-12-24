@@ -1,5 +1,8 @@
 import fm from "front-matter";
 import { marked } from "marked";
+import { getWeekKey } from "@caiokf/shared";
+
+export { getWeekKey };
 
 export type EntryFrontmatter = {
   title: string;
@@ -8,9 +11,12 @@ export type EntryFrontmatter = {
   slug: string;
 };
 
-export type EntryMetadata = EntryFrontmatter & {
-  filename: string;
+export type HasWeekKey = {
   weekKey: string;
+};
+
+export type EntryMetadata = EntryFrontmatter & HasWeekKey & {
+  filename: string;
 };
 
 export type EntryContent = {
@@ -18,19 +24,18 @@ export type EntryContent = {
   html: string;
 };
 
-export type Entry = {
+export type Entry = HasWeekKey & {
   frontmatter: EntryFrontmatter;
   content: string;
   html: string;
-  weekKey: string;
 };
 
-export type WeekGroup = {
+export type WeekGroup<T extends HasWeekKey = Entry> = {
   key: string;
   label: string;
   startDate: Date;
   endDate: Date;
-  entries: Entry[];
+  entries: T[];
 };
 
 // Cache for loaded entry content
@@ -38,19 +43,6 @@ const contentCache = new Map<string, EntryContent>();
 
 // Cached index data
 let indexCache: EntryMetadata[] | null = null;
-
-/**
- * Get ISO week number and year for a given date
- * Returns "YYYY-WW" format
- */
-export function getWeekKey(date: Date): string {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
-}
 
 /**
  * Get the base URL for fetching devlog assets
@@ -161,7 +153,7 @@ export function formatWeekLabel(weekKey: string): string {
 /**
  * Get entry counts per week for the contribution matrix
  */
-export function getEntryCounts(entries: EntryMetadata[]): Map<string, number> {
+export function getEntryCounts<T extends HasWeekKey>(entries: T[]): Map<string, number> {
   const counts = new Map<string, number>();
 
   entries.forEach((entry) => {
@@ -175,8 +167,8 @@ export function getEntryCounts(entries: EntryMetadata[]): Map<string, number> {
 /**
  * Group entries by week
  */
-export function getEntriesGroupedByWeek(entries: Entry[]): WeekGroup[] {
-  const groups = new Map<string, Entry[]>();
+export function getEntriesGroupedByWeek<T extends HasWeekKey>(entries: T[]): WeekGroup<T>[] {
+  const groups = new Map<string, T[]>();
 
   entries.forEach((entry) => {
     const existing = groups.get(entry.weekKey) || [];
@@ -202,6 +194,6 @@ export function getEntriesGroupedByWeek(entries: Entry[]): WeekGroup[] {
 /**
  * Filter entries by week key
  */
-export function getEntriesForWeek(entries: Entry[], weekKey: string): Entry[] {
+export function getEntriesForWeek<T extends HasWeekKey>(entries: T[], weekKey: string): T[] {
   return entries.filter((entry) => entry.weekKey === weekKey);
 }

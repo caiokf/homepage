@@ -26,7 +26,11 @@
 
       <!-- Entries list (flat, no week grouping) -->
       <div class="entries-container">
-        <div v-if="filteredEntries.length === 0" class="no-entries">
+        <div v-if="fetchError" class="error-state">
+          <p>{{ fetchError }}</p>
+        </div>
+
+        <div v-else-if="filteredEntries.length === 0" class="no-entries">
           <p>no entries yet. check back soon!</p>
         </div>
 
@@ -52,7 +56,7 @@
                 <div v-if="loadingContent === entry.slug" class="content-loading">
                   loading...
                 </div>
-                <div v-else v-html="highlightContent(entryContent[entry.slug] || '', entry.slug)"></div>
+                <div v-else v-html="highlightContent(entryContent[entry.slug] || '')"></div>
               </div>
             </div>
           </div>
@@ -77,6 +81,7 @@
 
   const entries = ref<EntryMetadata[]>([]);
   const isLoading = ref(true);
+  const fetchError = ref<string | null>(null);
   const loadingContent = ref<string | null>(null);
   const entryContent = reactive<Record<string, string>>({});
 
@@ -98,6 +103,10 @@
         useExtendedSearch: false,
         minMatchCharLength: 2,
       });
+    } catch (error) {
+      entries.value = [];
+      fetchError.value = "failed to load entries. please try again later.";
+      console.error("Failed to fetch devlog index:", error);
     } finally {
       isLoading.value = false;
     }
@@ -206,7 +215,7 @@
   }
 
   // Highlight matching text in content (HTML)
-  function highlightContent(html: string, _slug: string): string {
+  function highlightContent(html: string): string {
     if (!searchQuery.value || searchQuery.value.length < 2) {
       return html;
     }
@@ -267,6 +276,11 @@
   }
 
   async function toggleEntry(slug: string) {
+    // Prevent toggling while content is loading
+    if (loadingContent.value) {
+      return;
+    }
+
     if (expandedSlug.value === slug) {
       expandedSlug.value = null;
     } else {
