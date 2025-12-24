@@ -23,7 +23,7 @@ type GeneratedDevlog = {
 // Load prompt from markdown file
 // Using process.cwd() with legacyDevProcessCwdBehaviour: false in trigger.config.ts
 const SYSTEM_PROMPT = readFileSync(
-  join(process.cwd(), "prompts/create-devlog.md"),
+  join(process.cwd(), "prompts/writing-devlog-entries.md"),
   "utf-8"
 );
 
