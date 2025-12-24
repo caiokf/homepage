@@ -1,13 +1,13 @@
 import { task, logger } from "@trigger.dev/sdk";
 import { writeDevlogEntry, type WriteDevlogEntryPayload } from "./write-devlog-entry";
-import { commitDevlogEntry } from "./commit-devlog-entry";
+import { publishDevlogEntry } from "./publish-devlog-entry";
 
 export type ProcessSlackDevlogRequestPayload = WriteDevlogEntryPayload;
 
 /**
  * Orchestrator task that:
- * 1. Creates devlog content using Claude
- * 2. Commits the devlog to GitHub
+ * 1. Writes devlog content using Claude
+ * 2. Publishes the devlog to GitHub
  *
  * This is the main entry point triggered by Slack slash commands.
  */
@@ -22,7 +22,7 @@ export const processSlackDevlogRequest = task({
       userId: payload.userId,
     });
 
-    // Step 1: Generate devlog content
+    // Step 1: Write devlog content
     const writeResult = await writeDevlogEntry.triggerAndWait(payload);
 
     if (!writeResult.ok) {
@@ -36,21 +36,21 @@ export const processSlackDevlogRequest = task({
 
     logger.info("Devlog entry written", { filename, title });
 
-    // Step 2: Commit to GitHub
-    const commitResult = await commitDevlogEntry.triggerAndWait({
+    // Step 2: Publish to GitHub
+    const publishResult = await publishDevlogEntry.triggerAndWait({
       filename,
       markdown,
       title,
     });
 
-    if (!commitResult.ok) {
-      logger.error("Failed to commit devlog entry", { error: commitResult.error });
-      throw new Error(`Failed to commit devlog entry: ${commitResult.error}`);
+    if (!publishResult.ok) {
+      logger.error("Failed to publish devlog entry", { error: publishResult.error });
+      throw new Error(`Failed to publish devlog entry: ${publishResult.error}`);
     }
 
-    const { commitSha, commitUrl, fileUrl } = commitResult.output;
+    const { commitSha, commitUrl, fileUrl } = publishResult.output;
 
-    logger.info("Devlog committed successfully", { commitSha, commitUrl });
+    logger.info("Devlog published successfully", { commitSha, commitUrl });
 
     return {
       success: true,
