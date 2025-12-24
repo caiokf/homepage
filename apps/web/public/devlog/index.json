@@ -13,6 +13,19 @@
     "weekKey": "2025-52"
   },
   {
+    "title": "Streamlining Dev Log Creation with Slack Slash Commands",
+    "date": "2025-12-25",
+    "tags": [
+      "slack",
+      "automation",
+      "llm",
+      "workflow"
+    ],
+    "slug": "streamlining-devlog-creation-slack-slash-commands",
+    "filename": "2025-12-25-streamlining-devlog-creation-slack-slash-commands.md",
+    "weekKey": "2025-52"
+  },
+  {
     "title": "Testing Trigger.dev Workflows with Claude MCP",
     "date": "2025-12-24",
     "tags": [
