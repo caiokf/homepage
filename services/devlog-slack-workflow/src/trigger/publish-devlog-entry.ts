@@ -1,6 +1,7 @@
 import { task, logger } from "@trigger.dev/sdk";
 import { Octokit } from "@octokit/rest";
 import fm from "front-matter";
+import { getWeekKey } from "@caiokf/shared";
 
 export type PublishDevlogEntryPayload = {
   filename: string;
@@ -29,19 +30,6 @@ const REPO_OWNER = "caiokf";
 const REPO_NAME = "homepage";
 const BRANCH = "main";
 const DEVLOG_PATH = "apps/web/public/devlog";
-
-/**
- * Get ISO week number and year for a given date
- * Returns "YYYY-WW" format
- */
-function getWeekKey(date: Date): string {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
-}
 
 export const publishDevlogEntry = task({
   id: "publish-devlog-entry",
@@ -114,6 +102,8 @@ export const publishDevlogEntry = task({
       }
 
       // Add new entry and sort by date (newest first)
+      // Remove existing entry with same slug if present (for updates/republishing)
+      currentIndex = currentIndex.filter((e) => e.slug !== newEntry.slug);
       currentIndex.push(newEntry);
       currentIndex.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       const updatedIndexJson = JSON.stringify(currentIndex, null, 2);

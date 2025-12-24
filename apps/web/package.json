@@ -13,6 +13,7 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@caiokf/shared": "workspace:*",
     "d3": "^7.9.0",
     "d3-tip": "^0.9.1",
     "front-matter": "^4.0.2",
