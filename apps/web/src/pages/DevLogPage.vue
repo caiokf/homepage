@@ -2,86 +2,111 @@
   <div class="devlog-page">
     <h1 class="page-title">dev log</h1>
 
-    <DevLogHeader
-      :entry-counts="entryCounts"
-      :tag-counts="allTags"
-      :tag-counts-by-year="tagCountsByYear"
-      :active-tags="activeTags"
-      :selected-week-key="selectedWeekKey"
-      @select-week="handleWeekSelect"
-      @toggle-tag="toggleTag"
-      @clear-filters="clearFilters"
-    />
+    <template v-if="isLoading">
+      <div class="loading-state">
+        <p>loading entries...</p>
+      </div>
+    </template>
 
-    <div class="search-container">
-      <DevLogSearch @search="handleSearch" />
-    </div>
+    <template v-else>
+      <DevLogHeader
+        :entry-counts="entryCounts"
+        :tag-counts="allTags"
+        :tag-counts-by-year="tagCountsByYear"
+        :active-tags="activeTags"
+        :selected-week-key="selectedWeekKey"
+        @select-week="handleWeekSelect"
+        @toggle-tag="toggleTag"
+        @clear-filters="clearFilters"
+      />
 
-    <!-- Entries list (flat, no week grouping) -->
-    <div class="entries-container">
-      <div v-if="filteredEntries.length === 0" class="no-entries">
-        <p>no entries yet. check back soon!</p>
+      <div class="search-container">
+        <DevLogSearch @search="handleSearch" />
       </div>
 
-      <div class="entries-list">
-        <div
-          v-for="(entry, index) in filteredEntries"
-          :key="entry.frontmatter.slug"
-          class="entry-card"
-          :class="{ expanded: expandedSlug === entry.frontmatter.slug }"
-          :style="{ '--entry-delay': `${index * 50}ms` }"
-        >
-          <button class="entry-header" @click="toggleEntry(entry.frontmatter.slug)">
-            <span class="entry-date">{{ formatDate(entry.frontmatter.date) }}</span>
-            <h3 class="entry-title">
-              <span class="expand-icon" :class="{ rotated: expandedSlug === entry.frontmatter.slug }">›</span>
-              <span v-html="highlightTitle(entry.frontmatter.title, entry.frontmatter.slug)"></span>
-            </h3>
-            <BadgeGroup :items="entry.frontmatter.tags" gap="xs" class="entry-tags" />
-          </button>
+      <!-- Entries list (flat, no week grouping) -->
+      <div class="entries-container">
+        <div v-if="filteredEntries.length === 0" class="no-entries">
+          <p>no entries yet. check back soon!</p>
+        </div>
 
-          <div class="entry-content-wrapper">
-            <div
-              v-if="expandedSlug === entry.frontmatter.slug"
-              class="entry-content"
-              v-html="highlightContent(entry.html, entry.frontmatter.slug)"
-            ></div>
+        <div class="entries-list">
+          <div
+            v-for="(entry, index) in filteredEntries"
+            :key="entry.slug"
+            class="entry-card"
+            :class="{ expanded: expandedSlug === entry.slug }"
+            :style="{ '--entry-delay': `${index * 50}ms` }"
+          >
+            <button class="entry-header" @click="toggleEntry(entry.slug)">
+              <span class="entry-date">{{ formatDate(entry.date) }}</span>
+              <h3 class="entry-title">
+                <span class="expand-icon" :class="{ rotated: expandedSlug === entry.slug }">›</span>
+                <span v-html="highlightTitle(entry.title, entry.slug)"></span>
+              </h3>
+              <BadgeGroup :items="entry.tags" gap="xs" class="entry-tags" />
+            </button>
+
+            <div class="entry-content-wrapper">
+              <div v-if="expandedSlug === entry.slug" class="entry-content">
+                <div v-if="loadingContent === entry.slug" class="content-loading">
+                  loading...
+                </div>
+                <div v-else v-html="highlightContent(entryContent[entry.slug] || '', entry.slug)"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, reactive } from "vue";
+  import { ref, computed, reactive, onMounted } from "vue";
   import Fuse from "fuse.js";
-  import { getAllEntries, getEntryCounts, type Entry } from "../domain/devlog/data";
+  import {
+    fetchIndex,
+    fetchEntryContent,
+    getEntryCounts,
+    type EntryMetadata,
+  } from "../domain/devlog/data";
   import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
   import DevLogSearch from "../domain/devlog/components/DevLogSearch.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
-  const entries = getAllEntries();
-  const entryCounts = getEntryCounts();
+  const entries = ref<EntryMetadata[]>([]);
+  const isLoading = ref(true);
+  const loadingContent = ref<string | null>(null);
+  const entryContent = reactive<Record<string, string>>({});
 
-  // Fuse.js fuzzy search
-  const fuse = new Fuse<Entry>(entries, {
-    keys: [
-      { name: "frontmatter.title", weight: 2 },
-      { name: "frontmatter.tags", weight: 1.5 },
-      { name: "content", weight: 1 },
-    ],
-    threshold: 0.2,
-    ignoreLocation: true,
-    includeScore: true,
-    includeMatches: true,
-    useExtendedSearch: false,
-    minMatchCharLength: 2,
+  // Initialize Fuse.js lazily
+  let fuse: Fuse<EntryMetadata> | null = null;
+
+  onMounted(async () => {
+    try {
+      entries.value = await fetchIndex();
+      fuse = new Fuse<EntryMetadata>(entries.value, {
+        keys: [
+          { name: "title", weight: 2 },
+          { name: "tags", weight: 1.5 },
+        ],
+        threshold: 0.2,
+        ignoreLocation: true,
+        includeScore: true,
+        includeMatches: true,
+        useExtendedSearch: false,
+        minMatchCharLength: 2,
+      });
+    } finally {
+      isLoading.value = false;
+    }
   });
+
+  const entryCounts = computed(() => getEntryCounts(entries.value));
 
   type MatchInfo = {
     titleIndices: readonly [number, number][];
-    contentIndices: readonly [number, number][];
   };
 
   // Store search match indices
@@ -98,8 +123,8 @@
 
   const allTags = computed<TagInfo[]>(() => {
     const tagCounts = new Map<string, number>();
-    entries.forEach((entry) => {
-      entry.frontmatter.tags.forEach((tag) => {
+    entries.value.forEach((entry) => {
+      entry.tags.forEach((tag) => {
         tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
       });
     });
@@ -111,13 +136,13 @@
   const tagCountsByYear = computed<Map<number, TagInfo[]>>(() => {
     const yearTagCounts = new Map<number, Map<string, number>>();
 
-    entries.forEach((entry) => {
-      const year = new Date(entry.frontmatter.date).getFullYear();
+    entries.value.forEach((entry) => {
+      const year = new Date(entry.date).getFullYear();
       if (!yearTagCounts.has(year)) {
         yearTagCounts.set(year, new Map());
       }
       const tagMap = yearTagCounts.get(year)!;
-      entry.frontmatter.tags.forEach((tag) => {
+      entry.tags.forEach((tag) => {
         tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
       });
     });
@@ -135,20 +160,18 @@
 
   // Filter entries by tags, selected week, and search query
   const filteredEntries = computed(() => {
-    let result: Entry[];
+    let result: EntryMetadata[];
 
     // Filter by search query using Fuse.js
-    if (searchQuery.value.length >= 2) {
+    if (searchQuery.value.length >= 2 && fuse) {
       const searchResults = fuse.search(searchQuery.value);
 
       // Build match indices map
       const newMatches = new Map<string, MatchInfo>();
       searchResults.forEach((r) => {
-        const titleMatch = r.matches?.find((m) => m.key === "frontmatter.title");
-        const contentMatch = r.matches?.find((m) => m.key === "content");
-        newMatches.set(r.item.frontmatter.slug, {
+        const titleMatch = r.matches?.find((m) => m.key === "title");
+        newMatches.set(r.item.slug, {
           titleIndices: titleMatch?.indices || [],
-          contentIndices: contentMatch?.indices || [],
         });
       });
       searchMatches.value = newMatches;
@@ -156,7 +179,7 @@
       result = searchResults.map((r) => r.item);
     } else {
       searchMatches.value = new Map();
-      result = entries;
+      result = entries.value;
     }
 
     // Filter by selected week
@@ -166,9 +189,7 @@
 
     // Filter by tags
     if (activeTags.size > 0) {
-      result = result.filter((entry) =>
-        entry.frontmatter.tags.some((tag) => activeTags.has(tag))
-      );
+      result = result.filter((entry) => entry.tags.some((tag) => activeTags.has(tag)));
     }
 
     return result;
@@ -185,9 +206,8 @@
   }
 
   // Highlight matching text in content (HTML)
-  function highlightContent(html: string, slug: string): string {
-    const matchInfo = searchMatches.value.get(slug);
-    if (!matchInfo || !searchQuery.value || searchQuery.value.length < 2) {
+  function highlightContent(html: string, _slug: string): string {
+    if (!searchQuery.value || searchQuery.value.length < 2) {
       return html;
     }
 
@@ -217,10 +237,7 @@
   }
 
   function escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   function escapeRegex(text: string): string {
@@ -249,11 +266,27 @@
     expandedSlug.value = null;
   }
 
-  function toggleEntry(slug: string) {
+  async function toggleEntry(slug: string) {
     if (expandedSlug.value === slug) {
       expandedSlug.value = null;
     } else {
       expandedSlug.value = slug;
+
+      // Load content if not already loaded
+      // Find the entry to get the filename
+      const entry = entries.value.find((e) => e.slug === slug);
+      if (entry && !entryContent[slug]) {
+        loadingContent.value = slug;
+        try {
+          const content = await fetchEntryContent(entry.filename);
+          entryContent[slug] = content.html;
+        } catch (error) {
+          console.error("Failed to load entry content:", error);
+          entryContent[slug] = "<p>Failed to load content.</p>";
+        } finally {
+          loadingContent.value = null;
+        }
+      }
     }
   }
 
@@ -288,6 +321,13 @@
   .page-title {
     margin-bottom: var(--space-4);
     text-align: center;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: var(--space-12);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
   }
 
   .search-container {
@@ -432,6 +472,12 @@
     border-top: 1px solid var(--color-border-subtle);
     margin-top: var(--space-2);
     padding-top: var(--space-4);
+  }
+
+  .content-loading {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
   }
 
   .entry-content :deep(p) {

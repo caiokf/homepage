@@ -8,6 +8,16 @@ export type EntryFrontmatter = {
   slug: string;
 };
 
+export type EntryMetadata = EntryFrontmatter & {
+  filename: string;
+  weekKey: string;
+};
+
+export type EntryContent = {
+  content: string;
+  html: string;
+};
+
 export type Entry = {
   frontmatter: EntryFrontmatter;
   content: string;
@@ -23,16 +33,11 @@ export type WeekGroup = {
   entries: Entry[];
 };
 
-type EntryModule = {
-  default: string;
-};
+// Cache for loaded entry content
+const contentCache = new Map<string, EntryContent>();
 
-// Import all markdown files at build time
-const entryModules = import.meta.glob<EntryModule>("./content/*.md", {
-  eager: true,
-  query: "?raw",
-  import: "default",
-});
+// Cached index data
+let indexCache: EntryMetadata[] | null = null;
 
 /**
  * Get ISO week number and year for a given date
@@ -45,6 +50,58 @@ export function getWeekKey(date: Date): string {
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
+}
+
+/**
+ * Get the base URL for fetching devlog assets
+ */
+function getDevlogBaseUrl(): string {
+  const base = import.meta.env.BASE_URL || "/";
+  return `${base}devlog`;
+}
+
+/**
+ * Fetch the devlog index (metadata only)
+ */
+export async function fetchIndex(): Promise<EntryMetadata[]> {
+  if (indexCache) {
+    return indexCache;
+  }
+
+  const response = await fetch(`${getDevlogBaseUrl()}/index.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch devlog index: ${response.statusText}`);
+  }
+
+  indexCache = await response.json();
+  return indexCache!;
+}
+
+/**
+ * Fetch content for a single entry by filename
+ */
+export async function fetchEntryContent(filename: string): Promise<EntryContent> {
+  const cached = contentCache.get(filename);
+  if (cached) {
+    return cached;
+  }
+
+  const response = await fetch(`${getDevlogBaseUrl()}/${filename}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch devlog entry: ${response.statusText}`);
+  }
+
+  const raw = await response.text();
+  const parsed = fm<EntryFrontmatter>(raw);
+  const html = marked(parsed.body) as string;
+
+  const content: EntryContent = {
+    content: parsed.body,
+    html,
+  };
+
+  contentCache.set(filename, content);
+  return content;
 }
 
 /**
@@ -101,38 +158,10 @@ export function formatWeekLabel(weekKey: string): string {
   return `week of ${startMonth} ${start.getDate()} - ${endMonth} ${end.getDate()}, ${year}`;
 }
 
-export function getAllEntries(): Entry[] {
-  const entries: Entry[] = [];
-
-  for (const path in entryModules) {
-    const raw = entryModules[path] as unknown as string;
-    const parsed = fm<EntryFrontmatter>(raw);
-    const entryDate = new Date(parsed.attributes.date);
-
-    entries.push({
-      frontmatter: parsed.attributes,
-      content: parsed.body,
-      html: marked(parsed.body) as string,
-      weekKey: getWeekKey(entryDate),
-    });
-  }
-
-  // Sort by date, newest first
-  return entries.sort((a, b) => {
-    return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
-  });
-}
-
-export function getEntryBySlug(slug: string): Entry | undefined {
-  const entries = getAllEntries();
-  return entries.find((entry) => entry.frontmatter.slug === slug);
-}
-
 /**
  * Get entry counts per week for the contribution matrix
  */
-export function getEntryCounts(): Map<string, number> {
-  const entries = getAllEntries();
+export function getEntryCounts(entries: EntryMetadata[]): Map<string, number> {
   const counts = new Map<string, number>();
 
   entries.forEach((entry) => {
@@ -173,6 +202,6 @@ export function getEntriesGroupedByWeek(entries: Entry[]): WeekGroup[] {
 /**
  * Filter entries by week key
  */
-export function getEntriesForWeek(weekKey: string): Entry[] {
-  return getAllEntries().filter((entry) => entry.weekKey === weekKey);
+export function getEntriesForWeek(entries: Entry[], weekKey: string): Entry[] {
+  return entries.filter((entry) => entry.weekKey === weekKey);
 }
