@@ -1,5 +1,18 @@
 [
   {
+    "title": "Cloudflare Workers: AI-Friendly but Wrangler Setup Takes Patience",
+    "date": "2025-12-25T00:00:00.000Z",
+    "tags": [
+      "cloudflare",
+      "ai",
+      "devops",
+      "tools"
+    ],
+    "slug": "cloudflare-workers-ai-friendly-wrangler-setup",
+    "filename": "2025-12-25-cloudflare-workers-ai-friendly-wrangler-setup.md",
+    "weekKey": "2025-52"
+  },
+  {
     "title": "Testing Trigger.dev Workflows with Claude MCP",
     "date": "2025-12-24",
     "tags": [
