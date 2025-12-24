@@ -83,3 +83,4 @@ If no date is mentioned or implied, **omit the `date` field entirely** from the 
 - End with a takeaway or next step
 - NO em dashes anywhere in the content
 - Content should NOT include the frontmatter (title, date, tags, slug) - just the body text
+- When including code examples, use TypeScript by default unless another language is specified
