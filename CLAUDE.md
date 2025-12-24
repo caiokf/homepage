@@ -14,7 +14,7 @@ Personal homepage and portfolio application built with Vue 3, TypeScript, and D3
 
 **Monorepo Structure:**
 - `apps/web/` - Vue 3 frontend application
-- `packages/` - Shared packages (future: trigger.dev tasks)
+- `services/devlog-slack-workflow/` - Trigger.dev tasks for Slack → devlog automation
 
 **Key Features:**
 
