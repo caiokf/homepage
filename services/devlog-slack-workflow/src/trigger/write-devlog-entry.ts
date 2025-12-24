@@ -16,6 +16,7 @@ type GeneratedDevlog = {
   slug: string;
   tags: string[];
   content: string;
+  date: string;
   filename: string;
 };
 
@@ -64,14 +65,16 @@ export const writeDevlogEntry = task({
         jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
       }
       const parsed = JSON.parse(jsonText);
-      const today = new Date().toISOString().split("T")[0];
+      // Use extracted date from Claude if provided, otherwise use today
+      const entryDate = parsed.date || new Date().toISOString().split("T")[0];
 
       generated = {
         title: parsed.title,
         slug: parsed.slug,
         tags: parsed.tags,
         content: parsed.content,
-        filename: `${today}-${parsed.slug}.md`,
+        date: entryDate,
+        filename: `${entryDate}-${parsed.slug}.md`,
       };
     } catch (error) {
       logger.error("Failed to parse Claude response", { error, responseText });
@@ -85,10 +88,9 @@ export const writeDevlogEntry = task({
     }
 
     // Build the full markdown with frontmatter
-    const today = new Date().toISOString().split("T")[0];
     const markdown = `---
 title: "${generated.title}"
-date: ${today}
+date: ${generated.date}
 tags: [${generated.tags.join(", ")}]
 slug: ${generated.slug}
 ---
