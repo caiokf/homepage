@@ -350,6 +350,21 @@
     font-family: var(--font-mono);
   }
 
+  .error-state {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--color-error, #dc2626);
+    font-family: var(--font-mono);
+    background: var(--color-error-bg, oklch(0.95 0.03 25));
+    border: 1px solid var(--color-error-border, oklch(0.85 0.08 25));
+    border-radius: var(--radius-md);
+  }
+
+  [data-theme="dark"] .error-state {
+    background: oklch(0.25 0.05 25);
+    border-color: oklch(0.35 0.1 25);
+  }
+
   .entries-list {
     display: flex;
     flex-direction: column;
