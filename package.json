@@ -13,6 +13,6 @@
     "devlog:dev": "pnpm --filter @caiokf/devlog-slack-workflow dev",
     "devlog:deploy": "pnpm --filter @caiokf/devlog-slack-workflow deploy",
     "slack-webhook:dev": "pnpm --filter @caiokf/slack-webhook-worker dev",
-    "slack-webhook:deploy": "pnpm --filter @caiokf/slack-webhook-worker deploy"
+    "slack-webhook:deploy": "pnpm --filter @caiokf/slack-webhook-worker cf:deploy"
   }
 }
