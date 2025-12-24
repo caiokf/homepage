@@ -63,7 +63,7 @@ importers:
         specifier: ^2.0.6
         version: 2.2.12(typescript@5.9.3)
 
-  packages/trigger:
+  services/devlog-slack-workflow:
     dependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.71.2
