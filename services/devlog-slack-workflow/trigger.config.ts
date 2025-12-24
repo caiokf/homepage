@@ -1,8 +1,14 @@
 import { defineConfig } from "@trigger.dev/sdk";
+import { additionalFiles } from "@trigger.dev/build/extensions/core";
 
 export default defineConfig({
   project: "proj_jcuxobfsajzyijbzxvxx",
   dirs: ["./src/trigger"],
+  // Use modern cwd behaviour so process.cwd() points to build directory
+  legacyDevProcessCwdBehaviour: false,
+  build: {
+    extensions: [additionalFiles({ files: ["./prompts/**"] })],
+  },
   retries: {
     enabledInDev: false,
     default: {
