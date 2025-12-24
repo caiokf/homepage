@@ -16,7 +16,7 @@ type GeneratedDevlog = {
   slug: string;
   tags: string[];
   content: string;
-  date: string;
+  date?: string;
   filename: string;
 };
 
