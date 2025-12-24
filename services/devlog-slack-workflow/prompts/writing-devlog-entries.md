@@ -49,13 +49,15 @@ You must respond with ONLY valid JSON in this exact format (no markdown code blo
 
 ```json
 {
-  "title": "Short, descriptive title",
+  "title": "Short title (max 40 characters)",
   "slug": "kebab-case-slug-matching-title",
   "tags": ["tag1", "tag2", "tag3"],
   "content": "The markdown content of the dev log entry (without frontmatter)",
   "date": "YYYY-MM-DD (optional)"
 }
 ```
+
+**Title must be 40 characters or less.** Be punchy and direct.
 
 ## Date Extraction
 
