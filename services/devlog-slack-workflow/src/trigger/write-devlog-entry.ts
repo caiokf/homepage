@@ -1,10 +1,9 @@
 import { task, logger } from "@trigger.dev/sdk";
 import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
 
-export type CreateDevlogPayload = {
+export type WriteDevlogEntryPayload = {
   text: string;
   userId: string;
   userName?: string;
@@ -21,18 +20,18 @@ type GeneratedDevlog = {
 };
 
 // Load prompt from markdown file
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// Using process.cwd() with legacyDevProcessCwdBehaviour: false in trigger.config.ts
 const SYSTEM_PROMPT = readFileSync(
-  resolve(__dirname, "../../prompts/create-devlog.md"),
+  join(process.cwd(), "prompts/create-devlog.md"),
   "utf-8"
 );
 
-export const createDevlog = task({
-  id: "create-devlog",
+export const writeDevlogEntry = task({
+  id: "write-devlog-entry",
   retry: {
     maxAttempts: 3,
   },
-  run: async (payload: CreateDevlogPayload) => {
+  run: async (payload: WriteDevlogEntryPayload) => {
     logger.info("Creating devlog from Slack message", { text: payload.text });
 
     // Initialize Anthropic client
@@ -56,10 +55,15 @@ export const createDevlog = task({
 
     logger.info("Claude response", { response: responseText });
 
-    // Parse the JSON response
+    // Parse the JSON response (strip markdown code fences if present)
     let generated: GeneratedDevlog;
     try {
-      const parsed = JSON.parse(responseText);
+      let jsonText = responseText.trim();
+      // Remove markdown code fences if Claude wrapped the response
+      if (jsonText.startsWith("```")) {
+        jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+      }
+      const parsed = JSON.parse(jsonText);
       const today = new Date().toISOString().split("T")[0];
 
       generated = {

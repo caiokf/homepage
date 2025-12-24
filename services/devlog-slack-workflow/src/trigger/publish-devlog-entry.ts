@@ -1,7 +1,7 @@
 import { task, logger } from "@trigger.dev/sdk";
 import { Octokit } from "@octokit/rest";
 
-export type CommitDevlogPayload = {
+export type PublishDevlogEntryPayload = {
   filename: string;
   markdown: string;
   title: string;
@@ -13,15 +13,15 @@ const REPO_NAME = "homepage";
 const BRANCH = "main";
 const DEVLOG_PATH = "apps/web/src/domain/devlog/content";
 
-export const commitDevlog = task({
-  id: "commit-devlog",
+export const publishDevlogEntry = task({
+  id: "publish-devlog-entry",
   retry: {
     maxAttempts: 2,
   },
-  run: async (payload: CommitDevlogPayload) => {
+  run: async (payload: PublishDevlogEntryPayload) => {
     const { filename, markdown, title, commitMessage } = payload;
 
-    logger.info("Committing devlog to GitHub", { filename, title });
+    logger.info("Publishing devlog entry", { filename, title });
 
     // Initialize Octokit with GitHub token
     const octokit = new Octokit({
@@ -114,7 +114,7 @@ export const commitDevlog = task({
         fileUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${BRANCH}/${filePath}`,
       };
     } catch (error) {
-      logger.error("Failed to commit devlog", { error });
+      logger.error("Failed to publish devlog entry", { error });
       throw error;
     }
   },
