@@ -39,7 +39,7 @@ wrangler secret put TRIGGER_SECRET_KEY
 pnpm slack-webhook:deploy
 
 # Or from this directory
-pnpm deploy
+npx wrangler deploy
 ```
 
 ### 4. Update Slack App URL
