@@ -53,7 +53,7 @@ You must respond with ONLY valid JSON in this exact format (no markdown code blo
   "slug": "kebab-case-slug-matching-title",
   "tags": ["tag1", "tag2", "tag3"],
   "content": "The markdown content of the dev log entry (without frontmatter)",
-  "date": "YYYY-MM-DD or null"
+  "date": "YYYY-MM-DD (optional)"
 }
 ```
 
@@ -67,7 +67,7 @@ Examples of date mentions:
 - "last week I..." → use approximate date (7 days ago)
 - "for December 24" → date should be 2025-12-24
 
-If no date is mentioned or implied, set `date` to `null` and the system will use today's date.
+If no date is mentioned or implied, **omit the `date` field entirely** from the JSON response. The system will use today's date.
 
 ## Tag Guidelines
 
