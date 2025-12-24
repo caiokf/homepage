@@ -111,8 +111,7 @@ export const createDevlog = task({
     });
 
     // Extract the text content
-    const responseText =
-      message.content[0].type === "text" ? message.content[0].text : "";
+    const responseText = message.content[0].type === "text" ? message.content[0].text : "";
 
     logger.info("Claude response", { response: responseText });
 
