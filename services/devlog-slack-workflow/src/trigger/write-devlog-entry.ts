@@ -2,6 +2,7 @@ import { task, logger } from "@trigger.dev/sdk";
 import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { DateTime } from "luxon";
 
 export type WriteDevlogEntryPayload = {
   text: string;
@@ -65,8 +66,49 @@ export const writeDevlogEntry = task({
         jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
       }
       const parsed = JSON.parse(jsonText);
-      // Use extracted date from Claude if provided, otherwise use today
-      const entryDate = parsed.date || new Date().toISOString().split("T")[0];
+
+      // Validate and parse date with luxon
+      let entryDate: string;
+      if (parsed.date) {
+        // Try strict ISO format first (YYYY-MM-DD)
+        let dt = DateTime.fromISO(parsed.date, { zone: "utc" });
+
+        // If invalid, try common alternative formats
+        if (!dt.isValid) {
+          const formats = [
+            "yyyy/MM/dd", // 2025/12/20
+            "MM-dd-yyyy", // 12-20-2025
+            "dd-MM-yyyy", // 20-12-2025
+            "MMMM d, yyyy", // December 20, 2025
+            "MMM d, yyyy", // Dec 20, 2025
+            "MMMM d", // December 20 (current year)
+            "MMM d", // Dec 20 (current year)
+          ];
+
+          for (const fmt of formats) {
+            dt = DateTime.fromFormat(parsed.date, fmt, { zone: "utc" });
+            if (dt.isValid) {
+              logger.warn("Date was not in ISO format, parsed alternative format", {
+                original: parsed.date,
+                format: fmt,
+                parsed: dt.toISODate(),
+              });
+              break;
+            }
+          }
+        }
+
+        if (dt.isValid) {
+          entryDate = dt.toISODate()!;
+        } else {
+          logger.warn("Invalid date format from Claude, using today", {
+            invalidDate: parsed.date,
+          });
+          entryDate = DateTime.now().toISODate()!;
+        }
+      } else {
+        entryDate = DateTime.now().toISODate()!;
+      }
 
       generated = {
         title: parsed.title,

@@ -59,13 +59,18 @@ You must respond with ONLY valid JSON in this exact format (no markdown code blo
 
 ## Date Extraction
 
-If the message mentions a specific date for when the entry should be dated, extract it and include in the `date` field as `YYYY-MM-DD`.
+If the message mentions a specific date for when the entry should be dated, extract it and include in the `date` field.
+
+**CRITICAL: The date MUST be in ISO 8601 format: `YYYY-MM-DD`**
+
+- Valid: `2025-12-20`, `2025-01-05`
+- Invalid: `Dec 20th`, `2025/12/20`, `December 20, 2025`, `20-12-2025`
 
 Examples of date mentions:
-- "yesterday I learned..." → date should be yesterday's date
-- "on Dec 20th..." → date should be 2025-12-20 (use current year if not specified)
-- "last week I..." → use approximate date (7 days ago)
-- "for December 24" → date should be 2025-12-24
+- "yesterday I learned..." → date should be yesterday's date in YYYY-MM-DD format
+- "on Dec 20th..." → `"date": "2025-12-20"` (use current year if not specified)
+- "last week I..." → use approximate date (7 days ago) in YYYY-MM-DD format
+- "for December 24" → `"date": "2025-12-24"`
 
 If no date is mentioned or implied, **omit the `date` field entirely** from the JSON response. The system will use today's date.
 
