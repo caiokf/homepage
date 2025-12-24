@@ -1,4 +1,4 @@
 // Export all tasks
-export * from "./create-devlog";
-export * from "./commit-devlog";
+export * from "./write-devlog-entry";
+export * from "./commit-devlog-entry";
 export * from "./process-slack-devlog-request";
