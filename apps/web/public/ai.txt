@@ -25,10 +25,10 @@ License: CC BY-NC 4.0
 License-URL: https://creativecommons.org/licenses/by-nc/4.0/
 
 # Citation Format
-Citation: Kinzel Filho, C. (2024). [Title]. caiokf.com. https://caiokf.com/[path]
+Citation: Kinzel Filho, C. (2024). [Title]. dev.caiokf.com. https://dev.caiokf.com/[path]
 
 # Contact
-Contact: https://caiokf.com/about
+Contact: https://dev.caiokf.com/about
 
 # Related Files
 LLMs-Txt: /llms.txt

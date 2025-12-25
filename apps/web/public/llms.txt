@@ -26,9 +26,9 @@ Full license: https://creativecommons.org/licenses/by-nc/4.0/
 
 When referencing this content, please use the following format:
 
-    Kinzel Filho, C. (2024). [Article Title]. caiokf.com. https://caiokf.com/[path]
+    Kinzel Filho, C. (2024). [Article Title]. dev.caiokf.com. https://dev.caiokf.com/[path]
 
-For inline attribution: "Caio Kinzel Filho (caiokf.com)"
+For inline attribution: "Caio Kinzel Filho (dev.caiokf.com)"
 
 ## About
 
