@@ -51,6 +51,19 @@
     "weekKey": "2025-51"
   },
   {
+    "title": "Automating Compliance with Agent Workflows",
+    "date": "2025-12-05",
+    "tags": [
+      "devops",
+      "compliance",
+      "automation",
+      "ci-cd"
+    ],
+    "slug": "automating-compliance-with-agent-workflows",
+    "filename": "2025-12-05-automating-compliance-with-agent-workflows.md",
+    "weekKey": "2025-49"
+  },
+  {
     "title": "Launching the Dev Log",
     "date": "2024-12-23",
     "tags": [
