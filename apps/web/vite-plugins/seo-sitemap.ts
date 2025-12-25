@@ -2,7 +2,7 @@ import { Plugin } from "vite";
 import { writeFileSync, readdirSync, statSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -54,8 +54,8 @@ const routes: RouteConfig[] = [
  */
 function getLastModified(filePath: string): string | null {
   try {
-    // Try git log first
-    const gitDate = execSync(`git log -1 --format=%cI -- "${filePath}"`, {
+    // Try git log first - use execFileSync with args array to avoid shell injection
+    const gitDate = execFileSync("git", ["log", "-1", "--format=%cI", "--", filePath], {
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "ignore"],
     }).trim();

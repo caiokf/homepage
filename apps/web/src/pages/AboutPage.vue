@@ -241,6 +241,9 @@
     },
   };
 
+  // Track injected JSON-LD script IDs for cleanup
+  const injectedJsonLdIds: string[] = [];
+
   function injectJsonLd(schema: object, id: string) {
     const existingScript = document.getElementById(id);
     if (existingScript) existingScript.remove();
@@ -250,6 +253,15 @@
     script.type = "application/ld+json";
     script.textContent = JSON.stringify(schema);
     document.head.appendChild(script);
+    injectedJsonLdIds.push(id);
+  }
+
+  function cleanupJsonLd() {
+    injectedJsonLdIds.forEach((id) => {
+      const script = document.getElementById(id);
+      if (script) script.remove();
+    });
+    injectedJsonLdIds.length = 0;
   }
 
   // Sunglasses avatar for dark-to-light transition
@@ -281,6 +293,7 @@
   });
 
   onUnmounted(() => {
+    cleanupJsonLd();
     if (pulseAnimationFrame) {
       cancelAnimationFrame(pulseAnimationFrame);
     }
