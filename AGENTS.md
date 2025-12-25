@@ -140,16 +140,19 @@ apps/web/src/
 The devlog uses a build-time indexing approach with runtime content loading:
 
 **Build-time (Vite plugin):**
+
 - `apps/web/vite-plugin-devlog-index.ts` scans `public/devlog/*.md` files
 - Extracts YAML frontmatter (title, date, tags, slug) using `front-matter`
 - Generates `virtual:devlog-index` module with metadata sorted by date
 
 **Runtime:**
+
 - Content fetched from `${BASE_URL}/devlog/{filename}`
 - Week-based grouping using ISO week date system (`packages/shared/getWeekKey`)
 - Caching and search integration via Fuse.js
 
 **Entry format:**
+
 ```yaml
 ---
 title: "Article Title"
@@ -157,7 +160,6 @@ date: YYYY-MM-DD
 tags: [tag1, tag2, tag3]
 slug: article-slug
 ---
-
 Markdown content here...
 ```
 
@@ -183,6 +185,7 @@ Webhook endpoint for receiving Slack messages.
 ### packages/shared
 
 Shared utilities used across services:
+
 - `getWeekKey(date)` - ISO week calculation for week-based grouping
 
 ## Key Patterns
@@ -282,24 +285,24 @@ describe("ClassName", () => {
 
 ## Routes
 
-| Path | Page | Description |
-|------|------|-------------|
-| `/` | AboutPage | Home/about page |
-| `/about` | AboutPage | About page (alias) |
-| `/tech-radar` | TechRadarHomePage | Radar landing |
-| `/tech-radar/:id` | TechRadarViewPage | Radar visualization |
-| `/experience` | ExperiencePage | Work history |
-| `/devlog` | DevLogPage | Development log |
-| `/articles/*` | redirect | Legacy redirect to /devlog |
-| `/:pathMatch(.*)*` | NotFoundPage | 404 handler |
+| Path               | Page              | Description                |
+| ------------------ | ----------------- | -------------------------- |
+| `/`                | AboutPage         | Home/about page            |
+| `/about`           | AboutPage         | About page (alias)         |
+| `/tech-radar`      | TechRadarHomePage | Radar landing              |
+| `/tech-radar/:id`  | TechRadarViewPage | Radar visualization        |
+| `/experience`      | ExperiencePage    | Work history               |
+| `/devlog`          | DevLogPage        | Development log            |
+| `/articles/*`      | redirect          | Legacy redirect to /devlog |
+| `/:pathMatch(.*)*` | NotFoundPage      | 404 handler                |
 
 ## Static Files Requiring Manual Sync
 
 The following files in `apps/web/public/` must be manually updated when content changes:
 
-| File | Sync When |
-|------|-----------|
-| `llms.txt` | About page content changes (skills, specialties, descriptions) |
+| File          | Sync When                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| `llms.txt`    | About page content changes (skills, specialties, descriptions)                              |
 | `sitemap.xml` | Routes are added or removed (also generated at build time by `vite-plugins/seo-sitemap.ts`) |
 
 The `sitemap.xml` in `public/` uses `dev.caiokf.com` as the default hostname for local development. At build time, the vite plugin overwrites it with the correct hostname based on `VITE_SITE_URL`.
@@ -312,3 +315,47 @@ When writing devlog articles or content:
 - **Avoid AI-typical hedging phrases** like "it's important to note", "it's worth mentioning"
 - **Don't start with "In this article..."** - Jump directly into the content
 - **Write naturally** - Content should read as human-written, not AI-generated
+
+# Claude Code Conventions
+
+Project-specific conventions for AI-assisted development.
+
+## Commands
+
+### Cloudflare Workers
+
+Always use `pnpm exec wrangler` instead of `npx wrangler` or `wrangler`:
+
+```bash
+# Deploy a worker
+cd services/devlog-slack-webhook-worker && pnpm exec wrangler deploy
+
+# Set secrets
+cd services/devlog-slack-webhook-worker && pnpm exec wrangler secret put SECRET_NAME
+
+# List secrets
+cd services/devlog-slack-webhook-worker && pnpm exec wrangler secret list
+```
+
+### Trigger.dev
+
+Deploy using the MCP tool or CLI:
+
+```bash
+# CLI deployment
+cd services/devlog-slack-workflow && npx trigger deploy --env prod
+```
+
+## Services
+
+### devlog-slack-workflow (Trigger.dev)
+
+- Location: `services/devlog-slack-workflow/`
+- Config: `trigger.config.ts`
+- Tasks in: `src/trigger/`
+
+### devlog-slack-webhook-worker (Cloudflare Worker)
+
+- Location: `services/devlog-slack-webhook-worker/`
+- Config: `wrangler.toml`
+- Required secrets: `SLACK_SIGNING_SECRET`, `TRIGGER_SECRET_KEY`

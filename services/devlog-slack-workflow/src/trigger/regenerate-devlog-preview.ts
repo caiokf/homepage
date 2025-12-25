@@ -21,8 +21,9 @@ export const regenerateDevlogPreview = task({
   retry: {
     maxAttempts: 3,
   },
-  run: async (payload: RegenerateDevlogPreviewPayload) => {
+  run: async (payload: RegenerateDevlogPreviewPayload, { ctx }) => {
     const { originalText, currentDevlog, feedback, feedbackHistory, responseUrl } = payload;
+    const runId = ctx.run.id;
 
     logger.info("Regenerating devlog with feedback", {
       feedback,
@@ -86,7 +87,7 @@ export const regenerateDevlogPreview = task({
 
       // Send updated preview to Slack with full feedback history
       const updatedHistory = [...feedbackHistory, feedback];
-      await sendPreviewToSlack(responseUrl, devlog, originalText, updatedHistory);
+      await sendPreviewToSlack(responseUrl, devlog, originalText, updatedHistory, runId);
 
       return {
         success: true,
