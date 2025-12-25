@@ -198,8 +198,57 @@
 <script setup lang="ts">
   import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
+  import { socialsConfig } from "../domain/layout/data";
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
+
+  // JSON-LD Structured Data
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Caio Kinzel Filho",
+    url: "https://caiokf.com",
+    jobTitle: "Software Engineer",
+    description:
+      "Software engineer specializing in architecture, event-driven systems, and engineering teams.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Sunshine Coast",
+      addressCountry: "Australia",
+    },
+    knowsAbout: [
+      "Software Architecture",
+      "Event-Driven Systems",
+      "Engineering Teams",
+      "Vue.js",
+      "TypeScript",
+    ],
+    sameAs: socialsConfig
+      .filter((s) => s.network !== "Email")
+      .map((s) => s.url),
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "caiokf",
+    url: "https://caiokf.com",
+    author: {
+      "@type": "Person",
+      name: "Caio Kinzel Filho",
+    },
+  };
+
+  function injectJsonLd(schema: object, id: string) {
+    const existingScript = document.getElementById(id);
+    if (existingScript) existingScript.remove();
+
+    const script = document.createElement("script");
+    script.id = id;
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+  }
 
   // Sunglasses avatar for dark-to-light transition
   const showSunglasses = ref(false);
@@ -209,6 +258,10 @@
   let themeObserver: MutationObserver | null = null;
 
   onMounted(() => {
+    // Inject JSON-LD structured data
+    injectJsonLd(personSchema, "schema-person");
+    injectJsonLd(websiteSchema, "schema-website");
+
     // Watch for theme transition classes on html element
     themeObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
