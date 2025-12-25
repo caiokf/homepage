@@ -64,6 +64,18 @@
     "weekKey": "2025-49"
   },
   {
+    "title": "Building My Personal Tech Radar",
+    "date": "2025-10-15",
+    "tags": [
+      "tools",
+      "learning",
+      "architecture"
+    ],
+    "slug": "building-my-personal-tech-radar",
+    "filename": "2025-10-15-building-my-personal-tech-radar.md",
+    "weekKey": "2025-42"
+  },
+  {
     "title": "Launching the Dev Log",
     "date": "2024-12-23",
     "tags": [
