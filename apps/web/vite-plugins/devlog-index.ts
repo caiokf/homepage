@@ -2,7 +2,23 @@ import { Plugin } from "vite";
 import { readdirSync, readFileSync } from "fs";
 import { resolve } from "path";
 import fm from "front-matter";
-import type { EntryFrontmatter, EntryMetadata } from "./src/domain/devlog/data";
+
+// Types defined locally - vite plugins use tsconfig.node.json which is separate from the app
+interface EntryFrontmatter {
+  title: string;
+  date: Date | string;
+  tags: string[];
+  slug: string;
+}
+
+interface EntryMetadata {
+  title: string;
+  date: string;
+  tags: string[];
+  slug: string;
+  filename: string;
+  weekKey: string;
+}
 
 // Local copy of getWeekKey - cannot import from @caiokf/shared at build time
 // since Vite config runs in Node before TypeScript compilation
