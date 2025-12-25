@@ -55,7 +55,7 @@ Cloudflare Worker that receives Slack slash commands and triggers the devlog wor
 ### 6. Configure Worker Secrets
 
 ```bash
-cd services/slack-webhook-worker
+cd services/devlog-slack-webhook-worker
 
 # Set the Slack signing secret
 npx wrangler secret put SLACK_SIGNING_SECRET
