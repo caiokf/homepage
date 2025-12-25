@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding assistants when working with code in this repository.
 
 ## Git Commits
 
@@ -17,26 +17,43 @@ Before starting any work:
 Personal homepage and portfolio application built with Vue 3, TypeScript, and D3.js. Features multiple sections including a Tech Radar visualization, devlog, experience timeline, and about page.
 
 **Monorepo Structure:**
-- `apps/web/` - Vue 3 frontend application
-- `services/devlog-slack-workflow/` - Trigger.dev tasks for Slack → devlog automation
+
+```
+/
+├── apps/web/                         # Vue 3 frontend application
+├── services/
+│   ├── devlog-slack-workflow/        # Trigger.dev tasks for Slack → devlog automation
+│   └── devlog-slack-webhook-worker/  # Cloudflare worker for Slack webhook handling
+├── packages/shared/                  # Shared utilities (@caiokf/shared)
+└── .claude/                          # Claude Code configuration (agents, skills)
+```
 
 **Key Features:**
 
 - Tech Radar visualization with D3.js (desktop SVG + mobile list views)
-- Devlog with Markdown entries, tag filtering, and contribution matrix
+- Devlog with Markdown entries, tag filtering, week grouping, and contribution matrix
 - Light/dark theme with system preference detection
 - Responsive design with mobile breakpoint at 1024px
+- Slack-to-devlog automation via Trigger.dev
 
 ## Commands
 
 ```bash
 # Root workspace commands (run from repo root)
-pnpm dev           # Start Vite dev server (localhost:5173)
-pnpm build         # Compile TypeScript + production build
-pnpm type-check    # Run vue-tsc TypeScript validation
-pnpm test          # Run Vitest unit tests
-pnpm test:ui       # Run tests with Vitest UI dashboard
-pnpm test:coverage # Generate test coverage reports
+pnpm dev              # Start Vite dev server (localhost:5173)
+pnpm build            # Compile TypeScript + production build
+pnpm type-check       # Run vue-tsc TypeScript validation
+pnpm test             # Run Vitest unit tests
+pnpm test:ui          # Run tests with Vitest UI dashboard
+pnpm test:coverage    # Generate test coverage reports
+
+# Devlog workflow (Trigger.dev)
+pnpm devlog:dev       # Start Trigger.dev local development
+pnpm devlog:deploy    # Deploy workflow to Trigger.dev
+
+# Slack webhook worker (Cloudflare)
+pnpm slack-webhook:dev      # Local development
+pnpm slack-webhook:deploy   # Deploy to Cloudflare
 
 # Run commands in specific workspace
 pnpm --filter @caiokf/web <command>
@@ -55,7 +72,7 @@ apps/web/src/
 ├── composables/
 │   └── useTheme.ts              # Theme management (light/dark + localStorage)
 ├── components/                  # Reusable UI (Atomic Design)
-│   ├── atoms/                   # BaseBadge, BaseCard, BaseThemeToggle, etc.
+│   ├── atoms/                   # BaseBadge, BaseCard, BaseThemeToggle, BaseBracketLink, BaseSpotlightLoader
 │   ├── molecules/               # BadgeGroup
 │   └── layouts/                 # AppHeader, AppFooter, SocialLinks
 ├── pages/                       # Route-bound page components
@@ -69,45 +86,104 @@ apps/web/src/
 │   ├── about/data.ts
 │   ├── layout/data.ts
 │   ├── experience/data.ts
-│   ├── devlog/
-│   │   ├── data.ts              # Devlog entry metadata and loading
-│   │   ├── content/             # Markdown devlog entries
-│   │   └── components/          # TagFilter, ContributionMatrix, DevLogHeader, etc.
+│   ├── devlog/                  # Devlog domain
+│   │   ├── data.ts              # Entry metadata, loading, caching, week grouping
+│   │   ├── model.ts             # DevlogEntry type definition
+│   │   └── components/          # DevLogHeader, DevLogSearch, TagFilter, TagRadar, ContributionMatrix
 │   └── radar/                   # Tech Radar domain
-│       ├── constants.ts         # Ring names, angles, dimensions
-│       ├── types.ts             # QuadrantPosition, PositionedBlip
-│       ├── models/              # Core business logic
+│       ├── constants.ts         # Ring names, angles, dimensions, max blips per ring
+│       ├── types.ts             # QuadrantPosition, PositionedBlip, RingName
+│       ├── models/              # Core business logic (with tests)
 │       │   ├── radar.ts         # Orchestrator (quadrant/blip management)
-│       │   ├── quadrant.ts      # Container for blips
-│       │   ├── blip.ts          # Technology item with status
-│       │   └── ring.ts          # Ring metadata (name, order)
-│       ├── geometry/            # D3/SVG positioning calculations
-│       │   ├── blip-positioning.geometry.ts  # Collision detection, polar→Cartesian
-│       │   ├── blip-rendering.geometry.ts   # Group blip logic
+│       │   ├── quadrant.ts      # Container for blips with collision detection
+│       │   ├── blip.ts          # Technology item with status/width
+│       │   └── ring.ts          # Ring metadata (name, index)
+│       ├── geometry/            # D3/SVG positioning calculations (with tests)
+│       │   ├── blip-positioning.geometry.ts   # Collision detection, polar→Cartesian
+│       │   ├── blip-rendering.geometry.ts    # Group blip layout logic
 │       │   └── svg-layout.geometry.ts
-│       ├── data-providers/      # Data loading strategies
+│       ├── data-providers/      # Strategy pattern for data loading
+│       │   ├── data-provider.ts           # Abstract base
 │       │   ├── data-provider-sample.ts
 │       │   ├── data-provider-csv.ts
 │       │   └── data-provider-google-sheets.ts
 │       ├── utils/
 │       │   └── seeded-random.ts # Deterministic RNG for reproducible positioning
-│       └── components/          # Radar-specific Vue components
-│           ├── TechRadar.vue           # Main wrapper (mobile/desktop switch)
-│           ├── TechRadarDesktop.vue    # SVG visualization with D3
+│       └── components/          # Radar visualization components
+│           ├── TechRadar.vue           # Mobile/desktop responsive switcher
+│           ├── TechRadarDesktop.vue    # D3-based SVG visualization
 │           ├── TechRadarMobile.vue     # List-based mobile view
 │           ├── RadarBlip.vue
 │           ├── RadarHeader.vue
 │           ├── RadarLegend.vue
+│           ├── RadarSeparators.vue
+│           ├── RadarTooltip.vue
+│           ├── QuadrantLabel.vue
 │           ├── Search.vue
-│           └── BlipList*.vue           # List display components
+│           ├── BlipList.vue
+│           ├── BlipListByQuadrant.vue
+│           ├── BlipListByRing.vue
+│           └── BlipListItem.vue
 ├── assets/
 │   ├── styles/global.css        # Design tokens, theming, global styles
+│   ├── images/
 │   └── logos/                   # Technology company logos
 └── types/
-    └── d3-tip.d.ts              # TypeScript definitions for d3-tip
+    ├── d3-tip.d.ts              # TypeScript definitions for d3-tip
+    └── virtual-devlog-index.d.ts # Virtual module type declaration
 ```
 
 **Data Flow (Radar):** Radar orchestrates QuadrantConfigs (with angles) → each Quadrant holds Blips → Blips reference Rings
+
+## Devlog System
+
+The devlog uses a build-time indexing approach with runtime content loading:
+
+**Build-time (Vite plugin):**
+- `apps/web/vite-plugin-devlog-index.ts` scans `public/devlog/*.md` files
+- Extracts YAML frontmatter (title, date, tags, slug) using `front-matter`
+- Generates `virtual:devlog-index` module with metadata sorted by date
+
+**Runtime:**
+- Content fetched from `${BASE_URL}/devlog/{filename}`
+- Week-based grouping using ISO week date system (`packages/shared/getWeekKey`)
+- Caching and search integration via Fuse.js
+
+**Entry format:**
+```yaml
+---
+title: "Article Title"
+date: YYYY-MM-DD
+tags: [tag1, tag2, tag3]
+slug: article-slug
+---
+
+Markdown content here...
+```
+
+## Services
+
+### devlog-slack-workflow (Trigger.dev v4)
+
+Task-driven workflow for Slack → devlog automation:
+
+- `process-slack-devlog-request` - Parse Slack messages
+- `generate-devlog-preview` - Generate preview from Slack content
+- `write-devlog-entry` - Write to GitHub repo
+- `publish-devlog-entry` - Finalize and deploy
+- `regenerate-devlog-preview` - Update existing preview
+- `publish-devlog-from-preview` - Publish previously generated preview
+
+Uses Anthropic SDK (Claude API) and Octokit (GitHub API).
+
+### devlog-slack-webhook-worker (Cloudflare Worker)
+
+Webhook endpoint for receiving Slack messages.
+
+### packages/shared
+
+Shared utilities used across services:
+- `getWeekKey(date)` - ISO week calculation for week-based grouping
 
 ## Key Patterns
 
@@ -149,8 +225,10 @@ apps/web/src/
 
 - **CSS Custom Properties** for theming (design tokens in `apps/web/src/assets/styles/global.css`)
 - Light/dark theme support via `useTheme` composable
+- Custom media queries: `--xs` (480px), `--sm` (600px), `--md` (768px), `--lg` (1024px), `--xl` (1200px)
 - Layout constants: `--content-max-width: 800px`, `--radar-width: 1056px`
 - Typography scale: `--text-xs` through `--text-3xl`
+- Spacing scale: `--space-1` through `--space-12`
 
 ### Radar Constants
 
@@ -158,6 +236,9 @@ apps/web/src/
 - Ring ratios: `[0.11, 0.406, 0.652, 0.832, 1]`
 - Quadrant angles: NW=0°, SW=-90°, NE=90°, SE=-180°
 - Blip dimensions: `IDEAL_BLIP_WIDTH = 22px`, `NEW_GROUP_BLIP_WIDTH = 88px`, `EXISTING_GROUP_BLIP_WIDTH = 124px`
+- Max blips per ring: `[8, 22, 17, 18]` (rings 0-3)
+- Mobile breakpoint: 1024px
+- Transition duration: 300ms
 
 ## TypeScript Conventions
 
@@ -211,3 +292,12 @@ describe("ClassName", () => {
 | `/devlog` | DevLogPage | Development log |
 | `/articles/*` | redirect | Legacy redirect to /devlog |
 | `/:pathMatch(.*)*` | NotFoundPage | 404 handler |
+
+## Content Writing Guidelines
+
+When writing devlog articles or content:
+
+- **No em dashes** - Use commas, semicolons, or separate sentences instead
+- **Avoid AI-typical hedging phrases** like "it's important to note", "it's worth mentioning"
+- **Don't start with "In this article..."** - Jump directly into the content
+- **Write naturally** - Content should read as human-written, not AI-generated
