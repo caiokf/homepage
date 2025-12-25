@@ -1,24 +1,11 @@
 import { Plugin } from "vite";
 import { readdirSync, readFileSync } from "fs";
-import { resolve, basename } from "path";
+import { resolve } from "path";
 import fm from "front-matter";
+import type { EntryFrontmatter, EntryMetadata } from "./src/domain/devlog/data";
 
-type EntryFrontmatter = {
-  title: string;
-  date: string;
-  tags: string[];
-  slug: string;
-};
-
-type EntryMetadata = EntryFrontmatter & {
-  weekKey: string;
-  filename: string;
-};
-
-/**
- * Get ISO week number and year for a given date
- * Returns "YYYY-WW" format
- */
+// Local copy of getWeekKey - cannot import from @caiokf/shared at build time
+// since Vite config runs in Node before TypeScript compilation
 function getWeekKey(date: Date): string {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   const dayNum = d.getUTCDay() || 7;
