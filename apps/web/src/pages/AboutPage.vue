@@ -209,7 +209,7 @@
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Caio Kinzel Filho",
-    url: "https://caiokf.com",
+    url: "https://dev.caiokf.com",
     jobTitle: "Software Engineer",
     description:
       "Software engineer specializing in architecture, event-driven systems, and engineering teams.",
@@ -234,7 +234,7 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "caiokf",
-    url: "https://caiokf.com",
+    url: "https://dev.caiokf.com",
     author: {
       "@type": "Person",
       name: "Caio Kinzel Filho",

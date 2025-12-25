@@ -26,7 +26,7 @@ export function sitemapPlugin(): Plugin {
   return {
     name: "vite-plugin-seo-sitemap",
     closeBundle() {
-      const siteUrl = (process.env.VITE_SITE_URL || "https://caiokf.com").replace(/\/$/, "");
+      const siteUrl = (process.env.VITE_SITE_URL || "https://dev.caiokf.com").replace(/\/$/, "");
       const distPath = resolve(__dirname, "../../../dist");
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
