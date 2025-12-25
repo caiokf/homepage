@@ -1,5 +1,5 @@
 {
-  "name": "@caiokf/slack-webhook-worker",
+  "name": "@caiokf/devlog-slack-webhook-worker",
   "version": "1.0.0",
   "private": true,
   "type": "module",
