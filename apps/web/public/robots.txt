@@ -1,5 +1,8 @@
 # robots.txt - AI Bot Allowlisting
 
+# Sitemap location
+Sitemap: https://dev.caiokf.com/sitemap.xml
+
 # Default: Allow all standard crawlers
 User-agent: *
 Allow: /
