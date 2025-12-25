@@ -1,10 +1,7 @@
-import { Plugin } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import { writeFileSync, readdirSync, statSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "path";
 import { execFileSync } from "child_process";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
@@ -141,12 +138,18 @@ function generateUrlEntry(
  * Plugin to generate sitemap.xml with correct hostname and lastmod dates
  */
 export function sitemapPlugin(): Plugin {
+  let outDir: string;
+  let root: string;
+
   return {
     name: "vite-plugin-seo-sitemap",
+    configResolved(config: ResolvedConfig) {
+      outDir = config.build.outDir;
+      root = config.root;
+    },
     closeBundle() {
       const siteUrl = (process.env.VITE_SITE_URL || "https://dev.caiokf.com").replace(/\/$/, "");
-      const distPath = resolve(__dirname, "../../../dist");
-      const srcPath = resolve(__dirname, "../src");
+      const srcPath = resolve(root, "src");
 
       const urlEntries = routes.map((route) => {
         const lastmod = route.sourceFiles
@@ -161,7 +164,7 @@ export function sitemapPlugin(): Plugin {
 ${urlEntries.join("\n")}
 </urlset>`;
 
-      writeFileSync(resolve(distPath, "sitemap.xml"), sitemap);
+      writeFileSync(resolve(outDir, "sitemap.xml"), sitemap);
       console.log("✓ Generated sitemap.xml with lastmod dates");
     },
   };

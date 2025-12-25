@@ -1,20 +1,21 @@
-import { Plugin } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import { readFileSync, writeFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { resolve } from "path";
 
 /**
  * Plugin to rewrite robots.txt with correct sitemap URL from VITE_SITE_URL
  */
 export function robotsPlugin(): Plugin {
+  let outDir: string;
+
   return {
     name: "vite-plugin-seo-robots",
+    configResolved(config: ResolvedConfig) {
+      outDir = config.build.outDir;
+    },
     closeBundle() {
       const siteUrl = (process.env.VITE_SITE_URL || "https://dev.caiokf.com").replace(/\/$/, "");
-      const distPath = resolve(__dirname, "../../../dist");
-      const robotsPath = resolve(distPath, "robots.txt");
+      const robotsPath = resolve(outDir, "robots.txt");
 
       try {
         let content = readFileSync(robotsPath, "utf-8");
