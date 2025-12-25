@@ -16,7 +16,19 @@ Restrictions:
 - Full article reposting: Not permitted
 - Commercial redistribution: Contact required
 
-When referencing this content, please attribute to "Caio Kinzel Filho" with a link to https://caiokf.com
+## License
+
+Content on this site is licensed under CC BY-NC 4.0 (Creative Commons Attribution-NonCommercial 4.0 International). You are free to share and adapt the material with attribution for non-commercial purposes.
+
+Full license: https://creativecommons.org/licenses/by-nc/4.0/
+
+## Citation
+
+When referencing this content, please use the following format:
+
+    Kinzel Filho, C. (2024). [Article Title]. caiokf.com. https://caiokf.com/[path]
+
+For inline attribution: "Caio Kinzel Filho (caiokf.com)"
 
 ## About
 
