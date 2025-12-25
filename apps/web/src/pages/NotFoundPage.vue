@@ -5,7 +5,7 @@
         <p class="error-line"><span class="prompt">$</span> cat /{{ path }}</p>
         <p class="error-output"><span class="error-code">404</span> page not found</p>
         <p class="error-description">how did we end up here?</p>
-        <p class="cursor-line"><span class="prompt">$</span> <span class="cursor">_</span></p>
+        <p class="cursor-line"><span class="prompt">$</span> <BaseCursor /></p>
       </div>
     </BaseCard>
     <BaseBracketLink to="/" class="home-link">look at caio again</BaseBracketLink>
@@ -17,6 +17,7 @@
   import { useRoute } from "vue-router";
   import BaseCard from "../components/atoms/BaseCard.vue";
   import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
 
   const route = useRoute();
   const path = computed(() => route.path.slice(1) || "unknown");
@@ -73,21 +74,6 @@
     margin: var(--space-4) 0 0;
     font-size: var(--text-base);
     color: var(--color-text-primary);
-  }
-
-  .cursor {
-    color: var(--color-text-primary);
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
   }
 
   .home-link {
