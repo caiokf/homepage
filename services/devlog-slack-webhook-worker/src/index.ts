@@ -62,8 +62,24 @@ type EditContext = {
   feedbackHistory: string[];
 };
 
+// New button context format (smaller, uses runId to fetch full data)
+type SlackButtonContext = {
+  runId: string;
+  originalText: string;
+  feedbackHistory: string[];
+};
+
 type TriggerResponse = {
   id: string;
+};
+
+type TriggerRunResponse = {
+  id: string;
+  status: string;
+  output?: {
+    success: boolean;
+    devlog: GeneratedDevlog;
+  };
 };
 
 // ============================================================================
@@ -142,6 +158,25 @@ async function triggerGeneratePreview(
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`Trigger.dev API error: ${response.status} - ${error}`);
+  }
+
+  return response.json();
+}
+
+async function fetchRunDetails(
+  runId: string,
+  secretKey: string
+): Promise<TriggerRunResponse> {
+  const response = await fetch(`https://api.trigger.dev/api/v3/runs/${runId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to fetch run: ${response.status} - ${error}`);
   }
 
   return response.json();
@@ -311,8 +346,7 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
 
     // Publish button
     if (action.action_id === "publish_devlog" && action.value) {
-      const context: EditContext = JSON.parse(action.value);
-      const devlog = context.currentDevlog;
+      const buttonContext: SlackButtonContext = JSON.parse(action.value);
 
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
@@ -321,6 +355,13 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
       }
 
       try {
+        // Fetch full devlog from run output
+        const runDetails = await fetchRunDetails(buttonContext.runId, env.TRIGGER_SECRET_KEY);
+        if (!runDetails.output?.devlog) {
+          throw new Error("Could not retrieve devlog from run output");
+        }
+        const devlog = runDetails.output.devlog;
+
         await triggerPublishDevlog(devlog, responseUrl || "", env.TRIGGER_SECRET_KEY);
       } catch (error) {
         console.error("Failed to publish:", error);
@@ -336,8 +377,25 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
 
     // Edit button - show feedback input
     if (action.action_id === "edit_devlog" && action.value) {
-      const context: EditContext = JSON.parse(action.value);
-      const devlog = context.currentDevlog;
+      const buttonContext: SlackButtonContext = JSON.parse(action.value);
+
+      // Fetch full devlog from run output
+      let devlog: GeneratedDevlog;
+      try {
+        const runDetails = await fetchRunDetails(buttonContext.runId, env.TRIGGER_SECRET_KEY);
+        if (!runDetails.output?.devlog) {
+          throw new Error("Could not retrieve devlog from run output");
+        }
+        devlog = runDetails.output.devlog;
+      } catch (error) {
+        console.error("Failed to fetch devlog:", error);
+        if (responseUrl) {
+          await sendSlackMessage(responseUrl, {
+            text: `Failed to load devlog: ${error instanceof Error ? error.message : "Unknown error"}`,
+          });
+        }
+        return new Response("", { status: 200 });
+      }
 
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
@@ -387,13 +445,13 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
                   text: { type: "plain_text", text: "Regenerate" },
                   style: "primary",
                   action_id: "regenerate_devlog",
-                  value: JSON.stringify(context),
+                  value: JSON.stringify(buttonContext),
                 },
                 {
                   type: "button",
                   text: { type: "plain_text", text: "Publish As-Is" },
                   action_id: "publish_devlog",
-                  value: JSON.stringify(context),
+                  value: JSON.stringify(buttonContext),
                 },
                 {
                   type: "button",
@@ -412,7 +470,7 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
 
     // Regenerate button - get feedback and regenerate
     if (action.action_id === "regenerate_devlog" && action.value) {
-      const context: EditContext = JSON.parse(action.value);
+      const buttonContext: SlackButtonContext = JSON.parse(action.value);
 
       // Get feedback from the input field
       const feedback =
@@ -437,7 +495,7 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
                     type: "button",
                     text: { type: "plain_text", text: "Try Again" },
                     action_id: "edit_devlog",
-                    value: JSON.stringify(context),
+                    value: JSON.stringify(buttonContext),
                   },
                   {
                     type: "button",
@@ -460,11 +518,18 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
       }
 
       try {
+        // Fetch full devlog from run output
+        const runDetails = await fetchRunDetails(buttonContext.runId, env.TRIGGER_SECRET_KEY);
+        if (!runDetails.output?.devlog) {
+          throw new Error("Could not retrieve devlog from run output");
+        }
+        const currentDevlog = runDetails.output.devlog;
+
         await triggerRegeneratePreview(
-          context.originalText,
-          context.currentDevlog,
+          buttonContext.originalText,
+          currentDevlog,
           feedback,
-          context.feedbackHistory,
+          buttonContext.feedbackHistory,
           responseUrl || "",
           env.TRIGGER_SECRET_KEY
         );

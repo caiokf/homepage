@@ -33,25 +33,35 @@ const SYSTEM_PROMPT = readFileSync(
 /**
  * Send a preview message to Slack with action buttons
  */
+export type SlackButtonContext = {
+  runId: string;
+  originalText: string;
+  feedbackHistory: string[];
+};
+
 export async function sendPreviewToSlack(
   responseUrl: string,
   devlog: GeneratedDevlog,
   originalText: string,
-  feedbackHistory: string[] = []
+  feedbackHistory: string[] = [],
+  runId?: string
 ): Promise<void> {
-  const context: EditContext = {
+  // Use runId-based context to stay under Slack's 2000 char button value limit
+  const buttonContext: SlackButtonContext = {
+    runId: runId || "",
     originalText,
-    currentDevlog: devlog,
     feedbackHistory,
   };
-  const contextJson = JSON.stringify(context);
+  const contextJson = JSON.stringify(buttonContext);
 
   const iterationNote =
     feedbackHistory.length > 0
       ? `\n_Iteration ${feedbackHistory.length + 1} based on your feedback_`
       : "";
 
-  await fetch(responseUrl, {
+  logger.info("Sending preview to Slack", { responseUrl });
+
+  const response = await fetch(responseUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -143,6 +153,17 @@ export async function sendPreviewToSlack(
       ],
     }),
   });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    logger.error("Failed to send preview to Slack", {
+      status: response.status,
+      statusText: response.statusText,
+      error: errorText,
+    });
+  } else {
+    logger.info("Successfully sent preview to Slack", { status: response.status });
+  }
 }
 
 /**
@@ -215,8 +236,9 @@ export const generateDevlogPreview = task({
   retry: {
     maxAttempts: 3,
   },
-  run: async (payload: GenerateDevlogPreviewPayload) => {
+  run: async (payload: GenerateDevlogPreviewPayload, { ctx }) => {
     const { text, responseUrl } = payload;
+    const runId = ctx.run.id;
 
     logger.info("Generating devlog preview", { text });
 
@@ -247,7 +269,7 @@ export const generateDevlogPreview = task({
       });
 
       // Send preview to Slack with context for editing
-      await sendPreviewToSlack(responseUrl, devlog, text, []);
+      await sendPreviewToSlack(responseUrl, devlog, text, [], runId);
 
       return {
         success: true,
