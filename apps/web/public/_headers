@@ -1,0 +1,19 @@
+# Cloudflare Pages headers configuration
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  # AI crawler signals - allow indexing and training
+  X-Robots-Tag: all
+  X-Robots-Tag: noarchive
+
+# AI-specific files
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  X-Robots-Tag: all
+
+/ai.txt
+  Content-Type: text/plain; charset=utf-8
+  X-Robots-Tag: all
+
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
