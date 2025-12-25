@@ -115,7 +115,7 @@
               <span class="terminal-prompt">$</span>
               <span class="terminal-command">history</span>
               <span class="terminal-flag">--all</span>
-              <span class="terminal-cursor"></span>
+              <BaseCursor />
             </button>
           </div>
         </div>
@@ -128,6 +128,7 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
 
   // Dynamically import all logos from assets/logos
   const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
@@ -617,26 +618,12 @@
     color: var(--color-text-muted);
   }
 
-  .terminal-cursor {
-    width: 8px;
-    height: 16px;
-    background: var(--color-primary);
+  .terminal-button :deep(.base-cursor) {
     opacity: 0;
-    animation: blink 1s step-end infinite;
     transition: opacity var(--transition-fast);
   }
 
-  @keyframes blink {
-    0%, 100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  .terminal-button:hover .terminal-cursor {
-    animation: blink 0.8s step-end infinite;
+  .terminal-button:hover :deep(.base-cursor) {
     opacity: 1;
   }
 

@@ -10,12 +10,14 @@
     </div>
     <div class="card-body">
       <slot></slot>
-      <span v-if="showCursor" class="cursor"></span>
+      <BaseCursor v-if="showCursor" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+  import BaseCursor from "./BaseCursor.vue";
+
   withDefaults(
     defineProps<{
       title?: string;
@@ -109,25 +111,5 @@
     transition:
       color var(--transition-theme),
       transform 0.2s ease;
-  }
-
-  .cursor {
-    display: inline-block;
-    width: 10px;
-    height: 1.2em;
-    background: var(--color-primary);
-    margin-left: var(--space-1);
-    vertical-align: text-bottom;
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
   }
 </style>

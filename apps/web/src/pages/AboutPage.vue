@@ -183,13 +183,10 @@
 
           <div class="line">
             <span class="line-number">{{ closingBracketLine }}</span>
-            <code
-              ><span class="code-punct">];</span
-              ><span
-                class="cursor"
-                :style="{ '--cursor-delay': `${skillsConfig.length * 150 + 400}ms` }"
-              ></span
-            ></code>
+            <code>
+              <span class="code-punct">];</span>
+              <BaseCursor :delay="skillsConfig.length * 150 + 400" animate />
+            </code>
           </div>
         </div>
       </div>
@@ -201,6 +198,7 @@
   import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import { socialsConfig } from "../domain/layout/data";
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
 
@@ -937,35 +935,6 @@
 
   .description-line code {
     line-height: var(--leading-relaxed);
-  }
-
-  /* Blinking cursor */
-  .cursor {
-    display: inline-block;
-    width: 0.6em;
-    height: 1.1em;
-    background: var(--color-primary);
-    margin-left: 2px;
-    vertical-align: text-bottom;
-    opacity: 0;
-    animation: cursorAppear 200ms ease-out forwards, cursorBlink 1s step-end infinite;
-    animation-delay: var(--cursor-delay, 0ms), var(--cursor-delay, 0ms);
-  }
-
-  @keyframes cursorAppear {
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes cursorBlink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
   }
 
   /* Responsive */
