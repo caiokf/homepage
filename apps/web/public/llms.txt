@@ -1,0 +1,23 @@
+# Caio Kinzel Filho
+
+> Software engineer based on the Sunshine Coast, Australia. Specializes in architecture, event-driven systems, and engineering teams. This is a personal portfolio and technical blog.
+
+## About
+
+Caio is a software engineer with expertise in:
+
+- Architecture for rapid scaling: Designing systems that ship fast while preventing technical debt paralysis
+- Data architecture as business strategy: Building data models that force clarity about what matters
+- Technical foundation as hiring accelerant: Establishing standards and frameworks that make scaling frictionless
+- AI-augmented team productivity: Building LLM-driven workflows that turn engineers into force multipliers
+
+## Pages
+
+- [About](/about): Personal introduction, location, specialties, and technical capabilities
+- [Experience](/experience): Professional work history and career timeline
+- [Tech Radar](/tech-radar): Personal technology radar showing tools, techniques, platforms, and languages with adoption recommendations (adopt, trial, assess, hold)
+- [DevLog](/devlog): Technical blog with articles on software engineering, architecture, and development practices
+
+## Content Structure
+
+The site is a Vue 3 single-page application. The Tech Radar visualizes technology choices using the Thoughtworks radar format with four quadrants (Techniques, Tools, Platforms, Languages & Frameworks) and four rings (Adopt, Trial, Assess, Hold). The DevLog contains markdown articles with tags for categorization.
