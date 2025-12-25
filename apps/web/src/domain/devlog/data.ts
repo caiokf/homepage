@@ -1,6 +1,7 @@
 import fm from "front-matter";
 import { marked } from "marked";
 import { getWeekKey } from "@caiokf/shared";
+import devlogIndex from "virtual:devlog-index";
 
 export { getWeekKey };
 
@@ -41,9 +42,6 @@ export type WeekGroup<T extends HasWeekKey = Entry> = {
 // Cache for loaded entry content
 const contentCache = new Map<string, EntryContent>();
 
-// Cached index data
-let indexCache: EntryMetadata[] | null = null;
-
 /**
  * Get the base URL for fetching devlog assets
  */
@@ -53,20 +51,10 @@ function getDevlogBaseUrl(): string {
 }
 
 /**
- * Fetch the devlog index (metadata only)
+ * Get the devlog index (metadata only) - bundled at build time
  */
-export async function fetchIndex(): Promise<EntryMetadata[]> {
-  if (indexCache) {
-    return indexCache;
-  }
-
-  const response = await fetch(`${getDevlogBaseUrl()}/index.json`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch devlog index: ${response.statusText}`);
-  }
-
-  indexCache = await response.json();
-  return indexCache!;
+export function fetchIndex(): Promise<EntryMetadata[]> {
+  return Promise.resolve(devlogIndex);
 }
 
 /**

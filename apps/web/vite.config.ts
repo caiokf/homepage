@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { writeFileSync, readFileSync } from 'fs'
 import { resolve } from 'path'
+import { devlogIndexPlugin } from './vite-plugin-devlog-index'
 
 // Plugin to copy index.html to 404.html for GitHub Pages SPA support
 const copy404Plugin = () => ({
@@ -15,7 +16,7 @@ const copy404Plugin = () => ({
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), copy404Plugin()],
+  plugins: [vue(), devlogIndexPlugin(), copy404Plugin()],
   base: process.env.VITE_BASE_URL || '/homepage/',
   build: {
     outDir: '../../dist',
