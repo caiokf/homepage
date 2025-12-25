@@ -293,6 +293,17 @@ describe("ClassName", () => {
 | `/articles/*` | redirect | Legacy redirect to /devlog |
 | `/:pathMatch(.*)*` | NotFoundPage | 404 handler |
 
+## Static Files Requiring Manual Sync
+
+The following files in `apps/web/public/` must be manually updated when content changes:
+
+| File | Sync When |
+|------|-----------|
+| `llms.txt` | About page content changes (skills, specialties, descriptions) |
+| `sitemap.xml` | Routes are added or removed (also generated at build time by `vite-plugins/seo-sitemap.ts`) |
+
+The `sitemap.xml` in `public/` uses `dev.caiokf.com` as the default hostname for local development. At build time, the vite plugin overwrites it with the correct hostname based on `VITE_SITE_URL`.
+
 ## Content Writing Guidelines
 
 When writing devlog articles or content:
