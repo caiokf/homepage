@@ -22,4 +22,4 @@ User-agent: Anthropic-AI
 Allow: /
 
 # Sitemap
-Sitemap: https://werace.au/sitemap.xml
+Sitemap: https://caiokf.com/sitemap.xml
