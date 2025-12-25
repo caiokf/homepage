@@ -35,7 +35,7 @@
         </div>
 
         <div class="entries-list">
-          <div
+          <article
             v-for="(entry, index) in filteredEntries"
             :key="entry.slug"
             class="entry-card"
@@ -44,10 +44,10 @@
           >
             <button class="entry-header" @click="toggleEntry(entry.slug)">
               <span class="entry-date">{{ formatDate(entry.date) }}</span>
-              <h3 class="entry-title">
+              <h2 class="entry-title">
                 <span class="expand-icon" :class="{ rotated: expandedSlug === entry.slug }">›</span>
                 <span v-html="highlightTitle(entry.title, entry.slug)"></span>
-              </h3>
+              </h2>
               <BadgeGroup :items="entry.tags" gap="xs" class="entry-tags" />
             </button>
 
@@ -59,7 +59,7 @@
                 <div v-else v-html="highlightContent(entryContent[entry.slug] || '')"></div>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </template>
