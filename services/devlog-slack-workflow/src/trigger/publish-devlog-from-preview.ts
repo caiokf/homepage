@@ -33,9 +33,14 @@ async function sendSuccessToSlack(
   title: string,
   slug: string,
   tags: string[],
+  content: string,
   fileUrl: string
 ): Promise<void> {
   const devlogUrl = `https://caiokf.com/devlog#${slug}`;
+
+  // Truncate content for Slack (max ~3000 chars for section text)
+  const truncatedContent =
+    content.length > 2500 ? content.substring(0, 2500) + "..." : content;
 
   await fetch(responseUrl, {
     method: "POST",
@@ -45,11 +50,44 @@ async function sendSuccessToSlack(
       replace_original: true,
       blocks: [
         {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: "Devlog Published",
+          },
+        },
+        {
+          type: "section",
+          fields: [
+            {
+              type: "mrkdwn",
+              text: `*Title:*\n${title}`,
+            },
+            {
+              type: "mrkdwn",
+              text: `*Slug:*\n\`${slug}\``,
+            },
+          ],
+        },
+        {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*Devlog published!*\n\n*${title}*\nTags: ${tags.join(", ")}`,
+            text: `*Tags:* ${tags.map((t) => `\`${t}\``).join(" ")}`,
           },
+        },
+        {
+          type: "divider",
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*Content:*\n${truncatedContent}`,
+          },
+        },
+        {
+          type: "divider",
         },
         {
           type: "actions",
@@ -57,6 +95,7 @@ async function sendSuccessToSlack(
             {
               type: "button",
               text: { type: "plain_text", text: "View on Site" },
+              style: "primary",
               url: devlogUrl,
             },
             {
@@ -231,7 +270,7 @@ ${content}
       logger.info("Devlog published", { commitSha: newCommit.sha, fileUrl });
 
       // Send success to Slack
-      await sendSuccessToSlack(responseUrl, title, slug, tags, fileUrl);
+      await sendSuccessToSlack(responseUrl, title, slug, tags, content, fileUrl);
 
       return {
         success: true,
