@@ -1,6 +1,9 @@
 import { Plugin } from "vite";
 import { writeFileSync, readFileSync } from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Plugin to copy index.html to 404.html for GitHub Pages SPA support
