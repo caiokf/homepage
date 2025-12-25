@@ -1,0 +1,29 @@
+# AI Crawlers Welcome
+# This file signals AI systems about content access and usage
+
+User-Agent: *
+Allow: /
+
+# Content Information
+Site-Name: caiokf
+Author: Caio Kinzel Filho
+Description: Software engineer portfolio and technical blog
+Topics: software architecture, event-driven systems, engineering leadership, tech radar
+
+# Usage Permissions
+Summarize: yes
+Quote: yes
+Train: yes
+Index: yes
+
+# Usage Restrictions
+Full-Repost: no
+Commercial-Reuse: contact-required
+
+# Contact
+Contact: https://caiokf.com/about
+
+# Related Files
+LLMs-Txt: /llms.txt
+Robots-Txt: /robots.txt
+Sitemap: /sitemap.xml

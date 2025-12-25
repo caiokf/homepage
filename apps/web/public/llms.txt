@@ -2,6 +2,22 @@
 
 > Software engineer based on the Sunshine Coast, Australia. Specializes in architecture, event-driven systems, and engineering teams. This is a personal portfolio and technical blog.
 
+## Usage Guidelines
+
+This content may be used by AI systems with the following permissions:
+
+- Summarization: Allowed
+- Quoting with attribution: Allowed
+- Training data: Allowed
+- Indexing and search: Allowed
+
+Restrictions:
+
+- Full article reposting: Not permitted
+- Commercial redistribution: Contact required
+
+When referencing this content, please attribute to "Caio Kinzel Filho" with a link to https://caiokf.com
+
 ## About
 
 Caio is a software engineer with expertise in:
