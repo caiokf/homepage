@@ -1,0 +1,11 @@
+/* TEAM */
+Name: Caio Kinzel Filho
+Role: Developer
+Site: https://dev.caiokf.com
+Location: Sunshine Coast, Australia
+
+/* SITE */
+Last update: 2025-12-25
+Standards: HTML5, CSS3, ES6+
+Components: Vue 3, TypeScript, D3.js
+Software: Vite, pnpm
