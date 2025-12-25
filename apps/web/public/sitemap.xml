@@ -1,5 +1,5 @@
-<!-- This file is overwritten at build time by vite-plugins/seo-sitemap.ts -->
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is overwritten at build time by vite-plugins/seo-sitemap.ts -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dev.caiokf.com/</loc>
