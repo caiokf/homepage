@@ -295,7 +295,14 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
     return new Response("Missing payload", { status: 400 });
   }
 
-  const payload: SlackInteractionPayload = JSON.parse(payloadStr);
+  let payload: SlackInteractionPayload;
+  try {
+    payload = JSON.parse(payloadStr);
+  } catch (error) {
+    console.error("Failed to parse interaction payload:", error);
+    return new Response("Invalid JSON payload", { status: 400 });
+  }
+
   const responseUrl = payload.response_url;
 
   // Handle button clicks
