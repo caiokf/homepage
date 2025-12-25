@@ -453,12 +453,6 @@ async function handleInteraction(body: string, env: Env): Promise<Response> {
         return new Response("", { status: 200 });
       }
 
-      // Add feedback to history
-      const updatedContext: EditContext = {
-        ...context,
-        feedbackHistory: [...context.feedbackHistory, feedback],
-      };
-
       if (responseUrl) {
         await sendSlackMessage(responseUrl, {
           text: `Regenerating with your feedback: "${feedback}"...`,
