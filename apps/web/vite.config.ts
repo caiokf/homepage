@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import { devlogIndexPlugin, copy404Plugin, seoPlugin } from "./src/vite-plugins";
+import { devlogIndexPlugin, copy404Plugin, seoPlugin } from "./vite-plugins";
 
 // https://vitejs.dev/config/
 export default defineConfig({
