@@ -1,11 +1,17 @@
 <template>
   <div class="radar-search">
     <div class="search-input-container">
+      <label for="radar-search" class="visually-hidden">Search technologies</label>
       <input
+        id="radar-search"
         v-model="searchQuery"
         type="text"
         placeholder="search technologies..."
         class="search-input"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls="radar-search-results"
+        :aria-expanded="showResults && filteredBlips.length > 0"
         @input="handleInput"
         @focus="showResults = true"
         @blur="handleBlur"
@@ -14,7 +20,7 @@
         @keydown.enter.prevent="selectHighlighted"
         @keydown.escape="closeResults"
       />
-      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path
           fill="currentColor"
           d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
@@ -22,11 +28,13 @@
       </svg>
     </div>
 
-    <ul v-if="showResults && filteredBlips.length > 0" class="search-results">
+    <ul v-if="showResults && filteredBlips.length > 0" id="radar-search-results" class="search-results" role="listbox">
       <li
         v-for="(result, index) in filteredBlips"
         :key="`${result.quadrant}-${result.blip.name}`"
         :class="['search-result', { highlighted: index === highlightedIndex }]"
+        role="option"
+        :aria-selected="index === highlightedIndex"
         @mousedown.prevent="selectResult(result)"
         @mouseenter="highlightedIndex = index"
       >
@@ -342,5 +350,17 @@
   [data-theme="dark"] .search-highlight {
     background: oklch(0.45 0.12 90);
     color: oklch(0.95 0.02 90);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

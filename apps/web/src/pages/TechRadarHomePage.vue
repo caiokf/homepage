@@ -5,7 +5,7 @@
       <h1 class="page-title">tech radar</h1>
       <p class="hero-description">
         Inspired by
-        <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener">ThoughtWorks</a
+        <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener" title="ThoughtWorks Technology Radar (opens in new tab)">ThoughtWorks</a
         >, this is my personal assessment of technologies based on hands-on experience—what works,
         what I'm testing, and what to avoid.
       </p>
