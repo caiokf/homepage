@@ -28,11 +28,27 @@ async function sendSlackResponse(
     }
   }
 
-  await fetch(responseUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(responseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const responseText = await response.text().catch(() => "Unable to read response body");
+      logger.error("Slack response failed", {
+        status: response.status,
+        statusText: response.statusText,
+        responseText,
+      });
+    }
+  } catch (error) {
+    logger.error("Failed to send Slack response", {
+      error: error instanceof Error ? error.message : String(error),
+      responseUrl,
+    });
+  }
 }
 
 /**
