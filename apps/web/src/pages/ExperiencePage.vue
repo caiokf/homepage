@@ -67,6 +67,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="company-link"
+                        :title="`Visit ${experience.company} website (opens in new tab)`"
                       >
                         {{ experience.company }}
                       </a>
