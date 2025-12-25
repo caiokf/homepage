@@ -1,5 +1,7 @@
 <template>
   <div class="tech-radar-view">
+    <h1 class="visually-hidden">Tech Radar</h1>
+
     <!-- Quadrant navigation tabs -->
     <RadarHeader
       v-if="radar"
@@ -270,6 +272,18 @@
     background: var(--color-background);
     color: var(--color-text-primary);
     transition: background-color var(--transition-theme), color var(--transition-theme);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* When quadrant is selected, prevent page scroll */

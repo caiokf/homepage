@@ -1,7 +1,7 @@
 <template>
   <div class="tech-radar-home">
     <!-- Hero + CTA Section -->
-    <section class="hero">
+    <section class="hero" aria-label="Tech Radar introduction">
       <h1 class="page-title">tech radar</h1>
       <p class="hero-description">
         Inspired by

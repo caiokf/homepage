@@ -1,7 +1,8 @@
 <template>
   <div id="app">
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <AppHeader />
-    <main class="main-content">
+    <main id="main-content" class="main-content" aria-label="Main content">
       <router-view />
     </main>
     <AppFooter />
@@ -25,6 +26,24 @@
     transition:
       background-color var(--transition-theme),
       color var(--transition-theme);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: var(--color-background);
+    padding: var(--space-2) var(--space-4);
+    z-index: 100;
+    transition: top 0.2s ease;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    top: 0;
   }
 
   .main-content {

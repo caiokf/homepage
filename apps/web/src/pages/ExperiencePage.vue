@@ -3,19 +3,19 @@
     <h1 class="page-title">experience</h1>
 
     <div class="page-layout">
-      <aside class="sidebar">
+      <aside class="sidebar" aria-label="Summary">
         <div class="sidebar-section">
-          <h3 class="sidebar-title">
+          <h2 class="sidebar-title">
             companies<span class="sidebar-title-suffix"> (last {{ RECENT_YEARS }} years)</span>
-          </h3>
+          </h2>
           <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
           <BadgeGroup :items="recentCompanyTags" gap="xs" />
         </div>
 
         <div class="sidebar-section">
-          <h3 class="sidebar-title">
+          <h2 class="sidebar-title">
             technologies<span class="sidebar-title-suffix"> (last {{ RECENT_YEARS }} years)</span>
-          </h3>
+          </h2>
           <p class="sidebar-subtitle">last {{ RECENT_YEARS }} years</p>
           <BadgeGroup :items="recentTechnologies" variant="muted" gap="xs" />
         </div>

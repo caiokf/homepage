@@ -1,7 +1,9 @@
 <template>
   <div class="about-page">
+    <h1 class="visually-hidden">About Caio Kinzel Filho</h1>
+
     <!-- Hero with Orbit Visualization -->
-    <section class="hero">
+    <section class="hero" aria-label="Introduction">
       <div
         ref="heroVisualRef"
         class="hero-visual"
@@ -124,7 +126,7 @@
     </section>
 
     <!-- Skills Section with Code Aesthetic -->
-    <section class="skills-section">
+    <section class="skills-section" aria-label="Capabilities">
       <div class="code-editor">
         <!-- Window controls + Tab bar -->
         <div class="editor-header">
@@ -482,6 +484,18 @@
   .about-page {
     min-height: calc(100vh - 112px);
     padding: var(--space-8);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* Hero Section with Orbit */
