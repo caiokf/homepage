@@ -22,7 +22,7 @@
 <style scoped>
   .base-cursor {
     display: inline-block;
-    width: 0.6em;
+    width: 0.15em;
     height: 1.2em;
     background: var(--color-primary);
     vertical-align: text-bottom;
