@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { describe, it, expect } from "vitest";
-import { mount } from "@vue/test-utils";
+import { mount, type DOMWrapper } from "@vue/test-utils";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import BaseWindowControls from "./BaseWindowControls.vue";
@@ -84,7 +84,7 @@ describe("BaseWindowControls", () => {
     it("should apply control class to all dots", () => {
       const wrapper = mount(BaseWindowControls);
       const controls = wrapper.findAll(".control");
-      controls.forEach((control) => {
+      controls.forEach((control: DOMWrapper<Element>) => {
         expect(control.classes()).toContain("control");
       });
     });
