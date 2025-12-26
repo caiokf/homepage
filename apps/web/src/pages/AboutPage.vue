@@ -363,16 +363,22 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
+  import { computed } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import { socialsConfig } from "../domain/layout/data";
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+||||||| ancestor
+=======
+  import { useJsonLd } from "../composables/useJsonLd";
+>>>>>>> theirs
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
 ||||||| ancestor
 =======
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
@@ -397,38 +403,51 @@
 >>>>>>> theirs
 ||||||| ancestor
 =======
+||||||| ancestor
+=======
+  import CodeEditor from "../components/organisms/CodeEditor.vue";
+>>>>>>> theirs
   import CodeEditorFile from "../components/molecules/CodeEditorFile.vue";
+<<<<<<< ours
 >>>>>>> theirs
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
+||||||| ancestor
+  import avatarImage from "../assets/images/avatar.png";
+  import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
+=======
+  import OrbitAvatar from "../components/organisms/OrbitAvatar.vue";
+>>>>>>> theirs
 
   // JSON-LD Structured Data
-  const personSchema = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Caio Kinzel Filho",
-    url: "https://dev.caiokf.com",
-    jobTitle: "Software Engineer",
-    description:
-      "Software engineer specializing in architecture, event-driven systems, and engineering teams.",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Sunshine Coast",
-      addressCountry: "Australia",
-    },
-    knowsAbout: ["Software Architecture", "Event-Driven Systems", "Engineering Teams"],
-    sameAs: socialsConfig.filter((s) => s.network !== "Email").map((s) => s.url),
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "caiokf",
-    url: "https://dev.caiokf.com",
-    author: {
+  useJsonLd({
+    "schema-person": {
+      "@context": "https://schema.org",
       "@type": "Person",
       name: "Caio Kinzel Filho",
+      url: "https://dev.caiokf.com",
+      jobTitle: "Software Engineer",
+      description:
+        "Software engineer specializing in architecture, event-driven systems, and engineering teams.",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Sunshine Coast",
+        addressCountry: "Australia",
+      },
+      knowsAbout: ["Software Architecture", "Event-Driven Systems", "Engineering Teams"],
+      sameAs: socialsConfig.filter((s) => s.network !== "Email").map((s) => s.url),
     },
+    "schema-website": {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "caiokf",
+      url: "https://dev.caiokf.com",
+      author: {
+        "@type": "Person",
+        name: "Caio Kinzel Filho",
+      },
+    },
+<<<<<<< ours
   };
 
   // Track injected JSON-LD script IDs for cleanup
@@ -483,6 +502,70 @@
       themeObserver.disconnect();
     }
 >>>>>>> theirs
+||||||| ancestor
+  };
+
+  // Track injected JSON-LD script IDs for cleanup
+  const injectedJsonLdIds: string[] = [];
+
+  function injectJsonLd(schema: object, id: string) {
+    const existingScript = document.getElementById(id);
+    if (existingScript) existingScript.remove();
+
+    const script = document.createElement("script");
+    script.id = id;
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+    injectedJsonLdIds.push(id);
+  }
+
+  function cleanupJsonLd() {
+    injectedJsonLdIds.forEach((id) => {
+      const script = document.getElementById(id);
+      if (script) script.remove();
+    });
+    injectedJsonLdIds.length = 0;
+  }
+
+  // Sunglasses avatar for dark-to-light transition
+  const showSunglasses = ref(false);
+  const currentAvatarImage = computed(() =>
+    showSunglasses.value ? avatarSunglassesImage : avatarImage
+  );
+  let themeObserver: MutationObserver | null = null;
+
+  onMounted(() => {
+    // Inject JSON-LD structured data
+    injectJsonLd(personSchema, "schema-person");
+    injectJsonLd(websiteSchema, "schema-website");
+
+    // Watch for theme transition classes on html element
+    themeObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          const html = document.documentElement;
+          if (html.classList.contains("theme-to-light")) {
+            showSunglasses.value = true;
+          } else if (html.classList.contains("theme-to-dark")) {
+            showSunglasses.value = false;
+          }
+        }
+      });
+    });
+    themeObserver.observe(document.documentElement, { attributes: true });
+  });
+
+  onUnmounted(() => {
+    cleanupJsonLd();
+    if (pulseAnimationFrame) {
+      cancelAnimationFrame(pulseAnimationFrame);
+    }
+    if (themeObserver) {
+      themeObserver.disconnect();
+    }
+=======
+>>>>>>> theirs
   });
 
   const engineer = {
@@ -533,192 +616,6 @@
     .hero {
       flex-direction: row;
       justify-content: center;
-    }
-  }
-
-  /* Orbit Visualization */
-  .hero-visual {
-    position: relative;
-    width: 320px;
-    height: 320px;
-    flex-shrink: 0;
-  }
-
-  .orbit-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .orbit-layer {
-    transform-origin: 200px 200px;
-    will-change: transform;
-  }
-
-  .orbit-layer-outer {
-    animation: orbit-rotate var(--orbit-speed, 60s) linear infinite;
-  }
-
-  .orbit-layer-middle {
-    animation: orbit-rotate calc(var(--orbit-speed, 60s) * 0.7) linear infinite;
-  }
-
-  .orbit-layer-inner {
-    animation: orbit-rotate calc(var(--orbit-speed, 60s) * 0.4) linear infinite;
-  }
-
-  @keyframes orbit-rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .orbit-ring {
-    fill: none;
-    stroke: var(--color-border);
-    stroke-width: 1;
-    stroke-dasharray: 4 4;
-    opacity: 0.5;
-  }
-
-  .orbit-ring-inner {
-    stroke-dasharray: 2 2;
-  }
-
-  .orbit-node {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  /* Disable transition during spring physics animation */
-  .pulse-active .orbit-node {
-    transition: none;
-  }
-
-  /* Glow effect on nodes during pulse */
-  .pulse-active .orbit-node circle {
-    animation: nodeGlow 600ms ease-out;
-  }
-
-  @keyframes nodeGlow {
-    0% {
-      filter: drop-shadow(0 0 0 currentColor);
-    }
-    30% {
-      filter: drop-shadow(0 0 12px currentColor);
-    }
-    100% {
-      filter: drop-shadow(0 0 0 currentColor);
-    }
-  }
-
-  .orbit-node circle {
-    fill: var(--color-primary);
-    opacity: 0.8;
-    transition: filter 0.2s ease;
-  }
-
-  .orbit-node:hover circle {
-    filter: drop-shadow(0 0 6px currentColor);
-  }
-
-  .orbit-outer circle {
-    fill: var(--color-primary);
-  }
-
-  .orbit-middle circle {
-    fill: var(--color-primary);
-    opacity: 0.6;
-  }
-
-  @keyframes avatarEntrance {
-    0% {
-      opacity: 0;
-      transform: scale(0.8);
-      filter: drop-shadow(0 0 0 rgba(61, 138, 138, 0));
-    }
-    60% {
-      opacity: 1;
-      transform: scale(1.05);
-      filter: drop-shadow(0 0 20px rgba(61, 138, 138, 0.6));
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-      filter: drop-shadow(0 0 12px rgba(61, 138, 138, 0.3));
-    }
-  }
-
-  .avatar-wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-  }
-
-  .avatar {
-    width: 140px;
-    height: 140px;
-    border-radius: var(--radius-full);
-    object-fit: cover;
-    border: 3px solid var(--color-primary);
-    box-shadow: 0 0 40px #3d8a8a33;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-  }
-
-  .avatar.avatar-entering {
-    animation: avatarEntrance 800ms ease-out forwards;
-  }
-
-  .avatar:hover {
-    transform: scale(1.05);
-  }
-
-  .avatar:active {
-    transform: scale(0.95);
-  }
-
-  /* Shockwave pulse rings */
-  .pulse-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 140px;
-    height: 140px;
-    border-radius: var(--radius-full);
-    border: 2px solid var(--color-primary);
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .pulse-ring.active {
-    animation: pulseRingExpand 600ms ease-out forwards;
-  }
-
-  .pulse-ring-2.active {
-    animation-delay: 80ms;
-  }
-
-  .pulse-ring-3.active {
-    animation-delay: 160ms;
-  }
-
-  @keyframes pulseRingExpand {
-    0% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0.8;
-      border-width: 3px;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(2.8);
-      opacity: 0;
-      border-width: 1px;
     }
   }
 

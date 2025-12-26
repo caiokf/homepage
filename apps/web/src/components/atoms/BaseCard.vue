@@ -56,6 +56,7 @@
       <slot></slot>
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
       <BaseCursor v-if="showCursor" />
 ||||||| ancestor
       <span v-if="showCursor" class="cursor"></span>
@@ -65,11 +66,16 @@
       <span v-if="showCursor" class="cursor"></span>
 =======
 >>>>>>> theirs
+||||||| ancestor
+      <BaseCursor v-if="showCursor" />
+=======
+>>>>>>> theirs
     </div>
   </component>
 </template>
 
 <script setup lang="ts">
+<<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
@@ -93,6 +99,11 @@
 >>>>>>> theirs
 ||||||| ancestor
   import BaseWindowControls from "./BaseWindowControls.vue";
+
+=======
+>>>>>>> theirs
+||||||| ancestor
+  import BaseCursor from "./BaseCursor.vue";
 
 =======
 >>>>>>> theirs
@@ -195,6 +206,7 @@
       color var(--transition-theme),
       transform 0.2s ease;
   }
+<<<<<<< ours
 
   .cursor {
     display: inline-block;
@@ -247,5 +259,9 @@
 =======
     transition: transform 0.2s ease;
   }
+>>>>>>> theirs
+||||||| ancestor
+=======
+
 >>>>>>> theirs
 </style>
