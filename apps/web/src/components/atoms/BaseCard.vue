@@ -1,11 +1,7 @@
 <template>
   <div class="app-card">
     <div class="card-header">
-      <div class="card-controls">
-        <span class="control"></span>
-        <span class="control"></span>
-        <span class="control"></span>
-      </div>
+      <BaseWindowControls />
       <span class="card-title">caiokf://{{ title }}</span>
     </div>
     <div class="card-body">

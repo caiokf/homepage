@@ -32,9 +32,7 @@
             <!-- App Window Header -->
             <header class="card-header">
               <div class="window-controls">
-                <span class="control close"></span>
-                <span class="control minimize"></span>
-                <span class="control maximize"></span>
+                <BaseWindowControls />
               </div>
               <div class="card-meta">
                 <span class="meta-date">{{ formatDateRange(experience) }}</span>
@@ -128,7 +126,18 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+||||||| ancestor
+=======
+<<<<<<< ours
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+||||||| ancestor
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+=======
+>>>>>>> theirs
+>>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
   const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
@@ -391,25 +400,6 @@
     display: flex;
     gap: 8px;
     padding: var(--space-3) var(--space-4);
-  }
-
-  .control {
-    width: 12px;
-    height: 12px;
-    border-radius: var(--radius-full);
-    background: var(--color-border);
-  }
-
-  .control.close {
-    background: #ff5f57;
-  }
-
-  .control.minimize {
-    background: #febc2e;
-  }
-
-  .control.maximize {
-    background: #28c840;
   }
 
   .card-meta {
