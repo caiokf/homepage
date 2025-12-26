@@ -217,6 +217,7 @@
     if (themeObserver) {
       themeObserver.disconnect();
     }
+>>>>>>> theirs
   });
 
   const engineer = {
@@ -691,16 +692,6 @@
     .hero {
       margin-bottom: var(--space-8);
       gap: var(--space-6);
-    }
-
-    .hero-visual {
-      width: 260px;
-      height: 260px;
-    }
-
-    .avatar {
-      width: 110px;
-      height: 110px;
     }
 
     .hero-code {
