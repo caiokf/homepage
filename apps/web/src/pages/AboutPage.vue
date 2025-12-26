@@ -10,17 +10,24 @@
         <div class="hero-code">
           <div class="hero-line">
             <code
-              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span>&nbsp;<span class="code-punct">= {</span></code
+              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span
+              >&nbsp;<span class="code-punct">= {</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code
+              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
+                class="hero-name"
+                >"{{ engineer.name }}"</span
+              ><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code
+              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span
+                class="hero-location"
+                >"{{ engineer.location }}"</span
+              ><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
@@ -34,7 +41,10 @@
             class="hero-line"
           >
             <code class="indent-2"
-              ><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? "," : "" }}</span></code
+              ><span class="code-muted">"{{ specialty }}"</span
+              ><span class="code-punct">{{
+                index < engineer.specialties.length - 1 ? "," : ""
+              }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -42,7 +52,10 @@
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
+              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span
+                class="code-muted"
+                >{{ JSON.stringify(engineer.offline) }}</span
+              ></code
             >
           </div>
           <div class="hero-line">
@@ -159,7 +172,7 @@
   const engineer = {
     name: "caio kinzel filho",
     location: "Sunshine Coast, Australia",
-    specialties: ["architecture", "event-driven systems", "engineering teams"],
+    specialties: ["architecture", "event-driven systems", "ai engineering"],
     offline: ["trails", "beach", "sim racing"],
   };
 
