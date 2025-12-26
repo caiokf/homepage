@@ -126,7 +126,13 @@
                 />
               </div>
             </div>
+<<<<<<< ours
           </AppCard>
+||||||| ancestor
+          </article>
+=======
+          </BaseCard>
+>>>>>>> theirs
 
           <div v-if="!showAll" class="show-more-container">
             <button
