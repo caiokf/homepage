@@ -159,7 +159,7 @@
               <span class="terminal-prompt">$</span>
               <span class="terminal-command">history</span>
               <span class="terminal-flag">--all</span>
-              <BaseCursor />
+              <span class="terminal-cursor"></span>
             </button>
           </div>
         </div>
@@ -172,6 +172,7 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+<<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
@@ -240,6 +241,11 @@
 >>>>>>> theirs
 ||||||| ancestor
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+=======
+  import AppCard from "../components/molecules/AppCard.vue";
+>>>>>>> theirs
+||||||| ancestor
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
 =======
   import AppCard from "../components/molecules/AppCard.vue";
 >>>>>>> theirs
@@ -745,11 +751,16 @@
     color: var(--color-text-muted);
   }
 
-  .terminal-button :deep(.base-cursor) {
+  .terminal-cursor {
+    width: 8px;
+    height: 16px;
+    background: var(--color-primary);
     opacity: 0;
+    animation: blink 1s step-end infinite;
     transition: opacity var(--transition-fast);
   }
 
+<<<<<<< ours
 <<<<<<< ours
   .terminal-button:hover :deep(.base-cursor) {
 ||||||| ancestor
@@ -769,6 +780,21 @@
   @keyframes blink {
     0%,
     100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .terminal-button:hover .terminal-cursor {
+    animation: blink 0.8s step-end infinite;
+>>>>>>> theirs
+||||||| ancestor
+  .terminal-button:hover :deep(.base-cursor) {
+=======
+  @keyframes blink {
+    0%, 100% {
       opacity: 0;
     }
     50% {
