@@ -192,18 +192,14 @@
     box-shadow: var(--shadow-lg);
     max-height: 300px;
     overflow-y: auto;
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-theme), border-color var(--transition-theme);
   }
 
   .search-result {
     padding: var(--space-3) var(--space-4);
     cursor: pointer;
     border-bottom: 1px solid var(--color-border-subtle);
-    transition:
-      background-color var(--transition-fast),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-fast), border-color var(--transition-theme);
   }
 
   .search-result:last-child {
@@ -241,9 +237,7 @@
     font-size: var(--text-sm);
     font-family: var(--font-mono);
     text-transform: lowercase;
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme),
+    transition: background-color var(--transition-theme), border-color var(--transition-theme),
       color var(--transition-theme);
   }
 </style>

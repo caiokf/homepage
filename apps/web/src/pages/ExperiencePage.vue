@@ -31,6 +31,7 @@
             :style="{ '--card-delay': `${index * 100}ms` }"
           >
 <<<<<<< ours
+<<<<<<< ours
             <template #header>
 ||||||| ancestor
             <!-- App Window Header -->
@@ -46,6 +47,15 @@
               <div class="window-controls">
                 <BaseWindowControls />
               </div>
+>>>>>>> theirs
+||||||| ancestor
+            <!-- App Window Header -->
+            <header class="card-header">
+              <div class="window-controls">
+                <BaseWindowControls />
+              </div>
+=======
+            <template #header>
 >>>>>>> theirs
               <div class="card-meta">
                 <span class="meta-date">{{ formatDateRange(experience) }}</span>
@@ -127,11 +137,17 @@
               </div>
             </div>
 <<<<<<< ours
+<<<<<<< ours
           </AppCard>
 ||||||| ancestor
           </article>
 =======
           </BaseCard>
+>>>>>>> theirs
+||||||| ancestor
+          </BaseCard>
+=======
+          </AppCard>
 >>>>>>> theirs
 
           <div v-if="!showAll" class="show-more-container">
@@ -156,6 +172,7 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+<<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
@@ -220,6 +237,11 @@
 =======
 >>>>>>> theirs
 =======
+>>>>>>> theirs
+||||||| ancestor
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+=======
+  import AppCard from "../components/molecules/AppCard.vue";
 >>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
@@ -464,6 +486,7 @@
   /* Override BaseCard styles for experience cards */
   .experience-card :deep(.card-header) {
     background: var(--color-surface);
+<<<<<<< ours
     padding: var(--space-3) var(--space-4);
   }
 
@@ -479,10 +502,32 @@
     height: 12px;
     border-radius: var(--radius-full);
     background: var(--color-border);
+||||||| ancestor
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+    transition: background-color 0.2s ease;
   }
 
+  .card-header:hover {
+    background: var(--color-surface-hover);
+=======
+    padding: var(--space-3) var(--space-4);
+>>>>>>> theirs
+  }
+
+<<<<<<< ours
   .control.close {
     background: #ff5f57;
+||||||| ancestor
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    padding: var(--space-3) var(--space-4);
+=======
+  .experience-card :deep(.card-body) {
+    padding: 0;
+    font-family: inherit;
+>>>>>>> theirs
   }
 
   .control.minimize {
@@ -709,7 +754,8 @@
   .terminal-button:hover :deep(.base-cursor) {
 ||||||| ancestor
   @keyframes blink {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0;
     }
     50% {
