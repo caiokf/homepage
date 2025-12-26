@@ -145,6 +145,7 @@
   .card-body {
     padding: var(--space-6);
 <<<<<<< ours
+<<<<<<< ours
     font-family: var(--font-mono);
     color: var(--color-text-primary);
     transition:
@@ -177,6 +178,35 @@
     50% {
       opacity: 0;
     }
+||||||| ancestor
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    transition:
+      color var(--transition-theme),
+      transform 0.2s ease;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background: var(--color-primary);
+    margin-left: var(--space-1);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+=======
+    transition: transform 0.2s ease;
+>>>>>>> theirs
   }
 =======
     transition: transform 0.2s ease;

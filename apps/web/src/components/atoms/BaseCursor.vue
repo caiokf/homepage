@@ -1,4 +1,5 @@
 <<<<<<< ours
+<<<<<<< ours
 <template>
   <span
     class="base-cursor"
@@ -53,6 +54,34 @@
     }
   }
 </style>
+|||||||
+=======
+<template>
+  <span class="cursor" aria-hidden="true"></span>
+</template>
+
+<style scoped>
+  .cursor {
+    display: inline-block;
+    width: 5px;
+    height: 1.2em;
+    background: var(--color-primary);
+    margin-left: var(--space-1);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+>>>>>>> theirs
 |||||||
 =======
 <template>
