@@ -1,14 +1,16 @@
 <template>
-  <div class="app-card">
-    <div class="card-header">
+  <component :is="tag" class="app-card">
+    <header class="card-header">
       <BaseWindowControls />
-      <span class="card-title">caiokf://{{ title }}</span>
-    </div>
+      <slot name="header">
+        <span class="card-title">caiokf://{{ title }}</span>
+      </slot>
+    </header>
     <div class="card-body">
       <slot></slot>
       <BaseCursor v-if="showCursor" />
     </div>
-  </div>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -22,10 +24,12 @@
 >>>>>>> theirs
   withDefaults(
     defineProps<{
+      tag?: "div" | "article" | "section";
       title?: string;
       showCursor?: boolean;
     }>(),
     {
+      tag: "div",
       title: "terminal",
       showCursor: true,
     }
