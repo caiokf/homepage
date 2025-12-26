@@ -106,7 +106,7 @@
                 />
               </div>
             </div>
-          </article>
+          </BaseCard>
 
           <div v-if="!showAll" class="show-more-container">
             <button @click="showAll = true" class="terminal-button" aria-label="Show all experiences">
@@ -695,7 +695,7 @@
   }
 
   @media (--sm) {
-    .window-controls {
+    .experience-card :deep(.base-window-controls) {
       display: none;
     }
 
