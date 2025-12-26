@@ -1,5 +1,6 @@
 <template>
 <<<<<<< ours
+<<<<<<< ours
   <component :is="tag" class="base-card">
     <header v-if="$slots.header" class="card-header">
       <slot name="header"></slot>
@@ -17,9 +18,26 @@
 =======
   <div class="app-card">
     <div class="card-header">
+||||||| ancestor
+  <div class="app-card">
+    <div class="card-header">
+=======
+  <component :is="tag" class="app-card">
+    <header class="card-header">
+>>>>>>> theirs
       <BaseWindowControls />
+<<<<<<< ours
       <span class="card-title">caiokf://{{ title }}</span>
     </div>
+>>>>>>> theirs
+||||||| ancestor
+      <span class="card-title">caiokf://{{ title }}</span>
+    </div>
+=======
+      <slot name="header">
+        <span class="card-title">caiokf://{{ title }}</span>
+      </slot>
+    </header>
 >>>>>>> theirs
     <div class="card-body">
       <slot></slot>
@@ -56,10 +74,28 @@
 >>>>>>> theirs
   withDefaults(
     defineProps<{
+<<<<<<< ours
       tag?: "div" | "article" | "section";
+||||||| ancestor
+      title?: string;
+      showCursor?: boolean;
+=======
+      tag?: "div" | "article" | "section";
+      title?: string;
+      showCursor?: boolean;
+>>>>>>> theirs
     }>(),
     {
+<<<<<<< ours
       tag: "div",
+||||||| ancestor
+      title: "terminal",
+      showCursor: true,
+=======
+      tag: "div",
+      title: "terminal",
+      showCursor: true,
+>>>>>>> theirs
     }
   );
 </script>
