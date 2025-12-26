@@ -270,10 +270,6 @@
   let themeObserver: MutationObserver | null = null;
 
   onMounted(() => {
-    // Inject JSON-LD structured data
-    injectJsonLd(personSchema, "schema-person");
-    injectJsonLd(websiteSchema, "schema-website");
-
     // Watch for theme transition classes on html element
     themeObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -291,7 +287,6 @@
   });
 
   onUnmounted(() => {
-    cleanupJsonLd();
     if (pulseAnimationFrame) {
       cancelAnimationFrame(pulseAnimationFrame);
     }
