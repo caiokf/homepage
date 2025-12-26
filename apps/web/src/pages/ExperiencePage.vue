@@ -26,37 +26,10 @@
           <AppCard
             v-for="(experience, index) in visibleExperiences"
             :key="index"
-            tag="article"
             class="experience-card"
             :style="{ '--card-delay': `${index * 100}ms` }"
           >
-<<<<<<< ours
-<<<<<<< ours
             <template #header>
-||||||| ancestor
-            <!-- App Window Header -->
-            <header class="card-header">
-              <div class="window-controls">
-                <span class="control close"></span>
-                <span class="control minimize"></span>
-                <span class="control maximize"></span>
-              </div>
-=======
-            <!-- App Window Header -->
-            <header class="card-header">
-              <div class="window-controls">
-                <BaseWindowControls />
-              </div>
->>>>>>> theirs
-||||||| ancestor
-            <!-- App Window Header -->
-            <header class="card-header">
-              <div class="window-controls">
-                <BaseWindowControls />
-              </div>
-=======
-            <template #header>
->>>>>>> theirs
               <div class="card-meta">
                 <span class="meta-date">{{ formatDateRange(experience) }}</span>
                 <span class="meta-duration">{{ calculateDuration(experience) }}</span>
@@ -76,15 +49,8 @@
                         class="company-logo"
                       />
                     </div>
-                    <div
-                      class="via-logo-wrapper"
-                      v-if="experience.via && getViaLogo(experience.via)"
-                    >
-                      <img
-                        :src="getViaLogo(experience.via)"
-                        :alt="experience.via"
-                        class="via-logo"
-                      />
+                    <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
+                      <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
                     </div>
                   </div>
                   <div class="company-info">
@@ -136,30 +102,14 @@
                 />
               </div>
             </div>
-<<<<<<< ours
-<<<<<<< ours
           </AppCard>
-||||||| ancestor
-          </article>
-=======
-          </BaseCard>
->>>>>>> theirs
-||||||| ancestor
-          </BaseCard>
-=======
-          </AppCard>
->>>>>>> theirs
 
           <div v-if="!showAll" class="show-more-container">
-            <button
-              @click="showAll = true"
-              class="terminal-button"
-              aria-label="Show all experiences"
-            >
+            <button @click="showAll = true" class="terminal-button" aria-label="Show all experiences">
               <span class="terminal-prompt">$</span>
               <span class="terminal-command">history</span>
               <span class="terminal-flag">--all</span>
-              <span class="terminal-cursor"></span>
+              <BaseCursor />
             </button>
           </div>
         </div>
@@ -172,83 +122,8 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-||||||| ancestor
-=======
-<<<<<<< ours
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-||||||| ancestor
-<<<<<<< ours
-||||||| ancestor
-=======
-<<<<<<< ours
->>>>>>> theirs
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-<<<<<<< ours
-=======
->>>>>>> theirs
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-<<<<<<< ours
-||||||| ancestor
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
->>>>>>> theirs
->>>>>>> theirs
-||||||| ancestor
-||||||| ancestor
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-||||||| ancestor
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-=======
   import AppCard from "../components/molecules/AppCard.vue";
->>>>>>> theirs
-||||||| ancestor
-=======
-||||||| ancestor
-=======
-<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
-||||||| ancestor
-<<<<<<< ours
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
->>>>>>> theirs
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-<<<<<<< ours
-||||||| ancestor
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
->>>>>>> theirs
->>>>>>> theirs
->>>>>>> theirs
-||||||| ancestor
-||||||| ancestor
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-||||||| ancestor
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-=======
-  import AppCard from "../components/molecules/AppCard.vue";
->>>>>>> theirs
-||||||| ancestor
-  import BaseCursor from "../components/atoms/BaseCursor.vue";
-=======
-  import AppCard from "../components/molecules/AppCard.vue";
->>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
   const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
@@ -468,84 +343,17 @@
     }
   }
 
-  /* App Window Card Styling */
+  /* App Card Styling */
   .experience-card {
-    background: var(--color-background-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    transition: background-color var(--transition-theme), box-shadow 0.2s ease, transform 0.2s ease;
     animation: cardSlideUp 500ms ease-out backwards;
     animation-delay: var(--card-delay, 0ms);
   }
 
-  .experience-card:hover {
-    box-shadow: var(--shadow-xl);
-  }
-
-  .experience-card:has(.card-header:hover) {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-xl);
-  }
-
-  /* Override BaseCard styles for experience cards */
-  .experience-card :deep(.card-header) {
-    background: var(--color-surface);
-<<<<<<< ours
-    padding: var(--space-3) var(--space-4);
-  }
-
-<<<<<<< ours
   .experience-card :deep(.card-body) {
     padding: 0;
     font-family: inherit;
   }
 
-||||||| ancestor
-  .control {
-    width: 12px;
-    height: 12px;
-    border-radius: var(--radius-full);
-    background: var(--color-border);
-||||||| ancestor
-    border-bottom: 1px solid var(--color-border);
-    padding: 0;
-    transition: background-color 0.2s ease;
-  }
-
-  .card-header:hover {
-    background: var(--color-surface-hover);
-=======
-    padding: var(--space-3) var(--space-4);
->>>>>>> theirs
-  }
-
-<<<<<<< ours
-  .control.close {
-    background: #ff5f57;
-||||||| ancestor
-  .window-controls {
-    display: flex;
-    gap: 8px;
-    padding: var(--space-3) var(--space-4);
-=======
-  .experience-card :deep(.card-body) {
-    padding: 0;
-    font-family: inherit;
->>>>>>> theirs
-  }
-
-  .control.minimize {
-    background: #febc2e;
-  }
-
-  .control.maximize {
-    background: #28c840;
-  }
-
-=======
->>>>>>> theirs
   .card-meta {
     display: flex;
     align-items: center;
@@ -751,60 +559,12 @@
     color: var(--color-text-muted);
   }
 
-  .terminal-cursor {
-    width: 8px;
-    height: 16px;
-    background: var(--color-primary);
+  .terminal-button :deep(.base-cursor) {
     opacity: 0;
-    animation: blink 1s step-end infinite;
     transition: opacity var(--transition-fast);
   }
 
-<<<<<<< ours
-<<<<<<< ours
   .terminal-button:hover :deep(.base-cursor) {
-||||||| ancestor
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  .terminal-button:hover .terminal-cursor {
-    animation: blink 0.8s step-end infinite;
-=======
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  .terminal-button:hover .terminal-cursor {
-    animation: blink 0.8s step-end infinite;
->>>>>>> theirs
-||||||| ancestor
-  .terminal-button:hover :deep(.base-cursor) {
-=======
-  @keyframes blink {
-    0%, 100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  .terminal-button:hover .terminal-cursor {
-    animation: blink 0.8s step-end infinite;
->>>>>>> theirs
     opacity: 1;
   }
 
@@ -872,10 +632,6 @@
   }
 
   @media (--sm) {
-    .experience-card :deep(.base-window-controls) {
-      display: none;
-    }
-
     .card-meta {
       width: 100%;
       justify-content: center;

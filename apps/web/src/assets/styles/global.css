@@ -489,18 +489,15 @@ svg {
   }
 }
 
-.theme-transitioning .control.close,
-.theme-transitioning .control--close {
+.theme-transitioning .control.close {
   animation: controlFlash 200ms ease-out;
 }
 
-.theme-transitioning .control.minimize,
-.theme-transitioning .control--minimize {
+.theme-transitioning .control.minimize {
   animation: controlFlash 200ms ease-out 100ms;
 }
 
-.theme-transitioning .control.maximize,
-.theme-transitioning .control--maximize {
+.theme-transitioning .control.maximize {
   animation: controlFlash 200ms ease-out 200ms;
 }
 
