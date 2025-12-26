@@ -1,6 +1,7 @@
 <template>
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
   <component :is="tag" class="base-card">
     <header v-if="$slots.header" class="card-header">
       <slot name="header"></slot>
@@ -37,12 +38,29 @@
       <slot name="header">
         <span class="card-title">caiokf://{{ title }}</span>
       </slot>
+||||||| ancestor
+  <component :is="tag" class="app-card">
+    <header class="card-header">
+      <BaseWindowControls />
+      <slot name="header">
+        <span class="card-title">caiokf://{{ title }}</span>
+      </slot>
+=======
+  <component :is="tag" class="base-card">
+    <header v-if="$slots.header" class="card-header">
+      <slot name="header"></slot>
+>>>>>>> theirs
     </header>
 >>>>>>> theirs
     <div class="card-body">
       <slot></slot>
 <<<<<<< ours
+<<<<<<< ours
       <BaseCursor v-if="showCursor" />
+||||||| ancestor
+      <span v-if="showCursor" class="cursor"></span>
+=======
+>>>>>>> theirs
 ||||||| ancestor
       <span v-if="showCursor" class="cursor"></span>
 =======
@@ -52,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+<<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
@@ -72,10 +91,16 @@
   import BaseWindowControls from "./BaseWindowControls.vue";
 
 >>>>>>> theirs
+||||||| ancestor
+  import BaseWindowControls from "./BaseWindowControls.vue";
+
+=======
+>>>>>>> theirs
   withDefaults(
     defineProps<{
 <<<<<<< ours
       tag?: "div" | "article" | "section";
+<<<<<<< ours
 ||||||| ancestor
       title?: string;
       showCursor?: boolean;
@@ -84,10 +109,16 @@
       title?: string;
       showCursor?: boolean;
 >>>>>>> theirs
+||||||| ancestor
+      title?: string;
+      showCursor?: boolean;
+=======
+>>>>>>> theirs
     }>(),
     {
 <<<<<<< ours
       tag: "div",
+<<<<<<< ours
 ||||||| ancestor
       title: "terminal",
       showCursor: true,
@@ -95,6 +126,11 @@
       tag: "div",
       title: "terminal",
       showCursor: true,
+>>>>>>> theirs
+||||||| ancestor
+      title: "terminal",
+      showCursor: true,
+=======
 >>>>>>> theirs
     }
   );

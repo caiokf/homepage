@@ -295,9 +295,7 @@
     font-family: var(--font-mono);
     text-transform: lowercase;
     z-index: 100;
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme),
+    transition: background-color var(--transition-theme), border-color var(--transition-theme),
       color var(--transition-theme);
   }
 </style>
