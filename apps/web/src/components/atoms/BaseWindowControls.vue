@@ -35,17 +35,21 @@
     width: var(--control-size);
     height: var(--control-size);
     border-radius: 50%;
+    animation: var(--control-pulse) 350ms ease-out backwards;
   }
 
   .control--close {
     background-color: #ff5f57;
+    animation-delay: 0ms;
   }
 
   .control--minimize {
     background-color: #febc2e;
+    animation-delay: 70ms;
   }
 
   .control--maximize {
     background-color: #28c840;
+    animation-delay: 140ms;
   }
 </style>

@@ -57,17 +57,6 @@
     "ask": []
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "but claude pre-tool"
-          }
-        ]
-      }
-    ],
     "PreCompact": [
       {
         "matcher": "",
@@ -79,17 +68,6 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "but claude post-tool"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "",
@@ -97,17 +75,6 @@
           {
             "type": "command",
             "command": "bd prime"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "but claude stop"
           }
         ]
       }

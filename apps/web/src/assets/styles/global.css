@@ -189,6 +189,9 @@
   --color-error: #c62828;
   --color-error-bg: #ffebee;
 
+  /* Window Control pulse animation (switches on theme change to retrigger) */
+  --control-pulse: pulse-light;
+
   /* Header/Banner Gradient */
   --color-header-start: #667eea;
   --color-header-end: #764ba2;
@@ -261,6 +264,9 @@
   --color-warning-bg: #3d2a1a;
   --color-error: #ef5350;
   --color-error-bg: #3d1a1a;
+
+  /* Window Control pulse animation (switches on theme change to retrigger) */
+  --control-pulse: pulse-dark;
 
   /* Header/Banner Gradient - slightly adjusted for dark */
   --color-header-start: #4a5cc8;
@@ -400,6 +406,17 @@ svg {
 /* ==========================================================================
    Theme Transition Animations
    ========================================================================== */
+
+/* Window control pulse - triggered by animation-name change on theme switch */
+@keyframes pulse-light {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.5); }
+}
+
+@keyframes pulse-dark {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.5); }
+}
 
 /* Ring pulse animation - ripples outward from center */
 @keyframes themePulseRing {
