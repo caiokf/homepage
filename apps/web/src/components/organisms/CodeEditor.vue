@@ -38,7 +38,10 @@
 
   const activeFile = ref(files.value[0] || "");
 
-  provide("activeFile", computed(() => activeFile.value));
+  provide(
+    "activeFile",
+    computed(() => activeFile.value)
+  );
 </script>
 
 <style scoped>
@@ -48,9 +51,7 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-theme), border-color var(--transition-theme);
   }
 
   .editor-header {
@@ -58,9 +59,7 @@
     align-items: center;
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
-    transition:
-      background-color var(--transition-theme),
-      border-color var(--transition-theme);
+    transition: background-color var(--transition-theme), border-color var(--transition-theme);
   }
 
   .editor-header :deep(.base-window-controls) {
@@ -82,9 +81,7 @@
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
     cursor: pointer;
-    transition:
-      color var(--transition-theme),
-      background-color var(--transition-theme);
+    transition: color var(--transition-theme), background-color var(--transition-theme);
   }
 
   .tab:hover {

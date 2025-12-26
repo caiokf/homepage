@@ -52,9 +52,7 @@
   :deep(.line-number) {
     color: var(--color-text-muted);
     opacity: 0.5;
-    transition:
-      opacity var(--transition-fast),
-      color var(--transition-fast);
+    transition: opacity var(--transition-fast), color var(--transition-fast);
     min-width: 32px;
     text-align: right;
     padding-right: var(--space-4);
