@@ -1,13 +1,13 @@
 <template>
   <div class="not-found-page">
-    <BaseCard title="error" :show-cursor="false">
+    <AppCard title="error">
       <div class="not-found-content">
         <p class="error-line"><span class="prompt">$</span> cat /{{ path }}</p>
         <p class="error-output"><span class="error-code">404</span> page not found</p>
         <p class="error-description">how did we end up here?</p>
         <p class="cursor-line"><span class="prompt">$</span> <BaseCursor /></p>
       </div>
-    </BaseCard>
+    </AppCard>
     <BaseBracketLink to="/" class="home-link">look at caio again</BaseBracketLink>
   </div>
 </template>
@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import BaseCard from "../components/atoms/BaseCard.vue";
+  import AppCard from "../components/molecules/AppCard.vue";
   import BaseBracketLink from "../components/atoms/BaseBracketLink.vue";
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 
