@@ -154,7 +154,15 @@ describe("BaseWindowControls", () => {
 =======
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
+import { readFileSync } from "fs";
+import { resolve } from "path";
 import BaseWindowControls from "./BaseWindowControls.vue";
+
+// Read the component source to verify CSS rules
+const componentSource = readFileSync(
+  resolve(__dirname, "./BaseWindowControls.vue"),
+  "utf-8"
+);
 
 describe("BaseWindowControls", () => {
   describe("rendering", () => {
@@ -230,6 +238,54 @@ describe("BaseWindowControls", () => {
       controls.forEach((control) => {
         expect(control.classes()).toContain("control");
       });
+    });
+  });
+
+  describe("theme transitions", () => {
+    it("should define transition on base control class", () => {
+      // Verify the .control class has a transition rule
+      expect(componentSource).toMatch(/\.control\s*\{[^}]*transition:\s*background-color/);
+    });
+
+    it("should define transition on close control for theme changes", () => {
+      // Verify .control--close has its own transition rule
+      expect(componentSource).toMatch(/\.control--close\s*\{[^}]*transition:\s*background-color/);
+    });
+
+    it("should define transition on minimize control for theme changes", () => {
+      // Verify .control--minimize has its own transition rule
+      expect(componentSource).toMatch(/\.control--minimize\s*\{[^}]*transition:\s*background-color/);
+    });
+
+    it("should define transition on maximize control for theme changes", () => {
+      // Verify .control--maximize has its own transition rule
+      expect(componentSource).toMatch(/\.control--maximize\s*\{[^}]*transition:\s*background-color/);
+    });
+
+    it("should use theme transition timing variable", () => {
+      // Verify all transitions use the --transition-theme CSS variable for consistent timing
+      const transitionMatches = componentSource.match(/transition:\s*background-color\s+var\(--transition-theme\)/g);
+      // Should have 4 transitions: base .control + 3 modifier classes
+      expect(transitionMatches).toHaveLength(4);
+    });
+
+    it("should render controls with correct classes for transitions to apply", () => {
+      const wrapper = mount(BaseWindowControls);
+
+      // Verify the DOM has the correct class structure for CSS transitions
+      const closeControl = wrapper.find(".control--close");
+      const minimizeControl = wrapper.find(".control--minimize");
+      const maximizeControl = wrapper.find(".control--maximize");
+
+      // Each control should have both base and modifier classes
+      expect(closeControl.classes()).toContain("control");
+      expect(closeControl.classes()).toContain("control--close");
+
+      expect(minimizeControl.classes()).toContain("control");
+      expect(minimizeControl.classes()).toContain("control--minimize");
+
+      expect(maximizeControl.classes()).toContain("control");
+      expect(maximizeControl.classes()).toContain("control--maximize");
     });
   });
 });
