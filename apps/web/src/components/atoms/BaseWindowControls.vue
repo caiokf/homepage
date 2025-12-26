@@ -101,14 +101,17 @@
 
   .control--close {
     background-color: var(--color-red);
+    transition: background-color var(--transition-theme);
   }
 
   .control--minimize {
     background-color: var(--color-orange);
+    transition: background-color var(--transition-theme);
   }
 
   .control--maximize {
     background-color: var(--color-green);
+    transition: background-color var(--transition-theme);
   }
 </style>
 >>>>>>> theirs

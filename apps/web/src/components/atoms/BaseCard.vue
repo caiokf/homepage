@@ -36,6 +36,7 @@
 <script setup lang="ts">
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
   import BaseCursor from "./BaseCursor.vue";
 
 ||||||| ancestor
@@ -47,6 +48,11 @@
   import BaseWindowControls from "./BaseWindowControls.vue";
 
 =======
+>>>>>>> theirs
+||||||| ancestor
+=======
+  import BaseWindowControls from "./BaseWindowControls.vue";
+
 >>>>>>> theirs
   withDefaults(
     defineProps<{
