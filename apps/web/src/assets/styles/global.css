@@ -189,10 +189,8 @@
   --color-error: #c62828;
   --color-error-bg: #ffebee;
 
-  /* Window Control colors - darker in light theme */
-  --control-close: #e5453d;
-  --control-minimize: #dda020;
-  --control-maximize: #1fb035;
+  /* Window Control pulse animation (switches on theme change to retrigger) */
+  --control-pulse: pulse-light;
 
   /* Header/Banner Gradient */
   --color-header-start: #667eea;
@@ -304,10 +302,8 @@
   --quadrant-SW: var(--color-green-light);
   --quadrant-SE: var(--color-red-light);
 
-  /* Window Control colors - brighter in dark theme */
-  --control-close: #ff6b63;
-  --control-minimize: #ffc942;
-  --control-maximize: #3dd656;
+  /* Window Control pulse animation (switches on theme change to retrigger) */
+  --control-pulse: pulse-dark;
 }
 
 /* ==========================================================================

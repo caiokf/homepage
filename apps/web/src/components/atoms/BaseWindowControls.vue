@@ -36,22 +36,34 @@
     height: var(--control-size);
     border-radius: 50%;
     background-color: var(--color-border);
-    transition: background-color var(--transition-theme);
+    animation: var(--control-pulse) 400ms ease-out backwards;
   }
 
-  /* macOS-style traffic light colors with staggered transition */
+  /* macOS-style traffic light colors with staggered animation */
   .control--close {
-    background-color: var(--control-close);
-    transition-delay: 0ms;
+    background-color: #ff5f57;
+    animation-delay: 0ms;
   }
 
   .control--minimize {
-    background-color: var(--control-minimize);
-    transition-delay: 60ms;
+    background-color: #febc2e;
+    animation-delay: 80ms;
   }
 
   .control--maximize {
-    background-color: var(--control-maximize);
-    transition-delay: 120ms;
+    background-color: #28c840;
+    animation-delay: 160ms;
+  }
+
+  @keyframes pulse-light {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.5); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes pulse-dark {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.5); }
+    100% { transform: scale(1); }
   }
 </style>
