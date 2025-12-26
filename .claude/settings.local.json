@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      // General Bash utilities
       "Bash(ls:*)",
       "Bash(tree:*)",
       "Bash(find:*)",
@@ -13,26 +12,18 @@
       "Bash(node:*)",
       "Bash(python3:*)",
       "Bash(perl -i.bak -pe:*)",
-
-      // Git operations
       "Bash(git add:*)",
       "Bash(git mv:*)",
       "Bash(git diff:*)",
       "Bash(git checkout:*)",
       "Bash(git stash:*)",
       "Bash(git worktree:*)",
-
-      // Package management & scripts
       "Bash(pnpm add:*)",
       "Bash(pnpm install:*)",
       "Bash(pnpm build:*)",
       "Bash(pnpm test:*)",
-
-      // Linting and quality tools
       "Bash(npx markdownlint-cli:*)",
       "Bash(npx markdownlint:*)",
-
-      // Build/dependency custom tools
       "Bash(bd create:*)",
       "Bash(bd dep add:*)",
       "Bash(bd list:*)",
@@ -40,16 +31,10 @@
       "Bash(bd close:*)",
       "Bash(bd sync:*)",
       "Bash(bd create:*)",
-
-      // GitHub / CI interaction
       "Bash(gh run list:*)",
-
-      // Skills/third-party tools
       "Skill(conventions-vue)",
       "Skill(coderabbit-request)",
       "Bash(coderabbit --prompt-only --type uncommitted:*)",
-
-      // Web search and fetch operations
       "WebSearch",
       "WebFetch(domain:*)"
     ],
