@@ -30,7 +30,23 @@
             class="experience-card"
             :style="{ '--card-delay': `${index * 100}ms` }"
           >
+<<<<<<< ours
             <template #header>
+||||||| ancestor
+            <!-- App Window Header -->
+            <header class="card-header">
+              <div class="window-controls">
+                <span class="control close"></span>
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
+              </div>
+=======
+            <!-- App Window Header -->
+            <header class="card-header">
+              <div class="window-controls">
+                <BaseWindowControls />
+              </div>
+>>>>>>> theirs
               <div class="card-meta">
                 <span class="meta-date">{{ formatDateRange(experience) }}</span>
                 <span class="meta-duration">{{ calculateDuration(experience) }}</span>
@@ -137,6 +153,7 @@
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 ||||||| ancestor
 =======
@@ -144,7 +161,12 @@
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 ||||||| ancestor
 <<<<<<< ours
+||||||| ancestor
+=======
+<<<<<<< ours
+>>>>>>> theirs
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+<<<<<<< ours
 =======
 >>>>>>> theirs
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
@@ -165,6 +187,19 @@
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
 =======
   import AppCard from "../components/molecules/AppCard.vue";
+>>>>>>> theirs
+||||||| ancestor
+=======
+||||||| ancestor
+=======
+<<<<<<< ours
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+||||||| ancestor
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+=======
+>>>>>>> theirs
+>>>>>>> theirs
 >>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
@@ -412,11 +447,34 @@
     padding: var(--space-3) var(--space-4);
   }
 
+<<<<<<< ours
   .experience-card :deep(.card-body) {
     padding: 0;
     font-family: inherit;
   }
 
+||||||| ancestor
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+  }
+
+  .control.close {
+    background: #ff5f57;
+  }
+
+  .control.minimize {
+    background: #febc2e;
+  }
+
+  .control.maximize {
+    background: #28c840;
+  }
+
+=======
+>>>>>>> theirs
   .card-meta {
     display: flex;
     align-items: center;

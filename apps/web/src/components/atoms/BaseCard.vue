@@ -1,8 +1,26 @@
 <template>
+<<<<<<< ours
   <component :is="tag" class="base-card">
     <header v-if="$slots.header" class="card-header">
       <slot name="header"></slot>
     </header>
+||||||| ancestor
+  <div class="app-card">
+    <div class="card-header">
+      <div class="card-controls">
+        <span class="control"></span>
+        <span class="control"></span>
+        <span class="control"></span>
+      </div>
+      <span class="card-title">caiokf://{{ title }}</span>
+    </div>
+=======
+  <div class="app-card">
+    <div class="card-header">
+      <BaseWindowControls />
+      <span class="card-title">caiokf://{{ title }}</span>
+    </div>
+>>>>>>> theirs
     <div class="card-body">
       <slot></slot>
 <<<<<<< ours
