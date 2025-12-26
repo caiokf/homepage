@@ -39,19 +39,19 @@
     transition: background-color var(--transition-theme);
   }
 
-  /* macOS-style traffic light colors */
+  /* macOS-style traffic light colors with staggered transition */
   .control--close {
-    background-color: #ff5f57;
-    transition: background-color var(--transition-theme);
+    background-color: var(--control-close);
+    transition-delay: 0ms;
   }
 
   .control--minimize {
-    background-color: #febc2e;
-    transition: background-color var(--transition-theme);
+    background-color: var(--control-minimize);
+    transition-delay: 60ms;
   }
 
   .control--maximize {
-    background-color: #28c840;
-    transition: background-color var(--transition-theme);
+    background-color: var(--control-maximize);
+    transition-delay: 120ms;
   }
 </style>

@@ -189,6 +189,11 @@
   --color-error: #c62828;
   --color-error-bg: #ffebee;
 
+  /* Window Control colors - darker in light theme */
+  --control-close: #e5453d;
+  --control-minimize: #dda020;
+  --control-maximize: #1fb035;
+
   /* Header/Banner Gradient */
   --color-header-start: #667eea;
   --color-header-end: #764ba2;
@@ -298,6 +303,11 @@
   --quadrant-NW: var(--color-orange-light);
   --quadrant-SW: var(--color-green-light);
   --quadrant-SE: var(--color-red-light);
+
+  /* Window Control colors - brighter in dark theme */
+  --control-close: #ff6b63;
+  --control-minimize: #ffc942;
+  --control-maximize: #3dd656;
 }
 
 /* ==========================================================================
