@@ -12,8 +12,14 @@
 </template>
 
 <script setup lang="ts">
+<<<<<<< ours
   import BaseCursor from "./BaseCursor.vue";
 
+||||||| ancestor
+=======
+  import BaseWindowControls from "./BaseWindowControls.vue";
+
+>>>>>>> theirs
   withDefaults(
     defineProps<{
       title?: string;
