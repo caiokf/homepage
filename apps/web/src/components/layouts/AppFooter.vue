@@ -1,5 +1,5 @@
 <template>
-  <BaseGlassBar as="footer" position="bottom">
+  <footer class="app-footer">
     <nav class="footer-nav">
       <BaseBracketLink
         v-for="item in navItems"
@@ -15,14 +15,13 @@
     </nav>
 
     <SocialLinks />
-  </BaseGlassBar>
+  </footer>
 </template>
 
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   import SocialLinks from "./SocialLinks.vue";
   import BaseBracketLink from "../atoms/BaseBracketLink.vue";
-  import BaseGlassBar from "../atoms/BaseGlassBar.vue";
 
   type NavItem = {
     path: string;
@@ -48,6 +47,29 @@
 </script>
 
 <style scoped>
+  .app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Glassy iOS-like effect */
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    background-color: oklch(0.12 0 0 / 0.5);
+    border-top: 1px solid oklch(1 0 0 / 0.08);
+    box-shadow: oklch(0 0 0 / 0.3) 0px -0.5px 0px 0px, oklch(1 0 0 / 0.05) 0px -0.5px 0px 0px inset;
+
+    font-family: var(--font-mono);
+    color: oklch(0.92 0 0);
+    will-change: backdrop-filter, transform;
+  }
+
   .footer-nav {
     display: flex;
     align-items: center;
@@ -81,6 +103,15 @@
 
   .nav-label-short {
     display: none;
+  }
+
+  /* Light theme adjustments */
+  :root:not([data-theme="dark"]) .app-footer,
+  [data-theme="light"] .app-footer {
+    background-color: oklch(0.98 0.005 260 / 0.45);
+    color: oklch(0.25 0.01 260);
+    border-top-color: oklch(0 0 0 / 0.08);
+    box-shadow: oklch(0 0 0 / 0.1) 0px -0.5px 0px 0px, oklch(1 0 0 / 0.5) 0px -0.5px 0px 0px inset;
   }
 
   /* Mobile/small screens: show short labels */

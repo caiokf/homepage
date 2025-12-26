@@ -10,24 +10,17 @@
         <div class="hero-code">
           <div class="hero-line">
             <code
-              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span
-              >&nbsp;<span class="code-punct">= {</span></code
+              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span>&nbsp;<span class="code-punct">= {</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                class="hero-name"
-                >"{{ engineer.name }}"</span
-              ><span class="code-punct">,</span></code
+              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span
-                class="hero-location"
-                >"{{ engineer.location }}"</span
-              ><span class="code-punct">,</span></code
+              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
@@ -41,10 +34,7 @@
             class="hero-line"
           >
             <code class="indent-2"
-              ><span class="code-muted">"{{ specialty }}"</span
-              ><span class="code-punct">{{
-                index < engineer.specialties.length - 1 ? "," : ""
-              }}</span></code
+              ><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? "," : "" }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -52,10 +42,7 @@
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-muted"
-                >{{ JSON.stringify(engineer.offline) }}</span
-              ></code
+              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -67,236 +54,16 @@
 
     <!-- Skills Section with Code Aesthetic -->
     <section class="skills-section" aria-label="Capabilities">
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
       <CodeEditor>
         <CodeEditorFile name="capabilities.ts">
-||||||| ancestor
-      <div class="code-editor">
-        <!-- Window controls + Tab bar -->
-        <div class="editor-header">
-          <div class="window-controls">
-            <span class="control close"></span>
-            <span class="control minimize"></span>
-            <span class="control maximize"></span>
-          </div>
-          <div class="editor-tabs">
-            <span class="tab active">capabilities.ts</span>
-          </div>
-        </div>
-
-        <!-- Code content -->
-        <div class="editor-content">
-=======
-      <div class="code-editor">
-        <!-- Window controls + Tab bar -->
-        <div class="editor-header">
-          <BaseWindowControls />
-          <div class="editor-tabs">
-            <span class="tab active">capabilities.ts</span>
-          </div>
-        </div>
-
-        <!-- Code content -->
-        <div class="editor-content">
->>>>>>> theirs
-||||||| ancestor
-      <div class="code-editor">
-        <!-- Window controls + Tab bar -->
-        <div class="editor-header">
-          <BaseWindowControls />
-          <div class="editor-tabs">
-            <span class="tab active">capabilities.ts</span>
-          </div>
-        </div>
-
-        <!-- Code content -->
-        <div class="editor-content">
-=======
-      <CodeEditor filename="capabilities.ts">
->>>>>>> theirs
-||||||| ancestor
-      <CodeEditor filename="capabilities.ts">
-=======
-      <CodeEditor>
-        <CodeEditorFile name="capabilities.ts">
->>>>>>> theirs
           <div class="line">
-<<<<<<< ours
-          <span class="line-number">1</span>
-          <code
-            ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
-              >capabilities</span
-            >&nbsp;<span class="code-punct">= [</span></code
-          >
-        </div>
-
-        <article
-          v-for="(skill, index) in skillsConfig"
-          :key="skill.title"
-          class="skill-block"
-          :style="{ '--typing-delay': `${index * 150}ms` }"
-        >
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
-            <code class="indent-1"><span class="code-punct">{</span></code>
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-string"
-                >"{{ skill.title }}"</span
-              ><span class="code-punct">,</span></code
-            >
-          </div>
-<<<<<<< ours
-
-          <article
-            v-for="(skill, index) in skillsConfig"
-            :key="skill.title"
-            class="skill-block"
-            :style="{ '--typing-delay': `${index * 150}ms` }"
-          >
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
-              <code class="indent-1"><span class="code-punct">{</span></code>
-            </div>
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-              <code class="indent-2"
-                ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                  class="code-string"
-                  >"{{ skill.title }}"</span
-                ><span class="code-punct">,</span></code
-              >
-            </div>
-            <div class="line description-line">
-              <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-              <code class="indent-2"
-                ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
-                  class="code-desc"
-                  >"{{ skill.description }}"</span
-                ></code
-              >
-            </div>
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-              <code class="indent-1"
-                ><span class="code-punct"
-                  >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
-                ></code
-              >
-            </div>
-          </article>
-||||||| ancestor
-
-          <article
-            v-for="(skill, index) in skillsConfig"
-            :key="skill.title"
-            class="skill-block"
-            :style="{ '--typing-delay': `${index * 150}ms` }"
-          >
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
-              <code class="indent-1"><span class="code-punct">{</span></code>
-            </div>
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-              <code class="indent-2"
-                ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code
-              >
-            </div>
-            <div class="line description-line">
-              <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-              <code class="indent-2"
-                ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span class="code-desc">"{{ skill.description }}"</span></code
-              >
-            </div>
-            <div class="line">
-              <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-              <code class="indent-1"
-                ><span class="code-punct"
-                  >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
-                ></code
-              >
-            </div>
-          </article>
-=======
-          <div class="line description-line">
-            <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-desc"
-                >"{{ skill.description }}"</span
-              ></code
-            >
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-            <code class="indent-1"
-              ><span class="code-punct"
-                >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
-              ></code
-||||||| ancestor
-          <span class="line-number">1</span>
-          <code
-            ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
-              >capabilities</span
-            >&nbsp;<span class="code-punct">= [</span></code
-          >
-        </div>
-
-        <article
-          v-for="(skill, index) in skillsConfig"
-          :key="skill.title"
-          class="skill-block"
-          :style="{ '--typing-delay': `${index * 150}ms` }"
-        >
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
-            <code class="indent-1"><span class="code-punct">{</span></code>
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-string"
-                >"{{ skill.title }}"</span
-              ><span class="code-punct">,</span></code
-            >
-          </div>
-          <div class="line description-line">
-            <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-desc"
-                >"{{ skill.description }}"</span
-              ></code
-            >
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-            <code class="indent-1"
-              ><span class="code-punct"
-                >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
-              ></code
-=======
             <span class="line-number">1</span>
             <code
               ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
                 >capabilities</span
               >&nbsp;<span class="code-punct">= [</span></code
->>>>>>> theirs
             >
           </div>
-<<<<<<< ours
-        </article>
->>>>>>> theirs
-||||||| ancestor
-        </article>
-=======
 
           <article
             v-for="(skill, index) in skillsConfig"
@@ -335,7 +102,6 @@
               >
             </div>
           </article>
->>>>>>> theirs
 
           <div class="line">
             <span class="line-number">{{ closingBracketLine }}</span>
@@ -344,20 +110,8 @@
               <BaseCursor :delay="skillsConfig.length * 150 + 400" animate />
             </code>
           </div>
-<<<<<<< ours
-<<<<<<< ours
         </CodeEditorFile>
-||||||| ancestor
-=======
-        </CodeEditorFile>
->>>>>>> theirs
       </CodeEditor>
-||||||| ancestor
-        </div>
-      </div>
-=======
-      </CodeEditor>
->>>>>>> theirs
     </section>
   </div>
 </template>
@@ -366,58 +120,11 @@
   import { computed } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import { socialsConfig } from "../domain/layout/data";
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-||||||| ancestor
-=======
   import { useJsonLd } from "../composables/useJsonLd";
->>>>>>> theirs
   import BaseCursor from "../components/atoms/BaseCursor.vue";
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-||||||| ancestor
-=======
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
->>>>>>> theirs
-||||||| ancestor
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-=======
   import CodeEditor from "../components/organisms/CodeEditor.vue";
->>>>>>> theirs
-||||||| ancestor
-=======
   import CodeEditorFile from "../components/molecules/CodeEditorFile.vue";
->>>>>>> theirs
-||||||| ancestor
-=======
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
->>>>>>> theirs
-||||||| ancestor
-  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
-=======
-  import CodeEditor from "../components/organisms/CodeEditor.vue";
->>>>>>> theirs
-||||||| ancestor
-=======
-||||||| ancestor
-=======
-  import CodeEditor from "../components/organisms/CodeEditor.vue";
->>>>>>> theirs
-  import CodeEditorFile from "../components/molecules/CodeEditorFile.vue";
-<<<<<<< ours
->>>>>>> theirs
-  import avatarImage from "../assets/images/avatar.png";
-  import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
-||||||| ancestor
-  import avatarImage from "../assets/images/avatar.png";
-  import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
-=======
   import OrbitAvatar from "../components/organisms/OrbitAvatar.vue";
->>>>>>> theirs
 
   // JSON-LD Structured Data
   useJsonLd({
@@ -447,139 +154,21 @@
         name: "Caio Kinzel Filho",
       },
     },
-<<<<<<< ours
-  };
-
-  // Track injected JSON-LD script IDs for cleanup
-  const injectedJsonLdIds: string[] = [];
-
-  function injectJsonLd(schema: object, id: string) {
-    const existingScript = document.getElementById(id);
-    if (existingScript) existingScript.remove();
-
-    const script = document.createElement("script");
-    script.id = id;
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-    injectedJsonLdIds.push(id);
-  }
-
-  function cleanupJsonLd() {
-    injectedJsonLdIds.forEach((id) => {
-      const script = document.getElementById(id);
-      if (script) script.remove();
-    });
-    injectedJsonLdIds.length = 0;
-  }
-
-  // Sunglasses avatar for dark-to-light transition
-  const showSunglasses = ref(false);
-  const currentAvatarImage = computed(() =>
-    showSunglasses.value ? avatarSunglassesImage : avatarImage
-  );
-  let themeObserver: MutationObserver | null = null;
-
-  onMounted(() => {
-    // Watch for theme transition classes on html element
-    themeObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          const html = document.documentElement;
-          if (html.classList.contains("theme-to-light")) {
-            showSunglasses.value = true;
-          } else if (html.classList.contains("theme-to-dark")) {
-            showSunglasses.value = false;
-          }
-        }
-      });
-    });
-    themeObserver.observe(document.documentElement, { attributes: true });
-  });
-
-  onUnmounted(() => {
-    if (themeObserver) {
-      themeObserver.disconnect();
-    }
->>>>>>> theirs
-||||||| ancestor
-  };
-
-  // Track injected JSON-LD script IDs for cleanup
-  const injectedJsonLdIds: string[] = [];
-
-  function injectJsonLd(schema: object, id: string) {
-    const existingScript = document.getElementById(id);
-    if (existingScript) existingScript.remove();
-
-    const script = document.createElement("script");
-    script.id = id;
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-    injectedJsonLdIds.push(id);
-  }
-
-  function cleanupJsonLd() {
-    injectedJsonLdIds.forEach((id) => {
-      const script = document.getElementById(id);
-      if (script) script.remove();
-    });
-    injectedJsonLdIds.length = 0;
-  }
-
-  // Sunglasses avatar for dark-to-light transition
-  const showSunglasses = ref(false);
-  const currentAvatarImage = computed(() =>
-    showSunglasses.value ? avatarSunglassesImage : avatarImage
-  );
-  let themeObserver: MutationObserver | null = null;
-
-  onMounted(() => {
-    // Inject JSON-LD structured data
-    injectJsonLd(personSchema, "schema-person");
-    injectJsonLd(websiteSchema, "schema-website");
-
-    // Watch for theme transition classes on html element
-    themeObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          const html = document.documentElement;
-          if (html.classList.contains("theme-to-light")) {
-            showSunglasses.value = true;
-          } else if (html.classList.contains("theme-to-dark")) {
-            showSunglasses.value = false;
-          }
-        }
-      });
-    });
-    themeObserver.observe(document.documentElement, { attributes: true });
-  });
-
-  onUnmounted(() => {
-    cleanupJsonLd();
-    if (pulseAnimationFrame) {
-      cancelAnimationFrame(pulseAnimationFrame);
-    }
-    if (themeObserver) {
-      themeObserver.disconnect();
-    }
-=======
->>>>>>> theirs
   });
 
   const engineer = {
     name: "caio kinzel filho",
     location: "Sunshine Coast, Australia",
-    specialties: ["architecture", "event-driven systems", "ai engineering"],
+    specialties: ["architecture", "event-driven systems", "engineering teams"],
     offline: ["trails", "beach", "sim racing"],
   };
 
   // Line numbering for code editor aesthetic
-  const LINES_PER_SKILL = 4;
+  // Structure: 1 (header) + n * LINES_PER_SKILL + 1 (closing bracket)
+  const LINES_PER_SKILL = 4; // { + name + desc + }
 
   const getSkillLineNumber = (skillIndex: number, lineOffset: number) =>
-    skillIndex * LINES_PER_SKILL + lineOffset + 1;
+    skillIndex * LINES_PER_SKILL + lineOffset + 1; // +1 for header line
 
   const closingBracketLine = computed(() => skillsConfig.length * LINES_PER_SKILL + 2);
 </script>
@@ -686,77 +275,6 @@
     margin: 0 auto;
   }
 
-<<<<<<< ours
-<<<<<<< ours
-||||||| ancestor
-  .code-editor {
-    background: var(--color-background-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .editor-header {
-    display: flex;
-    align-items: center;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .window-controls {
-    display: flex;
-    gap: 8px;
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .control {
-    width: 12px;
-    height: 12px;
-    border-radius: var(--radius-full);
-    background: var(--color-border);
-  }
-
-  .control.close {
-    background: var(--control-close, #ff5f57);
-  }
-
-  .control.minimize {
-    background: var(--control-minimize, #febc2e);
-  }
-
-  .control.maximize {
-    background: var(--control-maximize, #28c840);
-  }
-
-  .editor-tabs {
-    display: flex;
-    flex: 1;
-  }
-
-  .tab {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text-secondary);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-
-  .tab.active {
-    color: var(--color-text-primary);
-    background: var(--color-background-elevated);
-    border-bottom-color: var(--color-primary);
-  }
-
-  .editor-content {
-    padding: var(--space-4) 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    overflow-x: auto;
-  }
-
   .line {
     display: flex;
     align-items: flex-start;
@@ -792,175 +310,6 @@
     flex-shrink: 0;
   }
 
-=======
-  .code-editor {
-    background: var(--color-background-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .editor-header {
-    display: flex;
-    align-items: center;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .editor-header :deep(.base-window-controls) {
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .editor-tabs {
-    display: flex;
-    flex: 1;
-  }
-
-  .tab {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text-secondary);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-
-  .tab.active {
-    color: var(--color-text-primary);
-    background: var(--color-background-elevated);
-    border-bottom-color: var(--color-primary);
-  }
-
-  .editor-content {
-    padding: var(--space-4) 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    overflow-x: auto;
-  }
-
-  .line {
-    display: flex;
-    align-items: flex-start;
-    padding: 0 var(--space-4);
-    min-height: 1.7em;
-  }
-
-  .line:hover {
-    background: var(--color-surface-hover);
-  }
-
-  .line code {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  .line code.indent-1 {
-    padding-left: 1.5ch;
-  }
-
-  .line code.indent-2 {
-    padding-left: 3ch;
-  }
-
-  .line-number {
-    color: var(--color-text-muted);
-    opacity: 0.5;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
-    min-width: 32px;
-    text-align: right;
-    padding-right: var(--space-4);
-    user-select: none;
-    flex-shrink: 0;
-  }
-
->>>>>>> theirs
-||||||| ancestor
-  .code-editor {
-    background: var(--color-background-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .editor-header {
-    display: flex;
-    align-items: center;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .editor-header :deep(.base-window-controls) {
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .editor-tabs {
-    display: flex;
-    flex: 1;
-  }
-
-  .tab {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text-secondary);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-
-  .tab.active {
-    color: var(--color-text-primary);
-    background: var(--color-background-elevated);
-    border-bottom-color: var(--color-primary);
-  }
-
-  .editor-content {
-    padding: var(--space-4) 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    overflow-x: auto;
-  }
-
-  .line {
-    display: flex;
-    align-items: flex-start;
-    padding: 0 var(--space-4);
-    min-height: 1.7em;
-  }
-
-  .line:hover {
-    background: var(--color-surface-hover);
-  }
-
-  .line code {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  .line code.indent-1 {
-    padding-left: 1.5ch;
-  }
-
-  .line code.indent-2 {
-    padding-left: 3ch;
-  }
-
-  .line-number {
-    color: var(--color-text-muted);
-    opacity: 0.5;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
-    min-width: 32px;
-    text-align: right;
-    padding-right: var(--space-4);
-    user-select: none;
-    flex-shrink: 0;
-  }
-
-=======
->>>>>>> theirs
   .code-desc {
     color: var(--color-text-muted);
   }
@@ -1036,10 +385,6 @@
 
     .hero-location {
       font-size: 14px;
-    }
-
-    .editor-content {
-      font-size: var(--text-xs);
     }
 
     .line-number {

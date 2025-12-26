@@ -2,12 +2,9 @@
   <BaseCard :tag="tag" class="app-card">
     <template #header>
       <BaseWindowControls />
-      <slot name="header">
-        <span class="card-title">caiokf://{{ title }}</span>
-      </slot>
+      <slot name="header" />
     </template>
-
-    <slot></slot>
+    <slot />
   </BaseCard>
 </template>
 
@@ -18,20 +15,15 @@
   withDefaults(
     defineProps<{
       tag?: "div" | "article" | "section";
-      title?: string;
     }>(),
     {
-      tag: "div",
-      title: "terminal",
+      tag: "article",
     }
   );
 </script>
 
 <style scoped>
-  .card-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
+  .app-card :deep(.card-header) {
+    justify-content: space-between;
   }
 </style>

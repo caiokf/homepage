@@ -1,11 +1,24 @@
 import { onMounted, onUnmounted } from "vue";
 
-type JsonLdSchema = Record<string, unknown>;
-
-export function useJsonLd(schemas: Record<string, JsonLdSchema>) {
+/**
+ * Composable for injecting JSON-LD structured data into the document head.
+ * Automatically cleans up scripts when the component unmounts.
+ *
+ * @param schemas - Record of schema ID to schema object
+ *
+ * @example
+ * useJsonLd({
+ *   "schema-person": {
+ *     "@context": "https://schema.org",
+ *     "@type": "Person",
+ *     name: "John Doe"
+ *   }
+ * });
+ */
+export function useJsonLd(schemas: Record<string, object>) {
   const injectedIds: string[] = [];
 
-  function inject(schema: JsonLdSchema, id: string) {
+  function injectJsonLd(schema: object, id: string) {
     const existingScript = document.getElementById(id);
     if (existingScript) existingScript.remove();
 
@@ -27,7 +40,7 @@ export function useJsonLd(schemas: Record<string, JsonLdSchema>) {
 
   onMounted(() => {
     Object.entries(schemas).forEach(([id, schema]) => {
-      inject(schema, id);
+      injectJsonLd(schema, id);
     });
   });
 
@@ -35,5 +48,5 @@ export function useJsonLd(schemas: Record<string, JsonLdSchema>) {
     cleanup();
   });
 
-  return { inject, cleanup };
+  return { cleanup };
 }
