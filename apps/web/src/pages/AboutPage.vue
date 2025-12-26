@@ -69,6 +69,7 @@
     <section class="skills-section" aria-label="Capabilities">
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
       <CodeEditor>
         <CodeEditorFile name="capabilities.ts">
 ||||||| ancestor
@@ -115,14 +116,41 @@
 =======
       <CodeEditor filename="capabilities.ts">
 >>>>>>> theirs
+||||||| ancestor
+      <CodeEditor filename="capabilities.ts">
+=======
+      <CodeEditor>
+        <CodeEditorFile name="capabilities.ts">
+>>>>>>> theirs
           <div class="line">
-            <span class="line-number">1</span>
-            <code
-              ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
-                >capabilities</span
-              >&nbsp;<span class="code-punct">= [</span></code
+          <span class="line-number">1</span>
+          <code
+            ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
+              >capabilities</span
+            >&nbsp;<span class="code-punct">= [</span></code
+          >
+        </div>
+
+        <article
+          v-for="(skill, index) in skillsConfig"
+          :key="skill.title"
+          class="skill-block"
+          :style="{ '--typing-delay': `${index * 150}ms` }"
+        >
+          <div class="line">
+            <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
+            <code class="indent-1"><span class="code-punct">{</span></code>
+          </div>
+          <div class="line">
+            <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
+            <code class="indent-2"
+              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
+                class="code-string"
+                >"{{ skill.title }}"</span
+              ><span class="code-punct">,</span></code
             >
           </div>
+<<<<<<< ours
 
           <article
             v-for="(skill, index) in skillsConfig"
@@ -161,6 +189,59 @@
               >
             </div>
           </article>
+||||||| ancestor
+
+          <article
+            v-for="(skill, index) in skillsConfig"
+            :key="skill.title"
+            class="skill-block"
+            :style="{ '--typing-delay': `${index * 150}ms` }"
+          >
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
+              <code class="indent-1"><span class="code-punct">{</span></code>
+            </div>
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
+              <code class="indent-2"
+                ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="code-string">"{{ skill.title }}"</span><span class="code-punct">,</span></code
+              >
+            </div>
+            <div class="line description-line">
+              <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
+              <code class="indent-2"
+                ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span class="code-desc">"{{ skill.description }}"</span></code
+              >
+            </div>
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
+              <code class="indent-1"
+                ><span class="code-punct"
+                  >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
+                ></code
+              >
+            </div>
+          </article>
+=======
+          <div class="line description-line">
+            <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
+            <code class="indent-2"
+              ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
+                class="code-desc"
+                >"{{ skill.description }}"</span
+              ></code
+            >
+          </div>
+          <div class="line">
+            <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
+            <code class="indent-1"
+              ><span class="code-punct"
+                >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
+              ></code
+            >
+          </div>
+        </article>
+>>>>>>> theirs
 
           <div class="line">
             <span class="line-number">{{ closingBracketLine }}</span>
@@ -170,7 +251,12 @@
             </code>
           </div>
 <<<<<<< ours
+<<<<<<< ours
         </CodeEditorFile>
+||||||| ancestor
+=======
+        </CodeEditorFile>
+>>>>>>> theirs
       </CodeEditor>
 ||||||| ancestor
         </div>
@@ -191,6 +277,7 @@
 <<<<<<< ours
 <<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+<<<<<<< ours
 <<<<<<< ours
 ||||||| ancestor
 =======
@@ -213,6 +300,10 @@
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
 =======
   import CodeEditor from "../components/organisms/CodeEditor.vue";
+>>>>>>> theirs
+||||||| ancestor
+=======
+  import CodeEditorFile from "../components/molecules/CodeEditorFile.vue";
 >>>>>>> theirs
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
