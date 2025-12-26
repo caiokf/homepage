@@ -35,35 +35,17 @@
     width: var(--control-size);
     height: var(--control-size);
     border-radius: 50%;
-    background-color: var(--color-border);
-    animation: var(--control-pulse) 400ms ease-out backwards;
   }
 
-  /* macOS-style traffic light colors with staggered animation */
   .control--close {
     background-color: #ff5f57;
-    animation-delay: 0ms;
   }
 
   .control--minimize {
     background-color: #febc2e;
-    animation-delay: 80ms;
   }
 
   .control--maximize {
     background-color: #28c840;
-    animation-delay: 160ms;
-  }
-
-  @keyframes pulse-light {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.5); }
-    100% { transform: scale(1); }
-  }
-
-  @keyframes pulse-dark {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.5); }
-    100% { transform: scale(1); }
   }
 </style>
