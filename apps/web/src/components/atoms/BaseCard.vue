@@ -1,19 +1,22 @@
 <template>
-  <component :is="tag" class="app-card">
-    <header class="card-header">
-      <BaseWindowControls />
-      <slot name="header">
-        <span class="card-title">caiokf://{{ title }}</span>
-      </slot>
+  <component :is="tag" class="base-card">
+    <header v-if="$slots.header" class="card-header">
+      <slot name="header"></slot>
     </header>
     <div class="card-body">
       <slot></slot>
+<<<<<<< ours
       <BaseCursor v-if="showCursor" />
+||||||| ancestor
+      <span v-if="showCursor" class="cursor"></span>
+=======
+>>>>>>> theirs
     </div>
   </component>
 </template>
 
 <script setup lang="ts">
+<<<<<<< ours
 <<<<<<< ours
   import BaseCursor from "./BaseCursor.vue";
 
@@ -22,22 +25,23 @@
   import BaseWindowControls from "./BaseWindowControls.vue";
 
 >>>>>>> theirs
+||||||| ancestor
+  import BaseWindowControls from "./BaseWindowControls.vue";
+
+=======
+>>>>>>> theirs
   withDefaults(
     defineProps<{
       tag?: "div" | "article" | "section";
-      title?: string;
-      showCursor?: boolean;
     }>(),
     {
       tag: "div",
-      title: "terminal",
-      showCursor: true,
     }
   );
 </script>
 
 <style scoped>
-  .app-card {
+  .base-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);

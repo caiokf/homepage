@@ -23,22 +23,19 @@
 
       <div class="content">
         <div class="timeline">
-          <article
+          <AppCard
             v-for="(experience, index) in visibleExperiences"
             :key="index"
+            tag="article"
             class="experience-card"
             :style="{ '--card-delay': `${index * 100}ms` }"
           >
-            <!-- App Window Header -->
-            <header class="card-header">
-              <div class="window-controls">
-                <BaseWindowControls />
-              </div>
+            <template #header>
               <div class="card-meta">
                 <span class="meta-date">{{ formatDateRange(experience) }}</span>
                 <span class="meta-duration">{{ calculateDuration(experience) }}</span>
               </div>
-            </header>
+            </template>
 
             <!-- Card Content -->
             <div class="card-content">
@@ -53,8 +50,15 @@
                         class="company-logo"
                       />
                     </div>
-                    <div class="via-logo-wrapper" v-if="experience.via && getViaLogo(experience.via)">
-                      <img :src="getViaLogo(experience.via)" :alt="experience.via" class="via-logo" />
+                    <div
+                      class="via-logo-wrapper"
+                      v-if="experience.via && getViaLogo(experience.via)"
+                    >
+                      <img
+                        :src="getViaLogo(experience.via)"
+                        :alt="experience.via"
+                        class="via-logo"
+                      />
                     </div>
                   </div>
                   <div class="company-info">
@@ -106,10 +110,14 @@
                 />
               </div>
             </div>
-          </BaseCard>
+          </AppCard>
 
           <div v-if="!showAll" class="show-more-container">
-            <button @click="showAll = true" class="terminal-button" aria-label="Show all experiences">
+            <button
+              @click="showAll = true"
+              class="terminal-button"
+              aria-label="Show all experiences"
+            >
               <span class="terminal-prompt">$</span>
               <span class="terminal-command">history</span>
               <span class="terminal-flag">--all</span>
@@ -126,6 +134,7 @@
   import { computed, ref } from "vue";
   import { experiencesConfig, type Experience } from "../domain/experience/data";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+<<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
@@ -151,6 +160,11 @@
 =======
 >>>>>>> theirs
 =======
+>>>>>>> theirs
+||||||| ancestor
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+=======
+  import AppCard from "../components/molecules/AppCard.vue";
 >>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
@@ -378,10 +392,7 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    transition:
-      background-color var(--transition-theme),
-      box-shadow 0.2s ease,
-      transform 0.2s ease;
+    transition: background-color var(--transition-theme), box-shadow 0.2s ease, transform 0.2s ease;
     animation: cardSlideUp 500ms ease-out backwards;
     animation-delay: var(--card-delay, 0ms);
   }
@@ -395,32 +406,21 @@
     box-shadow: var(--shadow-xl);
   }
 
-  /* Card Header - Window Chrome */
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  /* Override BaseCard styles for experience cards */
+  .experience-card :deep(.card-header) {
     background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    padding: 0;
-    transition: background-color 0.2s ease;
-  }
-
-  .card-header:hover {
-    background: var(--color-surface-hover);
-  }
-
-  .window-controls {
-    display: flex;
-    gap: 8px;
     padding: var(--space-3) var(--space-4);
+  }
+
+  .experience-card :deep(.card-body) {
+    padding: 0;
+    font-family: inherit;
   }
 
   .card-meta {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
   }
 
   .meta-date {
@@ -627,7 +627,34 @@
     transition: opacity var(--transition-fast);
   }
 
+<<<<<<< ours
   .terminal-button:hover :deep(.base-cursor) {
+||||||| ancestor
+  @keyframes blink {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .terminal-button:hover .terminal-cursor {
+    animation: blink 0.8s step-end infinite;
+=======
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .terminal-button:hover .terminal-cursor {
+    animation: blink 0.8s step-end infinite;
+>>>>>>> theirs
     opacity: 1;
   }
 

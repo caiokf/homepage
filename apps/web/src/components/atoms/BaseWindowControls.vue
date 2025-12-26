@@ -39,18 +39,19 @@
     transition: background-color var(--transition-theme);
   }
 
+  /* macOS-style traffic light colors */
   .control--close {
-    background-color: var(--color-red);
+    background-color: #ff5f57;
     transition: background-color var(--transition-theme);
   }
 
   .control--minimize {
-    background-color: var(--color-orange);
+    background-color: #febc2e;
     transition: background-color var(--transition-theme);
   }
 
   .control--maximize {
-    background-color: var(--color-green);
+    background-color: #28c840;
     transition: background-color var(--transition-theme);
   }
 </style>

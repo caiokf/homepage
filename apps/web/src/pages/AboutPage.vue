@@ -10,17 +10,24 @@
         <div class="hero-code">
           <div class="hero-line">
             <code
-              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span>&nbsp;<span class="code-punct">= {</span></code
+              ><span class="code-keyword">const</span>&nbsp;<span class="code-var">engineer</span
+              >&nbsp;<span class="code-punct">= {</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span class="hero-name">"{{ engineer.name }}"</span><span class="code-punct">,</span></code
+              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
+                class="hero-name"
+                >"{{ engineer.name }}"</span
+              ><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span class="hero-location">"{{ engineer.location }}"</span><span class="code-punct">,</span></code
+              ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span
+                class="hero-location"
+                >"{{ engineer.location }}"</span
+              ><span class="code-punct">,</span></code
             >
           </div>
           <div class="hero-line">
@@ -34,7 +41,10 @@
             class="hero-line"
           >
             <code class="indent-2"
-              ><span class="code-muted">"{{ specialty }}"</span><span class="code-punct">{{ index < engineer.specialties.length - 1 ? "," : "" }}</span></code
+              ><span class="code-muted">"{{ specialty }}"</span
+              ><span class="code-punct">{{
+                index < engineer.specialties.length - 1 ? "," : ""
+              }}</span></code
             >
           </div>
           <div class="hero-line">
@@ -42,7 +52,10 @@
           </div>
           <div class="hero-line">
             <code class="indent-1"
-              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span class="code-muted">{{ JSON.stringify(engineer.offline) }}</span></code
+              ><span class="code-prop">offline</span><span class="code-punct">:</span>&nbsp;<span
+                class="code-muted"
+                >{{ JSON.stringify(engineer.offline) }}</span
+              ></code
             >
           </div>
           <div class="hero-line">
@@ -57,51 +70,51 @@
       <CodeEditor>
         <CodeEditorFile name="capabilities.ts">
           <div class="line">
-          <span class="line-number">1</span>
-          <code
-            ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
-              >capabilities</span
-            >&nbsp;<span class="code-punct">= [</span></code
-          >
-        </div>
+            <span class="line-number">1</span>
+            <code
+              ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
+                >capabilities</span
+              >&nbsp;<span class="code-punct">= [</span></code
+            >
+          </div>
 
-        <article
-          v-for="(skill, index) in skillsConfig"
-          :key="skill.title"
-          class="skill-block"
-          :style="{ '--typing-delay': `${index * 150}ms` }"
-        >
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
-            <code class="indent-1"><span class="code-punct">{</span></code>
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-string"
-                >"{{ skill.title }}"</span
-              ><span class="code-punct">,</span></code
-            >
-          </div>
-          <div class="line description-line">
-            <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
-            <code class="indent-2"
-              ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
-                class="code-desc"
-                >"{{ skill.description }}"</span
-              ></code
-            >
-          </div>
-          <div class="line">
-            <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
-            <code class="indent-1"
-              ><span class="code-punct"
-                >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
-              ></code
-            >
-          </div>
-        </article>
+          <article
+            v-for="(skill, index) in skillsConfig"
+            :key="skill.title"
+            class="skill-block"
+            :style="{ '--typing-delay': `${index * 150}ms` }"
+          >
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 1) }}</span>
+              <code class="indent-1"><span class="code-punct">{</span></code>
+            </div>
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 2) }}</span>
+              <code class="indent-2"
+                ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
+                  class="code-string"
+                  >"{{ skill.title }}"</span
+                ><span class="code-punct">,</span></code
+              >
+            </div>
+            <div class="line description-line">
+              <span class="line-number">{{ getSkillLineNumber(index, 3) }}</span>
+              <code class="indent-2"
+                ><span class="code-prop">desc</span><span class="code-punct">:</span>&nbsp;<span
+                  class="code-desc"
+                  >"{{ skill.description }}"</span
+                ></code
+              >
+            </div>
+            <div class="line">
+              <span class="line-number">{{ getSkillLineNumber(index, 4) }}</span>
+              <code class="indent-1"
+                ><span class="code-punct"
+                  >}{{ index < skillsConfig.length - 1 ? "," : "" }}</span
+                ></code
+              >
+            </div>
+          </article>
 
           <div class="line">
             <span class="line-number">{{ closingBracketLine }}</span>
@@ -154,16 +167,8 @@
       addressLocality: "Sunshine Coast",
       addressCountry: "Australia",
     },
-    knowsAbout: [
-      "Software Architecture",
-      "Event-Driven Systems",
-      "Engineering Teams",
-      "Vue.js",
-      "TypeScript",
-    ],
-    sameAs: socialsConfig
-      .filter((s) => s.network !== "Email")
-      .map((s) => s.url),
+    knowsAbout: ["Software Architecture", "Event-Driven Systems", "Engineering Teams"],
+    sameAs: socialsConfig.filter((s) => s.network !== "Email").map((s) => s.url),
   };
 
   const websiteSchema = {
@@ -234,16 +239,15 @@
   const engineer = {
     name: "caio kinzel filho",
     location: "Sunshine Coast, Australia",
-    specialties: ["architecture", "event-driven systems", "engineering teams"],
+    specialties: ["architecture", "event-driven systems", "ai engineering"],
     offline: ["trails", "beach", "sim racing"],
   };
 
   // Line numbering for code editor aesthetic
-  // Structure: 1 (header) + n * LINES_PER_SKILL + 1 (closing bracket)
-  const LINES_PER_SKILL = 4; // { + name + desc + }
+  const LINES_PER_SKILL = 4;
 
   const getSkillLineNumber = (skillIndex: number, lineOffset: number) =>
-    skillIndex * LINES_PER_SKILL + lineOffset + 1; // +1 for header line
+    skillIndex * LINES_PER_SKILL + lineOffset + 1;
 
   const closingBracketLine = computed(() => skillsConfig.length * LINES_PER_SKILL + 2);
 </script>
@@ -429,7 +433,6 @@
   .avatar:active {
     transform: scale(0.95);
   }
-
 
   /* Shockwave pulse rings */
   .pulse-ring {
