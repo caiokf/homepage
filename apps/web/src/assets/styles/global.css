@@ -189,9 +189,6 @@
   --color-error: #c62828;
   --color-error-bg: #ffebee;
 
-  /* Window Control pulse animation (switches on theme change to retrigger) */
-  --control-pulse: pulse-light;
-
   /* Header/Banner Gradient */
   --color-header-start: #667eea;
   --color-header-end: #764ba2;
@@ -301,9 +298,6 @@
   --quadrant-NW: var(--color-orange-light);
   --quadrant-SW: var(--color-green-light);
   --quadrant-SE: var(--color-red-light);
-
-  /* Window Control pulse animation (switches on theme change to retrigger) */
-  --control-pulse: pulse-dark;
 }
 
 /* ==========================================================================
