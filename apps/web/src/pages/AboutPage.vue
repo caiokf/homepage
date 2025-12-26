@@ -54,21 +54,13 @@
 
     <!-- Skills Section with Code Aesthetic -->
     <section class="skills-section" aria-label="Capabilities">
-      <div class="code-editor">
-        <!-- Window controls + Tab bar -->
-        <div class="editor-header">
-          <BaseWindowControls />
-          <div class="editor-tabs">
-            <span class="tab active">capabilities.ts</span>
-          </div>
-        </div>
-
-        <!-- Code content -->
-        <div class="editor-content">
+      <CodeEditor filename="capabilities.ts">
           <div class="line">
             <span class="line-number">1</span>
             <code
-              ><span class="code-keyword">export const</span>&nbsp;<span class="code-var">capabilities</span>&nbsp;<span class="code-punct">= [</span></code
+              ><span class="code-keyword">export const</span>&nbsp;<span class="code-var"
+                >capabilities</span
+              >&nbsp;<span class="code-punct">= [</span></code
             >
           </div>
 
@@ -111,8 +103,7 @@
               <BaseCursor :delay="skillsConfig.length * 150 + 400" animate />
             </code>
           </div>
-        </div>
-      </div>
+      </CodeEditor>
     </section>
   </div>
 </template>
@@ -122,10 +113,16 @@
   import { skillsConfig } from "../domain/about/data";
   import { socialsConfig } from "../domain/layout/data";
 <<<<<<< ours
+<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 ||||||| ancestor
 =======
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+>>>>>>> theirs
+||||||| ancestor
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+=======
+  import CodeEditor from "../components/organisms/CodeEditor.vue";
 >>>>>>> theirs
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
@@ -525,88 +522,6 @@
   .skills-section {
     max-width: var(--content-max-width);
     margin: 0 auto;
-  }
-
-  .code-editor {
-    background: var(--color-background-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .editor-header {
-    display: flex;
-    align-items: center;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .editor-header :deep(.base-window-controls) {
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .editor-tabs {
-    display: flex;
-    flex: 1;
-  }
-
-  .tab {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text-secondary);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-
-  .tab.active {
-    color: var(--color-text-primary);
-    background: var(--color-background-elevated);
-    border-bottom-color: var(--color-primary);
-  }
-
-  .editor-content {
-    padding: var(--space-4) 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    overflow-x: auto;
-  }
-
-  .line {
-    display: flex;
-    align-items: flex-start;
-    padding: 0 var(--space-4);
-    min-height: 1.7em;
-  }
-
-  .line:hover {
-    background: var(--color-surface-hover);
-  }
-
-  .line code {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  .line code.indent-1 {
-    padding-left: 1.5ch;
-  }
-
-  .line code.indent-2 {
-    padding-left: 3ch;
-  }
-
-  .line-number {
-    color: var(--color-text-muted);
-    opacity: 0.5;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
-    min-width: 32px;
-    text-align: right;
-    padding-right: var(--space-4);
-    user-select: none;
-    flex-shrink: 0;
   }
 
   .code-desc {
