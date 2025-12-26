@@ -73,49 +73,49 @@
     transform: translateY(1px);
   }
 
-  .app-card:has(.card-header:hover) {
+  .base-card:has(.card-header:hover) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
   }
 
-  .card-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-  }
-
-  .card-controls {
-    display: flex;
-    gap: var(--space-2);
-  }
-
-  .control {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--color-border);
-    transition: background-color var(--transition-theme);
-  }
-
-  .control:nth-child(1) {
-    background: var(--color-red);
-  }
-
-  .control:nth-child(2) {
-    background: var(--color-orange);
-  }
-
-  .control:nth-child(3) {
-    background: var(--color-green);
-  }
-
   .card-body {
     padding: var(--space-6);
+<<<<<<< ours
     font-family: var(--font-mono);
     color: var(--color-text-primary);
     transition:
       color var(--transition-theme),
       transform 0.2s ease;
   }
+||||||| ancestor
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    transition:
+      color var(--transition-theme),
+      transform 0.2s ease;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background: var(--color-primary);
+    margin-left: var(--space-1);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+=======
+    transition: transform 0.2s ease;
+  }
+>>>>>>> theirs
 </style>

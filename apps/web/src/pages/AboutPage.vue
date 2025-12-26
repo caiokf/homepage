@@ -57,11 +57,7 @@
       <div class="code-editor">
         <!-- Window controls + Tab bar -->
         <div class="editor-header">
-          <div class="window-controls">
-            <span class="control close"></span>
-            <span class="control minimize"></span>
-            <span class="control maximize"></span>
-          </div>
+          <BaseWindowControls />
           <div class="editor-tabs">
             <span class="tab active">capabilities.ts</span>
           </div>
@@ -125,7 +121,12 @@
   import { computed, ref, reactive, onMounted, onUnmounted } from "vue";
   import { skillsConfig } from "../domain/about/data";
   import { socialsConfig } from "../domain/layout/data";
+<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+||||||| ancestor
+=======
+  import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+>>>>>>> theirs
   import avatarImage from "../assets/images/avatar.png";
   import avatarSunglassesImage from "../assets/images/avatar-sunglasses.png";
 
@@ -541,29 +542,8 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  .window-controls {
-    display: flex;
-    gap: 8px;
+  .editor-header :deep(.base-window-controls) {
     padding: var(--space-3) var(--space-4);
-  }
-
-  .control {
-    width: 12px;
-    height: 12px;
-    border-radius: var(--radius-full);
-    background: var(--color-border);
-  }
-
-  .control.close {
-    background: var(--control-close, #ff5f57);
-  }
-
-  .control.minimize {
-    background: var(--control-minimize, #febc2e);
-  }
-
-  .control.maximize {
-    background: var(--control-maximize, #28c840);
   }
 
   .editor-tabs {
