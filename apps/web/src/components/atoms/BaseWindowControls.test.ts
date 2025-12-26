@@ -288,5 +288,19 @@ describe("BaseWindowControls", () => {
       expect(maximizeControl.classes()).toContain("control--maximize");
     });
   });
+
+  describe("macOS-style colors", () => {
+    it("should use macOS red color for close button", () => {
+      expect(componentSource).toMatch(/\.control--close\s*\{[^}]*#ff5f57/);
+    });
+
+    it("should use macOS yellow color for minimize button", () => {
+      expect(componentSource).toMatch(/\.control--minimize\s*\{[^}]*#febc2e/);
+    });
+
+    it("should use macOS green color for maximize button", () => {
+      expect(componentSource).toMatch(/\.control--maximize\s*\{[^}]*#28c840/);
+    });
+  });
 });
 >>>>>>> theirs
