@@ -154,6 +154,7 @@
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 ||||||| ancestor
 =======
@@ -194,12 +195,25 @@
 =======
 <<<<<<< ours
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+||||||| ancestor
+<<<<<<< ours
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+=======
+>>>>>>> theirs
   import BaseWindowControls from "../components/atoms/BaseWindowControls.vue";
+<<<<<<< ours
 ||||||| ancestor
   import BaseCursor from "../components/atoms/BaseCursor.vue";
 =======
 >>>>>>> theirs
 >>>>>>> theirs
+>>>>>>> theirs
+||||||| ancestor
+||||||| ancestor
+  import BaseCursor from "../components/atoms/BaseCursor.vue";
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
   // Dynamically import all logos from assets/logos
