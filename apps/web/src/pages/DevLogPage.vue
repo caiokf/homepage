@@ -21,7 +21,14 @@
       />
 
       <div class="search-container">
-        <DevLogSearch @search="handleSearch" />
+        <Search
+          :results="[]"
+          placeholder="search entries..."
+          aria-label="Search devlog entries"
+          clearable
+          :results-enabled="false"
+          @input="handleSearch"
+        />
       </div>
 
       <!-- Entries list (flat, no week grouping) -->
@@ -76,7 +83,7 @@
     type EntryMetadata,
   } from "../domain/devlog/data";
   import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
-  import DevLogSearch from "../domain/devlog/components/DevLogSearch.vue";
+  import Search from "../components/organisms/Search.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
 
   const entries = ref<EntryMetadata[]>([]);
