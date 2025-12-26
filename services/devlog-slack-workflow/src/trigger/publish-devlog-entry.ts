@@ -1,29 +1,11 @@
 import { task, logger } from "@trigger.dev/sdk";
 import { Octokit } from "@octokit/rest";
-import fm from "front-matter";
-import { getWeekKey } from "@caiokf/shared";
 
 export type PublishDevlogEntryPayload = {
   filename: string;
   markdown: string;
   title: string;
   commitMessage?: string;
-};
-
-type Frontmatter = {
-  title: string;
-  date: string;
-  tags: string[];
-  slug: string;
-};
-
-type IndexEntry = {
-  title: string;
-  date: string;
-  tags: string[];
-  slug: string;
-  filename: string;
-  weekKey: string;
 };
 
 const REPO_OWNER = "caiokf";
@@ -46,22 +28,7 @@ export const publishDevlogEntry = task({
       auth: process.env.GITHUB_TOKEN,
     });
 
-    // Parse frontmatter from markdown
-    const parsed = fm<Frontmatter>(markdown);
-    const { slug, date, tags } = parsed.attributes;
-
-    // Create new index entry
-    const newEntry: IndexEntry = {
-      title: parsed.attributes.title,
-      date,
-      tags,
-      slug,
-      filename,
-      weekKey: getWeekKey(new Date(date)),
-    };
-
     const markdownPath = `${DEVLOG_PATH}/${filename}`;
-    const indexPath = `${DEVLOG_PATH}/index.json`;
     const message = commitMessage || `devlog: ${title}`;
 
     try {
@@ -83,53 +50,17 @@ export const publishDevlogEntry = task({
       });
       const treeSha = commit.tree.sha;
 
-      // Fetch current index.json
-      let currentIndex: IndexEntry[] = [];
-      try {
-        const { data: indexFile } = await octokit.repos.getContent({
-          owner: REPO_OWNER,
-          repo: REPO_NAME,
-          path: indexPath,
-          ref: BRANCH,
-        });
-        if ("content" in indexFile) {
-          const content = Buffer.from(indexFile.content, "base64").toString("utf-8");
-          currentIndex = JSON.parse(content);
-        }
-      } catch (error) {
-        // Index doesn't exist yet, start with empty array
-        logger.info("No existing index.json, creating new one");
-      }
-
-      // Add new entry and sort by date (newest first)
-      // Remove existing entry with same slug if present (for updates/republishing)
-      currentIndex = currentIndex.filter((e) => e.slug !== newEntry.slug);
-      currentIndex.push(newEntry);
-      currentIndex.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      const updatedIndexJson = JSON.stringify(currentIndex, null, 2);
-
-      // Create blobs for both files
-      const [markdownBlob, indexBlob] = await Promise.all([
-        octokit.git.createBlob({
-          owner: REPO_OWNER,
-          repo: REPO_NAME,
-          content: Buffer.from(markdown).toString("base64"),
-          encoding: "base64",
-        }),
-        octokit.git.createBlob({
-          owner: REPO_OWNER,
-          repo: REPO_NAME,
-          content: Buffer.from(updatedIndexJson).toString("base64"),
-          encoding: "base64",
-        }),
-      ]);
-
-      logger.info("Created blobs", {
-        markdown: markdownBlob.data.sha,
-        index: indexBlob.data.sha,
+      // Create blob for markdown file
+      const { data: markdownBlob } = await octokit.git.createBlob({
+        owner: REPO_OWNER,
+        repo: REPO_NAME,
+        content: Buffer.from(markdown).toString("base64"),
+        encoding: "base64",
       });
 
-      // Create a new tree with both files
+      logger.info("Created blob", { markdown: markdownBlob.sha });
+
+      // Create a new tree with the markdown file
       const { data: newTree } = await octokit.git.createTree({
         owner: REPO_OWNER,
         repo: REPO_NAME,
@@ -139,13 +70,7 @@ export const publishDevlogEntry = task({
             path: markdownPath,
             mode: "100644",
             type: "blob",
-            sha: markdownBlob.data.sha,
-          },
-          {
-            path: indexPath,
-            mode: "100644",
-            type: "blob",
-            sha: indexBlob.data.sha,
+            sha: markdownBlob.sha,
           },
         ],
       });
@@ -184,10 +109,7 @@ export const publishDevlogEntry = task({
       return {
         success: true,
         commitSha: newCommit.sha,
-        files: {
-          markdown: markdownPath,
-          index: indexPath,
-        },
+        file: markdownPath,
         commitUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/commit/${newCommit.sha}`,
         fileUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${BRANCH}/${markdownPath}`,
       };
