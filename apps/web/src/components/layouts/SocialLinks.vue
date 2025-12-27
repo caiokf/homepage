@@ -6,12 +6,15 @@
         v-for="social in socialsConfig"
         :key="social.network"
         :href="social.url"
-        :title="social.network"
+        :aria-label="social.network"
         class="social-link"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img :src="social.icon" :alt="social.network" class="social-icon" />
+        <span class="social-tooltip">{{ social.network }}</span>
+        <span class="social-icon-wrapper">
+          <img :src="social.icon" :alt="social.network" class="social-icon" />
+        </span>
       </a>
     </div>
 
@@ -105,16 +108,16 @@
   }
 
   .social-link {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0.7;
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    transition: opacity var(--transition-fast);
   }
 
   .social-link:hover {
     opacity: 1;
-    transform: translateY(-2px);
   }
 
   .social-link:focus-visible {
@@ -124,10 +127,59 @@
     border-radius: var(--radius-sm);
   }
 
+  /* Icon wrapper for bounce animation */
+  .social-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .social-link:hover .social-icon-wrapper {
+    transform: translateY(-3px) scale(1.15);
+  }
+
   .social-icon {
     width: 18px;
     height: 18px;
     filter: invert(1);
+  }
+
+  /* Tooltip slide-up */
+  .social-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: var(--space-1) var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-primary);
+    background: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 200ms ease,
+      transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .social-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--color-border);
+  }
+
+  .social-link:hover .social-tooltip,
+  .social-link:focus-visible .social-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   .social-compact {
@@ -216,6 +268,11 @@
     .social-icon {
       width: 16px;
       height: 16px;
+    }
+
+    /* Hide tooltips on smaller screens */
+    .social-tooltip {
+      display: none;
     }
   }
 </style>
