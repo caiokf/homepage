@@ -22,9 +22,7 @@
 
       <div class="search-container">
         <DevLogSearch @search="handleSearch" />
-        <span v-if="contentIndexed" class="search-status" title="Full-text search enabled">
-          +content
-        </span>
+        <span v-if="contentIndexed" class="search-status" title="Full-text search enabled"></span>
       </div>
 
       <!-- Entries list (flat, no week grouping) -->
@@ -64,9 +62,7 @@
 
             <div class="entry-content-wrapper">
               <div v-if="expandedSlug === entry.slug" class="entry-content">
-                <div v-if="loadingContent === entry.slug" class="content-loading">
-                  loading...
-                </div>
+                <div v-if="loadingContent === entry.slug" class="content-loading">loading...</div>
                 <div v-else v-html="highlightContent(entryContent[entry.slug] || '')"></div>
               </div>
             </div>

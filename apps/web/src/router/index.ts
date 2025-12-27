@@ -2,6 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(_to, _from, savedPosition) {
+    // If browser back/forward, restore saved position
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Otherwise scroll to top
+    return { top: 0 };
+  },
   routes: [
     {
       path: "/",
