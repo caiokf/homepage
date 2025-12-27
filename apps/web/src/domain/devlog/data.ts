@@ -152,36 +152,3 @@ export function getEntryCounts<T extends HasWeekKey>(entries: T[]): Map<string, 
   return counts;
 }
 
-/**
- * Group entries by week
- */
-export function getEntriesGroupedByWeek<T extends HasWeekKey>(entries: T[]): WeekGroup<T>[] {
-  const groups = new Map<string, T[]>();
-
-  entries.forEach((entry) => {
-    const existing = groups.get(entry.weekKey) || [];
-    existing.push(entry);
-    groups.set(entry.weekKey, existing);
-  });
-
-  // Convert to array and sort by week (newest first)
-  return Array.from(groups.entries())
-    .map(([key, weekEntries]) => {
-      const { start, end } = getWeekDates(key);
-      return {
-        key,
-        label: formatWeekLabel(key),
-        startDate: start,
-        endDate: end,
-        entries: weekEntries,
-      };
-    })
-    .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
-}
-
-/**
- * Filter entries by week key
- */
-export function getEntriesForWeek<T extends HasWeekKey>(entries: T[], weekKey: string): T[] {
-  return entries.filter((entry) => entry.weekKey === weekKey);
-}
