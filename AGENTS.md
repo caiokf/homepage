@@ -2,10 +2,6 @@
 
 This file provides guidance to AI coding assistants when working with code in this repository.
 
-## Git Commits
-
-**DO NOT make git commits.** GitButler handles commits automatically via pre/post tool-use hooks. Just make your changes and move on.
-
 ## Work Management with Beads
 
 Before starting any work:
