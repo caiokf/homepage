@@ -1,6 +1,6 @@
 ---
 name: writing-articles
-description: Use when creating or editing blog articles for the homepage - enforces humanized writing style, validates punctuation rules, and ensures content reads naturally without AI-typical patterns
+description: Use when creating or editing blog articles for the devlog - enforces humanized writing style, validates punctuation rules, and ensures content reads naturally without AI-typical patterns
 ---
 
 # Writing Articles

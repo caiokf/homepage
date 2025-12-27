@@ -14,7 +14,7 @@ Before starting any work:
 
 ## Project Overview
 
-Personal homepage and portfolio application built with Vue 3, TypeScript, and D3.js. Features multiple sections including a Tech Radar visualization, devlog, experience timeline, and about page.
+Personal dev-profile and portfolio application built with Vue 3, TypeScript, and D3.js. Features multiple sections including a Tech Radar visualization, devlog, experience timeline, and about page.
 
 **Monorepo Structure:**
 
