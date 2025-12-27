@@ -24,45 +24,21 @@
       "Bash(pnpm test:*)",
       "Bash(npx markdownlint-cli:*)",
       "Bash(npx markdownlint:*)",
-      "Bash(bd create:*)",
-      "Bash(bd dep add:*)",
-      "Bash(bd list:*)",
-      "Bash(bd update:*)",
-      "Bash(bd close:*)",
-      "Bash(bd sync:*)",
-      "Bash(bd create:*)",
       "Bash(gh run list:*)",
       "Skill(conventions-vue)",
       "Skill(coderabbit-request)",
       "Bash(coderabbit --prompt-only --type uncommitted:*)",
       "WebSearch",
-      "WebFetch(domain:*)"
+      "WebFetch(domain:*)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
   },
-  "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ]
-  }
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "gitkraken"
+  ],
+  "hooks": {}
 }
