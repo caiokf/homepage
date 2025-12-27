@@ -258,7 +258,7 @@ export const experiencesConfig: Experience[] = [
     tags: ["on-site", "e-commerce", "consulting"],
     website: "",
     startDate: "2010-02-15",
-    endDate: "2011-08-01",
+    endDate: "2010-08-01",
     highlights: [
       "Senior web developer at Gap Inc., working on their large-scale enterprise e-commerce platform. Collaborating with multi-continent distributed teams, I focused on reducing technical debt and implementing core features for global payment processing and order fulfillment.",
     ],
