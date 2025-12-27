@@ -49,11 +49,6 @@
   .header-logo {
     text-decoration: none;
     color: inherit;
-    transition: opacity var(--transition-fast);
-  }
-
-  .header-logo:hover {
-    opacity: 0.8;
   }
 
   .header-logo:focus-visible {
@@ -63,11 +58,32 @@
   }
 
   .logo-text {
+    position: relative;
+    display: inline-block;
     font-size: var(--text-lg);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
     letter-spacing: 0.05em;
     color: var(--color-primary);
+  }
+
+  /* Animated underline for logo */
+  .logo-text::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .header-logo:hover .logo-text::after,
+  .header-logo:focus-visible .logo-text::after {
+    transform: scaleX(1);
   }
 
   /* Light theme adjustments */

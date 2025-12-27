@@ -83,6 +83,7 @@
     color: inherit;
     opacity: 0.7;
     white-space: nowrap;
+    transition: opacity var(--transition-fast);
   }
 
   .nav-item:hover {

@@ -10,7 +10,7 @@
     v-bind="$attrs"
     @keydown.enter="handleEnter"
   >
-    <slot />
+    <span class="bracket-link-content"><slot /></span>
   </component>
 </template>
 
@@ -62,7 +62,6 @@
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: opacity var(--transition-fast);
   }
 
   .base-bracket-link::before {
@@ -73,8 +72,28 @@
     content: "]";
   }
 
-  .base-bracket-link:hover {
-    opacity: 0.8;
+  .bracket-link-content {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Animated underline */
+  .bracket-link-content::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .base-bracket-link:hover .bracket-link-content::after,
+  .base-bracket-link:focus-visible .bracket-link-content::after {
+    transform: scaleX(1);
   }
 
   .base-bracket-link:focus-visible {
