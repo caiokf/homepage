@@ -464,9 +464,27 @@
   .position {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
-    color: var(--color-primary);
     text-transform: lowercase;
     font-weight: var(--font-medium);
+    /* Gradient text setup */
+    background: linear-gradient(
+      90deg,
+      var(--color-primary) 0%,
+      var(--color-primary) 40%,
+      var(--color-text-primary) 50%,
+      var(--color-primary) 60%,
+      var(--color-primary) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 600ms ease;
+  }
+
+  .experience-card:hover .position {
+    background-position: 0% 0;
   }
 
   .via-text {
