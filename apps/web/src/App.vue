@@ -5,6 +5,7 @@
     <main id="main-content" class="main-content" aria-label="Main content">
       <router-view />
     </main>
+    <ScrollFadeHint />
     <AppFooter />
   </div>
 </template>
@@ -12,6 +13,7 @@
 <script setup lang="ts">
   import AppHeader from "./components/layouts/AppHeader.vue";
   import AppFooter from "./components/layouts/AppFooter.vue";
+  import ScrollFadeHint from "./components/atoms/ScrollFadeHint.vue";
   import { useTheme } from "./composables/useTheme";
 
   // Initialize theme system
