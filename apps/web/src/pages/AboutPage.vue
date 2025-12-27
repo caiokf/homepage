@@ -1,6 +1,15 @@
 <template>
-  <div class="about-page">
-    <h1 class="visually-hidden">About Caio Kinzel Filho</h1>
+  <div class="about-page h-card" itemscope itemtype="https://schema.org/Person">
+    <h1 class="visually-hidden p-name" itemprop="name">Caio Kinzel Filho</h1>
+    <link class="u-url u-uid" rel="me" href="https://dev.caiokf.com/" itemprop="url" />
+    <!-- Hidden h-card metadata for parsers -->
+    <data class="p-note visually-hidden" itemprop="description">
+      Software engineer specializing in architecture, event-driven systems, and engineering teams.
+    </data>
+    <a class="u-email visually-hidden" rel="me" href="mailto:caiokf@gmail.com" itemprop="email">caiokf@gmail.com</a>
+    <a class="u-url visually-hidden" rel="me" href="https://github.com/caiokf" itemprop="sameAs">GitHub</a>
+    <a class="u-url visually-hidden" rel="me" href="https://www.linkedin.com/in/caiokf/" itemprop="sameAs">LinkedIn</a>
+    <data class="p-job-title visually-hidden" itemprop="jobTitle">Software Engineer</data>
 
     <!-- Hero with Orbit Visualization -->
     <section class="hero" aria-label="Introduction">
@@ -17,7 +26,7 @@
           <div class="hero-line">
             <code class="indent-1"
               ><span class="code-prop">name</span><span class="code-punct">:</span>&nbsp;<span
-                class="hero-name"
+                class="hero-name p-nickname"
                 >"{{ engineer.name }}"</span
               ><span class="code-punct">,</span></code
             >
@@ -25,8 +34,11 @@
           <div class="hero-line">
             <code class="indent-1"
               ><span class="code-prop">location</span><span class="code-punct">:</span>&nbsp;<span
-                class="hero-location"
-                >"{{ engineer.location }}"</span
+                class="hero-location p-locality"
+                itemprop="address"
+                itemscope
+                itemtype="https://schema.org/PostalAddress"
+                >"<span itemprop="addressLocality">{{ engineer.location }}</span>"</span
               ><span class="code-punct">,</span></code
             >
           </div>
