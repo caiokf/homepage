@@ -79,7 +79,8 @@ If no date is mentioned or implied, **omit the `date` field entirely** from the 
 ## Tag Guidelines
 
 - Use 2-4 relevant tags
-- Common tags: ai, architecture, devops, learning, tools
+- **Prefer these established tags:** ai, architecture, automation, compliance, devex, devops, documentation, fintech, iac, k8s, meta, orchestration, strategy, teams, tools, vue, workflow
+- Only create a new tag if the content clearly doesn't fit any established tag
 - Keep tags lowercase and kebab-cased
 
 ## Content Guidelines
