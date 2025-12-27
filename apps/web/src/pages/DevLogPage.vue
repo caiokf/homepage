@@ -40,7 +40,7 @@
             :key="entry.slug"
             class="entry-card"
             :class="{ expanded: expandedSlug === entry.slug }"
-            :style="{ '--entry-delay': `${index * 50}ms` }"
+            :style="getStaggerStyle(index)"
           >
             <button class="entry-header" @click="toggleEntry(entry.slug)">
               <span class="entry-date">{{ formatDate(entry.date) }}</span>
@@ -78,6 +78,9 @@
   import DevLogHeader from "../domain/devlog/components/DevLogHeader.vue";
   import DevLogSearch from "../domain/devlog/components/DevLogSearch.vue";
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
+  import { useStaggerAnimation } from "../composables/useStaggerAnimation";
+
+  const { getStaggerStyle } = useStaggerAnimation({ delayIncrement: 100 });
 
   const entries = ref<EntryMetadata[]>([]);
   const isLoading = ref(true);
@@ -403,8 +406,8 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     transition: all var(--transition-fast);
-    animation: entrySlideIn 300ms ease-out backwards;
-    animation-delay: var(--entry-delay, 0ms);
+    animation: entrySlideIn 400ms ease-out backwards;
+    animation-delay: var(--stagger-delay, 0ms);
   }
 
   .entry-card:hover {

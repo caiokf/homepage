@@ -27,7 +27,7 @@
             v-for="(experience, index) in visibleExperiences"
             :key="index"
             class="experience-card"
-            :style="{ '--card-delay': `${index * 100}ms` }"
+            :style="getStaggerStyle(index)"
           >
             <template #header>
               <div class="card-meta">
@@ -124,6 +124,9 @@
   import BadgeGroup from "../components/molecules/BadgeGroup.vue";
   import AppCard from "../components/molecules/AppCard.vue";
   import BaseCursor from "../components/atoms/BaseCursor.vue";
+  import { useStaggerAnimation } from "../composables/useStaggerAnimation";
+
+  const { getStaggerStyle } = useStaggerAnimation({ delayIncrement: 100 });
 
   // Dynamically import all logos from assets/logos
   const logoModules = import.meta.glob("../assets/logos/*.jpeg", {
@@ -346,7 +349,7 @@
   /* App Card Styling */
   .experience-card {
     animation: cardSlideUp 500ms ease-out backwards;
-    animation-delay: var(--card-delay, 0ms);
+    animation-delay: var(--stagger-delay, 0ms);
   }
 
   .experience-card :deep(.card-body) {
