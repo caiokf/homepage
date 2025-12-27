@@ -5,7 +5,7 @@ import { devlogIndexPlugin, copy404Plugin, sitemapPlugin, robotsPlugin, seoHtmlP
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), devlogIndexPlugin(), seoHtmlPlugin(), copy404Plugin(), sitemapPlugin(), robotsPlugin()],
-  base: process.env.VITE_BASE_URL || "/homepage/",
+  base: process.env.VITE_BASE_URL || "/dev-profile/",
   build: {
     outDir: "../../dist",
     emptyOutDir: true,

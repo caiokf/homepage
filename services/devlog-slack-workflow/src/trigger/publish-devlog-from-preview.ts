@@ -21,7 +21,7 @@ type IndexEntry = {
 };
 
 const REPO_OWNER = "caiokf";
-const REPO_NAME = "homepage";
+const REPO_NAME = "dev-profile";
 const BRANCH = "main";
 const DEVLOG_PATH = "apps/web/public/devlog";
 

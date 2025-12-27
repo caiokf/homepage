@@ -2,7 +2,7 @@
 
 Personal homepage and portfolio featuring an interactive tech radar, devlog, experience timeline, and about page.
 
-[![Homepage Screenshot](https://api.microlink.io/?url=https://caiokf.github.io/homepage&screenshot=true&meta=false&embed=screenshot.url)](https://caiokf.github.io/homepage)
+[![Homepage Screenshot](https://api.microlink.io/?url=https://caiokf.github.io/dev-profile&screenshot=true&meta=false&embed=screenshot.url)](https://caiokf.github.io/dev-profile)
 
 ## Features
 
