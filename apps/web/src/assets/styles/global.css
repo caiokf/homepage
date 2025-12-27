@@ -558,6 +558,38 @@ svg {
 }
 
 /* ==========================================================================
+   Route Transition - Fade/Slide/Blur Combo
+   ========================================================================== */
+
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease,
+    filter 250ms ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(4px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+  filter: blur(2px);
+}
+
+/* Ensure entering page starts fresh */
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* ==========================================================================
    Page Title Styles
    ========================================================================== */
 

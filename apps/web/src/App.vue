@@ -3,7 +3,11 @@
     <a href="#main-content" class="skip-link">Skip to content</a>
     <AppHeader />
     <main id="main-content" class="main-content" aria-label="Main content">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <Transition name="page" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </router-view>
     </main>
     <ScrollFadeHint />
     <AppFooter />
