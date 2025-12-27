@@ -62,6 +62,14 @@
     border: none;
     padding: 0;
     cursor: pointer;
+    transition: color 200ms ease;
+  }
+
+  /* Brackets with expand animation */
+  .base-bracket-link::before,
+  .base-bracket-link::after {
+    display: inline-block;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .base-bracket-link::before {
@@ -70,6 +78,23 @@
 
   .base-bracket-link::after {
     content: "]";
+  }
+
+  /* Bracket expansion on hover - uses transform so no layout shift */
+  .base-bracket-link:hover::before,
+  .base-bracket-link:focus-visible::before {
+    transform: translateX(-3px);
+  }
+
+  .base-bracket-link:hover::after,
+  .base-bracket-link:focus-visible::after {
+    transform: translateX(3px);
+  }
+
+  /* Text color shift on hover */
+  .base-bracket-link:hover,
+  .base-bracket-link:focus-visible {
+    color: var(--color-text-primary);
   }
 
   .bracket-link-content {
