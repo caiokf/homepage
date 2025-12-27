@@ -1,7 +1,7 @@
 ---
 title: "DevEx in the Age of AI"
 date: 2025-12-25
-tags: [ai, devex, tools, documentation]
+tags: [ai, devex, documentation]
 slug: devex-in-the-age-of-ai
 ---
 

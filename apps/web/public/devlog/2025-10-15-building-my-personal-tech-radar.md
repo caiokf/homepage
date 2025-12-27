@@ -1,7 +1,7 @@
 ---
 title: "Building My Personal Tech Radar"
 date: 2025-10-15
-tags: [tools, learning, architecture]
+tags: [tools, architecture]
 slug: building-my-personal-tech-radar
 ---
 

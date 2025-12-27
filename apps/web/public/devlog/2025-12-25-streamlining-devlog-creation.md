@@ -1,7 +1,7 @@
 ---
 title: "Streamlining Dev Log Creation"
 date: 2025-12-25
-tags: [slack, automation, llm, workflow]
+tags: [automation, ai, workflow]
 slug: streamlining-devlog-creation
 ---
 

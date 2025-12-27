@@ -1,7 +1,7 @@
 ---
 title: "Launching the Dev Log"
 date: 2025-12-23
-tags: [meta, vue, d3]
+tags: [meta, vue]
 slug: devlog-launch
 ---
 

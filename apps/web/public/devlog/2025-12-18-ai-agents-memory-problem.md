@@ -1,7 +1,7 @@
 ---
 title: "The memory problem with AI agents"
 date: 2025-12-18
-tags: [ai, agents, architecture]
+tags: [ai, architecture]
 slug: ai-agents-memory-problem
 ---
 

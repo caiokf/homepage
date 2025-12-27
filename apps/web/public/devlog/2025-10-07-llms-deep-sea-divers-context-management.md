@@ -1,7 +1,7 @@
 ---
 title: "LLMs as Deep Sea Divers: Context Management"
 date: 2025-10-07
-tags: [ai, engineering, context, llms]
+tags: [ai, architecture]
 slug: llms-deep-sea-divers-context-management
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Switching from GitButler to GitKraken"
 date: 2025-12-26
-tags: [tools, git, workflow]
+tags: [tools, workflow]
 slug: switching-from-gitbutler-to-gitkraken
 ---
 

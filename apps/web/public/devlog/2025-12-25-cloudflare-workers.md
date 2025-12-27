@@ -1,7 +1,7 @@
 ---
 title: "Playing with Cloudflare Workers"
 date: 2025-12-25
-tags: [cloudflare, ai, devops, tools]
+tags: [ai, devops, tools]
 slug: cloudflare-workers
 ---
 

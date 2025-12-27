@@ -1,7 +1,7 @@
 ---
 title: "Automating Compliance with Agent Workflows"
 date: 2025-12-05
-tags: [devops, compliance, automation, ci-cd]
+tags: [devops, compliance, automation]
 slug: automating-compliance-with-agent-workflows
 ---
 

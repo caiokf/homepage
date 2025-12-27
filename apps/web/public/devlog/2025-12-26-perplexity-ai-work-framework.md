@@ -1,7 +1,7 @@
 ---
 title: "Perplexity's AI Work Framework"
 date: 2025-12-26
-tags: [ai, productivity, career, strategy]
+tags: [ai, strategy]
 slug: perplexity-ai-work-framework
 ---
 
