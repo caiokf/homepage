@@ -22,6 +22,9 @@
 
       <div class="search-container">
         <DevLogSearch @search="handleSearch" />
+        <span v-if="contentIndexed" class="search-status" title="Full-text search enabled">
+          +content
+        </span>
       </div>
 
       <!-- Entries list (flat, no week grouping) -->
@@ -48,6 +51,14 @@
                 <span class="expand-icon" :class="{ rotated: expandedSlug === entry.slug }">›</span>
                 <span v-html="highlightTitle(entry.title, entry.slug)"></span>
               </h2>
+              <!-- Relevance score bar (only visible during search) -->
+              <div v-if="isSearching" class="relevance-indicator">
+                <div
+                  class="relevance-bar"
+                  :style="{ '--relevance': `${getRelevancePercent(entry.slug)}%` }"
+                ></div>
+                <span class="relevance-score">{{ getRelevancePercent(entry.slug) }}%</span>
+              </div>
               <BadgeGroup :items="entry.tags" gap="xs" class="entry-tags" />
             </button>
 
@@ -67,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, reactive, onMounted } from "vue";
+  import { ref, computed, reactive, onMounted, nextTick } from "vue";
   import Fuse from "fuse.js";
   import {
     fetchIndex,
@@ -88,24 +99,79 @@
   const loadingContent = ref<string | null>(null);
   const entryContent = reactive<Record<string, string>>({});
 
+  // Plain text content for search (stripped HTML)
+  const searchableContent = reactive<Record<string, string>>({});
+  const contentIndexed = ref(false);
+
   // Initialize Fuse.js lazily
   let fuse: Fuse<EntryMetadata> | null = null;
+
+  // Extended type for search that includes content
+  type SearchableEntry = EntryMetadata & { content?: string };
+
+  // Strip HTML tags for plain text search
+  function stripHtml(html: string): string {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  }
+
+  // Create Fuse instance with current data
+  function createFuseIndex(includeContent: boolean) {
+    const searchData: SearchableEntry[] = entries.value.map((entry) => ({
+      ...entry,
+      content: includeContent ? searchableContent[entry.slug] : undefined,
+    }));
+
+    const keys = [
+      { name: "title", weight: 2 },
+      { name: "tags", weight: 1.5 },
+    ];
+
+    if (includeContent) {
+      keys.push({ name: "content", weight: 1 });
+    }
+
+    fuse = new Fuse<SearchableEntry>(searchData, {
+      keys,
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeScore: true,
+      includeMatches: true,
+      useExtendedSearch: false,
+      minMatchCharLength: 2,
+    });
+  }
+
+  // Background load all content for search indexing
+  async function loadContentForSearch() {
+    const loadPromises = entries.value.map(async (entry) => {
+      if (!entryContent[entry.slug]) {
+        try {
+          const content = await fetchEntryContent(entry.filename);
+          entryContent[entry.slug] = content.html;
+          searchableContent[entry.slug] = stripHtml(content.html);
+        } catch (error) {
+          console.warn(`Failed to load content for ${entry.slug}:`, error);
+        }
+      } else {
+        // Already loaded, just ensure searchable content exists
+        searchableContent[entry.slug] = stripHtml(entryContent[entry.slug]);
+      }
+    });
+
+    await Promise.all(loadPromises);
+
+    // Rebuild Fuse index with content
+    createFuseIndex(true);
+    contentIndexed.value = true;
+  }
 
   onMounted(async () => {
     try {
       entries.value = await fetchIndex();
-      fuse = new Fuse<EntryMetadata>(entries.value, {
-        keys: [
-          { name: "title", weight: 2 },
-          { name: "tags", weight: 1.5 },
-        ],
-        threshold: 0.2,
-        ignoreLocation: true,
-        includeScore: true,
-        includeMatches: true,
-        useExtendedSearch: false,
-        minMatchCharLength: 2,
-      });
+      // Initial index without content
+      createFuseIndex(false);
     } catch (error) {
       entries.value = [];
       fetchError.value = "failed to load entries. please try again later.";
@@ -113,16 +179,34 @@
     } finally {
       isLoading.value = false;
     }
+
+    // After render, background load content for full-text search
+    nextTick(() => {
+      // Small delay to ensure UI is fully interactive first
+      setTimeout(loadContentForSearch, 500);
+    });
   });
 
   const entryCounts = computed(() => getEntryCounts(entries.value));
 
   type MatchInfo = {
     titleIndices: readonly [number, number][];
+    score: number; // 0 = perfect match, 1 = no match
   };
 
-  // Store search match indices
+  // Store search match indices and scores
   const searchMatches = ref<Map<string, MatchInfo>>(new Map());
+
+  // Check if we're in search mode
+  const isSearching = computed(() => searchQuery.value.length >= 2);
+
+  // Get relevance percentage for an entry (inverted score: 100% = perfect match)
+  function getRelevancePercent(slug: string): number {
+    const matchInfo = searchMatches.value.get(slug);
+    if (!matchInfo) return 0;
+    // Fuse score is 0-1 where 0 is perfect, invert and scale to percentage
+    return Math.round((1 - matchInfo.score) * 100);
+  }
 
   // Selection state
   const selectedWeekKey = ref<string | null>(null);
@@ -178,12 +262,13 @@
     if (searchQuery.value.length >= 2 && fuse) {
       const searchResults = fuse.search(searchQuery.value);
 
-      // Build match indices map
+      // Build match indices and scores map
       const newMatches = new Map<string, MatchInfo>();
       searchResults.forEach((r) => {
         const titleMatch = r.matches?.find((m) => m.key === "title");
         newMatches.set(r.item.slug, {
           titleIndices: titleMatch?.indices || [],
+          score: r.score ?? 1,
         });
       });
       searchMatches.value = newMatches;
@@ -349,8 +434,24 @@
 
   .search-container {
     display: flex;
+    align-items: center;
     justify-content: center;
+    gap: var(--space-2);
     margin-top: var(--space-4);
+  }
+
+  .search-status {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-primary);
+    opacity: 0;
+    animation: fadeIn 300ms ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 0.7;
+    }
   }
 
   /* Entries Container */
@@ -455,6 +556,52 @@
 
   .entry-tags {
     flex-shrink: 0;
+  }
+
+  /* Relevance indicator */
+  .relevance-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .relevance-bar {
+    width: 48px;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .relevance-bar::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--relevance, 0%);
+    background: var(--color-primary);
+    border-radius: 2px;
+    animation: relevanceGrow 400ms cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  }
+
+  @keyframes relevanceGrow {
+    from {
+      width: 0%;
+    }
+    to {
+      width: var(--relevance, 0%);
+    }
+  }
+
+  .relevance-score {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    min-width: 32px;
+    text-align: right;
   }
 
   .search-highlight,
@@ -579,7 +726,19 @@
       flex-wrap: wrap;
     }
 
+    .relevance-indicator {
+      order: 1;
+      width: 100%;
+      margin-top: var(--space-1);
+    }
+
+    .relevance-bar {
+      flex: 1;
+      max-width: 120px;
+    }
+
     .entry-tags {
+      order: 2;
       width: 100%;
       margin-top: var(--space-1);
     }
