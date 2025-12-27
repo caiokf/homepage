@@ -52,7 +52,7 @@ export const experiencesConfig: Experience[] = [
       "Single digit engineer employee, working as a lead frontend engineer, I was responsible for creating and maintaining mobile and web apps for Flex, a fintech startup focused on helping people manage their rent payments. I was reporting directly to the CTO and also involved in helping with backend development and architecture. Some other products I was heavily involved include customer onboarding, increasing app store rating from 3.2 to 4.5, bill payments and rent payment portal integrations, and analytics and funnel optimization.",
     ],
     technologies:
-      "typescript, event-sourcing, aws, serverless, react-native, mixpanel, firebase, firestore, cloudformation, plaid, biquery",
+      "typescript, event-sourcing, aws, serverless, react-native, mixpanel, firebase, firestore, cloudformation, plaid, bigquery",
   },
 
   {

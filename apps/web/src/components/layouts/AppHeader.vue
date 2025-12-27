@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="header-content">
       <router-link to="/about" class="header-logo">
-        <span class="logo-text">caiokf</span>
+        <span class="logo-text">dev.caiokf</span>
       </router-link>
       <BaseThemeToggle />
     </div>
