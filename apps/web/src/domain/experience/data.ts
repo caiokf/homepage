@@ -20,9 +20,10 @@ export const experiencesConfig: Experience[] = [
     website: "https://www.slice.co.uk",
     startDate: "2024-02-12",
     highlights: [
-      "Principal engineer at Slice, a fintech startup focused on lay-by solutions for travel.",
+      "Slice is a fintech/traveltech startup focused on lay-by solutions for travel. I led the fintech team, leading payments orchestration and payment gateway integrations. I have been part of modernizing the platform, introducing new technologies and practices and changing how the company processes payments, saving us +7M AUD annually (and growing). I was also responsible for setting up platform and data platform infrastructure.",
     ],
-    technologies: "typescript, react, node, aws",
+    technologies:
+      "typescript, aws, temporal, stripe, pulumi, nx, event-sourcing, k8s, bigquery, airbyte, neon",
   },
 
   {
@@ -33,8 +34,10 @@ export const experiencesConfig: Experience[] = [
     website: "https://www.forgetmenot.com",
     startDate: "2022-02-16",
     endDate: "2024-02-09",
-    highlights: ["Lead engineer at Forget Me Not, building micro learning solutions."],
-    technologies: "typescript, react, node, aws, serverless",
+    highlights: [
+      "As a hands-on Head of Engineering, I grew the team from 2 to 8 engineers, and introduced new ways to communicate with stakeholders, as well as multiple engineering improvements like reducing build time from 45min to 30s. With the team, we created multiple product offerings and started using AI to help build microlearning solutions.",
+    ],
+    technologies: "typescript, aws, serverless, pulumi, event-sourcing, bigquery",
   },
 
   {
@@ -46,12 +49,10 @@ export const experiencesConfig: Experience[] = [
     startDate: "2020-05-22",
     endDate: "2022-02-15",
     highlights: [
-      "Engineering lead at a Flex. The role is a combination of that of a principal engineer and an engineering manager",
-      "Architecting and building new systems to improve Flex's key services such as Flex's bill payment engine and credit decisioning platform.",
-      "Improving the performance of Flex's engineering team, while maintaining their focus on executing Flex's technical roadmap.",
-      "Working closely with other teams like Product and Data Science to influence Flex's product vision.",
+      "Single digit engineer employee, working as a lead frontend engineer, I was responsible for creating and maintaining mobile and web apps for Flex, a fintech startup focused on helping people manage their rent payments. I was reporting directly to the CTO and also involved in helping with backend development and architecture. Some other products I was heavily involved include customer onboarding, increasing app store rating from 3.2 to 4.5, bill payments and rent payment portal integrations, and analytics and funnel optimization.",
     ],
-    technologies: "typescript, event-sourcing, aws, serverless, react native",
+    technologies:
+      "typescript, event-sourcing, aws, serverless, react-native, mixpanel, firebase, firestore, cloudformation, plaid, biquery",
   },
 
   {
@@ -63,14 +64,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2019-11-20",
     endDate: "2020-05-22",
     highlights: [
-      "Work on key features composing the main pillars of the new codebase while taking full ownership from conception to release.",
-      "Research, analyse and translate business needs into solution architectures.",
-      "Implement secure, self-healing, highly scalable serverless microservices.",
-      "Ensure compliance best practices across the entire ecosystem.",
-      "Take full ownership of features with implementation, integration & end-to-end testing, deployment, infrastructure management, logging, and monitoring.",
-      "Receive and provide constructive feedback verbally and through code reviews.",
+      "As a senior full-stack developer at InDebted, a fintech startup focused on debt collection, I was responsible for researching, analyzing, and translating business needs into solution architectures. I took full ownership of key features from conception to release, implementing secure and scalable serverless microservices.",
     ],
-    technologies: "golang, event-sourcing, aws, serverless, node, react",
+    technologies: "golang, event-sourcing, aws, terraform,serverless, node, react",
   },
 
   {
@@ -83,11 +79,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2019-03-25",
     endDate: "2019-06-21",
     highlights: [
-      "Add functionality to C# and Node.js projects.",
-      "Create A/B Testing variants of customer facing pages.",
-      "Work on system migration to a new platform.",
+      "Contractor working on the SelectQuote platform, a web application for insurance brokers to quote and sell insurance policies. Using C# and Node.js, I was responsible for adding functionality to the platform, creating A/B testing experiments and assisting in migrating it to a new platform.",
     ],
-    technologies: "Node.js, C#, Web Api, SQL",
+    technologies: "node.js, c#, web-api, sql",
   },
 
   {
@@ -99,16 +93,10 @@ export const experiencesConfig: Experience[] = [
     startDate: "2017-01-13",
     endDate: "2019-01-20",
     highlights: [
-      "Set up continuous integration.",
-      "Built the foundation for unit tests and automated acceptance tests.",
-      "Stabilized and added features to the frontend.",
-      "Restructured the app and migrate it from Angular to React.",
-      "Created js-side styleguides.",
-      "Created an app-wide component library.",
-      "Fixed defects and get the app ready for production.",
+      "As Lead Front-end Engineer, I was responsible for taking the current prototype into a market-ready MVP. In the process, I worked on setting up continuous integration, building the foundation for unit tests and automated acceptance tests, stabilizing and adding features to the frontend, and restructuring the app and migrating it from Angular to React.",
     ],
     technologies:
-      "JavaScript, AngularJS, GraphQL, Docker, Kubernetes, Google Cloud, Node.js, React.js, Redux, Redux-saga, styled-components",
+      "javascript, angular, graphql, docker, k8s, gcp, react, redux, redux-saga, styled-components",
   },
 
   {
@@ -120,13 +108,10 @@ export const experiencesConfig: Experience[] = [
     startDate: "2017-10-20",
     endDate: "2017-11-25",
     highlights: [
-      "Developed a proof of concept app on ethereum smart contracts for a digital markplace's payments and escrow.",
-      "Built a back-end in Node.js, MongoDB, and GraphQL.",
-      "Created a front-end in React to integrate with GraphQL using Apollo.",
-      "Implemented the authentication system with Auth0 in React.",
+      "Developed a proof of concept app on ethereum smart contracts for a digital marketplace's payments and escrow. The prototype was built in Node.js, MongoDB, and GraphQL.",
     ],
     technologies:
-      "Node.js, React, Redux, Redux-saga, Ethereum Smart Contracts, Solidity, GraphQL, Apollo, MongoDB",
+      "javascript, react, redux, redux-saga, ethereum-smart-contracts, solidity, graphql, apollo, mongodb",
   },
 
   {
@@ -135,19 +120,13 @@ export const experiencesConfig: Experience[] = [
     via: "toptal",
     position: "Technical Lead",
     tags: ["remote", "startup", "ai", "contract"],
-    website: "https://www.linkedin.com/company/scribe-intelligence/posts/?feedView=all",
+    website: "https://www.linkedin.com/company/scribe-intelligence/",
     startDate: "2017-11-20",
     endDate: "2018-08-24",
     highlights: [
-      "Led and mentored a small team of developers.",
-      "Optimized the performance of a streaming back-end for speech recognition by 20x.",
-      "Built the foundation for a test-driven development workflow.",
-      "Decreased the operational costs of the application pipeline by improving third-party integration points.",
-      "Architected and implemented a backend migration to Event Sourcing.",
-      "Redesigned the React frontend.",
-      "Improved performance of the UI for the rendering of large datasets by 10x.",
+      "Technical Lead at Scribe Intelligence, an AI startup for AI-powered transcription. Initially tasked with performance optimizations, I improved the streaming of speech recognition backends in 20x and a 10x speedup in UI rendering for large datasets. After that I took a few more projects while preparing the company's MVP. Meanwhile, I led and mentored a team of 3 developers.",
     ],
-    technologies: "Node.js, React, Event Sourcing, Streaming, AWS, ElasticSearch, MongoDB, Docker",
+    technologies: "javasctipt, react, streaming, aws, elastic-search, mongodb, docker",
   },
 
   {
@@ -159,13 +138,10 @@ export const experiencesConfig: Experience[] = [
     startDate: "2017-11-20",
     endDate: "2017-12-07",
     highlights: [
-      "Led a small team in the development of a React Native app.",
-      "Designed and architected the application from specs to deployment.",
-      "Set up tests and deployment infrastructure.",
-      "Prepared the application for internationalization and copywriting.",
+      "Contracted as a lead React Native developer tasked at creating a prototype used for fundraising for Clinova, a healthcare startup. I led a small team in the end-to-end development of their mobile application, from initial architectural design to deployment infrastructure. I was responsible for setting up the testing environment and preparing the app for internationalization.",
     ],
     technologies:
-      "React Native, Redux, Styled Components, iOS, Android, Fastlane, MongoDB, Node.js, Express",
+      "react-native, redux, styled-components, ios, android, fastlane, mongodb, express",
   },
 
   {
@@ -178,13 +154,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2017-04-24",
     endDate: "2017-07-23",
     highlights: [
-      "Developed a React application for music notation editing.",
-      "Created a back-end application to handle simple APIs endpoints.",
-      "Set up tests and deployment infrastructure.",
-      "Prepared the application for internationalization and copywriting.",
+      "Senior React developer for the University at Buffalo, tasked at creating an MVP for a music notation editing application, used for music education. I built both the React frontend and the supporting Node.js backend APIs, while also managing the testing and deployment infrastructure and preparing the platform for internationalization.",
     ],
-    technologies:
-      "React, Redux, Redux-saga, Immutable, Reselect, Enzyme, VexFlow, MongoDB, Node.js",
+    technologies: "react, redux, redux-saga, immutable, reselect, enzyme, vexflow, mongodb",
   },
 
   {
@@ -197,12 +169,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2016-08-22",
     endDate: "2016-10-08",
     highlights: [
-      "Added React/Redux to the existing application.",
-      "Implemented responsive web views using React.js and Sass under a tight deadline.",
-      "Maintained and extended the existing Django framework and models.",
-      "Stabilized and added features to the frontend.",
+      "Working as a senior frontend developer for Zenefits, a HR-tech platform, I was responsible for modernizing the application by integrating React and Redux into the existing stack. Under tight deadlines, I implemented responsive web views and extended the Django-based backend while focusing on stabilizing the frontend and adding new features.",
     ],
-    technologies: "ReactJS, Redux, Python, Django, Responsive Design, Sass",
+    technologies: "react, redux, python, django, responsive-design",
   },
 
   {
@@ -215,12 +184,10 @@ export const experiencesConfig: Experience[] = [
     startDate: "2016-04-04",
     endDate: "2016-08-21",
     highlights: [
-      "Worked as a JavaScript frontend developer on an AngularJS code base.",
-      "Set up a unit testing framework for frontend application.",
-      "Created a data metrics pipeline using InfluxDB, Docker, Grafana, and Kafka.",
+      "Contracted as a senior full-stack developer focusing on modernizing their frontend infrastructure. I was responsible for setting up a unit testing framework for an AngularJS codebase and architecting a data metrics pipeline using InfluxDB, Docker, Grafana, and Kafka to improve system observability.",
     ],
     technologies:
-      "JavaScript, AngularJS, Grafana, Docker, InfluxDB, Kafka, Restangular, UI Router, Grunt, D3.js",
+      "javascript, angular, restangular, ui-router, grunt, d3, grafana, docker, influxdb, kafka, mesos, consul",
   },
 
   {
@@ -233,12 +200,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2013-11-20",
     endDate: "2015-02-01",
     highlights: [
-      "Worked on a continuous delivery pipeline with multiple deploys a day.",
-      "Created a dashboard for managing cloud servers, databases, and other resources",
-      "Developed a module for the management of automatic scaling of cloud servers and nodes.",
-      "Created a pipeline with thousands of tests backing the deployment process from commit to production deploy.",
+      "Working for ThoughtWorks, I consulted at Rackspace, working on their cloud management platform. I was responsible for building a comprehensive dashboard for managing cloud resources and developing modules for automatic scaling. I focused heavily on DevOps practices, creating a continuous delivery pipeline with multiple daily deploys backed by thousands of automated tests.",
     ],
-    technologies: "JavaScript, Google Closure, Cassandra, Node.js, React",
+    technologies: "javaScript, closure, cassandra, react",
   },
 
   {
@@ -246,18 +210,14 @@ export const experiencesConfig: Experience[] = [
     company: "Johannesburg Stock Exchange",
     via: "tw",
     position: "Technical Lead",
-    tags: ["on-site", "fintech"],
+    tags: ["on-site", "fintech", "consulting"],
     website: "https://www.jse.co.za",
     startDate: "2013-02-01",
     endDate: "2013-11-01",
     highlights: [
-      "Implemented a pilot Agile project to be further followed by multiple teams within the organization.",
-      "Provided guidance for the client's technical leads on processes and tools.",
-      "Built an internal tool to remove manual workload for an important department.",
-      "Trained client developers and testers on automated functional tests.",
-      "Helped the business with project inception and minimal viable product specifications.",
+      "As a Technical Lead at the Johannesburg Stock Exchange, I led the implementation of a pilot Agile project that became the blueprint for multiple teams within the organization. I provided strategic technical guidance, built internal tools to automate manual workloads, and trained teams on automated functional testing while assisting stakeholders with product inception and MVP specifications.",
     ],
-    technologies: "C#, ASP.NET MVC, SQL Server, NHibernate, JavaScript, AngularJS",
+    technologies: "c#, asp-net-mvc, sqlserver, nhibernate, javascript, angular",
   },
 
   {
@@ -265,18 +225,14 @@ export const experiencesConfig: Experience[] = [
     company: "Vision Critical",
     via: "tw",
     position: "Senior Web Developer",
-    tags: ["on-site", "saas"],
+    tags: ["on-site", "saas", "consulting"],
     website: "https://www.visioncritical.com",
     startDate: "2012-05-01",
     endDate: "2012-11-01",
     highlights: [
-      "Built a platform for customized survey creation.",
-      "Created a continuous delivery pipeline.",
-      "Implemented a polyglot persistence on MongoDB and SQL Server.",
-      "Worked on a RESTful API for back-end services.",
-      "Designed a functional testing suite to be used by developers and testers.",
+      "Senior web developer at Vision Critical, where I built a platform for customized survey creation. I implemented a polyglot persistence layer using MongoDB and SQL Server, developed RESTful APIs, and established a continuous delivery pipeline and functional testing suite for the engineering team.",
     ],
-    technologies: "C#, ASP.NET MVC, JavaScript, SQL Server, MongoDB",
+    technologies: "c#, asp-net-mvc, javascript, sqlserver, mongodb",
   },
 
   {
@@ -284,18 +240,14 @@ export const experiencesConfig: Experience[] = [
     company: "Measured Progress",
     via: "tw",
     position: "Technical Lead",
-    tags: ["on-site", "education"],
+    tags: ["on-site", "education", "consulting"],
     website: "https://www.measuredprogress.org",
     startDate: "2010-08-01",
     endDate: "2012-03-01",
     highlights: [
-      "Built a rich client web application to manage custom student assessments.",
-      "Introduced continuous integration, testing, and Agile processes to the project as a pilot to the organization.",
-      "Developed a testing framework for a higher integration between business analysts and developers.",
-      "Worked on a rich WYSIWYG editor with custom functions and math formulas.",
-      "Designed the application from iteration 0 to a succesful platform.",
+      "Technical Lead for Measured Progress, an education technology company. I architected and built a rich-client web application for student assessments from iteration zero to a successful platform. I introduced modern engineering practices like CI/CD and Agile to the organization and developed a custom WYSIWYG editor with support for complex math formulas.",
     ],
-    technologies: "C#, ASP.NET MVC, NHibernate, JavaScript, SQL Server",
+    technologies: "c#, asp-net-mvc, nhibernate, javascript, sqlserver",
   },
 
   {
@@ -303,16 +255,14 @@ export const experiencesConfig: Experience[] = [
     company: "Gap Inc.",
     via: "tw",
     position: "Senior Web Developer",
-    tags: ["on-site", "e-commerce"],
+    tags: ["on-site", "e-commerce", "consulting"],
     website: "",
     startDate: "2010-02-15",
     endDate: "2011-08-01",
     highlights: [
-      "Worked on a large-scale enterprise e-commerce with multi-continent distributed teams.",
-      "Developed a plan to reduce technical debt.",
-      "Worked on global payment processing and order fullfillment.",
+      "Senior web developer at Gap Inc., working on their large-scale enterprise e-commerce platform. Collaborating with multi-continent distributed teams, I focused on reducing technical debt and implementing core features for global payment processing and order fulfillment.",
     ],
-    technologies: "Java, Spring, XML, XSLT, e-commerce, Agile, Scrum",
+    technologies: "java, spring, xml, xslt, e-commerce, agile, scrum",
   },
 
   {
@@ -324,12 +274,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2009-09-01",
     endDate: "2010-02-01",
     highlights: [
-      "Worked on hospital management systems used by some of the largest hospitals in Brazil.",
-      "Helped transition from an old VCS to Subversion.",
-      "Advocated for Continuous Integration and unit testing practices that was later adopted by the company.",
+      "Senior web developer at TOTVS, working on mission-critical hospital management systems for some of Brazil's largest healthcare providers. Tasked with some of the product features like medicine inventory and dispensary, as well as projects like modernizing the development workflow and source control systems, advocating for CI/CD and unit testing practices.",
     ],
-    technologies:
-      "C#, MSSQL, Oracle, large enterprise multi-tenant software, MS Workflow Foundation",
+    technologies: "c#, sqlserver, oracle, multi-tenant, workflow-foundation",
   },
 
   {
@@ -341,11 +288,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2007-02-01",
     endDate: "2009-09-01",
     highlights: [
-      "Single-handedly developed a logistics and call-center system which was still being used in production 10+ years later.",
-      "Involved in the the full project life-cycle, working closely with business experts.",
-      "Traning a small team of developers on OOP, Agile, Testing, CI/CD for a migration from VB6 to .NET",
+      "Technical Lead at Farmácias Aguiar, where I single-handedly developed a logistics and call-center system that remained in production for over a decade. I managed the full project lifecycle, working closely with business experts, and mentored the development team through a major technology migration from VB6 to .NET, introducing OOP, Agile, and CI/CD practices.",
     ],
-    technologies: "VB6, VB.NET, C#, ASP.NET WebForms, Windows Forms, Firebird, MSSQL",
+    technologies: "vb6, vb-net, c#, asp-net, web-forms, windows-forms, firebird, sqlserver",
   },
 
   {
@@ -357,11 +302,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2007-09-01",
     endDate: "2008-02-01",
     highlights: [
-      'Architected and developed the company\'s vision of a "virtual shopping center".',
-      "Worked through a tight deadline with a team of 8 developers to deliver the final project.",
-      "Mentoring junior developers on multi-tiered application design and OOP.",
+      "Freelance web developer at Conceito Web, where I architected and developed a complex 'virtual shopping center' platform. Leading a team of 8 developers under tight deadlines, I was responsible for delivering the final project while mentoring junior engineers on multi-tiered application design and object-oriented programming.",
     ],
-    technologies: "VB.NET, MSSQL, e-commerce, multi-tiered application",
+    technologies: "vb-net, sqlserver, e-commerce, multi-tier",
   },
 
   {
@@ -373,10 +316,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2006-05-01",
     endDate: "2007-11-01",
     highlights: [
-      "Part-time trainer teaching Software Development and Analysis.",
-      "Taught Object-Oriented Programming and Design, and Data Structures and Algorithms.",
+      "Part-time technical trainer at Solon Tavares Technical State School, where I taught software development and analysis. I was responsible for delivering curriculum on Object-Oriented Programming, system design, and fundaments of data structures, networking and algorithms.",
     ],
-    technologies: "Formal teaching experience",
+    technologies: "teaching, oop, data-structures, networking, algorithms",
   },
 
   {
@@ -388,10 +330,9 @@ export const experiencesConfig: Experience[] = [
     startDate: "2005-11-01",
     endDate: "2006-07-01",
     highlights: [
-      "In-house developed ERP system. I worked on some of the application modules in Clarion language, with Topspeed database.",
-      "Within two months, I held the highest performance markers amongst all the developers.",
+      "Developer at Zeta Informática, working on their in-house ERP system using Clarion and Topspeed. I focused on core application modules and within two months of joining, achieved the highest performance markers within the development team.",
     ],
-    technologies: "Clarion, Topspeed",
+    technologies: "clarion, topspeed",
   },
 
   {
@@ -403,9 +344,8 @@ export const experiencesConfig: Experience[] = [
     startDate: "2005-01-01",
     endDate: "2005-06-01",
     highlights: [
-      "Internship developing an application for civil engineering clients, used by some of the largest construction companies in Brazil.",
-      "Learned Classic ASP and improved my knowledge on databases and development processes.",
+      "Internship at Server Informática developing specialized applications for civil engineering clients, including some of the largest construction companies in Brazil. I focused on building web applications using Classic ASP while gaining foundational knowledge in database management and professional development processes.",
     ],
-    technologies: "Visual Basic 6, Classic ASP, MSSQL",
+    technologies: "vb6, asp, sqlserver",
   },
 ];

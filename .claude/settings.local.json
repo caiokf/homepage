@@ -36,9 +36,7 @@
     "deny": [],
     "ask": []
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "gitkraken"
-  ],
+  "enableAllProjectMcpServers": false,
+  "enabledMcpjsonServers": [],
   "hooks": {}
 }
